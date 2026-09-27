@@ -1,0 +1,242 @@
+using Osysharp.Shop;
+using Osysharp.Storage;
+
+// The catalogue, a machine up close, the workshop's story, the archive, and the thank-you.
+
+[Title("Every bike — Rust & Chrome")]
+[Page("/bikes")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component AllBikes() {
+  live var bikes = Product.Include(p => p.Variants).Include(p => p.Images).Include(p => p.Specs)
+    .Where(p => p.Status == ProductStatus.Listed && p.Variants.Any(v => v.Stock > 0 || v.Reserved > 0))
+    .OrderBy(p => p.Rank).ToList();
+  render { Catalogue("Every bike", "Everything in the window right now, restored and ready to ride.", bikes); }
+}
+
+[Title("Road — Rust & Chrome")]
+[Page("/bikes/road")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component RoadBikes() {
+  live var bikes = Product.Include(p => p.Variants).Include(p => p.Images).Include(p => p.Specs)
+    .Where(p => p.Status == ProductStatus.Listed && p.Variants.Any(v => v.Stock > 0 || v.Reserved > 0) && p.Category.Slug == "road")
+    .OrderBy(p => p.Rank).ToList();
+  render { Catalogue("Road", "Light, quick, made to climb — the bikes the classics were won on.", bikes); }
+}
+
+[Title("Track — Rust & Chrome")]
+[Page("/bikes/track")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component TrackBikes() {
+  live var bikes = Product.Include(p => p.Variants).Include(p => p.Images).Include(p => p.Specs)
+    .Where(p => p.Status == ProductStatus.Listed && p.Variants.Any(v => v.Stock > 0 || v.Reserved > 0) && p.Category.Slug == "track")
+    .OrderBy(p => p.Rank).ToList();
+  render { Catalogue("Track", "One gear, fixed. Built for the velodrome, ridden everywhere.", bikes); }
+}
+
+[Title("Touring — Rust & Chrome")]
+[Page("/bikes/touring")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component TouringBikes() {
+  live var bikes = Product.Include(p => p.Variants).Include(p => p.Images).Include(p => p.Specs)
+    .Where(p => p.Status == ProductStatus.Listed && p.Variants.Any(v => v.Stock > 0 || v.Reserved > 0) && p.Category.Slug == "touring")
+    .OrderBy(p => p.Rank).ToList();
+  render { Catalogue("Touring", "Racks, mudguards and gearing for the long way round.", bikes); }
+}
+
+[Title("The archive — Rust & Chrome")]
+[Page("/archive")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Archive() {
+  live var bikes = Product.Include(p => p.Variants).Include(p => p.Images).Include(p => p.Specs)
+    .Where(p => p.Variants.All(v => v.Stock == 0 && v.Reserved == 0)).OrderBy(p => p.Rank).ToList();
+  render { Catalogue("The archive", "Machines that have found new riders. We keep them here because they are the best reference we have.", bikes); }
+}
+
+/// A listing page: a big heading, a line, and the grid — or a sentence when the grid is empty.
+[Composable]
+component Catalogue(string title, string lead, List<Product> bikes) {
+  render {
+    Section {
+      Stack(gap: 0, pt: 16, pb: 20) {
+        Stack(gap: 4, pb: 12, animation: RiseIn) {
+          Text(title, fontFamily: Font.Display, fontSize: FontSize.Mega, fontWeight: FontWeight.Black, lineHeight: "0.84",
+               textTransform: TextTransform.Uppercase);
+          Row(justify: Justify.Between, align: Align.End, gap: 4, wrap: Wrapping.Wrap) {
+            Text(lead, fontSize: FontSize.Lead, color: Colors.TextSecondary, maxW: "560px");
+            Text($"{bikes.Count} {(bikes.Count == 1 ? "machine" : "machines")}", fontFamily: Font.Mono,
+                 fontSize: FontSize.Label, color: Colors.TextMuted);
+          }
+        }
+        if (bikes.Count == 0) {
+          Stack(gap: 3, py: 12, borderTW: 1, border: Colors.Border) {
+            Text("Nothing here right now.", fontFamily: Font.Display, fontSize: "36px", textTransform: TextTransform.Uppercase);
+            Text("A new restoration leaves the workshop most weeks.", color: Colors.TextMuted);
+            RestockButton();
+          }
+        } else {
+          Box(display: Display.Grid, cols: "repeat(auto-fill, minmax(280px, 1fr))", gap: 8) {
+            foreach (var b in bikes) { BikeCard(b, bikes.IndexOf(b)); }
+          }
+        }
+      }
+    }
+  }
+}
+
+[Title("A machine up close — Rust & Chrome")]
+[Page("/bike/{id}")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component BikePage(Guid id) {
+  string visitId = Visitor.Id;
+  live var bike = Product.Include(p => p.Variants).Include(p => p.Images).Include(p => p.Specs).SingleOrDefault(p => p.Id == id);
+  live var bag = Bag.Include(b => b.Lines).SingleOrDefault(b => b.VisitId == visitId);
+  live var inBag = bag != null && bike != null && bag.Lines.Any(l => bike.Variants.Any(v => v.Id == l.Variant.Id));
+  live var sold = bike != null && IsSold(bike.Variants);
+  live var reserved = bike != null && IsHeld(bike.Variants);
+  // The one variant a machine has — picked here, from the rows already loaded, so the action hands it straight on.
+  live var variant = bike == null ? null : bike.Variants.FirstOrDefault();
+  live var more = Product.Include(p => p.Variants).Include(p => p.Images).Include(p => p.Specs)
+    .Where(p => p.Id != id && p.Status == ProductStatus.Listed && p.Variants.Any(v => v.Stock > 0 || v.Reserved > 0))
+    .OrderBy(p => p.Rank).Take(3).ToList();
+  string problem = "";
+
+  action Add() { problem = AddToBag(visitId, variant, 1); }
+
+  render {
+    // Counts the look for the workshop's figures; renders nothing.
+    if (bike != null) { ShopProductView(bike); }
+    if (bike == null) {
+      Section {
+        Stack(gap: 3, py: 20) {
+          Text("Not in the window.", fontFamily: Font.Display, fontSize: FontSize.Hero, textTransform: TextTransform.Uppercase);
+          Row { Link(href: "/bikes", label: "Every bike") { Text("See every bike →", color: Colors.Primary); } }
+        }
+      }
+    } else {
+      Stack(gap: 0) {
+        Section {
+          Box(display: Display.Grid, cols: "repeat(auto-fit, minmax(340px, 1fr))", gap: 12, pt: 10, pb: 16, align: Align.Start) {
+            Box(position: Position.Relative, bg: Colors.Surface, animation: RiseIn) {
+              Image(src: File.Url(Cover(bike.Images)), alt: $"{bike.Brand} {bike.Name}, {SpecOf(bike.Specs, "Year")}", w: "100%", aspectRatio: "4 / 5",
+                    objectFit: ObjectFit.Cover, filter: sold ? "grayscale(1) brightness(0.7)" : "saturate(0.9) contrast(1.05)");
+              if (sold) { SoldTag("SOLD"); } else if (reserved) { SoldTag("RESERVED"); }
+            }
+            Stack(gap: 6, position: Position.Sticky, top: "120px") {
+              Stack(gap: 2) {
+                Text($"{bike.Brand} · {bike.Category?.Name} · {SpecOf(bike.Specs, "Year")}", fontFamily: Font.Mono, fontSize: FontSize.Label,
+                     color: Colors.TextMuted, letterSpacing: "0.04em");
+                Text(bike.Name, fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Black, lineHeight: "0.88",
+                     textTransform: TextTransform.Uppercase);
+              }
+              Text(bike.Description ?? "", fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary);
+              Stack(gap: 0, borderTW: 1, border: Colors.Border) {
+                foreach (var line in bike.Specs.OrderBy(x => x.Rank)) { SpecLine(line.Name, line.Value); }
+              }
+              if (sold) {
+                Stack(gap: 2, p: 5, bg: Colors.Surface) {
+                  Text("This one has found its rider.", fontFamily: Font.Display, fontSize: "28px", textTransform: TextTransform.Uppercase);
+                  Text("Tell us what you are looking for and we will call when something like it comes in.", color: Colors.TextMuted);
+                }
+              } else if (reserved) {
+                Stack(gap: 2, p: 5, bg: Colors.Surface) {
+                  Text("Reserved.", fontFamily: Font.Display, fontSize: "28px", textTransform: TextTransform.Uppercase);
+                  Text("Someone has put their name on this one. If the reservation lapses it comes back into the window.", color: Colors.TextMuted);
+                }
+              } else {
+                Row(gap: 5, align: Align.Center, wrap: Wrapping.Wrap) {
+                  Text(PriceText(bike.Price), fontFamily: Font.Display, fontSize: "52px", fontWeight: FontWeight.Bold, lineHeight: "1");
+                  if (inBag) {
+                    Text("In your bag — open it from the top of the page.", color: Colors.Primary);
+                  } else {
+                    Button("Add to bag", onPress: Add, tone: Tone.Primary, size: Size.Lg);
+                  }
+                }
+                if (problem != "") { Text(problem, role: UiRole.Alert, color: Colors.TextSecondary); }
+                Text("Collection from the workshop, or insured delivery anywhere in Europe.", fontSize: FontSize.Label, color: Colors.TextMuted);
+              }
+            }
+          }
+        }
+        if (more.Count > 0) {
+          Box(bg: Colors.Surface) {
+            Section {
+              Stack(gap: 0, py: 16) {
+                SectionHead("Also in the window", linkLabel: "Every bike", to: "/bikes");
+                Box(display: Display.Grid, cols: "repeat(auto-fit, minmax(260px, 1fr))", gap: 8) {
+                  foreach (var b in more) { BikeCard(b, more.IndexOf(b)); }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/// One line of the spec sheet — the label quiet, the value in the mono a collector reads specs in.
+[Composable]
+component SpecLine(string label, string value) {
+  render {
+    Row(justify: Justify.Between, gap: 4, py: 3, borderBW: 1, border: Colors.Border) {
+      Text(label, color: Colors.TextMuted, fontSize: FontSize.Body);
+      Text(value, fontFamily: Font.Mono, fontSize: FontSize.Body, textAlign: TextAlign.Right);
+    }
+  }
+}
+
+[Title("The workshop — Rust & Chrome")]
+[Page("/workshop")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Workshop() {
+  render {
+    Stack(gap: 0) {
+      Box(position: Position.Relative, h: "64vh", minH: "440px", overflow: Overflow.Hidden) {
+        Image(texture: Textures.WorkshopWall, alt: "The workshop wall, every tool on its hook", w: "100%", h: "100%",
+              objectFit: ObjectFit.Cover, filter: "saturate(0.8) brightness(0.72)");
+        Stack(position: Position.Absolute, left: "0", right: "0", bottom: "0", px: 5, pb: 12, maxW: "1360px", mx: "auto", animation: RiseIn) {
+          Text("The workshop", fontFamily: Font.Display, fontSize: FontSize.Mega, fontWeight: FontWeight.Black, lineHeight: "0.84",
+               textTransform: TextTransform.Uppercase, color: "#ECEAE4");
+        }
+      }
+      Section {
+        Stack(gap: 16, py: 20) {
+          Step("01", "Strip", "Every part comes off. The frame is measured for alignment and the tubes are checked for dents and rust from the inside, which is where old steel fails.", Textures.WorkshopStand);
+          Step("02", "Save or redo", "Original paint is cleaned and kept when it can be — it is part of the machine's history. When it cannot, the frame is blasted and repainted in its original colour.", Textures.WorkshopOrangeFrames);
+          Step("03", "Rebuild and ride", "Bearings repacked, cables, tyres and tape new, wheels trued by hand. Then one of us rides it a hundred kilometres before it goes in the window.", Textures.CreamRoadDetail);
+        }
+      }
+    }
+  }
+}
+
+/// One step of the rebuild — a number, a photograph and a paragraph, rising as it is scrolled to.
+[Composable]
+component Step(string number, string title, string body, Textures photo) {
+  render {
+    Box(display: Display.Grid, cols: "repeat(auto-fit, minmax(300px, 1fr))", gap: 10, align: Align.Center,
+        animation: Surface, animationTimeline: AnimationTimeline.View) {
+      Image(texture: photo, alt: title, w: "100%", aspectRatio: "3 / 2", objectFit: ObjectFit.Cover, filter: "saturate(0.85)");
+      Stack(gap: 4) {
+        Text(number, fontFamily: Font.Mono, fontSize: FontSize.Body, color: Colors.Primary);
+        Text(title, fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Bold, lineHeight: "0.9",
+             textTransform: TextTransform.Uppercase);
+        Text(body, fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary, maxW: "520px");
+      }
+    }
+  }
+}

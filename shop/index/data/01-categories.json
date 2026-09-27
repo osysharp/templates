@@ -1,0 +1,21 @@
+{
+  "entity": "Category",
+  "key": "Slug",
+  "rows": [
+    {
+      "Name": "Clothing",
+      "Slug": "clothing",
+      "Rank": 0
+    },
+    {
+      "Name": "Shoes",
+      "Slug": "shoes",
+      "Rank": 5
+    },
+    {
+      "Name": "Accessories",
+      "Slug": "accessories",
+      "Rank": 9
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+using Osysharp.Shop;
+using Osysharp.Storage;
+
+// The front of the index: one line and a count, then every piece in the shop, newest first — the catalogue IS the page.
+
+[Title("Vall — the index")]
+[Page("/")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Home() {
+  live var all = Product.Include(p => p.Images).Include(p => p.Variants)
+    .Where(p => p.Status == ProductStatus.Listed).OrderBy(p => p.Rank).ToList();
+
+  render {
+    Section {
+      Stack(gap: 0, pt: 10, pb: 16) {
+        Box(display: Display.Grid, cols: "repeat(auto-fit, minmax(280px, 1fr))", gap: 6, pb: 8, borderBW: 1, border: Colors.Border,
+            align: Align.End, animation: RiseIn) {
+          Text("Autumn / Winter", fontFamily: Font.Display, fontSize: FontSize.Mega, fontWeight: FontWeight.Semibold,
+               lineHeight: "0.9", letterSpacing: "-0.04em");
+          Stack(gap: 2) {
+            Text($"{all.Count} PIECES · CLOTHING · SHOES · ACCESSORIES", fontFamily: Font.Mono, fontSize: FontSize.Label, color: Colors.TextMuted);
+            Text("Everything in the shop, on one page. Pick a shelf in the column to narrow it.", color: Colors.TextSecondary, maxW: "420px");
+          }
+        }
+        Box(pt: 6) { ProductGrid(all); }
+      }
+    }
+  }
+}

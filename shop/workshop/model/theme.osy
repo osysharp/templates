@@ -1,0 +1,59 @@
+// THE DIRECTION — "the workshop after dark".
+//
+// Brief: people who ride and collect vintage steel road bikes, paying €900-€2,500 for one, want to feel they are
+// buying a finished machine from people who know the sport — not browsing an antiques stall.
+//
+// Looked at in the category: performance cycling brands (black and white, huge condensed type, dramatic riding
+// photography, one loud accent), heritage British outfitters (green, serif, leather — the costume of "vintage"), and
+// modern frame builders (quiet, grey, product on seamless). Three directions written for this shop:
+//   1. Race poster — saturated flat colour fields, italic condensed numerals, 70s race-number energy.
+//   2. Heritage outfitter — racing green, a serif, brass — REJECTED: it is the "vintage" costume every shop wears, and
+//      it drifts straight into the cream-and-serif default.
+//   3. The workshop after dark — CHOSEN: dark ground, bone-white type, a tall condensed grotesque with race-number
+//      energy for display, a mono for the specs a collector reads (frame size, tubing, groupset), photography left
+//      dark and moody, and ONE accent from the sport's own history: Bianchi celeste. It reads as people who know the
+//      machines, it lets the chrome and paint in the photographs be the colour, and it is neither default.
+
+// ⚑ DARK IN BOTH MODES, deliberately: "after dark" is the direction, not a preference the visitor's OS may flip. A
+//   light variant would be a second design this shop does not have.
+theme Workshop {
+  Colors {
+    Bg            = "#0C0D0D";   // the workshop floor
+    OnBg          = "#ECEAE4";   // bone white on dark
+    Surface       = "#151717";   // a panel, a card, the bag
+    OnSurface     = "#ECEAE4";
+    Muted         = "#1D2020";   // a quiet BACKGROUND tint (hover, chips)
+    TextMuted     = "#8E9493";   // secondary text
+    TextSecondary = "#B9BDBA";
+    Border        = "#262A2A";   // hairlines, kept low so photographs lead
+    Primary       = Palette.From("#7FD4C6");                        // Bianchi celeste — the ONE accent
+    OnPrimary     = "#0C0D0D";
+    Scrim         = "rgb(0 0 0 / 0.62)";
+    Sold          = "#5C6262";   // a sold machine, still shown
+  }
+  Font {
+    Display = "\"Big Shoulders Display\", \"Arial Narrow\", sans-serif";
+    Sans    = "\"IBM Plex Sans\", system-ui, sans-serif";
+    Mono    = "\"IBM Plex Mono\", ui-monospace, monospace";
+  }
+  FontSize {
+    Mega  = "clamp(64px, 11vw, 168px)";   // the hero line
+    Hero  = "clamp(44px, 6vw, 88px)";
+    Title = "40px";
+    Lead  = "19px";
+    Body  = "15px";
+    Label = "12px";
+    Caption = "12px";
+  }
+  FontWeight { Black = 900; }
+  Radius { Card = "2px"; Md = "2px"; Lg = "4px"; }
+  Shadow {
+    Raised   = "none";
+    Floating = "0 24px 48px -24px rgb(0 0 0 / 0.6)";
+    Deep     = "0 30px 80px -20px rgb(0 0 0 / 0.7)";
+  }
+  Motion {
+    Lift = "transform 260ms cubic-bezier(.2,.7,.2,1), filter 260ms ease";
+    Fade = "opacity 200ms ease";
+  }
+}

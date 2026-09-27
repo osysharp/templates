@@ -1,0 +1,31 @@
+using Osysharp.Shop;
+using Osysharp.Storage;
+
+// The front of the index: one line and a count, then every piece in the shop, newest first — the catalogue IS the page.
+
+[Title("ANDRA VARVET — second round")]
+[Page("/")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Home() {
+  live var all = Product.Include(p => p.Images).Include(p => p.Variants)
+    .Where(p => p.Status == ProductStatus.Listed).OrderBy(p => p.Rank).ToList();
+
+  render {
+    Section {
+      Stack(gap: 0, pt: 10, pb: 16) {
+        Box(display: Display.Grid, cols: "repeat(auto-fit, minmax(280px, 1fr))", gap: 6, pb: 8, borderBW: 1, border: Colors.Border,
+            align: Align.End, animation: RiseIn) {
+          Text("Second round", fontFamily: Font.Display, fontSize: FontSize.Mega, lineHeight: "0.86",
+               textTransform: TextTransform.Uppercase);
+          Stack(gap: 2) {
+            Text($"{all.Count} PIECES · ONE OF EACH", fontFamily: Font.Mono, fontSize: FontSize.Label, color: Colors.TextMuted);
+            Text("Sixteen finds, one of each. When it is gone, it is gone.", color: Colors.TextSecondary, maxW: "420px");
+          }
+        }
+        Box(pt: 6) { ProductGrid(all); }
+      }
+    }
+  }
+}

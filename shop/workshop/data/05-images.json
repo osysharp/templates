@@ -1,0 +1,57 @@
+{
+  "entity": "ProductImage",
+  "key": [
+    "Product",
+    "Rank"
+  ],
+  "lookups": {
+    "Product": "Product[Slug]"
+  },
+  "files": {
+    "Path": "public/products"
+  },
+  "rows": [
+    {
+      "Product": "super",
+      "Path": "photos/red_road_fence.jpg",
+      "Alt": "Colnago Super, 1981",
+      "Rank": 0
+    },
+    {
+      "Product": "px-10",
+      "Path": "photos/peugeot_silver.jpg",
+      "Alt": "Peugeot PX-10, 1972",
+      "Rank": 0
+    },
+    {
+      "Product": "pista",
+      "Path": "photos/pista_track_frame.jpg",
+      "Alt": "Cinelli Pista, 1968",
+      "Rank": 0
+    },
+    {
+      "Product": "torino",
+      "Path": "photos/cream_road_campagnolo.jpg",
+      "Alt": "Gios Torino, 1979",
+      "Rank": 0
+    },
+    {
+      "Product": "randonneur",
+      "Path": "photos/touring_green.jpg",
+      "Alt": "Raleigh Randonneur, 1976",
+      "Rank": 0
+    },
+    {
+      "Product": "grand-record",
+      "Path": "photos/road_bike_at_wall.jpg",
+      "Alt": "Motobécane Grand Record, 1976",
+      "Rank": 0
+    },
+    {
+      "Product": "supercorsa",
+      "Path": "photos/wall_mounted_mono.jpg",
+      "Alt": "Cinelli Supercorsa, 1983",
+      "Rank": 0
+    }
+  ]
+}

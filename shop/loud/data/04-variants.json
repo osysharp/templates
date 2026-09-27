@@ -1,0 +1,115 @@
+{
+  "entity": "Variant",
+  "key": "Sku",
+  "lookups": {
+    "Product": "Product[Slug]"
+  },
+  "rows": [
+    {
+      "Sku": "SHEARLING-COLLAR-LEATHER-JACKET",
+      "Product": "shearling-collar-leather-jacket",
+      "Stock": 1,
+      "Size": "M",
+      "Rank": 0
+    },
+    {
+      "Sku": "RUST-TWILL-JACKET",
+      "Product": "rust-twill-jacket",
+      "Stock": 1,
+      "Size": "L",
+      "Rank": 0
+    },
+    {
+      "Sku": "FADED-DENIM-TRUCKER-JACKET",
+      "Product": "faded-denim-trucker-jacket",
+      "Stock": 1,
+      "Size": "M",
+      "Rank": 0
+    },
+    {
+      "Sku": "LIGHT-WASH-STRAIGHT-JEANS",
+      "Product": "light-wash-straight-jeans",
+      "Stock": 1,
+      "Size": "W27 L30",
+      "Rank": 0
+    },
+    {
+      "Sku": "TERRACOTTA-CANVAS-OVERSHIRT",
+      "Product": "terracotta-canvas-overshirt",
+      "Stock": 1,
+      "Size": "S",
+      "Rank": 0
+    },
+    {
+      "Sku": "ROSE-PRINT-TEA-DRESS",
+      "Product": "rose-print-tea-dress",
+      "Stock": 1,
+      "Size": "S",
+      "Rank": 0
+    },
+    {
+      "Sku": "SHEER-BLACK-TIE-FRONT-BLOUSE",
+      "Product": "sheer-black-tie-front-blouse",
+      "Stock": 1,
+      "Size": "S",
+      "Rank": 0
+    },
+    {
+      "Sku": "STRIPED-WOOL-JUMPER",
+      "Product": "striped-wool-jumper",
+      "Stock": 1,
+      "Size": "M",
+      "Rank": 0
+    },
+    {
+      "Sku": "RED-RIB-KNIT-CARDIGAN",
+      "Product": "red-rib-knit-cardigan",
+      "Stock": 1,
+      "Size": "M",
+      "Rank": 0
+    },
+    {
+      "Sku": "WESTERN-LEATHER-BOOTS",
+      "Product": "western-leather-boots",
+      "Stock": 1,
+      "Size": "39",
+      "Rank": 0
+    },
+    {
+      "Sku": "LEATHER-DOCTORS-BAG",
+      "Product": "leather-doctors-bag",
+      "Stock": 1,
+      "Rank": 0
+    },
+    {
+      "Sku": "TOOLED-LEATHER-SADDLE-BAG",
+      "Product": "tooled-leather-saddle-bag",
+      "Stock": 1,
+      "Rank": 0
+    },
+    {
+      "Sku": "WOVEN-FRAME-HANDBAG",
+      "Product": "woven-frame-handbag",
+      "Stock": 1,
+      "Rank": 0
+    },
+    {
+      "Sku": "EMBROIDERED-EVENING-PURSE",
+      "Product": "embroidered-evening-purse",
+      "Stock": 1,
+      "Rank": 0
+    },
+    {
+      "Sku": "TORTOISESHELL-CAT-EYE-SUNGLASSES",
+      "Product": "tortoiseshell-cat-eye-sunglasses",
+      "Stock": 1,
+      "Rank": 0
+    },
+    {
+      "Sku": "LINEN-MARKET-TOTE",
+      "Product": "linen-market-tote",
+      "Stock": 1,
+      "Rank": 0
+    }
+  ]
+}

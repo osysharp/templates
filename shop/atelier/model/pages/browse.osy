@@ -1,0 +1,37 @@
+using Osysharp.Shop;
+
+// Finding things and the small print: the kit's search, sale shelf and policy pages in this store's frame.
+
+[Title("Search — Vall")]
+[Page("/search")]
+[Layout(Shop)]
+[AllowAnonymous]
+component SearchPage() {
+  render { AccountRoom() { Stack(gap: 6) { PageTitle("Search"); ShopSearchPage(productPrefix: "/p/"); } } }
+}
+
+[Title("Sale — Vall")]
+[Page("/sale")]
+[Layout(Shop)]
+[AllowAnonymous]
+component SalePage() {
+  render { AccountRoom() { Stack(gap: 6) { PageTitle("Sale"); ShopSearchPage(productPrefix: "/p/", onlySale: true); } } }
+}
+
+[Title("Terms of sale — Vall")]
+[Page("/terms")]
+[Layout(Shop)]
+[AllowAnonymous]
+component TermsPage() { render { AccountRoom() { ShopPolicy("terms"); } } }
+
+[Title("Privacy — Vall")]
+[Page("/privacy")]
+[Layout(Shop)]
+[AllowAnonymous]
+component PrivacyPage() { render { AccountRoom() { ShopPolicy("privacy"); } } }
+
+[Title("Returns — Vall")]
+[Page("/returns-policy")]
+[Layout(Shop)]
+[AllowAnonymous]
+component ReturnsPolicyPage() { render { AccountRoom() { ShopPolicy("returns"); } } }

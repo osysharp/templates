@@ -1,0 +1,58 @@
+# Photo credits
+
+All photos are from Pexels and used under the Pexels License (free for commercial use, no attribution required). We credit the photographers anyway.
+
+- buckle_boot_1.jpg · https://www.pexels.com/photo/27274322/ · José Martin Segura Benites · Pexels License
+- buckle_boot_2.jpg · https://www.pexels.com/photo/27256468/ · José Martin Segura Benites · Pexels License
+- buckle_boot_3.jpg · https://www.pexels.com/photo/27274324/ · José Martin Segura Benites · Pexels License
+- chain_necklace_1.jpg · https://www.pexels.com/photo/27535671/ · Daniel Arenas · Pexels License
+- chain_necklace_2.jpg · https://www.pexels.com/photo/27535670/ · Daniel Arenas · Pexels License
+- chain_necklace_3.jpg · https://www.pexels.com/photo/27535672/ · Daniel Arenas · Pexels License
+- check_blazer_1.jpg · https://www.pexels.com/photo/4382484/ · Anastasiya Gepp · Pexels License
+- check_blazer_2.jpg · https://www.pexels.com/photo/4382483/ · Anastasiya Gepp · Pexels License
+- cotton_cardigan_1.jpg · https://www.pexels.com/photo/12811534/ · Bernice Lew · Pexels License
+- cotton_cardigan_2.jpg · https://www.pexels.com/photo/12811533/ · Bernice Lew · Pexels License
+- cotton_cardigan_3.jpg · https://www.pexels.com/photo/12811535/ · Bernice Lew · Pexels License
+- cotton_trench_coat_1.jpg · https://www.pexels.com/photo/4456721/ · Nataliya Vaitkevich · Pexels License
+- cotton_trench_coat_2.jpg · https://www.pexels.com/photo/4456716/ · Nataliya Vaitkevich · Pexels License
+- cotton_trench_coat_3.jpg · https://www.pexels.com/photo/4456717/ · Nataliya Vaitkevich · Pexels License
+- croc_tote_1.jpg · https://www.pexels.com/photo/27174574/ · José Martin Segura Benites · Pexels License
+- croc_tote_2.jpg · https://www.pexels.com/photo/27174557/ · José Martin Segura Benites · Pexels License
+- gold_ring_1.jpg · https://www.pexels.com/photo/30541167/ · Jana Kukebal · Pexels License
+- gold_ring_2.jpg · https://www.pexels.com/photo/30541168/ · Jana Kukebal · Pexels License
+- gold_ring_3.jpg · https://www.pexels.com/photo/30541170/ · Jana Kukebal · Pexels License
+- jersey_midi_dress_1.jpg · https://www.pexels.com/photo/4235408/ · Anastasiya Gepp · Pexels License
+- jersey_midi_dress_2.jpg · https://www.pexels.com/photo/4235402/ · Anastasiya Gepp · Pexels License
+- jersey_midi_dress_3.jpg · https://www.pexels.com/photo/4235405/ · Anastasiya Gepp · Pexels License
+- kitten_heel_pump_1.jpg · https://www.pexels.com/photo/27008327/ · José Martin Segura Benites · Pexels License
+- kitten_heel_pump_2.jpg · https://www.pexels.com/photo/27008328/ · José Martin Segura Benites · Pexels License
+- lace_up_boot_1.jpg · https://www.pexels.com/photo/27174561/ · José Martin Segura Benites · Pexels License
+- lace_up_boot_2.jpg · https://www.pexels.com/photo/27174563/ · José Martin Segura Benites · Pexels License
+- lace_up_boot_3.jpg · https://www.pexels.com/photo/27174564/ · José Martin Segura Benites · Pexels License
+- leather_sneaker_1.jpg · https://www.pexels.com/photo/27008321/ · José Martin Segura Benites · Pexels License
+- leather_sneaker_2.jpg · https://www.pexels.com/photo/27008322/ · José Martin Segura Benites · Pexels License
+- metallic_sneaker_1.jpg · https://www.pexels.com/photo/27008323/ · José Martin Segura Benites · Pexels License
+- metallic_sneaker_2.jpg · https://www.pexels.com/photo/27008324/ · José Martin Segura Benites · Pexels License
+- padded_mule_1.jpg · https://www.pexels.com/photo/27174556/ · José Martin Segura Benites · Pexels License
+- padded_mule_2.jpg · https://www.pexels.com/photo/27174558/ · José Martin Segura Benites · Pexels License
+- padded_mule_3.jpg · https://www.pexels.com/photo/27174560/ · José Martin Segura Benites · Pexels License
+- pleated_mini_skirt_1.jpg · https://www.pexels.com/photo/31400263/ · Sara Kazemi · Pexels License
+- pleated_mini_skirt_2.jpg · https://www.pexels.com/photo/31400264/ · Sara Kazemi · Pexels License
+- rib_knit_cardigan_1.jpg · https://www.pexels.com/photo/9603628/ · Ron Lach · Pexels License
+- rib_knit_cardigan_2.jpg · https://www.pexels.com/photo/9603625/ · Ron Lach · Pexels License
+- rib_knit_cardigan_3.jpg · https://www.pexels.com/photo/9603629/ · Ron Lach · Pexels License
+- satin_slip_dress_1.jpg · https://www.pexels.com/photo/4382488/ · Anastasiya Gepp · Pexels License
+- satin_slip_dress_2.jpg · https://www.pexels.com/photo/4382493/ · Anastasiya Gepp · Pexels License
+- silk_scarf_orange_1.jpg · https://www.pexels.com/photo/36455708/ · Đậu Photograph · Pexels License
+- silk_scarf_orange_2.jpg · https://www.pexels.com/photo/36455707/ · Đậu Photograph · Pexels License
+- silk_scarf_orange_3.jpg · https://www.pexels.com/photo/36455706/ · Đậu Photograph · Pexels License
+- silk_scarf_yellow_1.jpg · https://www.pexels.com/photo/36455711/ · Đậu Photograph · Pexels License
+- silk_scarf_yellow_2.jpg · https://www.pexels.com/photo/36455718/ · Đậu Photograph · Pexels License
+- slouch_shoulder_bag_1.jpg · https://www.pexels.com/photo/27174569/ · José Martin Segura Benites · Pexels License
+- slouch_shoulder_bag_2.jpg · https://www.pexels.com/photo/27174559/ · José Martin Segura Benites · Pexels License
+- top_handle_bag_1.jpg · https://www.pexels.com/photo/4830925/ · Diana Light · Pexels License
+- top_handle_bag_2.jpg · https://www.pexels.com/photo/4830923/ · Diana Light · Pexels License
+- top_handle_bag_3.jpg · https://www.pexels.com/photo/4830927/ · Diana Light · Pexels License
+- wide_leg_trousers_1.jpg · https://www.pexels.com/photo/31400266/ · Sara Kazemi · Pexels License
+- wide_leg_trousers_2.jpg · https://www.pexels.com/photo/31400265/ · Sara Kazemi · Pexels License
+- wide_leg_trousers_3.jpg · https://www.pexels.com/photo/31400268/ · Sara Kazemi · Pexels License

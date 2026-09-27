@@ -1,0 +1,20 @@
+{
+  "entity": "ShopSettings",
+  "key": "Name",
+  "rows": [
+    {
+      "Name": "Andra Varvet",
+      "Currency": "SEK",
+      "CurrencySymbol": "kr",
+      "SymbolAfter": true,
+      "OrderPrefix": "AV-",
+      "HoldDays": 3,
+      "OffersCollection": true,
+      "OffersDelivery": true,
+      "OffersBankTransfer": true,
+      "OffersPayOnCollection": true,
+      "DeliveryFee": 49,
+      "FreeDeliveryFrom": 0
+    }
+  ]
+}

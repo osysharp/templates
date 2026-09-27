@@ -1,0 +1,44 @@
+{
+  "entity": "Variant",
+  "key": "Sku",
+  "lookups": {
+    "Product": "Product[Slug]"
+  },
+  "rows": [
+    {
+      "Sku": "RC-SUPER",
+      "Product": "super",
+      "Stock": 1
+    },
+    {
+      "Sku": "RC-PX-10",
+      "Product": "px-10",
+      "Stock": 1
+    },
+    {
+      "Sku": "RC-PISTA",
+      "Product": "pista",
+      "Stock": 1
+    },
+    {
+      "Sku": "RC-TORINO",
+      "Product": "torino",
+      "Stock": 1
+    },
+    {
+      "Sku": "RC-RANDONNEUR",
+      "Product": "randonneur",
+      "Stock": 1
+    },
+    {
+      "Sku": "RC-GRAND-RECORD",
+      "Product": "grand-record",
+      "Stock": 1
+    },
+    {
+      "Sku": "RC-SUPERCORSA",
+      "Product": "supercorsa",
+      "Stock": 0
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+using Osysharp.Shop;
+using Osysharp.Storage;
+
+// The listings: everything, or one shelf of the tree — "Shoes" lists boots, sneakers and heels together.
+
+[Title("New in — Vall")]
+[Page("/shop")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component AllProducts() {
+  live var products = Product.Include(p => p.Images).Include(p => p.Variants)
+    .Where(p => p.Status == ProductStatus.Listed).OrderBy(p => p.Rank).ToList();
+  live var tops = Category.Where(c => c.Parent == null).OrderBy(c => c.Rank).ToList();
+
+  render { Listing("New in", "Everything in the shop, newest first.", products, tops, ""); }
+}
+
+[Title("Shop — Vall")]
+[Page("/shop/{slug}")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Shelf(string slug) {
+  live var shelf = Category.Include(c => c.Children).SingleOrDefault(c => c.Slug == slug);
+  // The shelf itself, or any shelf under it (two levels: Shoes › Boots).
+  live var products = Product.Include(p => p.Images).Include(p => p.Variants)
+    .Where(p => p.Status == ProductStatus.Listed
+             && (p.Category.Slug == slug || p.Category.Parent.Slug == slug))
+    .OrderBy(p => p.Rank).ToList();
+  live var siblings = Category.Where(c => c.Parent.Slug == slug).OrderBy(c => c.Rank).ToList();
+
+  render {
+    if (shelf == null) {
+      Section { Stack(gap: 3, py: 20) { Text("Nothing on that shelf.", fontSize: FontSize.Hero, fontWeight: FontWeight.Light); } }
+    } else {
+      Listing(shelf.Name, shelf.Blurb ?? "", products, siblings, slug);
+    }
+  }
+}
+
+/// A listing page: the shelf's name large and light, its sub-shelves as a quiet row of links, and the grid.
+[Composable]
+component Listing(string title, string lead, List<Product> products, List<Category> shelves, string current) {
+  render {
+    Section {
+      Stack(gap: 0, pt: 14, pb: 20) {
+        Stack(gap: 3, pb: 8, animation: RiseIn) {
+          Text(title, fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Light, lineHeight: "1",
+               letterSpacing: "-0.02em");
+          if (lead != "") { Text(lead, fontSize: FontSize.Lead, color: Colors.TextSecondary, maxW: "560px"); }
+        }
+        Row(gap: 5, wrap: Wrapping.Wrap, pb: 8, borderBW: 1, border: Colors.Border, label: "Shelves") {
+          foreach (var s in shelves) {
+            Link(href: "/shop/" + s.Slug, label: s.Name) {
+              Text(s.Name, fontSize: FontSize.Body, color: s.Slug == current ? Colors.OnBg : Colors.TextMuted, pb: 3);
+            }
+          }
+          Text($"{products.Count} {(products.Count == 1 ? "piece" : "pieces")}", fontSize: FontSize.Label,
+               color: Colors.TextMuted, ml: "auto");
+        }
+        Box(pt: 8) {
+          if (products.Count == 0) {
+            Stack(gap: 3, py: 12) {
+              Text("Nothing here right now.", fontSize: FontSize.Title, fontWeight: FontWeight.Light);
+              RestockButton();
+            }
+          } else {
+            ProductGrid(products);
+          }
+        }
+      }
+    }
+  }
+}
+
+/// The grid every listing uses: four across on a wide screen, two on a phone.
+[Composable]
+component ProductGrid(List<Product> products) {
+  variants { base { Display = Display.Grid; Cols = "repeat(2, minmax(0, 1fr))"; Gap = 4;
+                    Laptop { Cols = "repeat(4, minmax(0, 1fr))"; Gap = 6; } } }
+  render {
+    Box {
+      foreach (var p in products) { ProductCard(p, products.IndexOf(p)); }
+    }
+  }
+}
+
+/// A piece as a listing shows it: the photograph tall, the second photograph on hover, then the name and the price.
+[Composable]
+[AllowAnonymous]
+component ProductCard(Product product, int index) {
+  variants {
+    base { Display = Display.Block; Color = Colors.OnBg; TextDecoration = TextDecoration.None;
+           Focus { OutlineW = 1; OutlineColor = Colors.OnBg; OutlineOffset = "4px"; OutlineStyle = OutlineStyle.Solid; } }
+  }
+  render {
+    Link(href: "/p/" + product.Slug, label: product.Name, animation: RiseIn, animationDelay: (index % 8 * 60) + "ms") {
+      Stack(gap: 3) {
+        Box(position: Position.Relative, overflow: Overflow.Hidden, bg: Colors.Surface) {
+          Image(src: File.Url(Cover(product.Images)), alt: product.Name, w: "100%", aspectRatio: "3 / 4", objectFit: ObjectFit.Cover);
+          if (product.Images.Count() > 1) { SecondPhoto(SecondCover(product.Images), product.Name); }
+          if (IsSold(product.Variants)) { Tag("Sold out"); }
+        }
+        Stack(gap: 1) {
+          Text(product.Name, fontSize: FontSize.Body);
+          Text(PriceText(product.Price), fontSize: FontSize.Body, color: Colors.TextMuted);
+        }
+      }
+    }
+  }
+}
+
+/// The second photograph, laid over the first and shown under the pointer.
+[Composable]
+component SecondPhoto(string photo, string alt) {
+  variants { base { Position = Position.Absolute; Inset = "0"; Opacity = 0; Transition = Motion.Fade;
+                    inside ProductCard.Hover { Opacity = 1; } } }
+  render { Box { Image(src: File.Url(photo), alt: alt, w: "100%", h: "100%", objectFit: ObjectFit.Cover); } }
+}
+
+/// A small mark on a photograph.
+[Composable]
+component Tag(string label) {
+  render {
+    Box(position: Position.Absolute, top: "12px", left: "12px", px: 2, py: 1, bg: Colors.Bg) {
+      Text(label, fontSize: FontSize.Label, letterSpacing: "0.06em");
+    }
+  }
+}
+
+/// A section's opening: a heading set light, and an optional link off to the right.
+[Composable]
+component SectionHead(string title, string linkLabel = "", string to = "") {
+  render {
+    Row(justify: Justify.Between, align: Align.Baseline, gap: 4, wrap: Wrapping.Wrap, pb: 8) {
+      Text(title, fontSize: FontSize.Title, fontWeight: FontWeight.Light);
+      if (linkLabel != "" && to != "") {
+        Link(href: to, label: linkLabel) { Text(linkLabel + " →", fontSize: FontSize.Body, color: Colors.TextSecondary); }
+      }
+    }
+  }
+}

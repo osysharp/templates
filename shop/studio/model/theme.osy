@@ -1,0 +1,51 @@
+// THE DIRECTION — "the showroom".
+//
+// Brief: the same shop, the same pieces, dressed for a customer who wants fashion to feel like an occasion — the
+// Saturday showroom rather than the quiet gallery.
+//
+// Looked at in the category: beauty and fashion showrooms (saturated pink, italic serif display, a single hero
+// photograph held on screen), luxury e-commerce (black, gold, spaced capitals — the "premium" costume), and editorial
+// lookbooks (full-bleed spreads, tiny captions). Three directions written for this shop:
+//   1. Black and gold. REJECTED: the premium costume every luxury template wears.
+//   2. Lookbook spread. REJECTED: that is Atelier's territory, a second gallery wall.
+//   3. The showroom — CHOSEN: a white ground with deep aubergine type, an ITALIC serif for display set large, one
+//      photograph pinned to half the screen and changing with the page, and ONE accent — hot pink — for what to press.
+theme Showroom {
+  Colors {
+    Bg            = "#FFFFFF";
+    OnBg          = "#2B1230";   // aubergine
+    Surface       = "#FCEFF4";   // a blush panel — the bag, the summary
+    OnSurface     = "#2B1230";
+    Muted         = "#F8E1EA";
+    TextMuted     = "#8A6F8C";
+    TextSecondary = "#5A3D5E";
+    Border        = "#F0D6E1";
+    Primary       = Palette.From("#E0287A");   // hot pink — the ONE accent
+    OnPrimary     = "#FFFFFF";
+    OnImage       = "#FFFFFF";
+    Scrim         = "rgb(43 18 48 / 0.45)";
+  }
+  Font {
+    Display = "\"Instrument Serif\", Georgia, serif";
+    Sans    = "\"Hanken Grotesk\", system-ui, sans-serif";
+  }
+  FontSize {
+    Mega    = "clamp(64px, 9vw, 150px)";
+    Hero    = "clamp(44px, 5.5vw, 88px)";
+    Title   = "34px";
+    Lead    = "18px";
+    Body    = "15px";
+    Label   = "12px";
+    Caption = "12px";
+  }
+  FontWeight { Light = 400; }
+  Radius { Card = "0"; Md = "999px"; Lg = "0"; Pill = "999px"; }
+  Shadow { Raised = "none"; Floating = "0 18px 40px -24px rgb(43 18 48 / 0.3)"; }
+  Motion {
+    Lift = "transform 320ms cubic-bezier(.2,.7,.2,1), opacity 320ms ease";
+    Fade = "opacity 240ms ease";
+  }
+}
+
+animation RiseIn  { Duration = "620ms"; Easing = EaseOut; from { Opacity = 0; TranslateY = "18px"; } to { Opacity = 1; TranslateY = "0"; } }
+animation Surface { Duration = "900ms"; from { Opacity = 0; TranslateY = "32px"; } to { Opacity = 1; TranslateY = "0"; } }

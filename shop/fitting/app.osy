@@ -1,0 +1,20 @@
+app AndraVarvetFitting {
+  use Osysharp.Ui;
+  use Osysharp.Workflow;
+  use Osysharp.Storage;
+  use Osysharp.Shop@0 {
+    egress "api.stripe.com"; egress "api.resend.com";
+    secret "StripeApiKey"; secret "StripeWebhookSecret"; secret "ResendApiKey";
+    egress "api.klarna.com"; egress "api.playground.klarna.com";
+    secret "KlarnaUsername"; secret "KlarnaPassword";
+  }
+  use Osysharp.Stripe@0 { egress "api.stripe.com"; }
+  // Klarna through its Hosted Payment Page — the live host, and the playground one a test merchant uses.
+  use Osysharp.Klarna@0 { egress "api.klarna.com"; egress "api.playground.klarna.com"; }
+  // The shop's mail — confirmations, resets, returns — goes out through Resend, to this host only.
+  use Osysharp.Resend@0 { egress "api.resend.com"; }
+  use Osysharp.Http;
+  model "model/**/*.osy";
+  tests "tests/**/*.test.osy";
+  data  "data/**/*.json";
+}

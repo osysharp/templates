@@ -1,0 +1,149 @@
+using Osysharp.Shop;
+
+// The front of the shop: one photograph and one sentence, the machines in the window, how they are rebuilt, and the
+// three ways to ride them.
+
+[Title("Rust & Chrome — restored steel road bicycles")]
+[Page("/")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Home() {
+  live var window = Product.Include(p => p.Variants).Include(p => p.Images).Include(p => p.Specs)
+    .Where(p => p.Status == ProductStatus.Listed && p.Variants.Any(v => v.Stock > 0 || v.Reserved > 0))
+    .OrderBy(p => p.Rank).Take(6).ToList();
+
+  render {
+    Stack(gap: 0) {
+      // ── the hero: the road, and the sentence ──────────────────────────────────────────────────────────────
+      Box(position: Position.Relative, h: "min(86vh, 860px)", minH: "520px", overflow: Overflow.Hidden, bg: Colors.Bg) {
+        Image(texture: Textures.HeroForestRoad, alt: "A rider alone on a road curving through a dark forest",
+              w: "100%", h: "100%", objectFit: ObjectFit.Cover, filter: "saturate(0.8) contrast(1.08) brightness(0.8)");
+        Box(position: Position.Absolute, inset: "0",
+            bgImage: "linear-gradient(180deg, rgb(12 13 13 / 0.15) 0%, rgb(12 13 13 / 0.2) 45%, rgb(12 13 13 / 0.92) 100%)");
+        Stack(position: Position.Absolute, left: "0", right: "0", bottom: "0", gap: 5, px: 5, pb: 12, maxW: "1360px",
+              mx: "auto", animation: RiseIn) {
+          Text("Old steel.\nNew miles.", fontFamily: Font.Display, fontSize: FontSize.Mega, fontWeight: FontWeight.Black,
+               lineHeight: "0.84", textTransform: TextTransform.Uppercase, color: "#ECEAE4", whiteSpace: WhiteSpace.PreLine);
+          Row(gap: 6, align: Align.End, wrap: Wrapping.Wrap) {
+            Text("Road, track and touring bicycles from 1965 to 1990 — stripped to bare tubes in our workshop and built back up to be ridden hard.",
+                 fontSize: FontSize.Lead, lineHeight: "1.5", color: "#D8D6D0", maxW: "560px");
+            Link(href: "/bikes", label: "Shop the bikes") { HeroButton("Shop the bikes"); }
+          }
+        }
+      }
+
+      // ── in the window ────────────────────────────────────────────────────────────────────────────────────
+      Section {
+        Stack(gap: 0, pt: 20, pb: 12) {
+          SectionHead("In the window", linkLabel: "Every bike", to: "/bikes");
+          Box(pb: 6) { RestockButton(); }
+          Box(display: Display.Grid, cols: "repeat(auto-fill, minmax(280px, 1fr))", gap: 8) {
+            foreach (var b in window) { BikeCard(b, window.IndexOf(b)); }
+          }
+        }
+      }
+
+      // ── the workshop ─────────────────────────────────────────────────────────────────────────────────────
+      Box(bg: Colors.Surface, mt: 12) {
+        Section {
+          Box(display: Display.Grid, cols: "repeat(auto-fit, minmax(320px, 1fr))", gap: 12, py: 20, align: Align.Center) {
+            Image(texture: Textures.WorkshopOrangeFrames, alt: "A mechanic rebuilding a frame on the workbench",
+                  w: "100%", aspectRatio: "4 / 5", objectFit: ObjectFit.Cover, filter: "saturate(0.85)");
+            Stack(gap: 6, animation: Surface, animationTimeline: AnimationTimeline.View) {
+              Text("Every bearing,\nevery time.", fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Bold,
+                   lineHeight: "0.9", textTransform: TextTransform.Uppercase, whiteSpace: WhiteSpace.PreLine);
+              Text("A frame comes in rusted, seized and forty years tired. It leaves with its tubes checked for alignment, its paint either saved or redone to the original colour, every bearing repacked, and cables, tyres and bar tape new. Then one of us rides it a hundred kilometres before it goes in the window.",
+                   fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary, maxW: "560px");
+              Box(display: Display.Grid, cols: "repeat(3, minmax(0, 1fr))", gap: 4, pt: 2) {
+                Fact("212", "frames rebuilt");
+                Fact("100 km", "ridden before sale");
+                Fact("12 mo", "workshop guarantee");
+              }
+              Row { Link(href: "/workshop", label: "How we rebuild a bike") { Text("How we rebuild a bike →", color: Colors.Primary); } }
+            }
+          }
+        }
+      }
+
+      // ── three ways to ride ───────────────────────────────────────────────────────────────────────────────
+      Section {
+        Stack(gap: 0, py: 20) {
+          SectionHead("Choose your road");
+          Box(display: Display.Grid, cols: "repeat(auto-fit, minmax(260px, 1fr))", gap: 4) {
+            DisciplineTile("Road", "Light, quick, made to climb.", Textures.TileRoad, "/bikes/road");
+            DisciplineTile("Track", "One gear. No brakes. No excuses.", Textures.TileTrack, "/bikes/track");
+            DisciplineTile("Touring", "Racks, bags, the long way round.", Textures.TileTouring, "/bikes/touring");
+          }
+        }
+      }
+
+      // ── a closing image ──────────────────────────────────────────────────────────────────────────────────
+      Box(position: Position.Relative, h: "62vh", minH: "420px", overflow: Overflow.Hidden) {
+        Image(texture: Textures.ClassicRaceCobbles, alt: "A racer climbing a cobbled street between crowds, in the era these bikes were built",
+              w: "100%", h: "100%", objectFit: ObjectFit.Cover, objectPosition: "center 35%", filter: "contrast(1.08) brightness(0.72)");
+        Box(position: Position.Absolute, inset: "0",
+            bgImage: "linear-gradient(90deg, rgb(12 13 13 / 0.85) 0%, rgb(12 13 13 / 0.35) 45%, rgb(12 13 13 / 0) 70%)");
+        Stack(position: Position.Absolute, left: "0", right: "0", bottom: "0", gap: 3, px: 5, pb: 12, maxW: "1360px", mx: "auto",
+              animation: Surface, animationTimeline: AnimationTimeline.View) {
+          Text("Built to be\nridden.", fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Bold, lineHeight: "0.9",
+               textTransform: TextTransform.Uppercase, color: "#ECEAE4", whiteSpace: WhiteSpace.PreLine);
+          Text("The machines in our window were made for days like this one.", color: "#D8D6D0", maxW: "420px");
+        }
+      }
+    }
+  }
+}
+
+/// The hero's call to action — solid celeste, square, big.
+[Composable]
+component HeroButton(string label) {
+  variants {
+    base { Bg = Colors.Primary; Color = Colors.OnPrimary; Px = 6; Py = 4; FontWeight = FontWeight.Semibold;
+           LetterSpacing = "0.02em"; Transition = Motion.Lift; Hover { TranslateY = "-2px"; } }
+  }
+  render { Row(gap: 2, align: Align.Center) { Text(label); Text("→"); } }
+}
+
+/// One number the workshop is proud of.
+[Composable]
+component Fact(string figure, string label) {
+  render {
+    Stack(gap: 1, borderTW: 1, border: Colors.Border, pt: 3) {
+      Text(figure, fontFamily: Font.Display, fontSize: "40px", fontWeight: FontWeight.Bold, lineHeight: "1");
+      Text(label, fontFamily: Font.Mono, fontSize: FontSize.Label, color: Colors.TextMuted);
+    }
+  }
+}
+
+/// A discipline as a tall photograph with its name over it; the photograph slowly grows under the pointer.
+[Composable]
+component DisciplineTile(string name, string line, Textures photo, string to) {
+  variants {
+    base { Display = Display.Block; Position = Position.Relative; Overflow = Overflow.Hidden; Color = "#ECEAE4";
+           TextDecoration = TextDecoration.None;
+           Focus { OutlineW = 2; OutlineColor = Colors.Primary; OutlineOffset = "4px"; OutlineStyle = OutlineStyle.Solid; } }
+  }
+  render {
+    Link(href: to, label: name) {
+      DisciplinePhoto(photo, name);
+      Box(position: Position.Absolute, inset: "0",
+          bgImage: "linear-gradient(180deg, rgb(0 0 0 / 0) 40%, rgb(0 0 0 / 0.78) 100%)");
+      Stack(position: Position.Absolute, left: "0", right: "0", bottom: "0", gap: 1, p: 6) {
+        Text(name, fontFamily: Font.Display, fontSize: "56px", fontWeight: FontWeight.Bold, lineHeight: "0.9",
+             textTransform: TextTransform.Uppercase);
+        Text(line, color: "#D8D6D0");
+      }
+    }
+  }
+}
+
+[Composable]
+component DisciplinePhoto(Textures photo, string name) {
+  variants {
+    base { Display = Display.Block; W = "100%"; AspectRatio = "3 / 4"; ObjectFit = ObjectFit.Cover;
+           Transition = "transform 900ms cubic-bezier(.2,.7,.2,1)";
+           inside DisciplineTile.Hover { Scale = "1.05"; } }
+  }
+  render { Image(texture: photo, alt: name, filter: "saturate(0.85)"); }
+}

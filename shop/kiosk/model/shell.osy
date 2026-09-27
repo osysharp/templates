@@ -1,0 +1,52 @@
+// The frame — the kit's EditorialShell: a centred wordmark, the shelves either side, the header floating over the
+// home page's photograph and settling on white everywhere else.
+
+using Osysharp.Shop;
+
+app.DefaultCulture = "sv-SE";
+
+[Layout]
+[AllowAnonymous]
+component Shop() {
+  string visitId = Visitor.Id;
+  live var bag = Bag.Include(b => b.Lines).SingleOrDefault(b => b.VisitId == visitId);
+  live var inBag = bag == null ? 0 : bag.Lines.Sum(l => l.Quantity);
+
+  action OpenBag() { Navigation.Go("/bag"); }
+
+  render {
+    var chrome = new AppChrome {
+      Product = "Andra Varvet",
+      Home = "/",
+      Nav = [
+        new NavItem { Label = "Just in", To = "/shop", Exact = true },
+        new NavItem { Label = "Jackets", To = "/shop/jackets-coats" },
+        new NavItem { Label = "Denim", To = "/shop/denim" },
+        new NavItem { Label = "Knitwear", To = "/shop/knitwear" },
+        new NavItem { Label = "Dresses", To = "/shop/dresses-tops" },
+        new NavItem { Label = "Bags", To = "/shop/bags" },
+        new NavItem { Label = "Shoes", To = "/shop/shoes-boots" },
+        new NavItem { Label = "Accessories", To = "/shop/accessories" },
+        new NavItem { Label = "Sale", To = "/sale" },
+      ],
+    };
+    EditorialShell(chrome) {
+      ShopVisitSync();
+      Outlet(retain: 8);
+      slot promo { StorePromo(DemoNotice()); }
+      slot actions { ShopAccountButton(); Button(inBag == 0 ? "Bag" : $"Bag ({inBag})", onPress: OpenBag); }
+      slot footer {
+        EditorialFooter(chrome, blurb: "Second-hand clothing, bags and boots, picked one at a time, washed, mended where it needs it, and priced like a find.",
+                        note: "A demo built in Osy#. Andra Varvet is a fictional shop · Photography via Pexels");
+        Box(px: 6, pb: 6) { ShopPolicyLinks(); }
+      }
+    }
+  }
+}
+
+/// A page's content column — generous side margins that shrink on a phone.
+[Composable]
+component Section() {
+  variants { base { W = "100%"; MaxW = "1440px"; Mx = "auto"; Px = 5; Laptop { Px = 10; } } }
+  render { Box { Slot; } }
+}

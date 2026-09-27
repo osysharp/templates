@@ -1,0 +1,339 @@
+{
+  "entity": "ProductImage",
+  "key": [
+    "Product",
+    "Rank"
+  ],
+  "lookups": {
+    "Product": "Product[Slug]"
+  },
+  "files": {
+    "Path": "public/products"
+  },
+  "rows": [
+    {
+      "Product": "satin-cowl-slip-dress",
+      "Path": "photos/satin_slip_dress_1.jpg",
+      "Alt": "Model seated on a stool in the ivory satin slip dress, peach backdrop",
+      "Rank": 0
+    },
+    {
+      "Product": "satin-cowl-slip-dress",
+      "Path": "photos/satin_slip_dress_2.jpg",
+      "Alt": "Full-length view of the ivory slip dress worn with white pumps",
+      "Rank": 1
+    },
+    {
+      "Product": "jersey-pencil-midi-dress",
+      "Path": "photos/jersey_midi_dress_1.jpg",
+      "Alt": "Full-length front view of the stone jersey midi dress with black boots",
+      "Rank": 0
+    },
+    {
+      "Product": "jersey-pencil-midi-dress",
+      "Path": "photos/jersey_midi_dress_2.jpg",
+      "Alt": "Close view of the V-neckline and long sleeves",
+      "Rank": 1
+    },
+    {
+      "Product": "jersey-pencil-midi-dress",
+      "Path": "photos/jersey_midi_dress_3.jpg",
+      "Alt": "Model seated on a bar stool showing the front slit",
+      "Rank": 2
+    },
+    {
+      "Product": "cotton-v-neck-cardigan",
+      "Path": "photos/cotton_cardigan_1.jpg",
+      "Alt": "Model on a wooden stool wearing the sage cardigan with white trousers",
+      "Rank": 0
+    },
+    {
+      "Product": "cotton-v-neck-cardigan",
+      "Path": "photos/cotton_cardigan_2.jpg",
+      "Alt": "The sage cardigan with arms raised, showing the sleeve length",
+      "Rank": 1
+    },
+    {
+      "Product": "cotton-v-neck-cardigan",
+      "Path": "photos/cotton_cardigan_3.jpg",
+      "Alt": "Seated view of the cardigan worn loose off the shoulder",
+      "Rank": 2
+    },
+    {
+      "Product": "chunky-rib-cardigan",
+      "Path": "photos/rib_knit_cardigan_1.jpg",
+      "Alt": "Camel, cream and grey rib cardigans laid out together on a white table",
+      "Rank": 0
+    },
+    {
+      "Product": "chunky-rib-cardigan",
+      "Path": "photos/rib_knit_cardigan_2.jpg",
+      "Alt": "Close view of the rib knit sleeves in camel, cream and grey",
+      "Rank": 1
+    },
+    {
+      "Product": "chunky-rib-cardigan",
+      "Path": "photos/rib_knit_cardigan_3.jpg",
+      "Alt": "The three cardigans overlapping, showing the button placket",
+      "Rank": 2
+    },
+    {
+      "Product": "cotton-trench-coat",
+      "Path": "photos/cotton_trench_coat_1.jpg",
+      "Alt": "Front view of the sand trench coat worn open",
+      "Rank": 0
+    },
+    {
+      "Product": "cotton-trench-coat",
+      "Path": "photos/cotton_trench_coat_2.jpg",
+      "Alt": "Back view showing the yoke and belted waist",
+      "Rank": 1
+    },
+    {
+      "Product": "cotton-trench-coat",
+      "Path": "photos/cotton_trench_coat_3.jpg",
+      "Alt": "Model standing in the trench coat against a plaster wall",
+      "Rank": 2
+    },
+    {
+      "Product": "check-double-breasted-blazer",
+      "Path": "photos/check_blazer_1.jpg",
+      "Alt": "Close view of the grey check blazer lapels and black buttons",
+      "Rank": 0
+    },
+    {
+      "Product": "check-double-breasted-blazer",
+      "Path": "photos/check_blazer_2.jpg",
+      "Alt": "Model seated on a stool wearing the check blazer",
+      "Rank": 1
+    },
+    {
+      "Product": "wide-leg-tailored-trousers",
+      "Path": "photos/wide_leg_trousers_1.jpg",
+      "Alt": "Full-length view of the camel wide-leg trousers",
+      "Rank": 0
+    },
+    {
+      "Product": "wide-leg-tailored-trousers",
+      "Path": "photos/wide_leg_trousers_2.jpg",
+      "Alt": "Side view showing the split hem",
+      "Rank": 1
+    },
+    {
+      "Product": "wide-leg-tailored-trousers",
+      "Path": "photos/wide_leg_trousers_3.jpg",
+      "Alt": "Close view of the high curved waistband",
+      "Rank": 2
+    },
+    {
+      "Product": "pleated-wool-blend-mini-skirt",
+      "Path": "photos/pleated_mini_skirt_1.jpg",
+      "Alt": "Model in the charcoal pleated mini skirt with black tights",
+      "Rank": 0
+    },
+    {
+      "Product": "pleated-wool-blend-mini-skirt",
+      "Path": "photos/pleated_mini_skirt_2.jpg",
+      "Alt": "Front view of the skirt with hands on hips",
+      "Rank": 1
+    },
+    {
+      "Product": "lace-up-leather-boot",
+      "Path": "photos/lace_up_boot_1.jpg",
+      "Alt": "The black lace-up boots worn with a midi skirt, beige backdrop",
+      "Rank": 0
+    },
+    {
+      "Product": "lace-up-leather-boot",
+      "Path": "photos/lace_up_boot_2.jpg",
+      "Alt": "Close view of the boots from the front",
+      "Rank": 1
+    },
+    {
+      "Product": "lace-up-leather-boot",
+      "Path": "photos/lace_up_boot_3.jpg",
+      "Alt": "Studio shot of one boot with the lug sole turned up",
+      "Rank": 2
+    },
+    {
+      "Product": "buckle-strap-heeled-boot",
+      "Path": "photos/buckle_boot_1.jpg",
+      "Alt": "One cognac buckle boot held on a hand against white",
+      "Rank": 0
+    },
+    {
+      "Product": "buckle-strap-heeled-boot",
+      "Path": "photos/buckle_boot_2.jpg",
+      "Alt": "A pair of the cognac boots on draped suede",
+      "Rank": 1
+    },
+    {
+      "Product": "buckle-strap-heeled-boot",
+      "Path": "photos/buckle_boot_3.jpg",
+      "Alt": "The boots from above and below on a black backdrop",
+      "Rank": 2
+    },
+    {
+      "Product": "leather-platform-sneaker",
+      "Path": "photos/leather_sneaker_1.jpg",
+      "Alt": "The white leather sneakers worn with black leggings",
+      "Rank": 0
+    },
+    {
+      "Product": "leather-platform-sneaker",
+      "Path": "photos/leather_sneaker_2.jpg",
+      "Alt": "Side view of the white sneakers on a grey backdrop",
+      "Rank": 1
+    },
+    {
+      "Product": "metallic-leather-sneaker",
+      "Path": "photos/metallic_sneaker_1.jpg",
+      "Alt": "The silver sneakers worn with white jeans on a pale blue backdrop",
+      "Rank": 0
+    },
+    {
+      "Product": "metallic-leather-sneaker",
+      "Path": "photos/metallic_sneaker_2.jpg",
+      "Alt": "Silver sneaker from the side with the sole turned up",
+      "Rank": 1
+    },
+    {
+      "Product": "padded-block-heel-mule",
+      "Path": "photos/padded_mule_1.jpg",
+      "Alt": "Close view of the padded black mule and its insole",
+      "Rank": 0
+    },
+    {
+      "Product": "padded-block-heel-mule",
+      "Path": "photos/padded_mule_2.jpg",
+      "Alt": "Side view of the mule showing the white block heel",
+      "Rank": 1
+    },
+    {
+      "Product": "padded-block-heel-mule",
+      "Path": "photos/padded_mule_3.jpg",
+      "Alt": "The pair from above on black embossed leather",
+      "Rank": 2
+    },
+    {
+      "Product": "kitten-heel-pump",
+      "Path": "photos/kitten_heel_pump_1.jpg",
+      "Alt": "The ivory kitten-heel pumps worn with grey trousers",
+      "Rank": 0
+    },
+    {
+      "Product": "kitten-heel-pump",
+      "Path": "photos/kitten_heel_pump_2.jpg",
+      "Alt": "The red snake-print version of the pump worn on bare feet",
+      "Rank": 1
+    },
+    {
+      "Product": "croc-embossed-leather-tote",
+      "Path": "photos/croc_tote_1.jpg",
+      "Alt": "Front view of the navy croc-embossed tote",
+      "Rank": 0
+    },
+    {
+      "Product": "croc-embossed-leather-tote",
+      "Path": "photos/croc_tote_2.jpg",
+      "Alt": "The navy tote carried by hand",
+      "Rank": 1
+    },
+    {
+      "Product": "slouch-leather-shoulder-bag",
+      "Path": "photos/slouch_shoulder_bag_1.jpg",
+      "Alt": "The cognac slouch bag held beside a seated model",
+      "Rank": 0
+    },
+    {
+      "Product": "slouch-leather-shoulder-bag",
+      "Path": "photos/slouch_shoulder_bag_2.jpg",
+      "Alt": "The cognac bag resting on the floor with matching sandals",
+      "Rank": 1
+    },
+    {
+      "Product": "top-handle-satchel",
+      "Path": "photos/top_handle_bag_1.jpg",
+      "Alt": "The teal satchel on a white stand beside green leaves",
+      "Rank": 0
+    },
+    {
+      "Product": "top-handle-satchel",
+      "Path": "photos/top_handle_bag_2.jpg",
+      "Alt": "The teal satchel on a black stool in a bright room",
+      "Rank": 1
+    },
+    {
+      "Product": "top-handle-satchel",
+      "Path": "photos/top_handle_bag_3.jpg",
+      "Alt": "The satchel on a stool with glasses and a notebook",
+      "Rank": 2
+    },
+    {
+      "Product": "printed-silk-square-tide",
+      "Path": "photos/silk_scarf_orange_1.jpg",
+      "Alt": "The orange and blue silk square draped from a clip",
+      "Rank": 0
+    },
+    {
+      "Product": "printed-silk-square-tide",
+      "Path": "photos/silk_scarf_orange_2.jpg",
+      "Alt": "The scarf rolled to show the orange border",
+      "Rank": 1
+    },
+    {
+      "Product": "printed-silk-square-tide",
+      "Path": "photos/silk_scarf_orange_3.jpg",
+      "Alt": "Close view of the wave print",
+      "Rank": 2
+    },
+    {
+      "Product": "printed-silk-square-saffron",
+      "Path": "photos/silk_scarf_yellow_1.jpg",
+      "Alt": "The saffron silk scarf knotted on a white shirt",
+      "Rank": 0
+    },
+    {
+      "Product": "printed-silk-square-saffron",
+      "Path": "photos/silk_scarf_yellow_2.jpg",
+      "Alt": "The saffron scarf draped over a blue ceramic ornament",
+      "Rank": 1
+    },
+    {
+      "Product": "pearl-link-necklace",
+      "Path": "photos/chain_necklace_1.jpg",
+      "Alt": "The pearl link necklace draped over a white block",
+      "Rank": 0
+    },
+    {
+      "Product": "pearl-link-necklace",
+      "Path": "photos/chain_necklace_2.jpg",
+      "Alt": "The necklace on a stepped white stand",
+      "Rank": 1
+    },
+    {
+      "Product": "pearl-link-necklace",
+      "Path": "photos/chain_necklace_3.jpg",
+      "Alt": "Close view of the pearls and crystal heart",
+      "Rank": 2
+    },
+    {
+      "Product": "crystal-eternity-band",
+      "Path": "photos/gold_ring_1.jpg",
+      "Alt": "The eternity band lying on a white surface in raking light",
+      "Rank": 0
+    },
+    {
+      "Product": "crystal-eternity-band",
+      "Path": "photos/gold_ring_2.jpg",
+      "Alt": "The ring on a grey plinth",
+      "Rank": 1
+    },
+    {
+      "Product": "crystal-eternity-band",
+      "Path": "photos/gold_ring_3.jpg",
+      "Alt": "The ring standing upright in soft shadow",
+      "Rank": 2
+    }
+  ]
+}

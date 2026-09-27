@@ -1,0 +1,52 @@
+using Osysharp.Shop;
+using Osysharp.Storage;
+
+// The front of the showroom: the season's line in italic beside the pinned coat, then what is new, two across.
+
+[Title("Vall — the showroom")]
+[Page("/")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Home() {
+  live var newIn = Product.Include(p => p.Images).Include(p => p.Variants)
+    .Where(p => p.Status == ProductStatus.Listed).OrderBy(p => p.Rank).Take(6).ToList();
+
+  render {
+    Stack(gap: 0) {
+      Section {
+        Stack(gap: 6, pt: 14, pb: 12, animation: RiseIn) {
+          Text("The season, in camel and cream.", fontFamily: Font.Display, fontStyle: FontStyle.Italic, fontSize: FontSize.Mega,
+               lineHeight: "0.92", letterSpacing: "-0.02em");
+          Text("A trench cut to be worn open, knits to live in, and boots for the walk home. Twenty-one pieces, chosen one at a time.",
+               fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary, maxW: "520px");
+          Row(gap: 5, align: Align.Center) {
+            Link(href: "/shop", label: "Shop the season") { ShowroomLink("Shop the season"); }
+            Link(href: "/p/cotton-trench-coat", label: "The trench") { Text("The trench →", color: Colors.TextSecondary); }
+          }
+        }
+      }
+      Section {
+        Stack(gap: 0, pb: 16) {
+          SectionHead("New in", linkLabel: "Shop all", to: "/shop");
+          ShowroomGrid(newIn);
+        }
+      }
+    }
+  }
+}
+
+/// The call to action: a hot-pink pill.
+[Composable]
+component ShowroomLink(string label) {
+  variants { base { Bg = Colors.Primary; Color = Colors.OnPrimary; Px = 6; Py = 3; Rounded = Radius.Pill; FontWeight = FontWeight.Semibold;
+                    Transition = Motion.Lift; Hover { TranslateY = "-2px"; } } }
+  render { Text(label); }
+}
+
+/// Two across — the showroom's grid sits in half a screen, so its cards stay large.
+[Composable]
+component ShowroomGrid(List<Product> products) {
+  variants { base { Display = Display.Grid; Cols = "repeat(2, minmax(0, 1fr))"; Gap = 5; } }
+  render { Box { foreach (var p in products) { ProductCard(p, products.IndexOf(p)); } } }
+}

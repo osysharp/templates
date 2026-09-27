@@ -1,0 +1,53 @@
+using Osysharp.Shop;
+
+// A rider's account: the kit's account components, in the workshop's frame. The kit does the work; this file is the
+// routes and the room around them.
+
+/// The account pages' room: centred, with the same generous air as the shop's other pages.
+[Composable]
+component AccountRoom() {
+  render {
+    Row(justify: Justify.Center, px: 5, py: 14) {
+      Box(w: "100%", maxW: "960px") { Slot(); }
+    }
+  }
+}
+
+[Title("Sign in — Rust & Chrome")]
+[Page("/account/sign-in")]
+[Layout(Shop)]
+[AllowAnonymous]
+component AccountSignIn() {
+  render { AccountRoom() { ShopSignIn(); } }
+}
+
+[Title("Create an account — Rust & Chrome")]
+[Page("/account/new")]
+[Layout(Shop)]
+[AllowAnonymous]
+component AccountNew() {
+  render { AccountRoom() { ShopSignUp(); } }
+}
+
+[Title("Forgotten password — Rust & Chrome")]
+[Page("/account/forgot")]
+[Layout(Shop)]
+[AllowAnonymous]
+component AccountForgot() {
+  render { AccountRoom() { ShopForgotPassword(); } }
+}
+
+[Title("New password — Rust & Chrome")]
+[Page("/account/reset/{token}")]
+[Layout(Shop)]
+[AllowAnonymous]
+component AccountReset(string token) {
+  render { AccountRoom() { ShopChooseNewPassword(token); } }
+}
+
+[Title("Your account — Rust & Chrome")]
+[Page("/account")]
+[Layout(Shop)]
+component AccountHome() {
+  render { AccountRoom() { ShopAccountPanel(); } }
+}

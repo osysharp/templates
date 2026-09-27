@@ -1,0 +1,165 @@
+using Osysharp.Shop;
+using Osysharp.Storage;
+
+// The frame every page sits in — the kit's StorefrontShell — and the pieces the pages share.
+
+app.DefaultCulture = "en-GB";
+
+[Layout]
+[AllowAnonymous]
+component Shop() {
+  string visitId = Visitor.Id;
+  live var bag = Bag.Include(b => b.Lines.Variant.Product).SingleOrDefault(b => b.VisitId == visitId);
+  live var inBag = bag == null ? 0 : bag.Lines.Count();
+
+  AppChrome chrome = new AppChrome {
+    Product = "Rust & Chrome",
+    Tagline = "Restored steel road bicycles · Gothenburg",
+    Home = "/",
+    Nav = [
+      new NavItem { Label = "Bikes", Children = [
+        new NavItem { Label = "Road", To = "/bikes/road" },
+        new NavItem { Label = "Track", To = "/bikes/track" },
+        new NavItem { Label = "Touring", To = "/bikes/touring" },
+        new NavItem { Label = "Every bike", To = "/bikes", Exact = true },
+      ] },
+      new NavItem { Label = "The workshop", To = "/workshop" },
+      new NavItem { Label = "Archive", To = "/archive" },
+      new NavItem { Label = "Sale", To = "/sale" },
+    ],
+  };
+
+  render {
+    StorefrontShell(chrome, bagCount: inBag) {
+      ShopVisitSync();
+      slot actions { ShopAccountButton(); }
+      Outlet(retain: 8);
+      slot promo { StorePromo(DemoNotice()); }
+      slot bag { BagContents(); }
+      slot footer {
+        StoreFooter(chrome, "A small workshop that strips vintage steel road bikes to bare tubes and builds them back up to be ridden hard — not hung on a wall.",
+                    note: "© 2026 Rust & Chrome · Photography via Unsplash");
+        Box(px: 6, pb: 6) { ShopPolicyLinks(); }
+      }
+    }
+  }
+}
+
+/// What the bag panel holds: the lines, the total, and the way to check out.
+[Composable]
+[AllowAnonymous]
+component BagContents() {
+  string visitId = Visitor.Id;
+  live var bag = Bag.Include(b => b.Lines.Variant.Product).SingleOrDefault(b => b.VisitId == visitId);
+  live var covers = ProductImage.Where(i => i.Rank == 0).ToList();
+  live var specs = ProductSpec.Where(x => x.Name == "Year" || x.Name == "Frame size").ToList();
+
+  action Remove(BagLine line) { RemoveFromBag(line); }
+  action Pay() { Navigation.Go("/checkout"); }
+
+  render {
+    if (bag == null || bag.Lines.Count() == 0) {
+      Stack(gap: 3, py: 8) {
+        Text("Nothing in the bag yet.", fontFamily: Font.Display, fontSize: "28px", textTransform: TextTransform.Uppercase);
+        Text("Every machine here is one of a kind — when it is gone, it is gone.", color: Colors.TextMuted);
+        Row { Link(href: "/bikes", label: "See every bike") { Text("See every bike →", color: Colors.Primary); } }
+      }
+    } else {
+      Stack(gap: 0, h: "100%") {
+        Stack(gap: 0, grow: 1) {
+          foreach (var line in bag.Lines) {
+            Row(gap: 4, py: 4, borderBW: 1, border: Colors.Border, align: Align.Center, exitAnimation: LineOut) {
+              Image(src: File.Url(CoverFor(covers, line.Variant.Product.Id)), alt: line.Variant.Product.Name, w: "88px", aspectRatio: "4 / 5", objectFit: ObjectFit.Cover);
+              Stack(gap: 1, grow: 1, minW: "0") {
+                Text(line.Variant.Product.Name, fontFamily: Font.Display, fontSize: "22px", textTransform: TextTransform.Uppercase);
+                ShopLineNote(line);
+                Text($"{SpecFor(specs, line.Variant.Product.Id, "Year")} · {SpecFor(specs, line.Variant.Product.Id, "Frame size")}", fontFamily: Font.Mono, fontSize: FontSize.Label, color: Colors.TextMuted);
+                Text(PriceText((line.Variant.Price ?? line.Variant.Product.Price)));
+              }
+              IconButton("Remove " + line.Variant.Product.Name, () => Remove(line)) { Icon(Icons.Close); }
+            }
+          }
+        }
+        Stack(gap: 4, pt: 6) {
+          Row(justify: Justify.Between, align: Align.Baseline) {
+            Text("Total", color: Colors.TextMuted);
+            Text(PriceText(bag.Lines.Sum(l => (l.Variant.Price ?? l.Variant.Product.Price) * l.Quantity)), fontFamily: Font.Display, fontSize: "34px");
+          }
+          Text("Collection from the workshop or insured delivery in Europe — we arrange it after you check out.",
+               fontSize: FontSize.Label, color: Colors.TextMuted);
+          Button("Check out", onPress: Pay, tone: Tone.Primary, size: Size.Lg);
+        }
+      }
+    }
+  }
+}
+
+/// A machine as the catalogue shows it: the photograph first, then the name in the display face, then the specs a
+/// collector reads. It lifts toward you under the pointer, and a sold one is still shown — greyed, with its date.
+[Composable]
+[AllowAnonymous]
+component BikeCard(Product bike, int index) {
+  variants {
+    base {
+      Display = Display.Block; Color = Colors.OnBg; TextDecoration = TextDecoration.None; Transition = Motion.Lift;
+      Hover { TranslateY = "-6px"; }
+      Focus { OutlineW = 2; OutlineColor = Colors.Primary; OutlineOffset = "6px"; OutlineStyle = OutlineStyle.Solid; }
+    }
+  }
+  render {
+    Link(href: "/bike/" + bike.Id, label: bike.Name, animation: RiseIn, animationDelay: (index * 70) + "ms") {
+      Stack(gap: 3) {
+        Box(position: Position.Relative, overflow: Overflow.Hidden, bg: Colors.Surface) {
+          Image(src: File.Url(Cover(bike.Images)), alt: $"{bike.Brand} {bike.Name}, {SpecOf(bike.Specs, "Year")}", w: "100%", aspectRatio: "4 / 5",
+                objectFit: ObjectFit.Cover, filter: IsSold(bike.Variants) ? "grayscale(1) brightness(0.7)" : "saturate(0.9) contrast(1.05)");
+          if (IsSold(bike.Variants)) { SoldTag("SOLD"); } else if (IsHeld(bike.Variants)) { SoldTag("RESERVED"); }
+        }
+        Stack(gap: 1) {
+          Row(justify: Justify.Between, align: Align.Baseline, gap: 3) {
+            Text(bike.Name, fontFamily: Font.Display, fontSize: "28px", fontWeight: FontWeight.Bold, lineHeight: "1",
+                 textTransform: TextTransform.Uppercase, color: IsSold(bike.Variants) ? Colors.Sold : Colors.OnBg);
+            Text(IsSold(bike.Variants) ? "Sold" : PriceText(bike.Price), fontFamily: Font.Mono, fontSize: FontSize.Body,
+                 color: IsSold(bike.Variants) ? Colors.Sold : Colors.OnBg, whiteSpace: WhiteSpace.Nowrap);
+          }
+          Text(Specs(bike.Brand, bike.Specs), fontFamily: Font.Mono, fontSize: FontSize.Label,
+               color: Colors.TextMuted);
+        }
+      }
+    }
+  }
+}
+
+/// The mark on a sold or reserved machine's photograph.
+[Composable]
+component SoldTag(string label) {
+  render {
+    Box(position: Position.Absolute, top: "14px", left: "14px", px: 2, py: 1, bg: Colors.OnBg) {
+      Text(label, fontFamily: Font.Mono, fontSize: FontSize.Label, letterSpacing: "0.12em", color: Colors.Bg);
+    }
+  }
+}
+
+/// A section's opening: a big display heading, and an optional link off to the right.
+[Composable]
+component SectionHead(string title, string linkLabel = "", string to = "") {
+  render {
+    Row(justify: Justify.Between, align: Align.End, gap: 4, wrap: Wrapping.Wrap, pb: 6) {
+      Text(title, fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Bold, lineHeight: "0.9",
+           textTransform: TextTransform.Uppercase);
+      if (linkLabel != "" && to != "") {
+        Link(href: to, label: linkLabel) { Text(linkLabel + " →", color: Colors.Primary, fontSize: FontSize.Body); }
+      }
+    }
+  }
+}
+
+/// A page's content column — generous side margins that shrink on a phone, and a max width a wide screen respects.
+[Composable]
+component Section() {
+  variants { base { W = "100%"; MaxW = "1360px"; Mx = "auto"; Px = 5; Laptop { Px = 10; } } }
+  render { Box { Slot; } }
+}
+
+animation RiseIn  { Duration = "560ms"; Easing = EaseOut; from { Opacity = 0; TranslateY = "22px"; } to { Opacity = 1; TranslateY = "0"; } }
+animation Surface { Duration = "1s";    from { Opacity = 0; TranslateY = "40px"; } to { Opacity = 1; TranslateY = "0"; } }
+animation LineOut { Duration = "260ms"; Easing = EaseIn; from { Opacity = 1; } to { Opacity = 0; TranslateX = "40px"; } }

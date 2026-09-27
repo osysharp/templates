@@ -1,0 +1,40 @@
+// Demo mode: the public "Restock the window" button, and the page telling visitors nothing is real.
+
+using Osysharp.Shop;
+using Osysharp.Workflow;
+
+[Test(Window)]
+void anybody_can_restock_and_every_held_bike_goes_back_in_the_window() {
+  var reserved = Reserve("visit-r1", "Pista");        // reserved, unpaid
+  var paid = Reserve("visit-r2", "Super");
+  runas (Workshop) {
+    MarkPaid(Order.Single(o => o.Reference == paid), "Bank transfer");   // and paid
+    Workflow.Settle(Order.Single(o => o.Reference == paid));
+  }
+
+  Assert.Equal(2, RestockWindow());                    // called as nobody — the button is public
+  runas (Workshop) {
+    foreach (var reference in new List<string> { reserved, paid }) {
+      var order = Order.Single(o => o.Reference == reference);
+      Workflow.Settle(order);
+      Assert.Equal(OrderStatus.Voided, order.Status);   // the desk still tells the story
+    }
+  }
+  Assert.Equal(0, OrderLine.Count(l => l.Held));   // both bikes are for sale again
+  Assert.Equal(2, OrderLine.Count());                      // …and both orders still say what they were for
+}
+
+[Test(Window)]
+void the_window_shows_the_restock_button_only_when_something_is_out_and_it_works() {
+  Ui.Visit("/");
+  Assert.Visible("A demo of Osy# — nothing here is for sale and no money moves. Pay with the test card 4242 4242 4242 4242.");
+  Assert.Hidden("Restock the window (1 bike out)");
+
+  Reserve("visit-ui", "PX-10");
+  Ui.Visit("/");
+  Ui.Click("Restock the window (1 bike out)");
+  Assert.Visible("1 order restocked.");
+  Ui.Visit("/");
+  Ui.Click("PX-10");
+  Assert.Visible("Add to bag");                        // for sale again
+}

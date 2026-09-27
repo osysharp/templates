@@ -1,0 +1,41 @@
+{
+  "entity": "Category",
+  "key": "Slug",
+  "rows": [
+    {
+      "Name": "Jackets & coats",
+      "Slug": "jackets-coats",
+      "Rank": 0
+    },
+    {
+      "Name": "Denim",
+      "Slug": "denim",
+      "Rank": 1
+    },
+    {
+      "Name": "Knitwear",
+      "Slug": "knitwear",
+      "Rank": 2
+    },
+    {
+      "Name": "Dresses & tops",
+      "Slug": "dresses-tops",
+      "Rank": 3
+    },
+    {
+      "Name": "Bags",
+      "Slug": "bags",
+      "Rank": 4
+    },
+    {
+      "Name": "Shoes & boots",
+      "Slug": "shoes-boots",
+      "Rank": 5
+    },
+    {
+      "Name": "Accessories",
+      "Slug": "accessories",
+      "Rank": 6
+    }
+  ]
+}

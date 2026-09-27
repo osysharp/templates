@@ -1,0 +1,53 @@
+using Osysharp.Shop;
+
+// The customer's account: the kit's account components in this style's frame. The kit does the work; this file is the
+// routes and the room around them.
+
+/// The account pages' room: centred, with the page's own air.
+[Composable]
+component AccountRoom() {
+  render {
+    Row(justify: Justify.Center, px: 5, py: 14) {
+      Box(w: "100%", maxW: "960px") { Slot(); }
+    }
+  }
+}
+
+[Title("Sign in — Andra Varvet")]
+[Page("/account/sign-in")]
+[Layout(Shop)]
+[AllowAnonymous]
+component AccountSignIn() {
+  render { AccountRoom() { ShopSignIn(); } }
+}
+
+[Title("Create an account — Andra Varvet")]
+[Page("/account/new")]
+[Layout(Shop)]
+[AllowAnonymous]
+component AccountNew() {
+  render { AccountRoom() { ShopSignUp(); } }
+}
+
+[Title("Forgotten password — Andra Varvet")]
+[Page("/account/forgot")]
+[Layout(Shop)]
+[AllowAnonymous]
+component AccountForgot() {
+  render { AccountRoom() { ShopForgotPassword(); } }
+}
+
+[Title("New password — Andra Varvet")]
+[Page("/account/reset/{token}")]
+[Layout(Shop)]
+[AllowAnonymous]
+component AccountReset(string token) {
+  render { AccountRoom() { ShopChooseNewPassword(token); } }
+}
+
+[Title("Your account — Andra Varvet")]
+[Page("/account")]
+[Layout(Shop)]
+component AccountHome() {
+  render { AccountRoom() { ShopAccountPanel(); } }
+}

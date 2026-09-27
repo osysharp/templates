@@ -1,0 +1,169 @@
+{
+  "entity": "Product",
+  "key": "Slug",
+  "lookups": {
+    "Category": "Category[Slug]"
+  },
+  "rows": [
+    {
+      "Slug": "shearling-collar-leather-jacket",
+      "Name": "Shearling-collar leather jacket",
+      "Category": "jackets-coats",
+      "Price": 145,
+      "Rank": 0,
+      "Summary": "A 1970s brown leather jacket with a curly shearling collar and cuffs.",
+      "Description": "The leather has a lovely worn-in grain, darker at the seams, and the shearling trim is full and clean. All snaps work and the lining was replaced at some point in a matching brown.",
+      "Featured": true
+    },
+    {
+      "Slug": "rust-twill-jacket",
+      "Name": "Rust twill jacket",
+      "Category": "jackets-coats",
+      "Price": 45,
+      "Rank": 1,
+      "Summary": "A boxy rust-orange cotton twill jacket with snap buttons.",
+      "Description": "Heavy cotton twill faded to a warm rust, with press studs down the front and a point collar. Cut short and square, easy over a knit.",
+      "Featured": true
+    },
+    {
+      "Slug": "faded-denim-trucker-jacket",
+      "Name": "Faded denim trucker jacket",
+      "Category": "denim",
+      "Price": 55,
+      "Rank": 2,
+      "Summary": "A classic light-blue denim jacket with copper buttons and flap pockets.",
+      "Description": "Soft, properly broken-in denim with the fading exactly where it should be: collar, cuffs and pocket flaps. Leather-look patch inside the collar, no holes.",
+      "Featured": true
+    },
+    {
+      "Slug": "light-wash-straight-jeans",
+      "Name": "Light-wash straight jeans",
+      "Category": "denim",
+      "Price": 39,
+      "Rank": 3,
+      "Summary": "High-rise, straight-leg jeans in a pale sun-bleached wash.",
+      "Description": "Rigid cotton denim with no stretch, so they hold their shape and mould to you. Five pockets, button fly, a paper-look back patch.",
+      "Featured": true
+    },
+    {
+      "Slug": "terracotta-canvas-overshirt",
+      "Name": "Terracotta canvas overshirt",
+      "Category": "jackets-coats",
+      "Price": 42,
+      "Rank": 4,
+      "Summary": "A garment-dyed cotton canvas overshirt in faded terracotta.",
+      "Description": "Two patch pockets on the chest, horn-look buttons and a small leather tab at the neck. The dye has softened unevenly, which is exactly its charm.",
+      "Featured": false
+    },
+    {
+      "Slug": "rose-print-tea-dress",
+      "Name": "Rose print tea dress",
+      "Category": "dresses-tops",
+      "Price": 52,
+      "Rank": 5,
+      "Summary": "A dark floral tea dress with puff shoulders and a velvet-trimmed waist.",
+      "Description": "Sheer crepe printed with dusky roses on black, a wrap-effect V-neck and three-quarter sleeves. Fully lined skirt, falls to mid-calf.",
+      "Featured": false
+    },
+    {
+      "Slug": "sheer-black-tie-front-blouse",
+      "Name": "Sheer black tie-front blouse",
+      "Category": "dresses-tops",
+      "Price": 32,
+      "Rank": 6,
+      "Summary": "A cropped sheer black blouse with balloon sleeves and a long tie.",
+      "Description": "Fine chiffon that ties at the front, with gathered sleeves and narrow cuffs. Wear it over a slip or a fitted vest.",
+      "Featured": false
+    },
+    {
+      "Slug": "striped-wool-jumper",
+      "Name": "Striped wool jumper",
+      "Category": "knitwear",
+      "Price": 36,
+      "Rank": 7,
+      "Summary": "A hand-knit crew-neck in raspberry with a purple rib and brown stripe.",
+      "Description": "Someone knitted this by hand and it shows in the best way. Thick wool, a slightly uneven purple rib at the neck and a band of brown across the body.",
+      "Featured": false
+    },
+    {
+      "Slug": "red-rib-knit-cardigan",
+      "Name": "Red rib-knit cardigan",
+      "Category": "knitwear",
+      "Price": 42,
+      "Rank": 8,
+      "Summary": "A cropped cardigan in bright red chunky rib with gold buttons.",
+      "Description": "A generous boxy shape with dropped shoulders and a deep V. The rib is springy and the colour is still strong.",
+      "Featured": false
+    },
+    {
+      "Slug": "western-leather-boots",
+      "Name": "Western leather boots",
+      "Category": "shoes-boots",
+      "Price": 89,
+      "Rank": 9,
+      "Summary": "Tan cowboy boots with stitched shafts and a scuffed, polished toe.",
+      "Description": "Proper pull-on western boots with a stacked heel and a decorative stitch pattern up the shaft. The toes are scuffed and have been polished over, the soles have plenty of life.",
+      "Featured": false
+    },
+    {
+      "Slug": "leather-doctors-bag",
+      "Name": "Leather doctor's bag",
+      "Category": "bags",
+      "Price": 125,
+      "Rank": 10,
+      "Summary": "A black leather Gladstone bag with a hinged frame and a single handle.",
+      "Description": "Heavy, polished leather that has been looked after for decades. The metal frame opens wide and locks shut. A statement piece for travel or a desk.",
+      "Featured": false
+    },
+    {
+      "Slug": "tooled-leather-saddle-bag",
+      "Name": "Tooled leather saddle bag",
+      "Category": "bags",
+      "Price": 68,
+      "Rank": 11,
+      "Summary": "A tan hand-tooled leather shoulder bag with whipstitched edges.",
+      "Description": "Hand-tooled floral panels, a leather-covered button and a long adjustable strap. The kind of bag that gets better with every year it is carried.",
+      "Featured": false
+    },
+    {
+      "Slug": "woven-frame-handbag",
+      "Name": "Woven frame handbag",
+      "Category": "bags",
+      "Price": 56,
+      "Rank": 12,
+      "Summary": "A black woven box bag with a gold-tone frame handle.",
+      "Description": "A small, rigid box shape in woven black straw with a brass handle and clasp. Lined in black fabric, clean inside.",
+      "Featured": false
+    },
+    {
+      "Slug": "embroidered-evening-purse",
+      "Name": "Embroidered evening purse",
+      "Category": "accessories",
+      "Price": 62,
+      "Rank": 13,
+      "Summary": "A frame purse embroidered with gold thread in a heraldic pattern.",
+      "Description": "Petit-point and gold thread embroidery on a black ground, a kiss-lock clasp and a fine chain handle. Too good to keep in a drawer.",
+      "Featured": false
+    },
+    {
+      "Slug": "tortoiseshell-cat-eye-sunglasses",
+      "Name": "Tortoiseshell cat-eye sunglasses",
+      "Category": "accessories",
+      "Price": 28,
+      "Rank": 14,
+      "Summary": "Oversized cat-eye frames in warm tortoiseshell with grey lenses.",
+      "Description": "Thick acetate frames with a lifted upper edge and grey lenses. The hinges are tight and the lenses are unscratched.",
+      "Featured": false
+    },
+    {
+      "Slug": "linen-market-tote",
+      "Name": "Linen market tote",
+      "Category": "bags",
+      "Price": 24,
+      "Rank": 15,
+      "Summary": "A large brown linen tote with long leather handles.",
+      "Description": "Washed linen in a deep brown with a patch pocket on the front and rust leather handles riveted at the top. Holds a week of groceries.",
+      "Featured": false
+    }
+  ]
+}

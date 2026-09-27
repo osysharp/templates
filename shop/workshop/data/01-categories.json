@@ -1,0 +1,24 @@
+{
+  "entity": "Category",
+  "key": "Slug",
+  "rows": [
+    {
+      "Name": "Road",
+      "Slug": "road",
+      "Rank": 1,
+      "Blurb": "Light, quick, made to climb."
+    },
+    {
+      "Name": "Track",
+      "Slug": "track",
+      "Rank": 2,
+      "Blurb": "One gear. No brakes. No excuses."
+    },
+    {
+      "Name": "Touring",
+      "Slug": "touring",
+      "Rank": 3,
+      "Blurb": "Racks, bags, the long way round."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+using Osysharp.Shop;
+
+// Finding things and the small print: the kit's search, sale shelf and policy pages in this store's frame.
+
+[Title("Search — Rust & Chrome")]
+[Page("/search")]
+[Layout(Shop)]
+[AllowAnonymous]
+component SearchPage() {
+  render { AccountRoom() { Stack(gap: 6) { PageTitle("Search"); ShopSearchPage(productPrefix: "/bike/", linkById: true); } } }
+}
+
+[Title("Sale — Rust & Chrome")]
+[Page("/sale")]
+[Layout(Shop)]
+[AllowAnonymous]
+component SalePage() {
+  render { AccountRoom() { Stack(gap: 6) { PageTitle("Sale"); ShopSearchPage(productPrefix: "/bike/", linkById: true, onlySale: true); } } }
+}
+
+[Title("Terms of sale — Rust & Chrome")]
+[Page("/terms")]
+[Layout(Shop)]
+[AllowAnonymous]
+component TermsPage() { render { AccountRoom() { ShopPolicy("terms"); } } }
+
+[Title("Privacy — Rust & Chrome")]
+[Page("/privacy")]
+[Layout(Shop)]
+[AllowAnonymous]
+component PrivacyPage() { render { AccountRoom() { ShopPolicy("privacy"); } } }
+
+[Title("Returns — Rust & Chrome")]
+[Page("/returns-policy")]
+[Layout(Shop)]
+[AllowAnonymous]
+component ReturnsPolicyPage() { render { AccountRoom() { ShopPolicy("returns"); } } }

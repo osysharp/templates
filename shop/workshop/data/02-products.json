@@ -1,0 +1,79 @@
+{
+  "entity": "Product",
+  "key": "Slug",
+  "lookups": {
+    "Category": "Category[Slug]"
+  },
+  "rows": [
+    {
+      "Slug": "super",
+      "Name": "Super",
+      "Brand": "Colnago",
+      "Category": "road",
+      "Description": "Oxblood lacquer over a pantographed crown, and a Super Record groupset that shifts like it did the day it left Cambiago. It came to us with a seized seatpost; it leaves with every bearing repacked.",
+      "Price": 2100,
+      "Featured": true,
+      "Rank": 1
+    },
+    {
+      "Slug": "px-10",
+      "Name": "PX-10",
+      "Brand": "Peugeot",
+      "Category": "road",
+      "Description": "The French racer that won everything, rebuilt from a barn find. The pearl paint is original under forty years of grime; the brown leather saddle is new and already breaking in.",
+      "Price": 980,
+      "Featured": false,
+      "Rank": 2
+    },
+    {
+      "Slug": "pista",
+      "Name": "Pista",
+      "Brand": "Cinelli",
+      "Category": "track",
+      "Description": "A true velodrome frame: steep angles, short wheelbase, one fixed gear. Stripped, straightened and rebuilt with the original Pista hubs and a pair of hand-built tubular wheels.",
+      "Price": 2400,
+      "Featured": false,
+      "Rank": 3
+    },
+    {
+      "Slug": "torino",
+      "Name": "Torino",
+      "Brand": "Gios",
+      "Category": "road",
+      "Description": "Cream lacquer, chrome lugs and gumwall tyres. A racer's bike that spent thirty years as a commuter — the frame is straight, the drivetrain is new, and it wants to go fast again.",
+      "Price": 1650,
+      "Featured": false,
+      "Rank": 4
+    },
+    {
+      "Slug": "randonneur",
+      "Name": "Randonneur",
+      "Brand": "Raleigh",
+      "Category": "touring",
+      "Description": "Racing green with a leather frame bag, racks front and back, and gearing low enough for a loaded climb. Built for the long way round, and ready for it.",
+      "Price": 1150,
+      "Featured": false,
+      "Rank": 5
+    },
+    {
+      "Slug": "grand-record",
+      "Name": "Grand Record",
+      "Brand": "Motobécane",
+      "Category": "road",
+      "Description": "Feather-light French tubing and the Huret Jubilee, the lightest derailleur of its day. New tyres, new cables, and the original bar tape replaced with cloth, as it should be.",
+      "Price": 1050,
+      "Featured": false,
+      "Rank": 6
+    },
+    {
+      "Slug": "supercorsa",
+      "Name": "Supercorsa",
+      "Brand": "Cinelli",
+      "Category": "road",
+      "Description": "The winged-C badge and full chrome under clear lacquer. Sold to a rider in Lyon who promised to take it up the Ventoux before hanging it on the wall.",
+      "Price": 2600,
+      "Featured": false,
+      "Rank": 7
+    }
+  ]
+}

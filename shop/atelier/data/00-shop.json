@@ -1,0 +1,20 @@
+{
+  "entity": "ShopSettings",
+  "key": "Name",
+  "rows": [
+    {
+      "Name": "Vall",
+      "Currency": "SEK",
+      "CurrencySymbol": "kr",
+      "SymbolAfter": true,
+      "OrderPrefix": "VL-",
+      "HoldDays": 2,
+      "OffersCollection": false,
+      "OffersDelivery": true,
+      "OffersBankTransfer": true,
+      "OffersPayOnCollection": false,
+      "DeliveryFee": 59,
+      "FreeDeliveryFrom": 1000
+    }
+  ]
+}

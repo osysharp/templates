@@ -1,0 +1,103 @@
+{
+  "templates": [
+    {
+      "category": "shop",
+      "style": "atelier",
+      "shop": "Vall",
+      "look": "Editorial",
+      "summary": "A fashion label in a quiet editorial layout — large photographs, a thin header, room to breathe.",
+      "path": "shop/atelier",
+      "screenshot": "docs/fashion-store-atelier.jpg"
+    },
+    {
+      "category": "shop",
+      "style": "studio",
+      "shop": "Vall",
+      "look": "Split",
+      "summary": "A fashion label with a split layout — the picture on one side, the words on the other.",
+      "path": "shop/studio",
+      "screenshot": "docs/fashion-store-studio.jpg"
+    },
+    {
+      "category": "shop",
+      "style": "index",
+      "shop": "Vall",
+      "look": "Catalogue",
+      "summary": "A fashion label as a dense catalogue — many products at a glance, sorted and filtered.",
+      "path": "shop/index",
+      "screenshot": "docs/fashion-store-index.jpg"
+    },
+    {
+      "category": "shop",
+      "style": "drop",
+      "shop": "Vall",
+      "look": "Marquee",
+      "summary": "A fashion label for drops — a loud marquee, dark pages, sold in US dollars.",
+      "path": "shop/drop",
+      "screenshot": "docs/fashion-store-drop.jpg"
+    },
+    {
+      "category": "shop",
+      "style": "boutique",
+      "shop": "Vall",
+      "look": "Storefront",
+      "summary": "A fashion boutique with a classic storefront — a hero, featured pieces, the shop's story.",
+      "path": "shop/boutique",
+      "screenshot": "docs/fashion-store-boutique.jpg"
+    },
+    {
+      "category": "shop",
+      "style": "rail",
+      "shop": "Andra Varvet",
+      "look": "Storefront",
+      "summary": "A second-hand shop where every piece is one of one, shown like a rail in the shop.",
+      "path": "shop/rail",
+      "screenshot": "docs/thrift-store-rail.jpg"
+    },
+    {
+      "category": "shop",
+      "style": "kiosk",
+      "shop": "Andra Varvet",
+      "look": "Editorial",
+      "summary": "A second-hand shop as a zine — hand-picked finds with their stories.",
+      "path": "shop/kiosk",
+      "screenshot": "docs/thrift-store-kiosk.jpg"
+    },
+    {
+      "category": "shop",
+      "style": "fitting",
+      "shop": "Andra Varvet",
+      "look": "Split",
+      "summary": "A second-hand shop laid out like a fitting room — one piece at a time, up close.",
+      "path": "shop/fitting",
+      "screenshot": "docs/thrift-store-fitting.jpg"
+    },
+    {
+      "category": "shop",
+      "style": "swap",
+      "shop": "Andra Varvet",
+      "look": "Catalogue",
+      "summary": "A second-hand shop as a swap sheet — everything in one long list with its measurements.",
+      "path": "shop/swap",
+      "screenshot": "docs/thrift-store-swap.jpg"
+    },
+    {
+      "category": "shop",
+      "style": "loud",
+      "shop": "Andra Varvet",
+      "look": "Marquee",
+      "summary": "A second-hand shop with bright colour and big type, sold in US dollars.",
+      "path": "shop/loud",
+      "screenshot": "docs/thrift-store-loud.jpg"
+    },
+    {
+      "category": "shop",
+      "style": "workshop",
+      "shop": "Rust & Chrome",
+      "look": "Storefront",
+      "summary": "A workshop selling restored vintage bicycles — each one unique, with its spec sheet.",
+      "path": "shop/workshop",
+      "screenshot": "docs/rust-and-chrome.jpg"
+    }
+  ]
+}

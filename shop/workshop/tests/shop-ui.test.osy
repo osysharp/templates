@@ -1,0 +1,195 @@
+using Osysharp.Shop;
+
+// The storefront, through its pages — what a visitor sees and can do. `osy test --pixels` photographs each one.
+
+[TestFixture]
+void Window() {
+  new ShopSettings { Name = "Rust & Chrome", Currency = "EUR", CurrencySymbol = "€", OrderPrefix = "RC-", HoldDays = 3,
+                     DeliveryFee = 95m };
+  var road = new Category { Name = "Road", Slug = "road", Rank = 1 };
+  var track = new Category { Name = "Track", Slug = "track", Rank = 2 };
+  var touring = new Category { Name = "Touring", Slug = "touring", Rank = 3 };
+  var super = new Product { Name = "Super", Slug = "super", Brand = "Colnago", Category = road, Price = 2100m, Rank = 1,
+                         Description = "Oxblood lacquer over a pantographed crown, and a Super Record groupset that shifts like it did the day it left Cambiago. It came to us with a seized seatpost; it leaves with every bearing repacked." };
+  new Variant { Product = super, Sku = "RC-SUPER", Stock = 1 };
+  new ProductImage { Product = super, Path = "public/products/red_road_fence.jpg", Alt = "Colnago Super, 1981" };
+  new ProductSpec { Product = super, Name = "Year", Value = "1981", Rank = 0 };
+  new ProductSpec { Product = super, Name = "Frame size", Value = "56 cm", Rank = 1 };
+  new ProductSpec { Product = super, Name = "Tubing", Value = "Columbus SL", Rank = 2 };
+  new ProductSpec { Product = super, Name = "Groupset", Value = "Campagnolo Super Record", Rank = 3 };
+  var px_10 = new Product { Name = "PX-10", Slug = "px-10", Brand = "Peugeot", Category = road, Price = 980m, Rank = 2,
+                         Description = "The French racer that won everything, rebuilt from a barn find. The pearl paint is original under forty years of grime; the brown leather saddle is new and already breaking in." };
+  new Variant { Product = px_10, Sku = "RC-PX-10", Stock = 1 };
+  new ProductImage { Product = px_10, Path = "public/products/peugeot_silver.jpg", Alt = "Peugeot PX-10, 1972" };
+  new ProductSpec { Product = px_10, Name = "Year", Value = "1972", Rank = 0 };
+  new ProductSpec { Product = px_10, Name = "Frame size", Value = "58 cm", Rank = 1 };
+  new ProductSpec { Product = px_10, Name = "Tubing", Value = "Reynolds 531", Rank = 2 };
+  new ProductSpec { Product = px_10, Name = "Groupset", Value = "Simplex Criterium", Rank = 3 };
+  var pista = new Product { Name = "Pista", Slug = "pista", Brand = "Cinelli", Category = track, Price = 2400m, Rank = 3,
+                         Description = "A true velodrome frame: steep angles, short wheelbase, one fixed gear. Stripped, straightened and rebuilt with the original Pista hubs and a pair of hand-built tubular wheels." };
+  new Variant { Product = pista, Sku = "RC-PISTA", Stock = 1 };
+  new ProductImage { Product = pista, Path = "public/products/pista_track_frame.jpg", Alt = "Cinelli Pista, 1968" };
+  new ProductSpec { Product = pista, Name = "Year", Value = "1968", Rank = 0 };
+  new ProductSpec { Product = pista, Name = "Frame size", Value = "54 cm", Rank = 1 };
+  new ProductSpec { Product = pista, Name = "Tubing", Value = "Columbus SL", Rank = 2 };
+  new ProductSpec { Product = pista, Name = "Groupset", Value = "Campagnolo Pista", Rank = 3 };
+  var torino = new Product { Name = "Torino", Slug = "torino", Brand = "Gios", Category = road, Price = 1650m, Rank = 4,
+                         Description = "Cream lacquer, chrome lugs and gumwall tyres. A racer's bike that spent thirty years as a commuter — the frame is straight, the drivetrain is new, and it wants to go fast again." };
+  new Variant { Product = torino, Sku = "RC-TORINO", Stock = 1 };
+  new ProductImage { Product = torino, Path = "public/products/cream_road_campagnolo.jpg", Alt = "Gios Torino, 1979" };
+  new ProductSpec { Product = torino, Name = "Year", Value = "1979", Rank = 0 };
+  new ProductSpec { Product = torino, Name = "Frame size", Value = "57 cm", Rank = 1 };
+  new ProductSpec { Product = torino, Name = "Tubing", Value = "Columbus SL", Rank = 2 };
+  new ProductSpec { Product = torino, Name = "Groupset", Value = "Campagnolo Nuovo Record", Rank = 3 };
+  var randonneur = new Product { Name = "Randonneur", Slug = "randonneur", Brand = "Raleigh", Category = touring, Price = 1150m, Rank = 5,
+                         Description = "Racing green with a leather frame bag, racks front and back, and gearing low enough for a loaded climb. Built for the long way round, and ready for it." };
+  new Variant { Product = randonneur, Sku = "RC-RANDONNEUR", Stock = 1 };
+  new ProductImage { Product = randonneur, Path = "public/products/touring_green.jpg", Alt = "Raleigh Randonneur, 1976" };
+  new ProductSpec { Product = randonneur, Name = "Year", Value = "1976", Rank = 0 };
+  new ProductSpec { Product = randonneur, Name = "Frame size", Value = "58 cm", Rank = 1 };
+  new ProductSpec { Product = randonneur, Name = "Tubing", Value = "Reynolds 531", Rank = 2 };
+  new ProductSpec { Product = randonneur, Name = "Groupset", Value = "Shimano Crane", Rank = 3 };
+  var grand_record = new Product { Name = "Grand Record", Slug = "grand-record", Brand = "Motobécane", Category = road, Price = 1050m, Rank = 6,
+                         Description = "Feather-light French tubing and the Huret Jubilee, the lightest derailleur of its day. New tyres, new cables, and the original bar tape replaced with cloth, as it should be." };
+  new Variant { Product = grand_record, Sku = "RC-GRAND-RECORD", Stock = 1 };
+  new ProductImage { Product = grand_record, Path = "public/products/road_bike_at_wall.jpg", Alt = "Motobécane Grand Record, 1976" };
+  new ProductSpec { Product = grand_record, Name = "Year", Value = "1976", Rank = 0 };
+  new ProductSpec { Product = grand_record, Name = "Frame size", Value = "55 cm", Rank = 1 };
+  new ProductSpec { Product = grand_record, Name = "Tubing", Value = "Vitus 172", Rank = 2 };
+  new ProductSpec { Product = grand_record, Name = "Groupset", Value = "Stronglight / Huret Jubilee", Rank = 3 };
+  var supercorsa = new Product { Name = "Supercorsa", Slug = "supercorsa", Brand = "Cinelli", Category = road, Price = 2600m, Rank = 7,
+                         Description = "The winged-C badge and full chrome under clear lacquer. Sold to a rider in Lyon who promised to take it up the Ventoux before hanging it on the wall." };
+  new Variant { Product = supercorsa, Sku = "RC-SUPERCORSA", Stock = 0 };
+  new ProductImage { Product = supercorsa, Path = "public/products/wall_mounted_mono.jpg", Alt = "Cinelli Supercorsa, 1983" };
+  new ProductSpec { Product = supercorsa, Name = "Year", Value = "1983", Rank = 0 };
+  new ProductSpec { Product = supercorsa, Name = "Frame size", Value = "56 cm", Rank = 1 };
+  new ProductSpec { Product = supercorsa, Name = "Tubing", Value = "Columbus SL", Rank = 2 };
+  new ProductSpec { Product = supercorsa, Name = "Groupset", Value = "Campagnolo Super Record", Rank = 3 };
+
+  // The workshop — the one person here who may read a customer's order.
+  var erik = new ShopAccount { Email = "erik@rustandchrome.test", PasswordHash = Security.HashPassword("workshop-pass-1") };
+  new ShopRoleGrant { Member = erik, Role = ShopRole.Staff };
+}
+
+principal Workshop => ShopAccount.Single(s => s.Email == "erik@rustandchrome.test");
+
+/// Reserves one bike for a visit the way the checkout does — bank transfer, collection — and answers its reference.
+string Reserve(string visitId, string bike) {
+  AddToBag(visitId, Variant.Single(v => v.Product.Name == bike), 1);
+  return PlaceOrder(visitId, "Anna Lindqvist", "anna@example.test", "", Fulfilment.Collect, Payment.BankTransfer,
+                    "", "", "", "").Reference;
+}
+
+[Test(Window)]
+void the_shop_front() {
+  Ui.Visit("/");
+  Assert.Visible("Old steel.");
+  Assert.Visible("In the window");
+  Assert.Visible("Super");
+  Assert.Visible("Choose your road");
+  Assert.Hidden("Supercorsa");   // sold machines live in the archive, not the window
+}
+
+[Test(Window)]
+void a_bike_in_detail() {
+  Ui.Visit("/");
+  Ui.Click("Super");
+  Assert.Visible("Campagnolo Super Record");
+  Assert.Visible("Add to bag");
+}
+
+[Test(Window)]
+void the_bag_with_a_bike_in_it() {
+  Ui.Visit("/");
+  Ui.Click("PX-10");
+  Ui.Click("Add to bag");
+  Ui.Click("Bag, 1 item(s)");
+  Assert.Visible("Check out", within: "Bag");
+  Assert.Visible("€980", within: "Bag");
+  // The empty state belongs to an EMPTY bag — never beside a line.
+  Assert.Hidden("Nothing in the bag yet.");
+}
+
+[Test(Window)]
+void a_category_opens_its_panel() {
+  Ui.Visit("/");
+  Ui.Click("Bikes", within: "Categories");
+  Assert.Visible("Touring");
+  Ui.Click("Road", within: "Bikes menu");
+  Assert.Visible("Light, quick, made to climb");
+}
+
+[Test(Window)]
+void the_workshop_story() {
+  Ui.Visit("/workshop");
+  Assert.Visible("Save or redo");
+}
+
+// ── checkout ─────────────────────────────────────────────────────────────────────────────────────────────────────
+// What checkout DOES, not just that the button is there. Until these existed, "Check out" deleted the bag and nothing
+// else — no order, the bike still for sale, and every browsing test green.
+
+[Test(Window)]
+void checking_out_reserves_the_bike() {
+  Ui.Visit("/");
+  Ui.Click("PX-10");
+  Ui.Click("Add to bag");
+  Ui.Click("Bag, 1 item(s)");
+  Ui.Click("Check out");
+  Ui.Fill("Name", "Anna Lindqvist");
+  Ui.Fill("Email", "anna@example.test");
+  // Bank transfer EXPLICITLY: with Stripe keys in `.secrets` the checkout pre-selects Card, and a UI test must never
+  // reach the real Stripe — the card path is proven against a stubbed Stripe in payments.test.osy.
+  Ui.Click("Bank transfer");
+  Ui.Click("Reserve");
+  Assert.Visible("Reserved.");
+  Assert.Visible("Order RC-1041");
+  Assert.Visible("Nobody — this is a demo, and there is no account");   // no invented bank number on a public page
+  // …and the bike is off the market: its page offers no way to buy it again.
+  Ui.Visit("/");
+  Ui.Click("PX-10");
+  Assert.Visible("Someone has put their name on this one.");
+  Assert.Hidden("Add to bag");
+}
+
+[Test(Window)]
+void a_delivery_needs_an_address() {
+  Ui.Visit("/");
+  Ui.Click("PX-10");
+  Ui.Click("Add to bag");
+  Ui.Visit("/checkout");
+  Ui.Fill("Name", "Anna Lindqvist");
+  Ui.Fill("Email", "anna@example.test");
+  Ui.Click("Insured delivery");
+  Ui.Click("Reserve");
+  Assert.Visible("For delivery we need the full address.");
+  Assert.Hidden("Reserved.");
+}
+
+[Test(Window)]
+void a_bike_reserved_by_someone_else_leaves_the_bag_and_says_so() {
+  AddToBag("visit-a", Variant.Single(v => v.Product.Name == "Super"), 1);
+  Reserve("visit-b", "Super");                          // another visitor gets there first
+
+  var e = Assert.Throws<Exception>(() => PlaceOrder("visit-a", "Anna Lindqvist", "anna@example.test", "",
+                                                    Fulfilment.Collect, Payment.BankTransfer, "", "", "", ""));
+  Assert.Contains("Super", e.Message);
+  Assert.Equal(0, BagCount("visit-a"));                 // the stale line is gone, so the bag the visitor sees is true
+  Assert.Equal(1, OrderLine.Count(l => l.Held));        // …and no second hold on the same bike was made
+}
+
+[Test(Window)]
+void a_visitor_cannot_read_anyone_elses_order() {
+  Reserve("visit-b", "Pista");
+  Assert.Equal(1, OrderLine.Count());      // the reservation is public — the catalogue shows it
+  Assert.Equal(0, OrderContact.Count());   // the name and address behind it are not
+  runas (Workshop) { Assert.Equal(1, OrderContact.Count()); }   // …and the workshop does see them
+}
+
+// A FLAT nav item (no children) is listed ONCE in the footer — as a link, with no caption above it repeating the same
+// word. Exact text, so two elements reading "Archive" refuse.
+[Test(Window)]
+void the_footer_lists_a_flat_nav_item_once() {
+  Ui.Visit("/");
+  Assert.TextIs("Archive", within: "Site footer");
+}

@@ -1,0 +1,229 @@
+{
+  "entity": "Product",
+  "key": "Slug",
+  "lookups": {
+    "Category": "Category[Slug]"
+  },
+  "rows": [
+    {
+      "Slug": "satin-cowl-slip-dress",
+      "Name": "Satin cowl slip dress",
+      "Category": "dresses",
+      "Price": 129,
+      "Rank": 0,
+      "Summary": "A short ivory slip dress in fluid satin with a soft cowl neck.",
+      "Description": "Cut on the bias so it skims rather than clings, with thin adjustable straps and a draped cowl at the front. Wear it alone in summer or over a fine knit when the evenings turn.",
+      "Featured": true,
+      "Brand": "Vall Studio"
+    },
+    {
+      "Slug": "jersey-pencil-midi-dress",
+      "Name": "Jersey pencil midi dress",
+      "Category": "dresses",
+      "Price": 159,
+      "Rank": 1,
+      "Summary": "A stone-coloured long-sleeve midi in heavy jersey with a front slit.",
+      "Description": "A clean V-neck, fitted waist seam and a centre-front slit that makes walking easy. The jersey is dense enough to hold its line and soft enough to wear all day.",
+      "Featured": true,
+      "Brand": "Vall Studio"
+    },
+    {
+      "Slug": "cotton-v-neck-cardigan",
+      "Name": "Cotton V-neck cardigan",
+      "Category": "knitwear",
+      "Price": 99,
+      "Rank": 2,
+      "Summary": "A boxy sage cardigan in a fine cotton rib, cropped at the hip.",
+      "Description": "Dropped shoulders, a deep V and five tonal buttons. Light enough for a cool summer evening, easy to layer over a slip or a shirt when it gets colder.",
+      "Featured": true,
+      "Brand": "Vall Studio"
+    },
+    {
+      "Slug": "chunky-rib-cardigan",
+      "Name": "Chunky rib cardigan",
+      "Category": "knitwear",
+      "Price": 119,
+      "Rank": 3,
+      "Summary": "A heavyweight fisherman-rib cardigan with a V-neck, in three colours.",
+      "Description": "Knitted in a thick half-cardigan stitch that gives it body without weight. Long cuffs you can fold back and a single row of horn-look buttons.",
+      "Featured": true,
+      "Brand": "Vall Studio"
+    },
+    {
+      "Slug": "cotton-trench-coat",
+      "Name": "Cotton trench coat",
+      "Category": "coats-jackets",
+      "Price": 289,
+      "Rank": 4,
+      "Summary": "A classic double-breasted trench in sand cotton gabardine.",
+      "Description": "Storm flap, epaulettes, a back yoke and a self belt at the waist. The cotton is tightly woven so it shrugs off a shower and softens with wear.",
+      "Featured": false,
+      "Brand": "Vall Studio"
+    },
+    {
+      "Slug": "check-double-breasted-blazer",
+      "Name": "Check double-breasted blazer",
+      "Category": "coats-jackets",
+      "Price": 179,
+      "Rank": 5,
+      "Summary": "A grey Prince of Wales check blazer with black buttons.",
+      "Description": "Peak lapels, a longer line and a slightly oversized shoulder. Wear it over a slip dress or with trousers and the matching mood of a suit without the suit.",
+      "Featured": false,
+      "Brand": "Vall Studio"
+    },
+    {
+      "Slug": "wide-leg-tailored-trousers",
+      "Name": "Wide-leg tailored trousers",
+      "Category": "trousers-skirts",
+      "Price": 139,
+      "Rank": 6,
+      "Summary": "High-waisted camel trousers with front pleats and a wide leg.",
+      "Description": "A curved high waistband, two front pleats and a leg that falls straight to the floor. Side seam splits at the hem let them move.",
+      "Featured": false,
+      "Brand": "Vall Studio"
+    },
+    {
+      "Slug": "pleated-wool-blend-mini-skirt",
+      "Name": "Pleated wool-blend mini skirt",
+      "Category": "trousers-skirts",
+      "Price": 89,
+      "Rank": 7,
+      "Summary": "A charcoal mini skirt with soft pleats and an A-line shape.",
+      "Description": "Sits at the natural waist and flares slightly over the hips. The wool blend has a fine brushed surface and a lining so it does not catch on tights.",
+      "Featured": false,
+      "Brand": "Vall Studio"
+    },
+    {
+      "Slug": "lace-up-leather-boot",
+      "Name": "Lace-up leather boot",
+      "Category": "boots",
+      "Price": 199,
+      "Rank": 8,
+      "Summary": "A black pebbled-leather lace-up boot on a chunky lug sole.",
+      "Description": "Eight eyelets, an inside zip so you do not have to unlace, and a deep-tread sole that grips on wet cobbles. Ankle height.",
+      "Featured": false
+    },
+    {
+      "Slug": "buckle-strap-heeled-boot",
+      "Name": "Buckle strap heeled boot",
+      "Category": "boots",
+      "Price": 229,
+      "Rank": 9,
+      "Summary": "A cognac leather boot with a suede shaft, buckle strap and block heel.",
+      "Description": "Hand-burnished leather that darkens at the toe, a suede panel at the shaft and an outside zip. The stacked block heel is 7 cm on a treaded sole.",
+      "Featured": false
+    },
+    {
+      "Slug": "leather-platform-sneaker",
+      "Name": "Leather platform sneaker",
+      "Category": "sneakers",
+      "Price": 149,
+      "Rank": 10,
+      "Summary": "A white leather low-top on a stitched platform cupsole.",
+      "Description": "Smooth leather upper, flat waxed laces and a 4 cm cupsole that adds height without weight. Wipes clean.",
+      "Featured": false
+    },
+    {
+      "Slug": "metallic-leather-sneaker",
+      "Name": "Metallic leather sneaker",
+      "Category": "sneakers",
+      "Price": 159,
+      "Rank": 11,
+      "Summary": "A silver leather low-top with a perforated toe.",
+      "Description": "The same platform last as our white sneaker in a soft metallic leather. Perforations at the toe box keep it breathable.",
+      "Featured": false
+    },
+    {
+      "Slug": "padded-block-heel-mule",
+      "Name": "Padded block-heel mule",
+      "Category": "heels-flats",
+      "Price": 139,
+      "Rank": 12,
+      "Summary": "A black leather mule with a padded, top-stitched strap and a white block heel.",
+      "Description": "Three puffed leather bands with contrast stitching across the front, on a 7 cm stacked heel. Cushioned insole for a full day on your feet.",
+      "Featured": false
+    },
+    {
+      "Slug": "kitten-heel-pump",
+      "Name": "Kitten-heel pump",
+      "Category": "heels-flats",
+      "Price": 129,
+      "Rank": 13,
+      "Summary": "A pointed pump on a low 5 cm kitten heel, in ivory or red snake.",
+      "Description": "A sharp toe and a low heel make this the pump you can actually wear to work. Both colours are cut from the same last.",
+      "Featured": false
+    },
+    {
+      "Slug": "croc-embossed-leather-tote",
+      "Name": "Croc-embossed leather tote",
+      "Category": "bags",
+      "Price": 249,
+      "Rank": 14,
+      "Summary": "A navy leather tote with a croc-embossed front panel and zip pockets.",
+      "Description": "Smooth leather sides, a metallic croc-embossed panel and two vertical zip pockets on the front. Fits a laptop and closes with a top zip.",
+      "Featured": false
+    },
+    {
+      "Slug": "slouch-leather-shoulder-bag",
+      "Name": "Slouch leather shoulder bag",
+      "Category": "bags",
+      "Price": 219,
+      "Rank": 15,
+      "Summary": "A soft cognac leather shoulder bag with gathered sides and a buckle strap.",
+      "Description": "Vegetable-tanned leather that softens and darkens with use. Long shoulder straps, a gathered body and a buckled tab at each end.",
+      "Featured": false
+    },
+    {
+      "Slug": "top-handle-satchel",
+      "Name": "Top-handle satchel",
+      "Category": "bags",
+      "Price": 189,
+      "Rank": 16,
+      "Summary": "A structured teal leather satchel with a push-lock clasp.",
+      "Description": "A rigid body, a single rolled top handle and a detachable shoulder strap. The gold-tone push lock and feet on the base keep it looking new.",
+      "Featured": false
+    },
+    {
+      "Slug": "printed-silk-square-tide",
+      "Name": "Printed silk square, Tide",
+      "Category": "scarves",
+      "Price": 89,
+      "Rank": 17,
+      "Summary": "A 90 cm silk twill square in orange, cobalt and ink.",
+      "Description": "An abstract wave print with a hand-rolled hem. Tie it at the neck, around a bag handle or in your hair.",
+      "Featured": false
+    },
+    {
+      "Slug": "printed-silk-square-saffron",
+      "Name": "Printed silk square, Saffron",
+      "Category": "scarves",
+      "Price": 89,
+      "Rank": 18,
+      "Summary": "A 90 cm silk twill square in saffron yellow with an orange border.",
+      "Description": "A lighter print from the same series, with fine illustrated detail on a yellow ground. Hand-rolled hem.",
+      "Featured": false
+    },
+    {
+      "Slug": "pearl-link-necklace",
+      "Name": "Pearl link necklace",
+      "Category": "jewellery",
+      "Price": 79,
+      "Rank": 19,
+      "Summary": "A gold-plated chain with freshwater pearls and a crystal heart drop.",
+      "Description": "Short oval links alternate with small freshwater pearls, finished with a faceted crystal set in a gold heart. Sits just below the collarbone.",
+      "Featured": false,
+      "Brand": "Vall Studio"
+    },
+    {
+      "Slug": "crystal-eternity-band",
+      "Name": "Crystal eternity band",
+      "Category": "jewellery",
+      "Price": 69,
+      "Rank": 20,
+      "Summary": "A gold-plated eternity ring set all round with clear crystals.",
+      "Description": "Square-cut stones in a fine claw setting that runs the full circle. Wear it alone or stacked.",
+      "Featured": false,
+      "Brand": "Vall Studio"
+    }
+  ]
+}

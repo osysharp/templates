@@ -1,0 +1,180 @@
+{
+  "entity": "ProductSpec",
+  "key": [
+    "Product",
+    "Name"
+  ],
+  "lookups": {
+    "Product": "Product[Slug]"
+  },
+  "rows": [
+    {
+      "Product": "super",
+      "Name": "Year",
+      "Value": "1981",
+      "Rank": 0
+    },
+    {
+      "Product": "super",
+      "Name": "Frame size",
+      "Value": "56 cm",
+      "Rank": 1
+    },
+    {
+      "Product": "super",
+      "Name": "Tubing",
+      "Value": "Columbus SL",
+      "Rank": 2
+    },
+    {
+      "Product": "super",
+      "Name": "Groupset",
+      "Value": "Campagnolo Super Record",
+      "Rank": 3
+    },
+    {
+      "Product": "px-10",
+      "Name": "Year",
+      "Value": "1972",
+      "Rank": 0
+    },
+    {
+      "Product": "px-10",
+      "Name": "Frame size",
+      "Value": "58 cm",
+      "Rank": 1
+    },
+    {
+      "Product": "px-10",
+      "Name": "Tubing",
+      "Value": "Reynolds 531",
+      "Rank": 2
+    },
+    {
+      "Product": "px-10",
+      "Name": "Groupset",
+      "Value": "Simplex Criterium",
+      "Rank": 3
+    },
+    {
+      "Product": "pista",
+      "Name": "Year",
+      "Value": "1968",
+      "Rank": 0
+    },
+    {
+      "Product": "pista",
+      "Name": "Frame size",
+      "Value": "54 cm",
+      "Rank": 1
+    },
+    {
+      "Product": "pista",
+      "Name": "Tubing",
+      "Value": "Columbus SL",
+      "Rank": 2
+    },
+    {
+      "Product": "pista",
+      "Name": "Groupset",
+      "Value": "Campagnolo Pista",
+      "Rank": 3
+    },
+    {
+      "Product": "torino",
+      "Name": "Year",
+      "Value": "1979",
+      "Rank": 0
+    },
+    {
+      "Product": "torino",
+      "Name": "Frame size",
+      "Value": "57 cm",
+      "Rank": 1
+    },
+    {
+      "Product": "torino",
+      "Name": "Tubing",
+      "Value": "Columbus SL",
+      "Rank": 2
+    },
+    {
+      "Product": "torino",
+      "Name": "Groupset",
+      "Value": "Campagnolo Nuovo Record",
+      "Rank": 3
+    },
+    {
+      "Product": "randonneur",
+      "Name": "Year",
+      "Value": "1976",
+      "Rank": 0
+    },
+    {
+      "Product": "randonneur",
+      "Name": "Frame size",
+      "Value": "58 cm",
+      "Rank": 1
+    },
+    {
+      "Product": "randonneur",
+      "Name": "Tubing",
+      "Value": "Reynolds 531",
+      "Rank": 2
+    },
+    {
+      "Product": "randonneur",
+      "Name": "Groupset",
+      "Value": "Shimano Crane",
+      "Rank": 3
+    },
+    {
+      "Product": "grand-record",
+      "Name": "Year",
+      "Value": "1976",
+      "Rank": 0
+    },
+    {
+      "Product": "grand-record",
+      "Name": "Frame size",
+      "Value": "55 cm",
+      "Rank": 1
+    },
+    {
+      "Product": "grand-record",
+      "Name": "Tubing",
+      "Value": "Vitus 172",
+      "Rank": 2
+    },
+    {
+      "Product": "grand-record",
+      "Name": "Groupset",
+      "Value": "Stronglight / Huret Jubilee",
+      "Rank": 3
+    },
+    {
+      "Product": "supercorsa",
+      "Name": "Year",
+      "Value": "1983",
+      "Rank": 0
+    },
+    {
+      "Product": "supercorsa",
+      "Name": "Frame size",
+      "Value": "56 cm",
+      "Rank": 1
+    },
+    {
+      "Product": "supercorsa",
+      "Name": "Tubing",
+      "Value": "Columbus SL",
+      "Rank": 2
+    },
+    {
+      "Product": "supercorsa",
+      "Name": "Groupset",
+      "Value": "Campagnolo Super Record",
+      "Rank": 3
+    }
+  ]
+}

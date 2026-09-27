@@ -1,0 +1,44 @@
+using Osysharp.Shop;
+
+// Where Stripe sends the visitor back — `/paid/{reference}/{session}` after paying, `/paid/{reference}/cancelled` if
+// they turned back. What it says is asked of STRIPE on the server; the address alone proves nothing, since anyone can
+// type it. The order itself is moved on by Stripe's signed webhook (payments.osy), not by this page.
+
+[Title("Payment — Rust & Chrome")]
+[Page("/paid/{reference}/{session}")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Paid(string reference, string session) {
+  PaymentOutcome outcome = null;
+  string problem = "";
+
+  on mount {
+    try { outcome = CheckCardPayment(reference, session); }
+    catch (Exception ex) { problem = "We could not reach Stripe to confirm the payment. Your bike is still reserved — we will write once it is through."; }
+  }
+
+  render {
+    Section {
+      Stack(gap: 6, py: 20, maxW: "760px", animation: RiseIn) {
+        Text($"Order {reference}", fontFamily: Font.Mono, fontSize: FontSize.Body, color: Colors.Primary);
+        if (problem != "") {
+          Text(problem, fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary);
+        } else if (outcome == null) {
+          Text("Checking with Stripe…", fontSize: FontSize.Lead, color: Colors.TextMuted);
+        } else if (outcome.Paid) {
+          Text("Paid.", fontFamily: Font.Display, fontSize: FontSize.Mega, fontWeight: FontWeight.Black, lineHeight: "0.84",
+               textTransform: TextTransform.Uppercase);
+          Text("That is the whole flow, end to end — in Stripe's test mode, so no money moved and no receipt is sent. The bike stays marked as sold until someone restocks the window.",
+               fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary);
+        } else {
+          Text("Not paid yet.", fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Bold, lineHeight: "0.9",
+               textTransform: TextTransform.Uppercase);
+          Text($"{outcome.Message} The bike stays reserved for three days, then goes back in the window. (A demo: nothing was charged.)",
+               fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary);
+        }
+        Row { Link(href: "/bikes", label: "Back to the bikes") { Text("Back to the bikes →", color: Colors.Primary); } }
+      }
+    }
+  }
+}

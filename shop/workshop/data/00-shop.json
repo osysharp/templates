@@ -1,0 +1,22 @@
+{
+  "entity": "ShopSettings",
+  "key": "Name",
+  "rows": [
+    {
+      "Name": "Rust & Chrome",
+      "Currency": "EUR",
+      "CurrencySymbol": "€",
+      "OrderPrefix": "RC-",
+      "HoldDays": 3,
+      "OffersCollection": true,
+      "OffersDelivery": true,
+      "OffersBankTransfer": true,
+      "OffersPayOnCollection": true,
+      "DeliveryFee": 95,
+      "FreeDeliveryFrom": 0,
+      "BankDetails": "Rust & Chrome Cykelverkstad · IBAN SE45 5000 0000 0583 9825 7466 · BIC ESSESESS — put your order number in the message.",
+      "CollectionAddress": "Rust & Chrome, Brännkyrkagatan 64, Stockholm",
+      "ContactEmail": "workshop@rustandchrome.example"
+    }
+  ]
+}

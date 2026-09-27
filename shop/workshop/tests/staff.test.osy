@@ -1,0 +1,24 @@
+// The workshop's desk, through its pages: signing in, seeing who ordered, calling a reservation off. What the desk's
+// buttons DO — cancel, mark paid, refund through Stripe — is the shop kit's, and proven in its own tests
+// (the Osysharp.Shop package's own tests); this is Rust & Chrome's desk driving it.
+
+using Osysharp.Shop;
+
+[Test(Window)]
+void the_workshop_signs_in_and_calls_a_reservation_off() {
+  var reference = Reserve("visit-desk", "Randonneur");
+
+  Ui.Visit("/staff/orders");            // signed out → sent to sign in, and back here afterwards
+  Ui.Fill("Email", "erik@rustandchrome.test");
+  Ui.Fill("Password", "workshop-pass-1");
+  Ui.Click("Sign in");
+  Assert.Visible(reference);
+  Assert.Visible("Anna Lindqvist", within: reference);   // the workshop sees who ordered
+  Ui.Click("Cancel…", within: reference);
+  Ui.Fill("Reason", "Frame needs more work than listed");
+  Ui.Click("Cancel order");
+  Assert.Visible("Cancelled", within: reference);
+  Assert.Visible("Randonneur", within: reference);                    // the order still says what it was for
+  Assert.Visible("Frame needs more work than listed", within: reference);
+  Assert.Hidden("Cancel…");
+}
