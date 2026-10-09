@@ -1,6 +1,6 @@
 // Helpdesk — the design tokens.
 //
-// ⚑ THE DIRECTION IS THE FLOOR'S. "Switchboard" (Docs/OsySharp/design/helpdesk/direction.md) was designed for this
+// ⚑ THE DIRECTION IS THE FLOOR'S. "Switchboard" was designed for this
 //   desk and then raised into `Osysharp.Ui` itself (Mona Sans + Martian Mono, the neutral green-cyan surfaces, ONE line
 //   cyan accent meaning "live, and yours", amber for time running out, red for breached, slate-violet for waiting on
 //   somebody else). So the desk re-themes nothing the kit already says; it adds only what is its own — the widths of

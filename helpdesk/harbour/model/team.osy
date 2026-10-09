@@ -32,7 +32,7 @@ policy IsLead => RoleGrant.Any(g => g.Member == user && (g.Role == AppRole.Lead 
 policy IsAdmin => RoleGrant.Any(g => g.Member == user && g.Role == AppRole.Admin);
 
 /// The word under a teammate's name in the corner — their highest role, so the person editing the desk's settings is
-/// not labelled "Agent" (polish slice 2: an admin was).
+/// not labelled "Agent".
 string RoleWord(bool admin, bool lead) => admin ? "Admin" : (lead ? "Lead" : "Agent");
 
 /// The conversation kit's question — who sees internal notes and works conversations. The team, and the mailbox

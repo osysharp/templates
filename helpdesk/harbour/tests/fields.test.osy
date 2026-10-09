@@ -1,8 +1,7 @@
 // TICKET FIELDS AND FORMS IN USE (H1) — the help page asks a form's questions by its conditions, the server checks
 // them again and keeps only what the form shows, the ticket shows and edits them with every change on its timeline, a
 // retired field keeps its answers, a saved view filters by a field, and the settings page makes, orders and retires
-// them. `osy test --pixels` photographs each (Ui.Shot); Docs/OsySharp/design/helpdesk/fields/ keeps the ones worth
-// keeping.
+// them. `osy test --pixels` photographs each (Ui.Shot).
 using Osysharp.Identity;
 using Osysharp.Accounts;
 using Osysharp.Organizations;
@@ -204,7 +203,7 @@ void a_customer_can_answer_only_what_they_are_asked_on_their_own_ticket() {
 /// ⭐ AN ANSWER IS ITS FIELD'S KIND ON EVERY WRITE — not only through the verbs that check it first. A customer may write
 /// an answer row for a question they are asked (their row rule allows it) and the team may write any; neither can keep
 /// a date that is not a date, a choice that is not an option, a number that is not a number or a yes that is a maybe.
-/// The rules read the FIELD through the answer (D-INVARIANTHOP1), so they hold wherever the row is written.
+/// The rules read the FIELD through the answer, so they hold wherever the row is written.
 [Test(Intake)]
 void an_answer_is_its_fields_kind_whoever_writes_the_row() {
   runas (Olivia) {
@@ -646,7 +645,7 @@ void the_team_opens_a_ticket_with_the_forms_fields() {
   }
 }
 
-// ── the customer and the company (H1b) ───────────────────────────────────────────────────────────────────────────────
+// ── the customer and the company ───────────────────────────────────────────────────────────────────────────────
 
 /// What the desk keeps about Olivia and Larkspur, in its own fields — her plan, the company's industry and renewal.
 void PartyFieldsOfLarkspur() {

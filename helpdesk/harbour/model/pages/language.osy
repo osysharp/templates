@@ -1,9 +1,9 @@
-// THE DESK IN ARABIC TOO (D-RTL1) — Harbour speaks English and Arabic: every word of the desk, the portal and the
+// THE DESK IN ARABIC TOO — Harbour speaks English and Arabic: every word of the desk, the portal and the
 // kits' screens is in locales/ar.osy, and in Arabic the whole app reads right to left. A reader picks the language
 // here (the desk's top bar, the portal's); the page re-renders in place, mirrored, and the choice holds on this device.
 
 /// The other languages, each by its own name, in the top bar beside the account. On a phone, with more than one other
-/// language, the bar has no room for every name beside the page's title (measured: three languages squeezed the
+/// language, the bar has no room for every name beside the page's title (three languages would squeeze the
 /// desk's "All open" to its first letter) — so the language it is read in, by its own name, opens the rest. `compact`:
 /// the bar it sits in is a phone's (the frame says so — it knows its own width).
 [Composable]

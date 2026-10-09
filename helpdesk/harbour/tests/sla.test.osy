@@ -43,7 +43,7 @@ void a_ticket_goes_new_open_solved_closed() {
   Assert.Equal(Handling.Closed, HandlingOf(t));
 }
 
-/// ⭐ THE DESK KEEPS ITS PROMISES THROUGH THE INBOX (Inbox slice 7). One ticket, end to end: a Premium company's urgent
+/// ⭐ THE DESK KEEPS ITS PROMISES THROUGH THE INBOX. One ticket, end to end: a Premium company's urgent
 /// ticket is promised by the Premium policy (the inbox chose it by priority AND tier), its first reply is missed in
 /// the policy's own around-the-clock hours and the miss is on the ticket's timeline in the desk's words; once answered,
 /// waiting on the customer pauses the clock for five days with nothing missed, their answer makes a reply owed again,

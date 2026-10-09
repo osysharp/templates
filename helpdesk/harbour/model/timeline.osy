@@ -1,4 +1,4 @@
-// A TICKET'S TIMELINE SAYS WHAT HAPPENED IN THE READER'S LANGUAGE (D-RTL2 Q2).
+// A TICKET'S TIMELINE SAYS WHAT HAPPENED IN THE READER'S LANGUAGE.
 //
 // Every line on a ticket's timeline is a row of FACTS — what kind of thing happened, and who, which status, which field
 // and its answers, which queue — as they were at the time. Nothing on it is a sentence. The words are said when the

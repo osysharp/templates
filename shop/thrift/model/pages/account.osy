@@ -14,40 +14,48 @@ component AccountRoom() {
 }
 
 [Title("Sign in — Second Round")]
-[Route("/account/sign-in")]
+[Route("/login")]
 [Layout(Shop)]
 [AllowAnonymous]
-component AccountSignIn() {
+component SignInPage() {
   render { AccountRoom() { ShopSignIn(); } }
 }
 
 [Title("Create an account — Second Round")]
-[Route("/account/new")]
+[Route("/sign-up")]
 [Layout(Shop)]
 [AllowAnonymous]
-component AccountNew() {
+component SignUpPage() {
   render { AccountRoom() { ShopSignUp(); } }
 }
 
 [Title("Forgotten password — Second Round")]
-[Route("/account/forgot")]
+[Route("/forgot-password")]
 [Layout(Shop)]
 [AllowAnonymous]
-component AccountForgot() {
+component ForgotPasswordPage() {
   render { AccountRoom() { ShopForgotPassword(); } }
 }
 
 [Title("New password — Second Round")]
-[Route("/account/reset/{token}")]
+[Route("/reset-password/{token}")]
 [Layout(Shop)]
 [AllowAnonymous]
-component AccountReset(string token) {
+component ResetPasswordPage(string token) {
   render { AccountRoom() { ShopChooseNewPassword(token); } }
+}
+
+[Title("Confirm your address — Second Round")]
+[Route("/verify-email/{token}")]
+[Layout(Shop)]
+[AllowAnonymous]
+component VerifyEmailPage(string token) {
+  render { AccountRoom() { ShopConfirmAddress(token); } }
 }
 
 [Title("Your account — Second Round")]
 [Route("/account")]
 [Layout(Shop)]
-component AccountHome() {
+component AccountPage() {
   render { AccountRoom() { ShopAccountPanel(); } }
 }

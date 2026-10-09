@@ -53,7 +53,7 @@ enum Stage {
 /// ticket takes when the workflow moves it into the category by itself (a customer's reply reopens it, a solved
 /// ticket closes after a week).
 entity TicketStatus {
-  // D-RTL1 — the desk's own words for a status, per language (an admin renames it in each on the settings page).
+  // the desk's own words for a status, per language (an admin renames it in each on the settings page).
   [Translatable, Required("A status needs a name."), MaxLength(60)] string Name;
   StatusCategory Category;
   /// Its place in the status menu, within its category.

@@ -81,7 +81,7 @@ public bool SetUpDesk() {
   return true;
 }
 
-/// The starting statuses in Arabic (D-RTL1): a status's name is the desk's own data — `[Translatable]`, so an admin
+/// The starting statuses in Arabic: a status's name is the desk's own data — `[Translatable]`, so an admin
 /// renames it per language on the settings page — and the desk starts with Arabic beside the English. Written in
 /// Arabic AFTER the rows are saved: a write lands in the language it is made in.
 void StatusesInArabic() {

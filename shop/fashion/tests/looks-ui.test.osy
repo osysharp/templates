@@ -2,6 +2,7 @@
 // phone's width and a wide screen's into osy-shots/ — the front, a shelf, a piece, the bag and the checkout — so the five
 // designs are compared over the same pieces (the Window fixture: the store's whole catalogue).
 
+using Osysharp.Accounts;
 using Osysharp.Shop;
 using Osysharp.Blocks;
 
@@ -43,7 +44,7 @@ void InTheDark(string look, string front) {
   Ui.Visit("/");
   Assert.Visible(front);
   Ui.Shot($"{look} in a dark-mode browser — the front");
-  Ui.Visit("/account/sign-in");
+  Ui.Visit("/login");
   Ui.Fill("Email", "nobody@example.test");
   Ui.Fill("Password", "not-the-password");
   Ui.Click("Sign in", within: "Page");
@@ -125,7 +126,7 @@ void a_block_only_one_look_draws_is_listed_before_the_switch() {
   }
   // At the desk: choosing Atelier lists it first, and nothing moves until staff say so.
   Ui.Viewport(1440, 900);
-  SignIn("/staff/pages");
+  SignInAsStaffTo("/staff/pages");
   Assert.Visible("Versions of the site");
   Ui.Click("Atelier", within: "Look");
   Assert.Visible("Every piece in front — this look has no design for it.");
@@ -141,7 +142,7 @@ void a_block_only_one_look_draws_is_listed_before_the_switch() {
   Assert.Hidden("Satin cowl slip dress");                        // Drop's own "Every piece" did not
 }
 
-/// D-LOOKSDOC1 (a) — the gallery had no design anywhere, so the desk never offered it. The shop kit now draws it plainly
+/// the gallery had no design anywhere, so the desk never offered it. The shop kit now draws it plainly
 /// (`ShopPhotoGallery`), in whichever look the store wears: offered in every look, and drawn in the look's own tokens.
 [Test(Window)]
 void a_gallery_is_offered_in_every_look_and_drawn_in_the_shops_plain_design() {

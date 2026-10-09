@@ -1,7 +1,7 @@
 // THE DESK'S WEBHOOKS (H12) — Ines, who runs the desk, subscribes the company's order system to what happens to tickets:
 // each event is the desk's own (events.osy — the same ones its automations run on), sent as the ticket the API answers
 // (`TicketData`), signed. An endpoint that keeps failing is paused, and the desk's admins are told in their bell.
-// `osy test --pixels` photographs Settings › Webhooks (Docs/OsySharp/design/side-conversations-api/).
+// `osy test --pixels` photographs Settings › Webhooks.
 //
 // The bells (Ines an agent and admin, Rahul, Lena; Olivia at Larkspur) are notifications.test.osy's.
 using Osysharp.Identity;

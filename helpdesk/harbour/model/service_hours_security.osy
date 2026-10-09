@@ -1,4 +1,4 @@
-// BASELINE-OUT `BL-3.8` (2026-09-22): naming the workflow runtime's types needs it imported here.
+// Naming the workflow runtime's types needs it imported here.
 using Osysharp.Workflow;
 using Osysharp.ServiceHours;
 // The SLA calendar's SECURITY, and it needs a file of its own.

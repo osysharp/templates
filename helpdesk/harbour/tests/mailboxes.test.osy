@@ -1,4 +1,4 @@
-// SETTINGS → MAILBOXES (D-PUSHMAIL1; the page is Osysharp.Mail.Receiving's since 2026-10-02) — an admin sees every inbox
+// SETTINGS → MAILBOXES (the page is Osysharp.Mail.Receiving's) — an admin sees every inbox
 // the desk reads: watched or not, pushed or polled, when it was last asked, and what is wrong; starts and stops watching;
 // and connects an inbox that is connected with the provider's consent. Admins only — the kit's `ManagesMailboxes`,
 // which the desk leaves at its default (the desk's own `IsAdmin`), on the page and on every function behind it.

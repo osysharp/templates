@@ -7,7 +7,7 @@
 //   sent, and its mailbox is `DemoInbox` rows rather than a provider — so a reviewer can read exactly what would have gone
 //   out and put mail in by hand, with no account and no stray mail.
 //
-// ⭐ THE DESK'S REAL MAILBOX (D-PUSHMAIL1) is one block below — `DeskMailbox`: a Google Workspace inbox, connected by an
+// ⭐ THE DESK'S REAL MAILBOX is one block below — `DeskMailbox`: a Google Workspace inbox, connected by an
 //   admin from Settings → Mailboxes ("Connect"), PUSHED through Cloud Pub/Sub, polled every half hour as the safety net.
 //   Set its four values and the desk reads it; replies to its mail then go out FROM it, threaded. (A Microsoft 365
 //   mailbox is `Microsoft365Mailbox` in the same place; any other host, `ImapMailbox`.) What the operator configures

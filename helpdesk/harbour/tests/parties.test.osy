@@ -80,7 +80,7 @@ void the_ticket_offers_the_merge_and_an_admin_a_privacy_request_that_shows_its_p
   Ui.Shot("ticket-customer-merged");
   Ui.SignOut();
   Ui.SignInAs(Mira);
-  // No second `Ui.Viewport`: the 1600 set above holds across a sign-out and back in (F-POLISH2(6)) — under --pixels
+  // No second `Ui.Viewport`: the 1600 set above holds across a sign-out and back in — under --pixels
   // the customer panel this test presses in is the third pane, which a 1280 screen does not have.
   Ui.Visit("/v/open/t/" + number);
   // At the FOOT of the customer panel — after their tickets, tags and the ticket's details — never beside the

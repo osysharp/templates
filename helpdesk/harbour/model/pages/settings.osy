@@ -13,7 +13,7 @@ using Osysharp.Observability;
 using Osysharp.Inbox;
 using Osysharp.Notifications;
 
-/// The desk's own settings sections (D-SETTINGSREG1) — the rest are announced by the kits that own them: People and
+/// The desk's own settings sections — the rest are announced by the kits that own them: People and
 /// Access changes (People), Tiers (Organizations), Queues, Routing, Skills, Shared views, SLA policies and Business
 /// hours (Inbox), Saved replies and Macros (Composer). Its pages of the same names take the kits' over.
 public class DeskSettingsSections : ISettingsProvider {

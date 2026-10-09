@@ -48,7 +48,7 @@ void the_shops_staff_page_refuses_a_wrong_password() {
   Ui.Fill("Email", "erik@rustandchrome.test");
   Ui.Fill("Password", "not-the-password");
   Ui.Click("Sign in", within: "Staff sign-in");
-  Assert.Visible("That email and password do not match a staff account.");
+  Assert.Visible("That address and password do not match an account.");
   Assert.Hidden("Signed in");
 }
 

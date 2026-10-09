@@ -13,7 +13,7 @@ string TestCardHint() {
 
 /// Puts everything back on sale — anybody may press it, because a public demo that sells out after five
 /// visitors is a broken demo. The press is a `ShopRestock` row, answered by its workflow AS THE SHOP: a visitor may not
-/// read other people's orders (an order is read through its link, D-ORDERLINK1), and the shop may. It goes THROUGH
+/// read other people's orders (an order is read through its link), and the shop may. It goes THROUGH
 /// each order's workflow (`Void`), so every order ends as "Voided" and the desk still tells the whole story; the pieces
 /// go back exactly as a lapse puts them back. Answers how many orders it ended.
 [AllowAnonymous]

@@ -1,6 +1,6 @@
 // THE AGENT WORKSPACE, DRIVEN AS AN AGENT DRIVES IT — the views and their counts, the dense list, the keyboard, the
 // ticket with its timeline and composer, two people on one ticket, and many tickets at once. `osy test --pixels`
-// photographs each (`Ui.Shot`) — Docs/OsySharp/design/helpdesk/app/ keeps the ones worth keeping.
+// photographs each (`Ui.Shot`) .
 using Osysharp.Identity;
 using Osysharp.Accounts;
 using Osysharp.Workflow;
@@ -96,14 +96,14 @@ void the_desk_at_real_volume_shows_its_views_with_live_counts_and_a_dense_list()
   Ui.Shot("workspace-wide-dark");
 }
 
-/// ⭐ A SEEDED DESK READS LIKE A MONTH OF WORK (the polish slice, 2026-10-01): no subject twice, and the open
+/// ⭐ A SEEDED DESK READS LIKE A MONTH OF WORK: no subject twice, and the open
 /// tickets' SLA clocks spread out, because each run started when its conversation did and each move was raised when
-/// it happened. Before, 500 runs started together and the queue read 0:59, 0:59, 3:59, 3:59…
+/// it happened — never a queue reading 0:59, 0:59, 3:59, 3:59…
 [Test(Floor)]
 void a_seeded_desk_reads_like_real_work() {
   runas (Ines) {
     SeedDemoDesk(120);
-    // A filled desk is a LIVE desk: it reads support@ from the start (polish slice 2 — it did not).
+    // A filled desk is a LIVE desk: it reads support@ from the start.
     Assert.True(MailboxWatch.Any(w => w.Address == "support@helpdesk.test"));
     var subjects = Ticket.Select(t => t.Title).ToList();
     Assert.Equal(subjects.Count, subjects.Distinct().Count());
@@ -125,7 +125,7 @@ List<WorkRow> AllOpenDueFirst() { return Ordered(Rows(BuiltInView.Open), WorkSor
 /// The tone a row's countdown is drawn in — the list's own rule.
 Tone ToneOf(WorkRow r, DateTime now) => DueTone(r.Handling, r.Sla, r.DueAt ?? r.BreachedAt, r.Budget, now);
 
-/// ⭐ THE SEEDED DESK'S FIRST SCREEN READS LIKE A DESK THAT IS COPING (polish slice 2), on the desk the screenshots
+/// ⭐ THE SEEDED DESK'S FIRST SCREEN READS LIKE A DESK THAT IS COPING, on the desk the screenshots
 /// use (500 tickets). Two things, measured on "All open, due first" as the list draws it:
 ///   • TIME — most of what the team owes has plenty left, a few clocks are in their last quarter, and only a handful
 ///     are past; by the same `DueTone` the list colours its rows with. Before, the first screen was red top to bottom
@@ -176,7 +176,7 @@ void the_default_view_is_mostly_on_time_and_never_repeats_a_request_near_itself(
   }
 }
 
-/// ⭐ THE LIST OPENS THE WAY THE READER LEFT IT ([Remembered], owner call 2026-10-01): its order and its density are
+/// ⭐ THE LIST OPENS THE WAY THE READER LEFT IT ([Remembered]): its order and its density are
 /// kept in this browser — a reload keeps them, and another browser starts with the desk's defaults.
 [Test(Floor)]
 void the_lists_order_and_density_are_remembered_in_this_browser() {
@@ -226,7 +226,7 @@ void a_reply_and_a_note_land_on_the_one_timeline_and_the_note_is_marked() {
   Ui.SignInAs(Ines);
   Ui.Visit("/v/open/t/" + number);
   Assert.Visible("Since this morning every card payment");
-  // A TICKET READS TOP-DOWN (polish slice 2): with one message, the reply box follows it — level with the customer
+  // A TICKET READS TOP-DOWN: with one message, the reply box follows it — level with the customer
   // panel's details, not pinned to the foot of the pane under an empty band. (The Composer kit's well — its bar and a
   // five-line box — puts Send a line below "Follow"; it still sits above the panel's last control, mid-screen.)
   Assert.Above("Send", "Start a privacy request…");   // the panel's privacy button (renamed from "Erase their data…")
@@ -324,8 +324,7 @@ void on_a_phone_the_list_and_the_ticket_are_one_screen_each() {
   Ui.Shot("workspace-phone-list-dark");
 }
 
-/// A REAL DESK STARTS EMPTY, AND SAYS SO (Harbour is Osyrin's own support desk from launch day — slice 7 removed the
-/// "fill it with a month of sample work" button that sat on every empty desk): where tickets come from, and New ticket.
+/// A REAL DESK STARTS EMPTY, AND SAYS SO: where tickets come from, and New ticket.
 /// And a teammate in no queue is told why they cannot take anything, and who can change it.
 [Test(Floor)]
 void an_empty_desk_says_where_tickets_come_from_and_a_teammate_in_no_queue_is_told() {

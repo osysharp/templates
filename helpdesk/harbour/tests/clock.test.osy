@@ -1,6 +1,6 @@
 // THE DESK'S CLOCK — an admin picks the time zone the desk's days start in on Settings › Time and date, from a list,
-// and a report's day follows it at once. Wide and on a phone, light and dark (`osy test --pixels`;
-// Docs/OsySharp/design/clock/ keeps the ones worth keeping); in Swedish and Arabic in tests/languages/.
+// and a report's day follows it at once. Wide and on a phone, light and dark (`osy test --pixels`);
+// in Swedish and Arabic in tests/languages/.
 using Osysharp.Clock;
 using Osysharp.Reports;
 

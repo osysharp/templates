@@ -1,4 +1,4 @@
-// WHAT THE DESK KEEPS ABOUT A PERSON, AND WHAT THEIR REQUEST DOES TO IT (D-PRIVACY1). Harbour holds real people's
+// WHAT THE DESK KEEPS ABOUT A PERSON, AND WHAT THEIR REQUEST DOES TO IT. Harbour holds real people's
 // support questions, so a request to see, take or erase their data goes through Osysharp.Privacy: a plan per category,
 // approved by an admin on the Inbox, answered within a calendar month. The conversations are
 // Osysharp.Privacy.Conversations' holder; what the desk says here is which conversations concern a claim (a complaint,
@@ -19,7 +19,7 @@ using Osysharp.Fields;
 policy ManagesPrivacy => IsAdmin;
 policy PlacesLegalHolds => IsAdmin;
 
-// ── what the desk itself keeps about a customer (D-DATASUBJECT1) ─────────────────────────────────────────────────────
+// ── what the desk itself keeps about a customer ─────────────────────────────────────────────────────
 //
 // The conversations, the mail and the requests are the kits' to answer for. What the DESK writes is its own: what the
 // team found went wrong on a ticket and how it was solved, and the answers on its forms. Each entity says whose data a
@@ -64,7 +64,7 @@ public class HarbourPrivacy : ConversationPrivacyRules {
   }
   /// Its words were erased, or its period ended: the reply drafts on its tickets go (they quote and answer the
   /// customer), the answers the customer gave on a form are blanked, and the ticket's title — the customer's own
-  /// subject, copied (measured: `Assert.NoTraceOf` found it there) — says only that it was erased.
+  /// subject, copied — says only that it was erased.
   ///
   /// A conversation kept for legal claims had its drafts and answers kept with it (`Kept`); its period ended, so this
   /// runs inside the purge's purpose read, where they are in reach again — lifted, and erased with it.

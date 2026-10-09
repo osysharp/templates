@@ -11,7 +11,9 @@ app RustAndChrome {
   use Osysharp.Storage;
   // The shop. It reaches Stripe and reads the two Stripe secrets; this is where the app grants both.
   // The shop reads its mail key; how it is paid and delivered is `app.Shop`, in model/shop.osy.
-  use Osysharp.Shop@0 { egress "api.resend.com"; secret "ResendApiKey"; }
+  use Osysharp.Shop@1 { egress "api.resend.com"; secret "ResendApiKey"; }
+  use Osysharp.Identity@0;
+  use Osysharp.Accounts@1;
   use Osysharp.Payments@0;
   use Osysharp.Delivery@0;
   use Osysharp.Seo@0;

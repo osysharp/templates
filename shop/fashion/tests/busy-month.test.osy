@@ -3,6 +3,7 @@
 // `MarkDelivered`), visitors looking at products (`ViewedProduct`) — so every step of the desk holds several orders and
 // the figures are sums of real sales, not one order each. `osy test --pixels` photographs each page wide.
 
+using Osysharp.Identity;
 using Osysharp.Shop;
 using Osysharp.Workflow;
 
@@ -27,12 +28,12 @@ void BusyMonth() {
   Piece("Croc-embossed leather tote", bags, 2490m, 880m, 6, "photos/croc_tote_1.jpg");
   Piece("Kitten heel pump", shoes, 1290m, 430m, 5, "photos/kitten_heel_pump_1.jpg");         // nobody buys it
   Piece("Pleated wool-blend mini skirt", knitwear, 890m, 280m, 6, "photos/pleated_mini_skirt_1.jpg");   // nor this
-  var ida = new ShopAccount { Email = "ida@vall.test", Name = "Ida Vall", PasswordHash = Security.HashPassword("desk-pass-1") };
-  new ShopRoleGrant { Member = ida, Role = ShopRole.Staff };
+  var ida = new ShopAccount { Email = "ida@vall.test", DisplayName = "Ida Vall", PasswordHash = Security.HashPassword("desk-pass-1") };
+  new RoleGrant { Member = ida, Role = ShopRole.Staff };
   foreach (var c in Customers()) {
-    var a = new ShopAccount { Email = c.ToLower().Replace(" ", ".") + "@example.test", Name = c,
+    var a = new ShopAccount { Email = c.ToLower().Replace(" ", ".") + "@example.test", DisplayName = c,
                               PasswordHash = Security.HashPassword("customer-pass-1") };
-    new ShopRoleGrant { Member = a, Role = ShopRole.Customer };
+    new RoleGrant { Member = a, Role = ShopRole.Customer };
   }
 }
 

@@ -2,7 +2,7 @@
 // into a ticket of its own, for the same customer, its message moved there and both tickets saying so; tickets are
 // linked by the desk's kinds (related, duplicate, caused by, incident of a problem), shown on both; and solving a
 // problem solves its open incidents, each customer told. `osy test --pixels` photographs the link panel, the split
-// dialog, a problem with its incidents and the phone (Docs/OsySharp/design/helpdesk/relations/).
+// dialog, a problem with its incidents and the phone.
 //
 // The desk (Ines, Rahul, Lena; Olivia and Sam at Larkspur, which shares tickets; Dev at Orbit Labs) is desk.test.osy's.
 using Osysharp.Identity;

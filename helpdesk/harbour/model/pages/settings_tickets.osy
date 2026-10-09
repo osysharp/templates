@@ -18,7 +18,7 @@ component FieldSettings() {
   live var companyFields = CompanyField.OrderBy(f => f.Position).ThenBy(f => f.Name).ToList();
   live var forms = TicketForm.OrderBy(f => f.Position).ThenBy(f => f.Name).ToList();
   // ⚠ Every form's fields in ONE unfiltered read, sorted out per form below: a field put on a form here joins only a list
-  //   of every row of its type until Save (D-GHOSTFILTER1).
+  //   of every row of its type until Save.
   live var onForms = FormField.Include(x => x.Form).Include(x => x.Field).Include(x => x.ShowWhen).OrderBy(x => x.Position).ToList();
   live var ticketUse = TicketFieldValue.Where(v => v.Value != "").GroupBy(v => v.Field.Id)
     .Select(g => new FieldUse { Field = g.Key, Count = g.Count() }).ToList();

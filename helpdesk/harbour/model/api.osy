@@ -19,7 +19,7 @@
 // ⚑ NOTHING DELETES A TICKET. A ticket is erased only by a privacy request (model/privacy.osy) — never by a call.
 // ⚑ EACH VERB IS THE DESK'S OWN: the same function the page calls, with its checks and its timeline line — the API adds
 //   no way round anything. A refusal is a 4xx with the desk's own sentence.
-// ⚑ AN [Action] IS AN ENDPOINT ONLY BECAUSE IT IS LISTED BELOW (owner, Q79): the macros' and rules' verbs are not the API
+// ⚑ AN [Action] IS AN ENDPOINT ONLY BECAUSE IT IS LISTED BELOW: the macros' and rules' verbs are not the API
 //   by being actions. The number-addressed verbs (status, priority, tags, replies) stay functions of their own because
 //   they answer the ticket as it now is (`TicketData`), which a caller acting on a number wants back; the actions answer
 //   their sentence and are addressed by the ticket's id.

@@ -1,6 +1,6 @@
 // THE SETTINGS AREA, DRIVEN AS AN ADMIN DRIVES IT — nothing is saved until Save, Discard throws an edit away, Undo steps
 // back one change, a section a person may not open is not offered to them, and a shared view lands in the rail.
-// `osy test --pixels` photographs each (Ui.Shot); Docs/OsySharp/design/helpdesk/settings/ keeps the ones worth keeping.
+// `osy test --pixels` photographs each (Ui.Shot).
 using Osysharp.Identity;
 using Osysharp.Accounts;
 using Osysharp.Organizations;
@@ -54,7 +54,7 @@ void a_category_shown_by_its_name_reads_in_the_readers_language() {
   runas (Mira) { Assert.Equal("Pending", StatusCategory.Pending.Label); }
 }
 
-/// EVERY KIT'S SECTIONS, IN ONE PLACE, AND THE HOME SAYS WHAT EACH IS FOR (D-SETTINGSREG1): the desk announces its own
+/// EVERY KIT'S SECTIONS, IN ONE PLACE, AND THE HOME SAYS WHAT EACH IS FOR: the desk announces its own
 /// two (Statuses, Fields and forms); People, Access changes, Tiers, the inbox's six and the composer's two are announced
 /// by their kits — nobody lists them — and each still opens in the desk's own frame.
 [Test(Office)]
@@ -85,8 +85,7 @@ void an_agent_is_offered_only_the_settings_an_agent_may_open() {
   Assert.Visible("Saved replies", within: "Settings sections");
   Assert.Hidden("People");
   Assert.Hidden("SLA policies");
-  // STATUSES ARE AN ADMIN'S (polish slice 2 asked: the screenshot showed a person labelled "Agent" editing them —
-  // the label was wrong, she was an admin). An agent is labelled Agent, is not offered the page, cannot open it, and
+  // STATUSES ARE AN ADMIN'S. An agent is labelled Agent, is not offered the page, cannot open it, and
   // cannot write a status.
   Assert.Visible("Agent", within: "Page header");
   Assert.Hidden("Statuses", within: "Settings sections");
@@ -281,7 +280,7 @@ void routing_rules_are_written_on_their_settings_page() {
   Ui.Visit("/settings/routing");
   Assert.Visible("1. Money questions");                 // the desk's starting rule
   Ui.Click("Add a rule");
-  // A new rule shows its declared defaults at once (F-STAGE2-6): it is in use the moment it is made.
+  // A new rule shows its declared defaults at once: it is in use the moment it is made.
   Assert.Checked("In use", within: "2. New rule");
   Ui.Fill("Words in the title", "customs", within: "2. New rule");
   Ui.Fill("Tag it", "customs", within: "2. New rule");

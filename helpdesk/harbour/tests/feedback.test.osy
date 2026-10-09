@@ -219,10 +219,10 @@ void the_team_reads_what_customers_said() {
   Ui.Shot("feedback desk results wide light");
 }
 
-// ── what it costs (D-COMPOSE1 S1) ─────────────────────────────────────────────────────────────────────────────────────
+// ── what it costs ─────────────────────────────────────────────────────────────────────────────────────
 //
 // Feedback asks of every question's ticket whether its reader may read it and where it opens — the ticket's own facts
-// now (D-COMPOSE1 S1), read as the reader, the tickets together. These hold what that costs, so asking per comment
+// now, read as the reader, the tickets together. These hold what that costs, so asking per comment
 // instead of once per kind of record turns them red, with both numbers in the message.
 
 /// Four of Olivia's requests solved and answered badly, each with a comment.
@@ -241,9 +241,7 @@ void applying_an_answer_stays_within_its_budget() {
   var mark = Cost.Mark();
   Background.Settle();
   runas (Ines) { Assert.Equal(FeedbackRating.Bad, CustomerSaid(id)); }
-  // Measured 206 after D-COMPOSE1 S1 (205 before): the answer's ticket, its timeline line, two notifications delivered.
-  // 207 after S2: the answer is told as an event now (`FeedbackAnswered`) — its outbox row is written, read and marked
-  // delivered, and the desk's handler runs in a unit of work of its own; net +1.
+  // The budget is this step's measured cost, with the margin the assertion states.
   Assert.AtMost(207, Cost.StatementsSince(mark));
 }
 
@@ -255,8 +253,7 @@ void reading_the_results_stays_within_its_budget() {
     var mark = Cost.Mark();
     var summary = SummariseFeedback();
     Assert.Equal(4, summary.Recent.Count);
-    // Measured 2 after D-COMPOSE1 S1 — 14 before, when the topic asked MayRead and Link of each comment's ticket, one
-    // by one.
+    // The budget is this step's measured cost, with the margin the assertion states.
     Assert.AtMost(2, Cost.StatementsSince(mark));
   }
 }
@@ -270,7 +267,7 @@ void opening_the_results_page_stays_within_its_request_budget() {
   var mark = Cost.Mark();
   Ui.Visit("/feedback");
   Assert.Visible("Still broken: Logo upload fails", within: "Comments");
-  // Measured after D-COMPOSE1 S1: 2 requests, 1 server call, 33 statements (43 before).
+  // The budget is this step's measured cost, with the margin the assertion states.
   Assert.AtMost(2, Cost.RequestsSince(mark));
   Assert.AtMost(1, Cost.ServerCallsSince(mark));
   Assert.AtMost(33, Cost.StatementsSince(mark));

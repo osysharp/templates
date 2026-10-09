@@ -1,4 +1,4 @@
-// Vall — one fashion store, five LOOKS (D-SITEFRAME1 part 2). The catalogue, the bag, the checkout, the orders and the
+// Vall — one fashion store, five LOOKS. The catalogue, the bag, the checkout, the orders and the
 // desk are the shop kit's and this app's; how the store LOOKS is a look kit's — Atelier (the gallery wall), Boutique,
 // Drop, Index and Studio — and which one customers see is the site version's, picked at the page desk (/staff/pages):
 // drafted, previewed as a whole site, switched on a date. Orders, stock and customers stay put across a switch, and so
@@ -8,7 +8,9 @@ app Vall {
   use Osysharp.Workflow;
   use Osysharp.Storage;
   // The shop reads its mail key; how it is paid and delivered is `app.Shop`, in model/shop.osy.
-  use Osysharp.Shop@0 { egress "api.resend.com"; secret "ResendApiKey"; }
+  use Osysharp.Shop@1 { egress "api.resend.com"; secret "ResendApiKey"; }
+  use Osysharp.Identity@0;
+  use Osysharp.Accounts@1;
   use Osysharp.Payments@0;
   use Osysharp.Delivery@0;
   use Osysharp.Seo@0;

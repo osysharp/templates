@@ -1,4 +1,4 @@
-// A TICKET'S HISTORY IN THE READER'S LANGUAGE (D-RTL2 Q2) — every line on the timeline, and every step of how the ticket
+// A TICKET'S HISTORY IN THE READER'S LANGUAGE — every line on the timeline, and every step of how the ticket
 // got where it is, is kept as FACTS and said when it is read: the same ticket reads in English here, and in Arabic and in
 // Swedish in tests/languages/. Photographed with `osy test --pixels`, at a desk's width and a phone's.
 using Osysharp.Identity;

@@ -1,3 +1,4 @@
+using Osysharp.Identity;
 using Osysharp.Shop;
 
 // The storefront, through its pages — what a visitor sees and can do. `osy test --pixels` photographs each one.
@@ -68,7 +69,7 @@ void Window() {
 
   // The workshop — the one person here who may read a customer's order.
   var erik = new ShopAccount { Email = "erik@rustandchrome.test", PasswordHash = Security.HashPassword("workshop-pass-1") };
-  new ShopRoleGrant { Member = erik, Role = ShopRole.Staff };
+  new RoleGrant { Member = erik, Role = ShopRole.Staff };
 }
 
 principal Workshop => ShopAccount.Single(s => s.Email == "erik@rustandchrome.test");
@@ -202,7 +203,7 @@ void a_bike_reserved_by_someone_else_leaves_the_bag_and_says_so() {
 void a_visitor_cannot_read_anyone_elses_order() {
   var reference = Reserve("visit-b", "Pista");
   // Another visitor — who may know the reference, it is on the receipt — reads nothing of it: not the order, not what
-  // is in it, not the name and address behind it (D-ORDERLINK1).
+  // is in it, not the name and address behind it.
   Assert.Equal(0, Order.Count());
   Assert.Null(Order.SingleOrDefault(o => o.Reference == reference));
   Assert.Equal(0, OrderLine.Count());
@@ -216,7 +217,7 @@ void a_visitor_cannot_read_anyone_elses_order() {
 }
 
 // An order opens through its signed link — the one every mail about it carries — in any browser; its reference, in
-// the same place, opens the shop's own "link run out" page and nothing of the order (D-ORDERLINK1).
+// the same place, opens the shop's own "link run out" page and nothing of the order.
 [Test(Window)]
 void an_order_opens_through_its_link_and_never_by_its_reference() {
   var reference = Reserve("visit-o", "Pista");

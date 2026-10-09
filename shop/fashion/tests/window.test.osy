@@ -2,6 +2,7 @@
 // pieces with their sizes, spec sheets and photographs. What every look is photographed with, so five designs are
 // compared over the same pieces. Written out from the data files; the photographs are the store's own (public/products).
 
+using Osysharp.Identity;
 using Osysharp.Shop;
 
 [TestFixture]
@@ -263,5 +264,5 @@ void Window() {
   new ProductSpec { Product = p_crystal_eternity_band, Name = "Band width", Value = "3 mm", Rank = 1 };
   new ProductSpec { Product = p_crystal_eternity_band, Name = "Care", Value = "Polish with a soft cloth", Rank = 2 };
   var ida = new ShopAccount { Email = "ida@vall.test", PasswordHash = Security.HashPassword("desk-pass-1") };
-  new ShopRoleGrant { Member = ida, Role = ShopRole.Staff };
+  new RoleGrant { Member = ida, Role = ShopRole.Staff };
 }

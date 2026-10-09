@@ -28,7 +28,7 @@ component TicketPage(string view, int number) {
     .Include(t => t.Customer).Include(t => t.Customer.Company).Include(t => t.Conversation)
     .Include(t => t.Assignee).Include(t => t.Status).Include(t => t.Queue).ToList();
   // The top bar says WHERE you are — the queue, and which ticket in it — and the ticket's own head says what it is.
-  // Saying the subject in both put it on screen twice, a hand apart (looked at 2026-10-01).
+  // The subject is said once, in the ticket's own head.
   live var queueId = IdAfter(view, "q-");
   live var queueNames = Queue.Where(q => q.Id == queueId).Select(q => q.Name).ToList();
   live var where = queueNames.Count > 0 ? queueNames[0] : (view.StartsWith("v-") ? "Saved view" : BuiltInNamed(view).Label);
@@ -213,8 +213,7 @@ component TicketView(Ticket t, string here) {
       Row(gap: 0, align: Align.Stretch, grow: 1, minH: "0") {
         // A TICKET READS TOP-DOWN, like a letter: the request under the head, the replies after it, and the composer
         // straight after the last of them — so a short thread leaves its air BELOW the reply box, never as a void
-        // between the head and the first message (polish slice 2; slice 1 had the thread sitting on a bottom-pinned
-        // composer, chat-style, and a two-message ticket opened on a blank band). A long thread scrolls with the
+        // between the head and the first message. A long thread scrolls with the
         // composer held at the foot of the pane (sticky) and opens on its newest message (`stickToBottom`).
         if (kept) {
           Stack(gap: 0, grow: 1, minW: "0", minH: "0", overflowY: Overflow.Auto, bg: Colors.Bg) { KeptConversation(t); }
@@ -452,7 +451,7 @@ component CustomerPanel(Ticket t, Guid requesterId, Guid companyId, string here,
         }
       }
 
-      // What the desk keeps about them and their company, in its own fields — edited here (H1b).
+      // What the desk keeps about them and their company, in its own fields — edited here.
       PartyFields(requesterId, companyId);
 
       CustomerRecord(requesterId, opened.Party);

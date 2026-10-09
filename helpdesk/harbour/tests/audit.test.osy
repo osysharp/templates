@@ -1,6 +1,6 @@
 // THE AUDIT LOG (H13) — an admin reads who changed the desk's settings and somebody's access, with the values; nobody
 // else reads it; and the trail it reads is opened for the settings alone, never a customer's or an account's rows.
-// `osy test --pixels` photographs it (Ui.Shot); Docs/OsySharp/design/helpdesk/hardening/ keeps the shots.
+// `osy test --pixels` photographs it (Ui.Shot).
 using Osysharp.Identity;
 using Osysharp.Accounts;
 using Osysharp.Organizations;

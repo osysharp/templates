@@ -2,7 +2,7 @@
 // note seats them and tells them; the customer writing again tells whoever holds or follows the ticket; the inbox's
 // offers, hand-overs and promises reach the teammate it names. Never about a ticket somebody may not open, and said in
 // the language each teammate reads the desk in. `osy test --pixels` photographs the bell, the mention menu and the
-// digest mail (Docs/OsySharp/design/notifications/).
+// digest mail.
 using Osysharp.Identity;
 using Osysharp.Organizations;
 using Osysharp.Organizations.Accounts;
@@ -147,7 +147,7 @@ void MentionedThenHandedOver() {
   Background.Settle();
 }
 
-// D-RTL2 Q2 (e) — a notification is facts, said in the language of whoever reads it (in Swedish and Arabic in
+// a notification is facts, said in the language of whoever reads it (in Swedish and Arabic in
 // tests/languages/).
 [Test(Bells)]
 void a_notification_is_said_in_the_language_its_teammate_reads_the_desk_in() {
@@ -254,10 +254,10 @@ void the_daily_digest_mail_names_what_was_not_read() {
   Ui.Shot("notifications-digest-mail", mail!);
 }
 
-// ── what it costs (D-COMPOSE1 S1) ─────────────────────────────────────────────────────────────────────────────────────
+// ── what it costs ─────────────────────────────────────────────────────────────────────────────────────
 //
 // The bell asks three things about every record a notification names — may this teammate read it, what is its line,
-// where does it open. They are the record's own facts now (D-COMPOSE1 S1): the tickets are read as their reader, all of
+// where does it open. They are the record's own facts now: the tickets are read as their reader, all of
 // them together, and the line and the link come off the rows in hand. These hold what that costs, so asking per
 // notification instead of once per kind of record turns them red, with both numbers in the message.
 
@@ -284,8 +284,7 @@ void reading_the_bell_stays_within_its_budget() {
     var mark = Cost.Mark();
     var lines = MyNotificationLines();
     Assert.Equal(4, lines.Count);
-    // Measured 4 after D-COMPOSE1 S1 — 20 before, when the desk's topic asked MayRead, Title and Link of each ticket,
-    // one by one.
+    // The budget is this step's measured cost, with the margin the assertion states.
     Assert.AtMost(4, Cost.StatementsSince(mark));
   }
 }
@@ -300,7 +299,7 @@ void delivering_one_notification_stays_within_its_budget() {
   var mark = Cost.Mark();
   Background.Settle();
   runas (Rahul) { Assert.Equal(1, UnreadNotifications()); }
-  // Measured 76 before D-COMPOSE1 S1 and after it: the delivery asks the record's security as the topic did.
+  // The budget is this step's measured cost, with the margin the assertion states.
   Assert.AtMost(76, Cost.StatementsSince(mark));
 }
 
@@ -313,7 +312,7 @@ void opening_the_bell_on_the_desk_stays_within_its_request_budget() {
   var mark = Cost.Mark();
   Ui.Click("Notifications, 4 new");
   Assert.Visible("Ines Moreau mentioned you in a note.", within: "Notification list");
-  // Measured after D-COMPOSE1 S1: 2 requests, 1 server call, 49 statements (62 before).
+  // The budget is this step's measured cost, with the margin the assertion states.
   Assert.AtMost(2, Cost.RequestsSince(mark));
   Assert.AtMost(1, Cost.ServerCallsSince(mark));
   Assert.AtMost(49, Cost.StatementsSince(mark));

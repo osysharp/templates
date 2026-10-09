@@ -3,8 +3,7 @@
 // ⛔ IT LIVES UNDER `tests/`, AND THAT IS THE GATE. Harbour is Osyrin's own support desk: real people's questions and
 //   bug reports. Code under `tests/` is compiled only into a test run's throwaway branch, never into what `osy compile`
 //   deploys — so a production desk has no function that could fill it with invented customers and tickets, by any
-//   caller, through any door (the API, `osyrin run`, a page). It sat in `model/` as a public function until 2026-10-02,
-//   where any admin could have called it on the live desk. Guarded by HarbourShipsNoSampleDataTests.
+//   caller, through any door (the API, `osyrin run`, a page).
 //   A test calls it as `SeedDemoDesk(n)` inside a `runas` of a desk admin; the memory harness fills a desk by running
 //   one of those tests (`--seed demo/helpdesk:<test>:N`).
 //
@@ -106,7 +105,7 @@ List<Request> Requests() {
     R("{browser} shows a blank page after login", "Since {weekday}, logging in from {browser} shows a blank page. Other browsers work.", "An extension in {browser} was blocking our script. Allowing our domain in it fixes the blank page; details below.", "Ad-blocker list update. Asked the list maintainers to whitelist us.", "bug", "problem"),
     R("Tax rate for {country} is out of date", "Checkout still charges the old tax rate for {country}.", "The {country} rate changed on the 1st and your manual override kept the old one. I've removed the override; the current rate applies now.", "", "tax", "problem"),
     R("Reports are slow for the {team} team", "Opening any report takes over {n} seconds for the {team} team since Monday.", "Their reports were reading a full year by default. I've set them to the last 90 days, and they open in a second or two.", "", "performance", "problem"),
-    // ── added in polish slice 2: a desk sees more kinds of request than forty, and some far more often than others ──
+    // ── a desk sees more kinds of request than forty, and some far more often than others ──
     R("Receipt for order {order} for the {month} close", "Our finance team needs a receipt for order {order} for the {month} close. The order page only shows the invoice.", "I've attached the receipt for {order}. You can download any receipt yourself under Orders, Receipts, too.", "", "billing", "question", 3),
     R("Discount code {code} not applying at checkout", "Customers tell us the code {code} says 'not valid' at checkout, though it runs until the end of {month}.", "{code} was set to new customers only. I've opened it to everyone; it works at checkout now.", "Campaign set up with the wrong audience. Not a bug.", "checkout", "problem", 2),
     R("{person} locked out after too many attempts", "{person} typed an old password a few times and is now locked out. Can you let them back in?", "The lock lifts by itself after 30 minutes, but I've cleared it now; {person} can sign in again, and a reset link is on its way to them.", "", "login", "problem", 3),

@@ -199,7 +199,7 @@ void a_customer_writing_after_her_ticket_was_closed_opens_a_follow_up_that_says_
   }
 }
 
-// ── item 12 / D-DATASUBJECT1: the desk's own rows are a holder of their own, by name ──
+// ── the desk's own rows are a holder of their own, by name ──
 
 [Test(Office)]
 void the_desks_own_notes_and_form_answers_are_in_her_plan_by_name_and_go_with_her() {
@@ -208,7 +208,7 @@ void the_desks_own_notes_and_form_answers_are_in_her_plan_by_name_and_go_with_he
     var field = new TicketField { Name = "Order number", Kind = FieldKind.Text, Public = true, Position = 0 };
     // …and a detail the TEAM filled in on her ticket — no form asked her, so nothing but her erasure blanks it.
     var account = new TicketField { Name = "Account note", Kind = FieldKind.Text, Position = 1 };
-    // …and what the team keeps about HER in its own customer fields (H1b) — personal data of its own category.
+    // …and what the team keeps about HER in its own customer fields — personal data of its own category.
     var plan = new CustomerField { Name = "Their plan", Kind = FieldKind.Text, Position = 0 };
     UnitOfWork.Commit();
     SetTicketField(id, field.Id, "Order OKAPI77");
@@ -248,7 +248,7 @@ void the_desks_own_notes_and_form_answers_are_in_her_plan_by_name_and_go_with_he
     Assert.NoTraceOf("WALRUS42");
     Assert.Contains("What our team wrote on your tickets", PrivacyRequest.Single(x => x.Id == r.Id).Response);
     Assert.NoTraceOf("GECKO9");
-    // D-RTL2 Q2 — the timeline kept her answer as a FACT, classified, so it went with her too; the line keeps its place
+    // the timeline kept her answer as a FACT, classified, so it went with her too; the line keeps its place
     // and says what changed, without her words.
     Assert.NoTraceOf("OKAPI77");
     var lines = ConversationEvent.Where(e => e.Conversation == t.Conversation && e.Kind == "helpdesk.field")
@@ -272,7 +272,7 @@ void her_access_request_exports_the_desks_own_rows_about_her() {
     Assert.Equal(PlanOutcome.Export, PlanLine.Single(l => l.Request.Id == r.Id && l.Category == "harbour.customer-details").Outcome);
     ApproveRequest(PrivacyRequest.Single(x => x.Id == r.Id));
     Assert.Contains("Refunded in full on the 3rd.", ExportOf(PrivacyRequest.Single(x => x.Id == r.Id)));
-    // …and what the team keeps about her in its own fields (H1b), by value.
+    // …and what the team keeps about her in its own fields, by value.
     Assert.Contains("Pays yearly", ExportOf(PrivacyRequest.Single(x => x.Id == r.Id)));
   }
 }
@@ -411,7 +411,7 @@ void a_hold_placed_from_the_ticket_is_reviewed_on_the_inbox_when_its_date_comes(
   Ui.Shot("hold-review-kept-phone");
 }
 
-// ── one customer's request, end to end, as osyrin.com's privacy page shows it (D-SITEPRIVACY1) ──
+// ── one customer's request, end to end, as osyrin.com's privacy page shows it ──
 //
 // Hanna has a complaint and a question on the desk, and the team wrote down what went wrong on the complaint. An admin
 // files her erasure from the ticket: the plan names every kind of data the desk holds about her — the kits' and the

@@ -22,8 +22,7 @@ The articles are data, so they travel with `osy import` (the manifest's `data "d
 `data/help/`). An import is an ordinary write, so it runs as one of the desk's own accounts:
 
 - **Categories and sections** need `ManagesKnowledge` (an admin). Harbour's admins sign in with a second step, which
-  `--as` cannot give (measured 2026-10-05: *"that account signs in with a second step … which `--as` cannot give"*).
-  So an admin makes the four categories and their sections on **Knowledge base › Categories**, with the slugs and the
+  `--as` does not give, so an admin makes the four categories and their sections on **Knowledge base › Categories**, with the slugs and the
   three languages' names in `shelves.json`. A later import finds them by slug and leaves them alone.
 - **Articles and their versions** need `WritesKnowledge`: import as a teammate (an Agent), whose account has no second
   step.

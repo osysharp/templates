@@ -117,7 +117,7 @@ void a_block_only_one_look_draws_is_listed_before_the_switch() {
   }
   // At the desk: choosing the Kiosk lists it first, and nothing moves until staff say so.
   Ui.Viewport(1440, 900);
-  SignIn("/staff/pages");
+  SignInAsStaffTo("/staff/pages");
   Assert.Visible("Versions of the site");
   Ui.Click("Kiosk", within: "Look");
   Assert.Visible("How a piece gets here in front — this look has no design for it.");

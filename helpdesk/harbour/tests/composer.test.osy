@@ -115,7 +115,7 @@ void the_composers_keys_and_the_tag_key_are_on_the_sheet() {
   Ui.Shot("ticket-keys-sheet");
 }
 
-/// D-SHORTCUTS1 — where the Inbox and the Composer meet, every key presses exactly ONE control. With the list's rows
+/// where the Inbox and the Composer meet, every key presses exactly ONE control. With the list's rows
 /// selected the Inbox's "Move to…" holds M, the Composer's macros hold Shift+M (the desk's choice), and the `?` sheet
 /// lists both, each under its own key; M opens the move, never the macros, whichever mounted last.
 [Test(Floor)]

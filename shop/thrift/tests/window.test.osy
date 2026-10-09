@@ -3,6 +3,7 @@
 // designs are compared over the same pieces. Written out from the data files; the photographs are the store's own
 // (public/products).
 
+using Osysharp.Identity;
 using Osysharp.Shop;
 
 [TestFixture]
@@ -119,5 +120,5 @@ void Window() {
   new ProductImage { Product = p_tortoiseshell_cat_eye_sunglasses, Path = "public/products/tortoiseshell_sunglasses_2.jpg", Alt = "Front view of the sunglasses", Rank = 1 };
   new ProductImage { Product = p_linen_market_tote, Path = "public/products/linen_market_tote.jpg", Alt = "The brown linen tote hanging among clothes in a second-hand shop", Rank = 0 };
   var linn = new ShopAccount { Email = "linn@secondround.test", PasswordHash = Security.HashPassword("desk-pass-1") };
-  new ShopRoleGrant { Member = linn, Role = ShopRole.Staff };
+  new RoleGrant { Member = linn, Role = ShopRole.Staff };
 }

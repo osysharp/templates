@@ -10,9 +10,8 @@ void Said(string page, string mark) {
     + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips");
 }
 
-// ⚑ MEASURED 2026-10-07 (D-COMPOSE1 S5), twice each, BEFORE and AFTER the knowledge base's pages and the settings area moved
-//   into the desk's shell by `WorkspaceShell` and the rail started listing `[Nav]` pages (`Nav.Pages()`) — the requests and
-//   server calls were identical, and the statements moved inside the runs' own spread:
+// ⚑ WHAT EACH PAGE ASKS, with the knowledge base's pages and the settings area in the desk's shell (`WorkspaceShell`)
+//   and the rail listing `[Nav]` pages (`Nav.Pages()`):
 //     inbox 3 requests · 1 call · 44–45 statements (after 44–45)      knowledge 2 · 0 · 18–19 (after 17–19)
 //     settings 1 · 0 · 11–12 (after 11–12)                            reports 4 · 2 · 48–49 (after 47–49)
 //   Requests and calls are held EXACTLY — a slot or a nav row that adds one is the failure this file exists to catch — and

@@ -12,7 +12,7 @@ app Helpdesk {
   use Osysharp.ServiceHours;
   // Sign-in, two-step sign-in for leads and admins, and the accounts the team and the customers sign in with.
   use Osysharp.Identity@0;
-  use Osysharp.Accounts@0;
+  use Osysharp.Accounts@1;
   // The fields the desk keeps on a ticket, a customer and a company, and the forms that ask a ticket's — an admin's to
   // define on Settings › Fields and forms (model/config.osy, model/fields.osy).
   use Osysharp.Fields@0;

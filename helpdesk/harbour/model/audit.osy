@@ -12,8 +12,7 @@
 //   value, for every row of every entity — is read only by an admin, and only for the settings types named in the read
 //   rule. Widening the rule to "admins" alone hands an admin every customer's messages and contact points, every
 //   account's rows and every role grant as a values diff; dropping the admin half hands it to the whole team. Guarded by
-//   tests/audit.test.osy (the_trail_opens_to_admins_and_for_the_settings_alone — red with the type list removed,
-//   2026-10-04: an admin then read 14 records of accounts, customers and grants).
+//   tests/audit.test.osy (the_trail_opens_to_admins_and_for_the_settings_alone).
 using Osysharp.Identity;
 using Osysharp.Accounts;
 using Osysharp.People;

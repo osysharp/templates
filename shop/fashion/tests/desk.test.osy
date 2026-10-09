@@ -1,5 +1,7 @@
 // Vall's back office, through its pages — what staff see on an ordinary day. `osy test --pixels` photographs each.
 
+using Osysharp.Accounts;
+using Osysharp.Identity;
 using Osysharp.Shop;
 using Osysharp.Workflow;
 
@@ -14,7 +16,7 @@ void Day() {
   Stock("Cotton V-neck cardigan", "cotton-v-neck-cardigan", knitwear, 990m, "");
   Stock("Chunky rib cardigan", "chunky-rib-cardigan", knitwear, 1190m, "");
   var ida = new ShopAccount { Email = "ida@vall.test", PasswordHash = Security.HashPassword("desk-pass-1") };
-  new ShopRoleGrant { Member = ida, Role = ShopRole.Staff };
+  new RoleGrant { Member = ida, Role = ShopRole.Staff };
 }
 
 void Stock(string name, string slug, Category category, decimal price, string photo) {
@@ -61,7 +63,7 @@ void Advance(List<string> day) {
   MarkDelivered(d); Workflow.Settle(d);
 }
 
-void SignIn(string page) {
+void SignInAsStaffTo(string page) {
   Ui.Visit(page);
   Ui.Fill("Email", "ida@vall.test");
   Ui.Fill("Password", "desk-pass-1");
@@ -72,7 +74,7 @@ void SignIn(string page) {
 void the_desk_on_a_working_day() {
   var day = AWorkingDay();
   runas (Staff) { Advance(day); }
-  SignIn("/staff/desk");
+  SignInAsStaffTo("/staff/desk");
   Assert.Hidden("Payment received");      // "All" shows each order's Details only
   Ui.Click("Waiting for payment");
   Assert.Visible("Payment received");
@@ -86,7 +88,7 @@ void the_desk_on_a_working_day() {
 void the_orders_page_on_a_working_day() {
   var day = AWorkingDay();
   runas (Staff) { Advance(day); }
-  SignIn("/staff/orders");
+  SignInAsStaffTo("/staff/orders");
   Assert.Visible("Elin Holm");
   Ui.Click("To pick");
   Assert.Visible("Send…");
@@ -96,7 +98,7 @@ void the_orders_page_on_a_working_day() {
 void the_books_on_a_working_day() {
   var day = AWorkingDay();
   runas (Staff) { Advance(day); }
-  SignIn("/staff/books");
+  SignInAsStaffTo("/staff/books");
   Assert.Visible("SIE 4 for the accountant");
   Assert.Visible("VAT 1023.80");                  // four paid orders, 25 % inside 5 119 kr (one paid delivery)
 }

@@ -3,7 +3,7 @@
 // page by form and condition, checked on the server, shown and edited on the ticket and in its customer panel with every
 // ticket change on its timeline, and named by a saved view — is model/fields.osy.
 //
-// ⚑ THE MECHANISM IS Osysharp.Fields' (H1b, 2026-10-05) — the bases, the rules both sides ask, the editor and the settings
+// ⚑ THE MECHANISM IS Osysharp.Fields' — the bases, the rules both sides ask, the editor and the settings
 //   sections. The desk declares, per kind of record, its own field type and its own value type carrying the FK, so an
 //   answer's security IS its record's: "the customer reads what they were asked, on their own tickets" is one hop.
 //

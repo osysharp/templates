@@ -14,40 +14,48 @@ component AccountRoom() {
 }
 
 [Title("Sign in — Rust & Chrome")]
-[Route("/account/sign-in")]
+[Route("/login")]
 [Layout(Shop)]
 [AllowAnonymous]
-component AccountSignIn() {
+component SignInPage() {
   render { AccountRoom() { ShopSignIn(); } }
 }
 
 [Title("Create an account — Rust & Chrome")]
-[Route("/account/new")]
+[Route("/sign-up")]
 [Layout(Shop)]
 [AllowAnonymous]
-component AccountNew() {
+component SignUpPage() {
   render { AccountRoom() { ShopSignUp(); } }
 }
 
 [Title("Forgotten password — Rust & Chrome")]
-[Route("/account/forgot")]
+[Route("/forgot-password")]
 [Layout(Shop)]
 [AllowAnonymous]
-component AccountForgot() {
+component ForgotPasswordPage() {
   render { AccountRoom() { ShopForgotPassword(); } }
 }
 
 [Title("New password — Rust & Chrome")]
-[Route("/account/reset/{token}")]
+[Route("/reset-password/{token}")]
 [Layout(Shop)]
 [AllowAnonymous]
-component AccountReset(string token) {
+component ResetPasswordPage(string token) {
   render { AccountRoom() { ShopChooseNewPassword(token); } }
+}
+
+[Title("Confirm your address — Rust & Chrome")]
+[Route("/verify-email/{token}")]
+[Layout(Shop)]
+[AllowAnonymous]
+component VerifyEmailPage(string token) {
+  render { AccountRoom() { ShopConfirmAddress(token); } }
 }
 
 [Title("Your account — Rust & Chrome")]
 [Route("/account")]
 [Layout(Shop)]
-component AccountHome() {
+component AccountPage() {
   render { AccountRoom() { ShopAccountPanel(); } }
 }

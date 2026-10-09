@@ -1,5 +1,7 @@
 // Second Round's back office, through its pages — what staff see on an ordinary day. `osy test --pixels` photographs each.
 
+using Osysharp.Accounts;
+using Osysharp.Identity;
 using Osysharp.Shop;
 using Osysharp.Workflow;
 
@@ -18,7 +20,7 @@ void Day() {
   Piece("Terracotta canvas overshirt", "terracotta-canvas-overshirt", jackets, 420m, "S");
   Piece("Rose print tea dress", "rose-print-tea-dress", dresses, 520m, "S");
   var linn = new ShopAccount { Email = "linn@secondround.test", PasswordHash = Security.HashPassword("desk-pass-1") };
-  new ShopRoleGrant { Member = linn, Role = ShopRole.Staff };
+  new RoleGrant { Member = linn, Role = ShopRole.Staff };
 }
 
 void Piece(string name, string slug, Category category, decimal price, string size) {
@@ -63,7 +65,7 @@ void Advance(List<string> day) {
   MarkDelivered(d); Workflow.Settle(d);
 }
 
-void SignIn(string page) {
+void SignInAsStaffTo(string page) {
   Ui.Visit(page);
   Ui.Fill("Email", "linn@secondround.test");
   Ui.Fill("Password", "desk-pass-1");
@@ -74,7 +76,7 @@ void SignIn(string page) {
 void the_desk_on_a_working_day() {
   var day = AWorkingDay();
   runas (Staff) { Advance(day); }
-  SignIn("/staff/desk");
+  SignInAsStaffTo("/staff/desk");
   Assert.Hidden("Payment received");      // "All" shows each order's Details only
   Ui.Click("Waiting for payment");
   Assert.Visible("Payment received");
@@ -88,7 +90,7 @@ void the_desk_on_a_working_day() {
 void the_orders_page_on_a_working_day() {
   var day = AWorkingDay();
   runas (Staff) { Advance(day); }
-  SignIn("/staff/orders");
+  SignInAsStaffTo("/staff/orders");
   Assert.Visible("Elin Holm");
   Ui.Click("To pick");
   Assert.Visible("Send…");
