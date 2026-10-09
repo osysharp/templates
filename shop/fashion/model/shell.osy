@@ -1,0 +1,87 @@
+// What the store's pages are, whichever look draws them: the frame around every page, the front, the listings and a
+// piece's own page. Each reads what the STORE reads — the data, the head a search engine gets — and hands the look what
+// it draws. The look is the site version's (the page desk); until staff choose one, it is Atelier.
+
+using Osysharp.Shop;
+using Osysharp.Shop.Looks;
+
+app.DefaultCulture = "sv-SE";
+app.Look = Atelier;
+
+[Layout]
+[AllowAnonymous]
+component Shop() {
+  render { ShopFrame { Outlet(retain: 8); } }
+}
+
+[Title("Vall — clothing, shoes and accessories")]
+[Route("/")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Home() {
+  render { FrontPage(); }
+}
+
+[Title("New in — Vall")]
+[Route("/shop")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component AllProducts() {
+  live var products = Product.Include(p => p.Images).Include(p => p.Variants)
+    .Where(p => p.Status == ProductStatus.Listed).OrderBy(p => p.Rank).ToList();
+  live var tops = Category.Where(c => c.Parent == null).OrderBy(c => c.Rank).ToList();
+
+  render {
+    ListingPage("New in", "Everything in the shop, newest first.", products, tops, "") { slot empty { RestockButton(); } }
+  }
+}
+
+[Title("Shop — Vall")]
+[Route("/shop/{slug}")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Shelf(string slug) {
+  live var shelf = Category.Include(c => c.Children).SingleOrDefault(c => c.Slug == slug);
+  // The shelf itself, or any shelf under it (two levels: Shoes › Boots).
+  live var products = Product.Include(p => p.Images).Include(p => p.Variants)
+    .Where(p => p.Status == ProductStatus.Listed
+             && (p.Category.Slug == slug || p.Category.Parent.Slug == slug))
+    .OrderBy(p => p.Rank).ToList();
+  live var siblings = Category.Where(c => c.Parent.Slug == slug).OrderBy(c => c.Rank).ToList();
+
+  render {
+    if (shelf == null) {
+      NotFound("Nothing on that shelf.");
+    } else {
+      ListingPage(shelf.Name, shelf.Blurb ?? "", products, siblings, slug) { slot empty { RestockButton(); } }
+    }
+  }
+}
+
+[Title("Vall")]
+[Route("/p/{slug}")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Piece(string slug) {
+  live var product = Product.Include(p => p.Images).Include(p => p.Variants).Include(p => p.Specs).Include(p => p.Category)
+    .SingleOrDefault(p => p.Slug == slug);
+
+  // What a search engine and a shared link read — computed on the server from this product (the kit's helpers).
+  head {
+    Title = product == null ? "Not found" : ProductHeadTitle(product, TheShop());
+    Description = product == null ? null : ProductHeadDescription(product);
+    Canonical = product == null ? null : ProductUrl(product);
+    Image = product == null ? null : ProductHeadImage(product);
+    NoIndex = product == null || product.Status != ProductStatus.Listed;
+    StructuredData = product == null ? null : ProductStructuredData(product);
+  }
+
+  render { ProductPage(product, note: "Free delivery over 1,000 kr · returns within 30 days."); }
+}
+
+// The entrance every page of the store makes, whichever look draws it.
+animation RiseIn { Duration = "620ms"; Easing = EaseOut; from { Opacity = 0; TranslateY = "18px"; } to { Opacity = 1; TranslateY = "0"; } }

@@ -1,0 +1,72 @@
+{
+  "format": "osy-template/1",
+  "languages": {
+    "source": "en",
+    "speaks": [
+      "sv",
+      "ar"
+    ]
+  },
+  "providers": {
+    "default": "anthropic",
+    "choices": [
+      {
+        "key": "anthropic",
+        "label": "Anthropic (Claude)",
+        "edits": [],
+        "note": "Translation and search by meaning start once you set the keys: osy secret set HarbourModel, osy secret set HarbourEmbedding."
+      },
+      {
+        "key": "openai",
+        "label": "OpenAI",
+        "edits": [
+          {
+            "file": "app.osy",
+            "find": "use Osysharp.Models.Anthropic@0 { egress \"api.anthropic.com\"; }",
+            "replace": "use Osysharp.Models.OpenAi@0 { egress \"api.openai.com\"; }"
+          },
+          {
+            "file": "model/language_and_search.osy",
+            "find": "using Osysharp.Models.Anthropic;\n\n// The model that translates — the desk's default model, on the desk's own key.\napp.DefaultModel = new LlmConfig {\n  Client = new AnthropicClient { ApiKey = Secret.HarbourModel },\n  Model  = \"claude-haiku-4-5\",\n};\n",
+            "replace": "using Osysharp.Models.OpenAi;\n\n// The model that translates — the desk's default model, on the desk's own key.\napp.DefaultModel = new LlmConfig {\n  Client = new OpenAiClient { ApiKey = Secret.HarbourModel },\n  Model  = \"gpt-5-mini\",\n};\n"
+          }
+        ],
+        "note": "Translation and search by meaning start once you set the keys: osy secret set HarbourModel, osy secret set HarbourEmbedding."
+      },
+      {
+        "key": "gemini",
+        "label": "Google Gemini",
+        "edits": [
+          {
+            "file": "app.osy",
+            "find": "use Osysharp.Models.Anthropic@0 { egress \"api.anthropic.com\"; }",
+            "replace": "use Osysharp.Models.Gemini@0 { egress \"generativelanguage.googleapis.com\"; }"
+          },
+          {
+            "file": "model/language_and_search.osy",
+            "find": "using Osysharp.Models.Anthropic;\n\n// The model that translates — the desk's default model, on the desk's own key.\napp.DefaultModel = new LlmConfig {\n  Client = new AnthropicClient { ApiKey = Secret.HarbourModel },\n  Model  = \"claude-haiku-4-5\",\n};\n",
+            "replace": "using Osysharp.Models.Gemini;\n\n// The model that translates — the desk's default model, on the desk's own key.\napp.DefaultModel = new LlmConfig {\n  Client = new GeminiClient { ApiKey = Secret.HarbourModel },\n  Model  = \"gemini-2.5-flash\",\n};\n"
+          }
+        ],
+        "note": "Translation and search by meaning start once you set the keys: osy secret set HarbourModel, osy secret set HarbourEmbedding."
+      },
+      {
+        "key": "none",
+        "label": "None — no model",
+        "edits": [
+          {
+            "file": "app.osy",
+            "find": "  use Osysharp.Models.Anthropic@0 { egress \"api.anthropic.com\"; }\n",
+            "replace": ""
+          },
+          {
+            "file": "model/language_and_search.osy",
+            "find": "using Osysharp.Models.Anthropic;\n\n// The model that translates — the desk's default model, on the desk's own key.\napp.DefaultModel = new LlmConfig {\n  Client = new AnthropicClient { ApiKey = Secret.HarbourModel },\n  Model  = \"claude-haiku-4-5\",\n};\n",
+            "replace": ""
+          }
+        ],
+        "note": "No model: messages are not translated (each ticket says so), and search matches words. Add one later with a Osysharp.Models package."
+      }
+    ]
+  }
+}

@@ -14,7 +14,7 @@ component AccountRoom() {
 }
 
 [Title("Sign in — Rust & Chrome")]
-[Page("/account/sign-in")]
+[Route("/account/sign-in")]
 [Layout(Shop)]
 [AllowAnonymous]
 component AccountSignIn() {
@@ -22,7 +22,7 @@ component AccountSignIn() {
 }
 
 [Title("Create an account — Rust & Chrome")]
-[Page("/account/new")]
+[Route("/account/new")]
 [Layout(Shop)]
 [AllowAnonymous]
 component AccountNew() {
@@ -30,7 +30,7 @@ component AccountNew() {
 }
 
 [Title("Forgotten password — Rust & Chrome")]
-[Page("/account/forgot")]
+[Route("/account/forgot")]
 [Layout(Shop)]
 [AllowAnonymous]
 component AccountForgot() {
@@ -38,7 +38,7 @@ component AccountForgot() {
 }
 
 [Title("New password — Rust & Chrome")]
-[Page("/account/reset/{token}")]
+[Route("/account/reset/{token}")]
 [Layout(Shop)]
 [AllowAnonymous]
 component AccountReset(string token) {
@@ -46,7 +46,7 @@ component AccountReset(string token) {
 }
 
 [Title("Your account — Rust & Chrome")]
-[Page("/account")]
+[Route("/account")]
 [Layout(Shop)]
 component AccountHome() {
   render { AccountRoom() { ShopAccountPanel(); } }

@@ -1,0 +1,113 @@
+// THE DESK ON THE INBOX — what the helpdesk tells Osysharp.Inbox, and what it adds to it.
+//
+// The kit owns where a ticket waits (queues), who has it (taking, handing on, round robin, account routing, cover), what
+// it was promised (SLA policies in business hours, paused while waiting, at risk, breached) and the screens a team works
+// it from. The desk says four things here: who works the inbox, which of its events go on a ticket's timeline, what
+// its own saved-view filters and routing actions mean, and the words its promises are called by. What the inbox raises
+// reaches the desk's automations and webhooks by itself, and the people it names their bell (Osysharp.Inbox.Notifications).
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Automations;
+
+// Who works the inbox, leads it and administers it — the desk's own roles.
+policy WorksInbox => IsAgent;
+policy LeadsInbox => IsLead;
+policy AdministersInbox => IsAdmin;
+
+app.Inbox = new InboxSetup {
+  DefaultQueue = "Support",
+  Views = new DeskViews(),
+  Routing = new DeskRouting(),
+  Words = new DeskWords(),
+  // How two tickets are linked — related, a duplicate, a cause, an incident of a problem, a split (relations.osy).
+  Links = new DeskLinks(),
+};
+
+/// What the inbox does to a ticket, on the ticket's own timeline — "Ines handed it to Rahul.", "First reply time was
+/// missed.", "Priority Normal → High." — so a ticket says why it is where it is without a second history. Kept as the
+/// inbox's own event (`InboxLine`), said in the reader's language when read (timeline.osy).
+[On]
+[Interest(nameof(InboxNews))]
+void InboxOnTheTimeline(Event e) {
+  var about = Events.About(e);
+  if (!IsInboxEvent(e) || NotNews(e)) { return; }
+  if (about is Ticket t) { InboxLine(t.Conversation, e); }
+}
+
+/// The inbox's events that can be news on a ticket — every one of its own but the five that never are (`NotNews` decides
+/// the rest one by one). What the timeline hears, so a ticket's arrival in the inbox is not even written.
+List<string> InboxNews() {
+  var own = typeof(ItemArrived).FullName;
+  var space = own.Substring(0, own.LastIndexOf(".") + 1);
+  List<string> never = [typeof(ItemArrived).FullName, typeof(ItemQueued).FullName, typeof(ItemPooled).FullName,
+                        typeof(ItemCancelled).FullName, typeof(PromiseMet).FullName];
+  List<string> news = [];
+  foreach (var info in Events.Catalog()) {
+    var type = info.Type;
+    if (type.StartsWith(space) && !type.Substring(space.Length).Contains(".") && !never.Contains(type)) { news.Add(type); }
+  }
+  return news;
+}
+
+/// The inbox's bookkeeping — it arrived, it landed in a queue, it waits in the pool, it was cancelled, a promise was kept
+/// — is not a line anybody reads twice; landing somewhere because a rule said so is (`ItemRouted`). Nor is a split's
+/// link, which only repeats the desk's own lines (relations.osy).
+bool NotNews(Event e) {
+  if (e is ItemArrived || e is ItemQueued || e is ItemPooled || e is ItemCancelled || e is PromiseMet) { return true; }
+  if (e is ItemLinked linked) { return linked.Link == "split"; }
+  if (e is ItemUnlinked unlinked) { return unlinked.Link == "split"; }
+  return false;
+}
+
+/// The desk's own filters for a saved view, as an admin writes them on Settings › Shared views: a word keeps the
+/// tickets tagged with it ("refund"); "status:on-hold" (any category's name, lower case with dashes) keeps the tickets
+/// in that category — On hold and Waiting on the customer told apart, where the inbox's own "Waiting" holds both;
+/// "field:product=mail" keeps the tickets whose Product is Mail, and "field:order-number" those with any answer to it
+/// (fields.osy `TicketsByField`).
+public class DeskViews : InboxViews {
+  public override List<Guid> Narrow(string appFilter) {
+    var f = appFilter.Trim().ToLower();
+    if (f.StartsWith("field:")) { return TicketsByField(appFilter.Trim().Substring(6)); }
+    if (f.StartsWith("status:")) {
+      var word = f.Substring(7).Trim();
+      foreach (var c in StatusCategory.Members) {
+        if (c.Label.ToLower().Replace(" ", "-") == word) { return Ticket.Where(t => t.Category == c).Select(t => t.Id).ToList(); }
+      }
+      return new List<Guid>();
+    }
+    var name = TagWord(f);
+    return TicketTag.Where(x => x.Tag.Name == name).Select(x => x.Ticket.Id).ToList();
+  }
+}
+
+/// A tag as an admin writes it — "Billing", "tag:refund", "vat line" — as the desk stores it: "billing", "refund",
+/// "vat-line".
+string TagWord(string written) {
+  var w = written.Trim().ToLower();
+  if (w.StartsWith("tag:")) { w = w.Substring(4).Trim(); }
+  return w.Replace(" ", "-");
+}
+
+/// What a routing rule's own action means on the desk — "Tag it" on Settings › Routing: the word labels the arriving
+/// ticket (the tag is made on first use), and the timeline says which rule did it.
+public class DeskRouting : InboxRouting {
+  public override void Act(WorkItem item, string appAction, string rule) {
+    var name = TagWord(appAction);
+    if (name == "") { return; }
+    if (item is Ticket t) {
+      var tag = Tag.FirstOrDefault(g => g.Name == name) ?? new Tag { Name = name };
+      if (!TicketTag.Any(x => x.Ticket == t && x.Tag == tag)) { new TicketTag { Ticket = t, Tag = tag }; }
+      TicketLine(t, "helpdesk.routed", new TicketFacts { Name = name, Rule = rule });
+    }
+  }
+}
+
+/// The desk's words for the three promises — what the clocks are called on a ticket and in the list.
+public class DeskWords : InboxWords {
+  public override string Metric(SlaMetric metric) {
+    if (metric == SlaMetric.FirstResponse) { return "first reply"; }
+    if (metric == SlaMetric.NextResponse) { return "next reply"; }
+    return "resolution";
+  }
+}

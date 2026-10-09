@@ -1,0 +1,277 @@
+// "HOW DID WE DO?" ON HARBOUR — a solved ticket mails its customer a real notice carrying the question; the answer lands
+// on the ticket's timeline in the reader's language; a bad one tells whoever holds the ticket and the leads; reopening
+// takes the question back; a problem's incidents each get their own notice; and the portal asks on a solved request.
+// `osy test --pixels` photographs the portal, the link page and the desk's results, in English and Arabic.
+using Osysharp.Identity;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Accounts;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Notifications;
+using Osysharp.Feedback;
+
+/// The desk, and Ada — an agent and the admin who reads what the desk sent.
+[TestFixture]
+void Solving() {
+  Desk();
+  var ada = new Agent { Email = "ada@helpdesk.test", DisplayName = "Ada Lund" };
+  new RoleGrant { Member = ada, Role = AppRole.Agent };
+  new RoleGrant { Member = ada, Role = AppRole.Admin };
+  JoinTheDesk(ada);
+}
+
+principal Ada    => Agent.Single(a => a.Email == "ada@helpdesk.test");
+
+/// What the desk sent to `address`, oldest first — read as the admin.
+class SentMail {
+  public string Subject = "";
+  public string Text = "";
+}
+
+List<SentMail> SentTo(string address) {
+  List<SentMail> found = [];
+  runas (Ada) {
+    found = KeptMail.Where(m => m.To == address).OrderBy(m => m.CreatedAt).ToList()
+      .Select(m => new SentMail { Subject = m.Subject, Text = m.Text }).ToList();
+  }
+  return found;
+}
+
+/// Olivia's request, opened and taken by Rahul, then solved by him with `summary`. Answers its id.
+Guid SolvedForOlivia(string subject, string summary = "") {
+  Guid id = Guid.Empty;
+  runas (Rahul) {
+    id = OpenTicket("olivia@larkspur.test", "", subject, "It has happened twice this week.");
+    TakeWork(Ticket.Single(t => t.Id == id), null);
+    SetStatus(id, TicketStatus.Single(s => s.Name == "Solved").Id, summary: summary);
+  }
+  Background.Settle();
+  return id;
+}
+
+/// The link the solve notice carried for the question about `ticketId` — made as the admin.
+FeedbackLink QuestionLinkOf(Guid ticketId) {
+  FeedbackLink? link = null;
+  runas (Ada) { link = FeedbackLink.For(FeedbackAsk.Single(a => a.About.Id == ticketId)); }
+  return link!;
+}
+
+/// What the ticket's timeline says, read as an agent in `language`.
+List<string> TimelineIn(Guid ticketId, string language) {
+  List<string> said = [];
+  runas (Ines) {
+    Session.SetLanguage(language);
+    said = LinesOf(Ticket.Single(t => t.Id == ticketId));
+    Session.SetLanguage("en");
+  }
+  return said;
+}
+
+[Test(Solving)]
+void a_solved_ticket_mails_its_customer_a_notice_that_asks_how_it_went() {
+  var id = SolvedForOlivia("Invoice PDF is blank", "We regenerated the invoice; the new PDF is attached to your account.");
+  var number = 0;
+  runas (Ines) { number = Ticket.Single(t => t.Id == id).Number; }
+  var mail = SentTo("olivia@larkspur.test").Single(m => m.Subject.Contains("is solved"));
+  Assert.Equal($"Your request #{number} is solved — Invoice PDF is blank", mail.Subject);
+  Assert.Contains("We regenerated the invoice; the new PDF is attached to your account.", mail.Text);
+  Assert.Contains("reply to this mail", mail.Text);
+  Assert.Contains("/feedback/g1.", mail.Text);
+  Assert.Contains("/good", mail.Text);
+  Assert.Contains("/bad", mail.Text);
+}
+
+[Test(Solving)]
+void the_answer_lands_on_the_timeline_said_in_the_readers_language() {
+  var id = SolvedForOlivia("Export to CSV drops the last row");
+  AnswerFeedbackByLink(QuestionLinkOf(id), FeedbackRating.Good, "Fixed within the hour — thank you.");
+  Background.Settle();
+  Assert.Contains("Olivia Brandt said it went well — “Fixed within the hour — thank you.”", TimelineIn(id, "en"));
+  runas (Ines) { Assert.Equal(FeedbackRating.Good, CustomerSaid(id)); }
+}
+
+[Test(Solving)]
+void a_bad_answer_tells_whoever_holds_the_ticket_and_the_leads() {
+  var id = SolvedForOlivia("Two-step code never arrives");
+  AnswerFeedbackByLink(QuestionLinkOf(id), FeedbackRating.Bad, "Still no code.");
+  Background.Settle();
+  runas (Rahul) { Assert.Contains(MyNotificationLines(), l => l.Sentence == "Olivia Brandt said it did not go well."); }
+  runas (Lena) { Assert.Contains(MyNotificationLines(), l => l.Sentence == "Olivia Brandt said it did not go well."); }
+  runas (Ines) { Assert.DoesNotContain(MyNotificationLines(), l => l.Sentence.Contains("did not go well")); }
+  Assert.Contains("Olivia Brandt said it did not go well — “Still no code.”", TimelineIn(id, "en"));
+}
+
+[Test(Solving)]
+void a_good_answer_tells_nobody() {
+  var id = SolvedForOlivia("Logo upload fails");
+  AnswerFeedbackByLink(QuestionLinkOf(id), FeedbackRating.Good);
+  Background.Settle();
+  runas (Rahul) { Assert.DoesNotContain(MyNotificationLines(), l => l.Sentence.Contains("go well")); }
+}
+
+[Test(Solving)]
+void the_portal_asks_on_a_solved_request_and_writing_again_takes_the_question_back() {
+  var id = SolvedForOlivia("Invoices go to the old address");
+  runas (Olivia) {
+    Assert.Equal(FeedbackStage.Open, MyFeedback(id)!.Stage);
+    CustomerReply(id, "It went to the old address again.");
+  }
+  runas (Olivia) { Assert.Equal(FeedbackStage.Withdrawn, MyFeedback(id)!.Stage); }
+  // Solved again: asked again.
+  runas (Rahul) { SetStatus(id, TicketStatus.Single(s => s.Name == "Solved").Id); }
+  Background.Settle();
+  runas (Olivia) { Assert.Equal(FeedbackStage.Open, MyFeedback(id)!.Stage); }
+  // …and the second notice is a mail of its own.
+  Assert.Equal(2, SentTo("olivia@larkspur.test").Count(m => m.Subject.Contains("is solved")));
+}
+
+[Test(Solving)]
+void a_problems_incidents_each_get_their_own_solved_notice_with_the_question() {
+  Guid one = Guid.Empty;
+  Guid two = Guid.Empty;
+  runas (Ines) {
+    var problem = OpenTicket("dev@orbit.test", "", "Carrier API is down", "");
+    one = OpenTicket("olivia@larkspur.test", "", "Labels will not print", "Nothing prints since 9:00.");
+    two = OpenTicket("sam@larkspur.test", "", "Tracking numbers missing", "No tracking numbers today.");
+    LinkWork(one, problem, "incident");
+    LinkWork(two, problem, "incident");
+    SolveProblem(problem, TicketStatus.Single(s => s.Name == "Solved").Id, "The carrier's API is back — labels and tracking work again.");
+  }
+  Background.Settle();
+  foreach (var address in new List<string> { "olivia@larkspur.test", "sam@larkspur.test" }) {
+    var notice = SentTo(address).Single(m => m.Subject.Contains("is solved"));
+    Assert.Contains("part of a wider problem", notice.Text);
+    Assert.Contains("The carrier's API is back — labels and tracking work again.", notice.Text);
+    Assert.Contains("/feedback/g1.", notice.Text);
+  }
+  runas (Olivia) { Assert.Equal(FeedbackStage.Open, MyFeedback(one)!.Stage); }
+  runas (Sam) { Assert.Equal(FeedbackStage.Open, MyFeedback(two)!.Stage); }
+}
+
+[Test(Solving)]
+void a_customer_reads_no_results_and_answers_nobody_elses_question() {
+  var id = SolvedForOlivia("Search misses archived orders");
+  runas (Sam) {
+    Assert.Null(MyFeedback(id));
+    Assert.Throws<Exception>(() => SummariseFeedback());
+  }
+}
+
+// ── on screen ────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Solving)]
+void a_solved_request_in_the_portal_says_what_was_done_and_asks_how_it_went() {
+  var id = SolvedForOlivia("Invoice PDF is blank", "We regenerated the invoice; the new PDF is attached to your account.");
+  var number = 0;
+  runas (Ines) { number = Ticket.Single(t => t.Id == id).Number; }
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Olivia);
+  Ui.Visit("/my/" + number);
+  Assert.Visible("We have solved this request");
+  Assert.Visible("We regenerated the invoice; the new PDF is attached to your account.");
+  Assert.Visible("How did we do?");
+  Ui.Shot("feedback portal solved wide light");
+  Ui.Click("Bad");
+  Ui.Fill("What went wrong? (optional)", "The PDF still shows last month's total.");
+  Ui.Click("Send comment");
+  Assert.Visible("Comment saved");
+  Ui.Shot("feedback portal answered wide light");
+  Ui.Theme("dark");
+  Ui.Shot("feedback portal answered wide dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Shot("feedback portal answered phone light");
+  Background.Settle();
+  runas (Ines) { Assert.Equal(FeedbackRating.Bad, CustomerSaid(id)); }
+}
+
+[Test(Solving)]
+void the_mails_link_opens_the_question_in_the_portal_for_somebody_not_signed_in() {
+  var id = SolvedForOlivia("Export to CSV drops the last row", "The export now includes every row.");
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/feedback/" + $"{QuestionLinkOf(id)}" + "/good");
+  Assert.Visible("Thank you for telling us");
+  Assert.Visible("Harbour Support");
+  Ui.Shot("feedback link good wide light");
+}
+
+[Test(Solving)]
+void a_link_that_has_run_out_says_so_in_the_portal() {
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/feedback/g1.not-a-real-link/good");
+  Assert.Visible("This link has run out");
+  Ui.Shot("feedback link gone wide light");
+}
+
+[Test(Solving)]
+void the_team_reads_what_customers_said() {
+  var good = SolvedForOlivia("Logo upload fails", "Uploads up to 10 MB work again.");
+  var bad = SolvedForOlivia("Two-step code never arrives");
+  AnswerFeedbackByLink(QuestionLinkOf(good), FeedbackRating.Good, "Quick and clear.");
+  AnswerFeedbackByLink(QuestionLinkOf(bad), FeedbackRating.Bad, "Still no code.");
+  Background.Settle();
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Lena);
+  Ui.Visit("/feedback");
+  Assert.Visible("50%");
+  Assert.Visible("Still no code.", within: "Comments");
+  Ui.Shot("feedback desk results wide light");
+}
+
+// ── what it costs (D-COMPOSE1 S1) ─────────────────────────────────────────────────────────────────────────────────────
+//
+// Feedback asks of every question's ticket whether its reader may read it and where it opens — the ticket's own facts
+// now (D-COMPOSE1 S1), read as the reader, the tickets together. These hold what that costs, so asking per comment
+// instead of once per kind of record turns them red, with both numbers in the message.
+
+/// Four of Olivia's requests solved and answered badly, each with a comment.
+void FourCommentsFromOlivia() {
+  foreach (var subject in new List<string> { "Logo upload fails", "Two-step code never arrives", "Search misses archived orders",
+                                             "Export to CSV drops the last row" }) {
+    AnswerFeedbackByLink(QuestionLinkOf(SolvedForOlivia(subject)), FeedbackRating.Bad, "Still broken: " + subject);
+  }
+  Background.Settle();
+}
+
+[Test(Solving)]
+void applying_an_answer_stays_within_its_budget() {
+  var id = SolvedForOlivia("Two-step code never arrives");
+  AnswerFeedbackByLink(QuestionLinkOf(id), FeedbackRating.Bad, "Still no code.");
+  var mark = Cost.Mark();
+  Background.Settle();
+  runas (Ines) { Assert.Equal(FeedbackRating.Bad, CustomerSaid(id)); }
+  // Measured 206 after D-COMPOSE1 S1 (205 before): the answer's ticket, its timeline line, two notifications delivered.
+  // 207 after S2: the answer is told as an event now (`FeedbackAnswered`) — its outbox row is written, read and marked
+  // delivered, and the desk's handler runs in a unit of work of its own; net +1.
+  Assert.AtMost(207, Cost.StatementsSince(mark));
+}
+
+[Test(Solving)]
+void reading_the_results_stays_within_its_budget() {
+  FourCommentsFromOlivia();
+  runas (Lena) {
+    SummariseFeedback();
+    var mark = Cost.Mark();
+    var summary = SummariseFeedback();
+    Assert.Equal(4, summary.Recent.Count);
+    // Measured 2 after D-COMPOSE1 S1 — 14 before, when the topic asked MayRead and Link of each comment's ticket, one
+    // by one.
+    Assert.AtMost(2, Cost.StatementsSince(mark));
+  }
+}
+
+[Test(Solving)]
+void opening_the_results_page_stays_within_its_request_budget() {
+  FourCommentsFromOlivia();
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Lena);
+  Ui.Visit("/v/mine");
+  var mark = Cost.Mark();
+  Ui.Visit("/feedback");
+  Assert.Visible("Still broken: Logo upload fails", within: "Comments");
+  // Measured after D-COMPOSE1 S1: 2 requests, 1 server call, 33 statements (43 before).
+  Assert.AtMost(2, Cost.RequestsSince(mark));
+  Assert.AtMost(1, Cost.ServerCallsSince(mark));
+  Assert.AtMost(33, Cost.StatementsSince(mark));
+}

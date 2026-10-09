@@ -1,10 +1,11 @@
+using Osysharp.Shop.Discounts;
 using Osysharp.Shop;
 using Osysharp.Storage;
 
 // Checkout: who you are, how the bike reaches you, how you pay — and then the reservation, with its reference.
 
 [Title("Checkout — Rust & Chrome")]
-[Page("/checkout")]
+[Route("/checkout")]
 [Layout(Shop)]
 [Render(CSR)]
 [AllowAnonymous]
@@ -17,38 +18,44 @@ component Checkout() {
   string name = "";
   string email = "";
   string phone = "";
-  Fulfilment fulfilment = Fulfilment.Collect;
-  Payment payment = Payment.BankTransfer;
-  bool cardOn = false;
-  bool klarnaOn = false;
+  string delivery = "";
+  string payment = "";
+  List<DeliveryChoice> ways = [];
+  List<PaymentChoice> pays = [];
   string street = "";
   string postCode = "";
   string city = "";
   string country = "";
   string problem = "";
   Receipt receipt = null;
+  CheckoutTotals totals = null;
 
-  on mount {
-    cardOn = CardPaymentsOn();
-    if (cardOn) { payment = Payment.Card; }
-    klarnaOn = KlarnaPaymentsOn();
-  }
+  on mount { Offer(); }
 
-  action Collect() { fulfilment = Fulfilment.Collect; }
-  action Deliver() {
-    fulfilment = Fulfilment.Deliver;
-    if (payment == Payment.OnCollection) { payment = cardOn ? Payment.Card : Payment.BankTransfer; }   // needs a collection
+  // What this shop offers for this bag — the providers the app lists, priced by the shop. Asked again when a choice
+  // changes what else is on offer (paying on collection needs a collection).
+  action Offer() {
+    ways = DeliveryChoices(country);
+    if (!ways.Any(w => w.Id == delivery)) { delivery = ways.Count > 0 ? ways[0].Id : ""; }
+    pays = PaymentChoices(!ways.Any(w => w.Id == delivery && w.NeedsAddress));
+    if (!pays.Any(x => x.Key == payment)) { payment = pays.Count > 0 ? pays[0].Key : ""; }
+    totals = CheckoutQuote(delivery, country);
   }
-  action ByCard() { payment = Payment.Card; }
-  action ByKlarna() { payment = Payment.Klarna; }
-  action ByTransfer() { payment = Payment.BankTransfer; }
-  action OnCollection() { payment = Payment.OnCollection; }
+  action ChooseDelivery(string id) { delivery = id; Offer(); }
+  action ChoosePayment(string key) { payment = key; }
 
   action Reserve() {
     problem = "";
+    // Priced once more for where it goes: an order is never placed at a total the customer has not seen.
+    var shown = totals == null ? -1m : totals.Total;
+    Offer();
+    if (totals != null && totals.Total != shown) {
+      problem = $"The total is now {PriceText(totals.Total)} — look it over, then order again.";
+      return;
+    }
     try {
-      receipt = PlaceOrder(visitId, name, email, phone, fulfilment, payment, street, postCode, city, country);
-      // A card order goes on to Stripe's page; it comes back to /paid/{reference}/… when the visitor is done.
+      receipt = PlaceOrder(name, email, phone, delivery, payment, street, postCode, city, country);
+      // A payment that leaves the shop goes on to its provider's page; it comes back to /paid/{link}/… when done.
       if (receipt.PayUrl != "") { Navigation.Open(receipt.PayUrl, sameTab: true); }
     } catch (Exception ex) {
       problem = ex.Message;
@@ -82,42 +89,31 @@ component Checkout() {
               }
               CheckoutStep("02", "How it reaches you") {
                 Stack(role: UiRole.RadioGroup, label: "How it reaches you", gap: 3) {
-                  ChoiceCard("Collect from the workshop", "Järntorget, Gothenburg · free · we fit it to you on the day",
-                             fulfilment == Fulfilment.Collect, Collect);
-                  ChoiceCard("Insured delivery", "Anywhere in Europe · boxed by us · priced after you reserve",
-                             fulfilment == Fulfilment.Deliver, Deliver);
+                  foreach (var w in ways) {
+                    ChoiceCard(w.Label, DeliveryLine(w), delivery == w.Id, () => ChooseDelivery(w.Id));
+                  }
                 }
-                if (fulfilment == Fulfilment.Deliver) {
+                if (ways.Any(w => w.Id == delivery && w.NeedsAddress)) {
                   Stack(gap: 4, pt: 2) {
                     Field("Street", value: street, placeholder: "Storgatan 12");
                     Box(display: Display.Grid, cols: "minmax(0, 1fr) minmax(0, 2fr)", gap: 4) {
                       Field("Postcode", value: postCode, placeholder: "411 38");
                       Field("City", value: city, placeholder: "Gothenburg");
                     }
-                    Field("Country", value: country, placeholder: "Sweden");
+                    Field("Country", value: country, placeholder: "Sweden", onEnter: Offer);
+                    CheckoutBusiness(Offer);
                   }
                 }
               }
               CheckoutStep("03", "Payment") {
                 Stack(role: UiRole.RadioGroup, label: "Payment", gap: 3) {
-                  if (cardOn) {
-                    ChoiceCard("Card", $"On Stripe's page, in TEST mode — {TestCardHint()}",
-                               payment == Payment.Card, ByCard);
-                  }
-                  if (klarnaOn) {
-                    ChoiceCard("Klarna", "Pay now, later or in parts on Klarna's page — charged when your order is sent.",
-                               payment == Payment.Klarna, ByKlarna);
-                  }
-                  ChoiceCard("Bank transfer", "Demo — there is no account to pay. The order just stays reserved for three days.",
-                             payment == Payment.BankTransfer, ByTransfer);
-                  if (fulfilment == Fulfilment.Collect) {
-                    ChoiceCard("Pay on collection", "Demo — there is no workshop to visit. The order stays reserved for three days.",
-                               payment == Payment.OnCollection, OnCollection);
+                  foreach (var x in pays) {
+                    ChoiceCard(x.Label, x.Description, payment == x.Key, () => ChoosePayment(x.Key));
                   }
                 }
               }
             }
-            Summary(bag, covers, specs, problem, payment, Reserve);
+            Summary(bag, covers, specs, problem, pays.FirstOrDefault(x => x.Key == payment), Reserve, totals, Offer);
           }
         }
       }
@@ -167,14 +163,15 @@ component ChoiceCard(string title, string line, bool selected, Action onPress) {
 
 /// The order as it stands, beside the form and following it down the page: the machines, the total, and the button.
 [Composable]
-component Summary(Bag bag, List<ProductImage> covers, List<ProductSpec> specs, string problem, Payment payment, Action onReserve) {
+component Summary(Bag bag, List<ProductImage> covers, List<ProductSpec> specs, string problem, PaymentChoice? pay, Action onReserve,
+                  CheckoutTotals? totals, Action onCode) {
   render {
     Stack(gap: 5, p: 6, bg: Colors.Surface, position: Position.Sticky, top: "120px", label: "Your order") {
       Text("Your order", fontFamily: Font.Mono, fontSize: FontSize.Label, color: Colors.TextMuted, letterSpacing: "0.04em");
       Stack(gap: 0) {
         foreach (var line in bag.Lines) {
           Row(gap: 4, py: 3, borderBW: 1, border: Colors.Border, align: Align.Center) {
-            Image(src: File.Url(CoverFor(covers, line.Variant.Product.Id)), alt: line.Variant.Product.Name, w: "72px", aspectRatio: "4 / 5", objectFit: ObjectFit.Cover);
+            Image(src: File.Url(CoverPhotoFor(covers, line.Variant.Product.Id)), alt: line.Variant.Product.Name, w: "72px", aspectRatio: "4 / 5", objectFit: ObjectFit.Cover);
             Stack(gap: 1, grow: 1, minW: "0") {
               Text(line.Variant.Product.Name, fontFamily: Font.Display, fontSize: "22px", textTransform: TextTransform.Uppercase);
               Text($"{line.Variant.Product.Brand} · {SpecFor(specs, line.Variant.Product.Id, "Year")} · {SpecFor(specs, line.Variant.Product.Id, "Frame size")}", fontFamily: Font.Mono, fontSize: FontSize.Label, color: Colors.TextMuted);
@@ -183,20 +180,35 @@ component Summary(Bag bag, List<ProductImage> covers, List<ProductSpec> specs, s
           }
         }
       }
+      // A discount code, when the shop has one running; applying it prices the checkout again.
+      CheckoutCode(onCode);
+      // The whole price before the customer commits: what comes off, delivery, the total and the VAT in it.
+      if (totals != null) {
+        foreach (var a in totals.Adjustments.Where(x => x.Amount > 0)) {
+          Row(justify: Justify.Between) { Text(a.Label, color: Colors.TextMuted); Text("−" + PriceText(a.Amount), color: Colors.TextMuted); }
+        }
+        if (totals.DeliveryLabel != "") {
+          Row(justify: Justify.Between) {
+            Text(totals.DeliveryLabel, color: Colors.TextMuted);
+            Text(totals.Delivery == 0 ? "Free" : PriceText(totals.Delivery), color: Colors.TextMuted);
+          }
+        }
+      }
       Row(justify: Justify.Between, align: Align.Baseline) {
         Text("Total", color: Colors.TextMuted);
-        Text(PriceText(bag.Lines.Sum(l => (l.Variant.Price ?? l.Variant.Product.Price) * l.Quantity)), fontFamily: Font.Display, fontSize: "40px", fontWeight: FontWeight.Bold);
+        Text(PriceText(totals == null ? bag.Lines.Sum(l => (l.Variant.Price ?? l.Variant.Product.Price) * l.Quantity) : totals.Total), fontFamily: Font.Display, fontSize: "40px", fontWeight: FontWeight.Bold);
       }
+      if (totals != null && totals.Vat > 0) { Text($"VAT {PriceText(totals.Vat)} included", fontSize: FontSize.Label, color: Colors.TextMuted); }
+      if (totals != null && totals.VatNote != "") { Text(totals.VatNote, fontSize: FontSize.Label, color: Colors.TextMuted); }
       if (problem != "") {
         Box(role: UiRole.Alert, p: 4, borderLW: 3, border: "#E8A87C", bg: "rgb(232 168 124 / 0.08)") {
           Text(problem, color: "#F2C4A6");
         }
       }
-      Button(payment == Payment.Card || payment == Payment.Klarna ? "Reserve and pay" : "Reserve", onPress: onReserve, tone: Tone.Primary, size: Size.Lg);
-      Text(payment == Payment.Klarna
-             ? "You choose how to pay on Klarna's page next, and are charged when it is sent."
-             : payment == Payment.Card
-             ? "You pay on Stripe's page next. The bike is held under your name from this moment."
+      CheckoutTerms();
+      Button("Order and pay", onPress: onReserve, tone: Tone.Primary, size: Size.Lg);
+      Text(pay != null && pay.LeavesTheShop
+             ? $"You pay on {pay.Label}'s page next. What you chose is held under your name from this moment."
              : "Nothing is charged now. The bike is held under your name for three days while you pay.",
            fontSize: FontSize.Label, color: Colors.TextMuted);
     }
@@ -221,17 +233,26 @@ component Confirmation(Receipt receipt, string email) {
         }
       }
       Stack(gap: 0, borderTW: 1, border: Colors.Border) {
-        if (receipt.Payment == Payment.BankTransfer || receipt.PayProblem != "") {
-          SpecLine("Transfer", PriceText(receipt.Total));
-          SpecLine("To", "Nobody — this is a demo, and there is no account");
+        if (receipt.PayInstructions != "") {
+          SpecLine("Pay", PriceText(receipt.Total));
+          SpecLine("How", receipt.PayInstructions);
           SpecLine("Reference", receipt.Reference);
-          SpecLine("By", "Three days from today");
         } else {
-          SpecLine("Pay", $"{PriceText(receipt.Total)} when you collect");
+          SpecLine("Pay with", receipt.PaymentLabel);
         }
-        SpecLine("Handover", receipt.Fulfilment.Label);
+        SpecLine("Handover", receipt.DeliveryLabel == "" ? receipt.Fulfilment.Label : receipt.DeliveryLabel);
       }
-      Row { Link(href: "/bikes", label: "Back to the bikes") { Text("Back to the bikes →", color: Colors.Primary); } }
+      Row(gap: 6) {
+        Link(href: $"/order/{receipt.Link}", label: "See your order") { Text("See your order →", color: Colors.Primary); }
+        Link(href: "/bikes", label: "Back to the bikes") { Text("Back to the bikes →", color: Colors.Primary); }
+      }
     }
   }
+}
+
+/// A delivery option's line: what it says, what it costs and how long it takes.
+string DeliveryLine(DeliveryChoice w) {
+  var price = w.Price == 0 ? "free" : PriceText(w.Price);
+  return w.Description == "" ? (w.Days == "" ? price : $"{price} · {w.Days}")
+       : (w.Days == "" ? $"{w.Description} · {price}" : $"{w.Description} · {price} · {w.Days}");
 }

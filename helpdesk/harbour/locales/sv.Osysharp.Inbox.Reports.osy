@@ -1,0 +1,109 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Inbox.Reports, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Inbox.Reports · PromiseSourceOf ──
+  /// PromiseSourceOf · a hint under a field
+  /// shown through ReportMeasure.Hint
+  hint "Half of the first replies came sooner than this, counted in the item's business hours." => "Hälften av de första svaren kom snabbare än så, räknat i ärendets arbetstid.";
+  /// PromiseSourceOf · a hint under a field
+  /// shown through ReportMeasure.Hint
+  hint "Half were finished sooner than this, counted in the item's business hours." => "Hälften blev klara snabbare än så, räknat i ärendets arbetstid.";
+  /// PromiseSourceOf · a hint under a field
+  /// shown through ReportMeasure.Hint
+  hint "Of the promises that ended, the share met in time." => "Andelen av de avslutade löftena som hölls i tid.";
+  /// PromiseSourceOf · a hint under a field
+  /// shown through ReportMeasure.Hint
+  hint "Promises met in time." => "Löften som hölls i tid.";
+  /// PromiseSourceOf · a hint under a field
+  /// shown through ReportMeasure.Hint
+  hint "Promises that ran out — answered late, or still owed." => "Löften som tog slut: besvarade sent, eller fortfarande skyldiga.";
+  /// PromiseSourceOf · a hint under a field
+  /// shown through ReportMeasure.Hint
+  hint "Promises that ran their course — met in time or late." => "Löften som löpt ut, hållna i tid eller sent.";
+  /// PromiseSourceOf · a label (a field, a list item, a menu entry) · at most ~38 characters
+  /// shown through ReportMeasure.Label
+  label "First reply, business hours" => "Första svar, arbetstid";
+  /// PromiseSourceOf · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through ReportMeasure.Label
+  label "Kept" => "Hållna";
+  /// PromiseSourceOf · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through ReportMeasure.Label
+  label "Missed" => "Missade";
+  /// PromiseSourceOf · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through ReportMeasure.Label
+  label "Promises ended" => "Avslutade löften";
+  /// PromiseSourceOf · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through ReportMeasure.Label
+  label "Promises kept" => "Hållna löften";
+  /// PromiseSourceOf · a label (a field, a list item, a menu entry) · at most ~54 characters
+  /// placeholders: {words.Finish} = words.Finish (string)
+  /// shown through ReportMeasure.Label
+  label "Time to {words.Finish}, business hours" => "Tid att {words.Finish}, arbetstid";
+  /// PromiseSourceOf · text on the page
+  /// shown through ReportSource.Nouns
+  text "promises" => "löften";
+  /// PromiseSourceOf · a title
+  /// shown through ReportSource.Title
+  title "Promises" => "Löften";
+
+  // ── Osysharp.Inbox.Reports · SlaPolicySettings ──
+  /// SlaPolicySettings · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Dropdown.label
+  /// also in PromiseSourceOf
+  label "Promise" => "Löfte";
+
+  // ── Osysharp.Inbox.Reports · WorkSourceOf ──
+  /// WorkSourceOf · a hint under a field
+  /// placeholders: {words.Nouns} = words.Nouns (string)
+  /// shown through ReportMeasure.Hint
+  hint "Half of the answered {words.Nouns} had a first reply sooner than this, in calendar time." => "Hälften av de besvarade {words.Nouns} fick ett första svar snabbare än så, i kalendertid.";
+  /// WorkSourceOf · a hint under a field
+  /// placeholders: {done} = done (string), {words.Nouns} = words.Nouns (string), {done2} = done (string)
+  /// shown through ReportMeasure.Hint
+  hint "Half of the {done} {words.Nouns} were {done2} sooner than this, in calendar time." => "Hälften av de {done} {words.Nouns} blev {done2} snabbare än så, i kalendertid.";
+  /// WorkSourceOf · a hint under a field
+  /// placeholders: {words.Nouns} = words.Nouns (string)
+  /// shown through ReportMeasure.Hint
+  hint "Nine in ten answered {words.Nouns} had a first reply sooner than this." => "Nio av tio besvarade {words.Nouns} fick ett första svar snabbare än så.";
+  /// WorkSourceOf · a hint under a field
+  /// placeholders: {done} = done (string), {words.Nouns} = words.Nouns (string), {done2} = done (string)
+  /// shown through ReportMeasure.Hint
+  hint "Nine in ten {done} {words.Nouns} were {done2} sooner than this." => "Nio av tio {done} {words.Nouns} blev {done2} snabbare än så.";
+  /// WorkSourceOf · a hint under a field
+  /// placeholders: {done} = done (string)
+  /// shown through ReportMeasure.Hint
+  hint "Of those, {done} by now." => "Av dem, {done} hittills.";
+  /// WorkSourceOf · a hint under a field
+  /// placeholders: {Cap} = Cap(…) (string), {done} = done (string)
+  /// shown through ReportMeasure.Hint
+  hint "{Cap} not {done} or cancelled, whenever they arrived." => "{Cap} som inte är {done} eller avbrutna, oavsett när de kom in.";
+  /// WorkSourceOf · a hint under a field
+  /// placeholders: {Cap} = Cap(…) (string)
+  /// shown through ReportMeasure.Hint
+  hint "{Cap} that arrived in the period." => "{Cap} som kom in under perioden.";
+  /// WorkSourceOf · a hint under a field
+  /// placeholders: {words.Done} = words.Done (string)
+  /// shown through ReportMeasure.Hint
+  hint "{words.Done}, of everything that arrived." => "{words.Done}, av allt som kom in.";
+  /// WorkSourceOf · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through ReportMeasure.Label
+  label "First reply" => "Första svar";
+  /// WorkSourceOf · a label (a field, a list item, a menu entry) · at most ~37 characters
+  /// shown through ReportMeasure.Label
+  label "First reply, slowest tenth" => "Första svar, långsammaste tiondelen";
+  /// WorkSourceOf · a label (a field, a list item, a menu entry) · at most ~31 characters
+  /// placeholders: {words.Finish} = words.Finish (string)
+  /// shown through ReportMeasure.Label
+  label "Time to {words.Finish}" => "Tid att {words.Finish}";
+  /// WorkSourceOf · a label (a field, a list item, a menu entry) · at most ~52 characters
+  /// placeholders: {words.Finish} = words.Finish (string)
+  /// shown through ReportMeasure.Label
+  label "Time to {words.Finish}, slowest tenth" => "Tid att {words.Finish}, långsammaste tiondelen";
+  /// WorkSourceOf · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// placeholders: {words.Done} = words.Done (string)
+  /// shown through ReportMeasure.Label
+  label "{words.Done} share" => "Andel {words.Done}";
+}

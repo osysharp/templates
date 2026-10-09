@@ -1,0 +1,360 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Automations, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Automations · AutomationRules ──
+  /// AutomationRules · a control's name for screen readers
+  /// beside: "Name", "When", "Then", "Off — keep it, but do not run it"
+  accessibleName "Only if" => "Bara om";
+  /// AutomationRules · a control's name for screen readers
+  /// beside: "Add a rule"
+  accessibleName "Rules" => "Regler";
+  /// AutomationRules · a control's name for screen readers
+  /// beside: "Name", "When", "Only if", "Off — keep it, but do not run it"
+  accessibleName "Then" => "Då";
+  /// AutomationRules · a control's name for screen readers
+  accessibleName "What ran lately" => "Nyligen körda";
+  /// AutomationRules · a button's label · at most ~21 characters
+  /// shown through Button.label
+  button "Add a condition" => "Lägg till villkor";
+  /// AutomationRules · a button's label · at most ~24 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Add the condition" => "Lägg till villkoret";
+  /// AutomationRules · a button's label · at most ~18 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Add the step" => "Lägg till steget";
+  /// AutomationRules · a button's label · at most ~12 characters
+  /// shown through Button.label
+  button "Choose" => "Välj";
+  /// AutomationRules · a button's label · at most ~21 characters
+  /// shown through Button.label
+  button "Remove the rule" => "Ta bort regeln";
+  /// AutomationRules · a button's label · at most ~20 characters
+  /// placeholders: {value} = …
+  /// shown through IconButton.label
+  button "Remove {value}" => "Ta bort {value}";
+  /// AutomationRules · a button's label · at most ~31 characters
+  /// shown through Button.label
+  button "Restore the app's rule" => "Återställ appens regel";
+  /// AutomationRules · a description
+  /// placeholders: {noun} = noun
+  /// shown through SettingsSection.description
+  /// beside: "Rules, in the order they run"
+  description "Every run is also on its {noun}'s own history." => "Varje körning finns också i historiken för {noun}.";
+  /// AutomationRules · a description
+  /// placeholders: {noun} = noun, {noun2} = noun
+  /// shown through SettingsPage.description
+  description "Rules that do the routine work on each {noun} when something happens — run in order, each run written on the {noun2}. The app's own rules keep its updates; copy one to change it for the team, or for yours." => "Regler som gör rutinarbetet på varje {noun} när något händer. De körs i ordning, och varje körning skrivs på {noun2}. Appens egna regler får appens uppdateringar; kopiera en för att ändra den för teamet, eller för din egen del.";
+  /// AutomationRules · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Dropdown.label
+  /// beside: "Add the condition"
+  label "Asks" => "Frågar";
+  /// AutomationRules · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Dropdown.label
+  label "Compared" => "Jämförelse";
+  /// AutomationRules · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Dropdown.label
+  /// beside: "Choose", "Add the step"
+  label "Does" => "Gör";
+  /// AutomationRules · a label (a field, a list item, a menu entry) · at most ~45 characters
+  /// shown through Switch.label
+  /// beside: "Name", "When", "Only if", "Then"
+  label "Off — keep it, but do not run it" => "Av: behåll den, men kör den inte";
+  /// AutomationRules · a label (a field, a list item, a menu entry) · at most ~59 characters
+  /// placeholders: {noun} = noun
+  /// shown through Checkbox.label
+  label "The whole team's — it runs on every {noun}" => "Hela teamets: den körs på varje {noun}";
+  /// AutomationRules · placeholder text inside an empty field · at most ~13 characters
+  /// shown through Dropdown.placeholder
+  /// beside: "Add the condition"
+  placeholder "Choose…" => "Välj…";
+  /// AutomationRules · placeholder text inside an empty field · at most ~44 characters
+  /// shown through Field.placeholder
+  /// beside: "When", "Only if", "Then", "Off — keep it, but do not run it"
+  placeholder "Urgent words raise the priority" => "Brådskande ord höjer prioriteten";
+  /// AutomationRules · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "A copy of one of the app's rules — it replaces the app's while it exists. Remove it to restore the app's." => "En kopia av en av appens regler. Den ersätter appens regel så länge den finns. Ta bort den för att återställa appens.";
+  /// AutomationRules · text on the page
+  /// shown through EmptyState.body
+  text "Add one for the work that always follows the same event — tag it, set it, tell somebody." => "Lägg till en för arbetet som alltid följer samma händelse: tagga, ändra något, meddela någon.";
+  /// AutomationRules · text on the page
+  /// placeholders: {noun} = noun
+  text "Always — on every {noun} it happens to." => "Alltid: på varje {noun} som det händer.";
+  /// AutomationRules · text on the page
+  /// shown through problem
+  text "Choose what it asks." => "Välj vad den frågar.";
+  /// AutomationRules · text on the page
+  /// shown through problem
+  text "Choose what it does." => "Välj vad den gör.";
+  /// AutomationRules · text on the page
+  /// shown through notice
+  text "Copied for the team — change it here; the app's rule waits until you restore it." => "Kopierad för teamet. Ändra den här; appens regel väntar tills du återställer den.";
+  /// AutomationRules · text on the page
+  /// shown through notice
+  text "Copied for you — it replaces the app's rule on yours." => "Kopierad för dig. Den ersätter appens regel för din del.";
+  /// AutomationRules · text on the page
+  /// shown through TriggerLabel()
+  text "Every hour, while it holds" => "Varje timme, så länge det gäller";
+  /// AutomationRules · text on the page
+  /// shown through notice
+  text "Locked — nobody's copy replaces it." => "Låst. Ingens kopia ersätter den.";
+  /// AutomationRules · text on the page
+  text "Nothing yet — add what it does." => "Inget än. Lägg till vad den gör.";
+  /// AutomationRules · text on the page
+  /// shown through FieldLabel.text
+  text "Only if — all of these hold" => "Bara om: alla dessa gäller";
+  /// AutomationRules · text on the page
+  text "Open" => "Öppna";
+  /// AutomationRules · text on the page
+  /// shown through notice
+  text "Restored the app's rule." => "Appens regel är återställd.";
+  /// AutomationRules · text on the page
+  /// shown through FieldLabel.text
+  text "Then — in order" => "Då, i ordning";
+  /// AutomationRules · text on the page
+  /// shown through notice
+  text "Unlocked." => "Upplåst.";
+  /// AutomationRules · text on the page
+  /// placeholders: {noun} = noun
+  /// shown through EmptyState.body
+  text "When a rule runs on a {noun}, it is listed here — what it did, or why it stopped." => "När en regel körs på {noun} visas den här: vad den gjorde, eller varför den stoppades.";
+  /// AutomationRules · text on the page
+  /// shown through noun
+  text "record" => "post";
+  /// AutomationRules · a title
+  /// shown through Dialog.title
+  title "New rule" => "Ny regel";
+  /// AutomationRules · a title
+  /// shown through EmptyState.title
+  title "No rules yet" => "Inga regler än";
+  /// AutomationRules · a title
+  /// shown through EmptyState.title
+  title "Nothing has run yet" => "Inget har körts än";
+  /// AutomationRules · a title
+  /// shown through SettingsSection.title
+  /// beside: "What ran lately"
+  title "Rules, in the order they run" => "Regler, i den ordning de körs";
+  /// AutomationRules · a title
+  /// shown through SettingsSection.title
+  /// beside: "Rules, in the order they run"
+  title "What ran lately" => "Nyligen körda";
+
+  // ── Osysharp.Automations · AutomationsSettings (/settings/automations) ──
+  /// AutomationsSettings · /settings/automations · a title
+  /// shown through [Title]
+  /// also in AutomationRules
+  title "Automations" => "Automatiseringar";
+
+  // ── Osysharp.Automations · DraftOf ──
+  /// DraftOf · an error message
+  /// shown through ValidationException
+  /// also in SaveRule
+  error "That rule is gone — somebody removed it." => "Regeln finns inte längre. Någon har tagit bort den.";
+  /// DraftOf · an error message
+  /// shown through ValidationException
+  error "That rule is no longer one of the app's." => "Den regeln hör inte längre till appen.";
+
+  // ── Osysharp.Automations · FireSentence ──
+  /// FireSentence · text on the page
+  /// placeholders: {fire.RanAs} = fire.RanAs (string)
+  /// shown through FireSentence()
+  text " (as {fire.RanAs})" => " (som {fire.RanAs})";
+  /// FireSentence · text on the page
+  /// placeholders: {ruleName} = ruleName (string)
+  /// shown through FireSentence()
+  text "Rule “{ruleName}”" => "Regeln ”{ruleName}”";
+  /// FireSentence · text on the page
+  /// placeholders: {ruleName} = ruleName (string)
+  /// shown through FireSentence()
+  text "The app's rule “{ruleName}”" => "Appens regel ”{ruleName}”";
+  /// FireSentence · text on the page
+  /// placeholders: {name} = name (string), {fire.Problem} = fire.Problem (string)
+  /// shown through FireSentence()
+  text "{name} was stopped: {fire.Problem}" => "{name} stoppades: {fire.Problem}";
+  /// FireSentence · text on the page
+  /// placeholders: {name} = name (string), {who} = who (string), {fire.Problem} = fire.Problem (string)
+  /// shown through FireSentence()
+  text "{name}{who} did nothing: {fire.Problem}" => "{name}{who} gjorde ingenting: {fire.Problem}";
+  /// FireSentence · text on the page
+  /// placeholders: {name} = name (string), {who} = who (string), {Join} = string.Join(…) (string), {fire.Problem} = fire.Problem (string)
+  /// shown through FireSentence()
+  text "{name}{who} did {Join} — then {fire.Problem}" => "{name}{who} gjorde {Join}, sedan {fire.Problem}";
+
+  // ── Osysharp.Automations · LockRule ──
+  /// LockRule · an error message
+  /// shown through ValidationException
+  error "That is not one of the app's rules." => "Det är inte en av appens regler.";
+
+  // ── Osysharp.Automations · Osysharp.Automations.AutomationRule ──
+  /// Osysharp.Automations.AutomationRule · validation
+  /// shown through Osysharp.Automations.AutomationRule.Name [Required]
+  validation "Name the rule — it is what the record's history says." => "Namnge regeln. Det är det som står i postens historik.";
+
+  // ── Osysharp.Automations · Osysharp.Automations.AutomationSettingsSections.Sections ──
+  /// Osysharp.Automations.AutomationSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  heading "Automation" => "Automatisering";
+  /// Osysharp.Automations.AutomationSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Rules that do the routine work when something happens." => "Regler som gör rutinarbetet när något händer.";
+  /// Osysharp.Automations.AutomationSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through SettingsLink.Label
+  label "Automations" => "Automatiseringar";
+
+  // ── Osysharp.Automations · Osysharp.Automations.AutomationWatchState ──
+  /// Osysharp.Automations.AutomationWatchState · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.Automations.AutomationWatchState.Watching
+  /// beside: "Stopped"
+  /// also in Osysharp.Webhooks.WebhookWatchState
+  label "Checking hourly" => "Kontroll varje timme";
+
+  // ── Osysharp.Automations · Osysharp.Automations.ConditionKind ──
+  /// Osysharp.Automations.ConditionKind · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Automations.ConditionKind.Hours
+  /// beside: "Choice", "Text", "Number", "Yes or no"
+  label "Hours since" => "Timmar sedan";
+
+  // ── Osysharp.Automations · Osysharp.Automations.ConditionOp ──
+  /// Osysharp.Automations.ConditionOp · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Automations.ConditionOp.Contains
+  /// beside: "is", "is not", "does not contain", "is at least", "is at most"
+  /// also in Osysharp.Explore.FilterOp
+  label "contains" => "innehåller";
+  /// Osysharp.Automations.ConditionOp · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.Automations.ConditionOp.DoesNotContain
+  /// beside: "is", "is not", "contains", "is at least", "is at most"
+  label "does not contain" => "innehåller inte";
+  /// Osysharp.Automations.ConditionOp · a label (a field, a list item, a menu entry) · at most ~8 characters
+  /// shown through Osysharp.Automations.ConditionOp.Is
+  /// beside: "is not", "contains", "does not contain", "is at least", "is at most"
+  /// also in Osysharp.Explore.FilterOp
+  label "is" => "är";
+  /// Osysharp.Automations.ConditionOp · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Automations.ConditionOp.AtLeast
+  /// beside: "is", "is not", "contains", "does not contain", "is at most"
+  label "is at least" => "är minst";
+  /// Osysharp.Automations.ConditionOp · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Automations.ConditionOp.AtMost
+  /// beside: "is", "is not", "contains", "does not contain", "is at least"
+  label "is at most" => "är högst";
+  /// Osysharp.Automations.ConditionOp · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Automations.ConditionOp.IsNot
+  /// beside: "is", "contains", "does not contain", "is at least", "is at most"
+  /// also in Osysharp.Explore.FilterOp
+  label "is not" => "är inte";
+
+  // ── Osysharp.Automations · RowLine ──
+  /// RowLine · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through RuleLine.Whose
+  /// also in Osysharp.Automations.AutomationLayer
+  label "The team's" => "Teamets";
+  /// RowLine · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through RuleLine.Whose
+  /// also in Osysharp.Automations.AutomationLayer
+  label "Yours" => "Din";
+
+  // ── Osysharp.Automations · RuleLines ──
+  /// RuleLines · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through RuleLine.Whose
+  label "The app's" => "Appens";
+  /// RuleLines · text on the page
+  /// also in RowLine
+  text "and" => "och";
+
+  // ── Osysharp.Automations · RuleRow ──
+  /// RuleRow · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Copy for mine" => "Kopiera för mig";
+  /// RuleRow · a button's label · at most ~24 characters
+  /// shown through Button.label
+  button "Copy for the team" => "Kopiera för teamet";
+  /// RuleRow · a button's label · at most ~10 characters
+  /// shown through Button.label
+  button "Lock" => "Lås";
+  /// RuleRow · a button's label · at most ~15 characters
+  /// shown through Button.label
+  /// beside: "Move up"
+  /// also in KnowledgeCategoryCard
+  button "Move down" => "Flytta ned";
+  /// RuleRow · a button's label · at most ~13 characters
+  /// shown through Button.label
+  button "Restore" => "Återställ";
+  /// RuleRow · a button's label · at most ~15 characters
+  /// shown through Button.label
+  /// beside: "Edit"
+  button "Switch on" => "Slå på";
+  /// RuleRow · a button's label · at most ~12 characters
+  /// shown through Button.label
+  button "Unlock" => "Lås upp";
+  /// RuleRow · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Badge.label
+  label "Locked" => "Låst";
+  /// RuleRow · text on the page
+  /// placeholders: {line.When} = line.When, {line.If} = line.If
+  /// beside: "When"
+  text "{line.When}, if {line.If}" => "{line.When}, om {line.If}";
+
+  // ── Osysharp.Automations · SaveRule ──
+  /// SaveRule · an error message
+  /// shown through ValidationException
+  error "Name the rule — it is what the record's history says." => "Namnge regeln. Det är det som står i postens historik.";
+  /// SaveRule · an error message
+  /// shown through ValidationException
+  error "The app no longer has the rule this copies." => "Appen har inte längre regeln som det här är en kopia av.";
+  /// SaveRule · an error message
+  /// shown through ValidationException
+  error "There is already a copy of that rule here — change that one." => "Det finns redan en kopia av regeln här. Ändra den i stället.";
+  /// SaveRule · an error message
+  /// placeholders: {original.Name} = original.Name (string)
+  /// shown through ValidationException
+  error "“{original.Name}” is locked — it runs as the app wrote it, and nobody replaces it." => "”{original.Name}” är låst. Den körs som appen skrev den, och ingen kan ersätta den.";
+
+  // ── Osysharp.Automations · StepWords ──
+  /// StepWords · text on the page
+  /// shown through StepWords()
+  text "no" => null was "no" => "nej";
+  /// StepWords · text on the page
+  /// shown through StepWords()
+  text "yes" => null was "yes" => "ja";
+
+  // ── Osysharp.Automations · StepWordsOf ──
+  /// StepWordsOf · text on the page
+  /// placeholders: {s.Action} = s.Action (string)
+  /// shown through StepWordsOf()
+  text "{s.Action} (no longer offered)" => "{s.Action} (erbjuds inte längre)";
+
+  // ── Osysharp.Automations · SubjectFor ──
+  /// SubjectFor · an error message
+  /// shown through ValidationException
+  error "Nothing here has rules yet — a rule is about a record something happens to (an [Event]) and something can be done to (an [Action])." => null;
+  /// SubjectFor · an error message
+  /// placeholders: {key} = key (string), {Join} = string.Join(…) (string)
+  /// shown through ValidationException
+  error "There are no rules about '{key}'. There are about: {Join}." => null was "There are no automations for '{key}'. There are: {Join}." => "Det finns inga automatiseringar för '{key}'. Det finns: {Join}.";
+
+  // ── Osysharp.Automations · TestWordsIn ──
+  /// TestWordsIn · text on the page
+  /// placeholders: {flag} = flag (string)
+  text "{flag}: no" => "{flag}: nej";
+  /// TestWordsIn · text on the page
+  /// placeholders: {label} = label (string), {op} = op (string), {value} = value (string)
+  text "{label} {op} {value}" => "{label} {op} {value}";
+  /// TestWordsIn · text on the page
+  /// placeholders: {t.Condition} = t.Condition (string)
+  /// shown through TestWordsIn()
+  text "{t.Condition} (no longer offered)" => "{t.Condition} (erbjuds inte längre)";
+
+  // ── Osysharp.Automations · WhenWords ──
+  /// WhenWords · text on the page
+  text "Every hour" => "Varje timme";
+  /// WhenWords · text on the page
+  text "When it happens" => "När det händer";
+  /// WhenWords · text on the page
+  /// placeholders: {trigger} = trigger (string)
+  text "When {trigger}" => "När {trigger}";
+}

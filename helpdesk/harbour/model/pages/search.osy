@@ -1,0 +1,169 @@
+// SEARCH — the desk's search box (/search, ⌘K's "Search…"), and "Seen before" beside a ticket: tickets found by what
+// their conversations are about in any language, how the team solved ones like them, and the help centre's articles.
+using Osysharp.Inbox;
+using Osysharp.Knowledge;
+
+/// Search tickets, past answers and articles — by meaning, whatever language a customer wrote in.
+[Route("/search")]
+[Nav("Search", Icon = Icons.Search, Order = 10)]
+[Layout(DeskFrame)]
+[Authorize(IsAgent)]
+[Render(CSR)]
+[Title("Search")]
+component DeskSearchPage() {
+  string query = "";
+  DeskFound found = new DeskFound();
+  bool searched = false;
+  bool searching = false;
+
+  action Search() {
+    if (query.Trim() == "") { return; }
+    searching = true;
+    found = SearchDesk(query);
+    searched = true;
+    searching = false;
+  }
+
+  render {
+    Stack(gap: 5, p: 6, maxW: "760px", w: "100%", overflowY: Overflow.Auto, label: "Search results") {
+      PageHead("Search", subtitle: "Tickets, past answers and articles — by what they are about, in any language a customer wrote in.");
+      Row(gap: 2, align: Align.End) {
+        Box(grow: 1, minW: "0") {
+          Field("What are you looking for?", value: query, placeholder: "A problem, a customer's words, or a ticket number",
+                onEnter: Search);
+        }
+        Button("Search", onPress: Search, tone: Tone.Primary);
+      }
+      if (searching) { Text("Searching…", color: Colors.TextMuted, fontSize: FontSize.Label); }
+      if (searched && found.MeaningOff != "") { Alert(found.MeaningOff, tone: Tone.Warning); }
+      if (searched && found.Tickets.Count == 0 && found.Answers.Count == 0 && found.Articles.Count == 0) {
+        EmptyState("Nothing found for “" + found.Query + "”", body: "Try the customer's own words, or fewer of them.");
+      }
+      if (found.Tickets.Count > 0) {
+        Stack(gap: 2) {
+          SectionLabel("Tickets");
+          TicketFoundList(found.Tickets);
+        }
+      }
+      if (found.Answers.Count > 0) {
+        Stack(gap: 2) {
+          SectionLabel("How we solved it before");
+          TicketFoundList(found.Answers, answers: true);
+        }
+      }
+      if (found.Articles.Count > 0) {
+        Stack(gap: 2) {
+          SectionLabel("Articles");
+          KnowledgeHitList(found.Articles, compact: true);
+        }
+      }
+    }
+  }
+}
+
+/// Tickets a search found — number, title, where it stands, who it is for, and the words that matched (or, `answers`,
+/// how it was solved). Each opens the ticket.
+[Composable]
+component TicketFoundList(List<TicketFound> tickets, bool answers = false) {
+  render {
+    Stack(gap: 0, role: UiRole.List, rounded: Radius.Lg, border: Colors.Border, borderW: 1, bg: Colors.Surface, overflow: Overflow.Hidden) {
+      foreach (var f in tickets) {
+        Box(role: UiRole.ListItem, borderBW: 1, border: Colors.Border) {
+          Link(href: "/v/mine/t/" + f.Number, label: "#" + f.Number + " " + f.Title, color: Colors.OnSurface,
+               textDecoration: TextDecoration.None) {
+            Stack(gap: 1, px: 4, py: 3) {
+              Row(gap: 2, align: Align.Center, minW: "0") {
+                Text("#" + f.Number, fontFamily: Font.Mono, fontSize: FontSize.Caption, color: Colors.TextMuted);
+                Text(f.Title, fontWeight: FontWeight.Medium, whiteSpace: WhiteSpace.Nowrap, overflow: Overflow.Hidden,
+                     textOverflow: TextOverflow.Ellipsis, minW: "0", grow: 1);
+                Badge(f.Status, tone: Tone.Ghost);
+              }
+              Text(f.Customer, fontSize: FontSize.Caption, color: Colors.TextMuted);
+              if (f.Passage != "") {
+                Text((answers ? "Solved: " : "") + Clipped(f.Passage, 200), fontSize: FontSize.Label, color: Colors.TextSecondary);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/// `text` on one line, at most `max` characters.
+string Clipped(string text, int max) {
+  var flat = text.Replace("\n", " ").Trim();
+  return flat.Length <= max ? flat : flat.Substring(0, max - 1) + "…";
+}
+
+/// "Seen before" — beside a ticket: tickets that read like it and how each was solved, and articles that may answer it.
+/// `titled`: false where the place it sits in already says it (a sheet's title). `whenAsked`: look only when the reader asks.
+[Composable]
+component SeenBeforePanel(Guid ticketId, bool titled = true, bool whenAsked = false) {
+  SeenBefore seen = new SeenBefore();
+  bool asked = false;
+  bool loaded = false;
+  int problemOf = 0;
+  string problem = "";
+  // It searches by meaning, which spends the desk's model budget — so beside a ticket it looks when asked (`whenAsked`),
+  // and never just because somebody moved to the ticket. A sheet opened for it looks at once: opening it was the asking.
+  on mount { if (!whenAsked) { Look(); } }
+  action Look() {
+    asked = true;
+    seen = SeenBeforeOf(ticketId);
+    problemOf = seen.IncidentOf;
+    loaded = true;
+  }
+  // A ticket found here may be the problem this one is another report of — link it, and solving that solves this.
+  action IncidentOf(int number) {
+    problem = "";
+    try { LinkAsIncidentOf(ticketId, number); problemOf = number; } catch (Exception ex) { problem = ex.Message; }
+  }
+  render {
+    Stack(gap: 2, label: "Seen before") {
+      if (titled) { SectionLabel("Seen before"); }
+      if (!asked) {
+        Button("Find tickets like it", onPress: Look, size: Size.Sm, tone: Tone.Ghost);
+      } else if (!loaded) { Skeleton(shape: SkeletonShape.Line); }
+      else if (seen.MeaningOff != "") { Text(seen.MeaningOff, fontSize: FontSize.Caption, color: Colors.TextMuted); }
+      else if (seen.Tickets.Count == 0 && seen.Articles.Count == 0) {
+        Text("Nothing like it yet.", fontSize: FontSize.Caption, color: Colors.TextMuted);
+      }
+      if (problemOf != 0) {
+        Row(gap: 2, align: Align.Center) {
+          Icon(Icons.Link, size: 12, color: Colors.TextMuted);
+          Text($"An incident of #{problemOf}", fontSize: FontSize.Caption, color: Colors.TextSecondary);
+        }
+      }
+      if (problem != "") { Alert(problem, tone: Tone.Danger); }
+      foreach (var f in seen.Tickets) {
+        Stack(gap: 1, minW: "0", label: "#" + f.Number + " " + f.Title) {
+          Link(href: "/v/mine/t/" + f.Number, color: Colors.OnSurface) {
+            Stack(gap: 0, minW: "0") {
+              Row(gap: 2, align: Align.Center, minW: "0") {
+                Text("#" + f.Number, fontFamily: Font.Mono, fontSize: FontSize.Caption, color: Colors.TextMuted);
+                Text(f.Title, fontSize: FontSize.Label, whiteSpace: WhiteSpace.Nowrap, overflow: Overflow.Hidden,
+                     textOverflow: TextOverflow.Ellipsis, minW: "0", grow: 1);
+                Text(f.Status, fontSize: FontSize.Caption, color: Colors.TextMuted, whiteSpace: WhiteSpace.Nowrap);
+              }
+              if (f.Passage != "") { Text(Clipped(f.Passage, 120), fontSize: FontSize.Caption, color: Colors.TextSecondary); }
+            }
+          }
+          if (problemOf == 0) {
+            Row() { Button($"Link as an incident of #{f.Number}", onPress: () => IncidentOf(f.Number), size: Size.Sm, tone: Tone.Ghost); }
+          }
+        }
+      }
+      foreach (var a in seen.Articles) {
+        Link(href: a.Href, color: Colors.OnSurface, label: a.Title) {
+          Row(gap: 2, align: Align.Center, minW: "0") {
+            Icon(Icons.File, size: 12, color: Colors.TextMuted);
+            Text(a.Title, fontSize: FontSize.Label, whiteSpace: WhiteSpace.Nowrap, overflow: Overflow.Hidden,
+                 textOverflow: TextOverflow.Ellipsis, minW: "0", grow: 1);
+            if (a.TeamOnly) { Badge("Team only", tone: Tone.Warning); }
+          }
+        }
+      }
+    }
+  }
+}

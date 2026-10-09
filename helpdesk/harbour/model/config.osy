@@ -1,0 +1,104 @@
+// THE DESK'S CONFIGURATION — the rows an admin owns beyond statuses (setup.osy): the fields the desk keeps on a ticket,
+// a customer and a company, and the forms — the types of request — that ask a ticket's. What they DO — asked on the help
+// page by form and condition, checked on the server, shown and edited on the ticket and in its customer panel with every
+// ticket change on its timeline, and named by a saved view — is model/fields.osy.
+//
+// ⚑ THE MECHANISM IS Osysharp.Fields' (H1b, 2026-10-05) — the bases, the rules both sides ask, the editor and the settings
+//   sections. The desk declares, per kind of record, its own field type and its own value type carrying the FK, so an
+//   answer's security IS its record's: "the customer reads what they were asked, on their own tickets" is one hop.
+//
+// Saved replies and macros are the Composer kit's (model/composer.osy). Routing rules, shared views, queues, SLA policies
+// and business hours are the inbox's (Osysharp.Inbox), and inbox.osy says what the desk adds to them.
+using Osysharp.Identity;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Conversations;
+using Osysharp.Fields;
+
+/// Admins define the desk's fields and forms.
+policy ManagesFields => IsAdmin;
+
+// ── a ticket's fields, and the forms that ask them ───────────────────────────────────────────────────────────────────
+
+/// A thing the desk asks about a ticket beyond its subject — an order number, the product, the version. A PUBLIC one is
+/// asked of the customer on the help page and the portal; the rest are the team's. Retired, never deleted; its kind is
+/// fixed once saved (the kit's bases say why). Its name is unique among the ticket's fields — a saved view finds a field
+/// by it — while a customer's or a company's field may share it (a `[Unique]` on a derived type is per type).
+[Unique(Name, "Another ticket field already has that name — a saved view finds a field by it.")]
+entity TicketField : CustomField {
+  security { allow read when IsAuthenticated || IsAnonymous; allow create, update when IsAdmin; }
+}
+
+/// A TYPE OF REQUEST — "A question", "An outage", "A bug report" — and the fields it asks. ONE notion: the form a
+/// customer chose is the ticket's type, and the team changes it on the ticket (`SetTicketForm`, fields.osy). Its key is
+/// the word routing rules, SLA policies and saved views name the type by — the ticket's inbox kind ("incident").
+entity TicketForm : FieldForm {
+  /// Solving a ticket of this type needs its root cause on record — what an incident asks (workflow.osy).
+  bool AsksRootCause = false;
+  security { allow read when IsAuthenticated || IsAnonymous; allow create, update when IsAdmin; }
+}
+
+/// The help page asks a form's questions of anybody, signed in or not. (Each FIELD it reaches is read under its own
+/// type's grants — a ticket field's, a customer field's — whatever type it is reached through.)
+partial entity FormField { security { allow read when IsAuthenticated || IsAnonymous; } }
+
+/// A ticket's answer to one field, as the text its kind writes (`Normalised`): a choice's own option, "yes" or "no", a
+/// number, a date as "2026-10-02". Empty: answered once and since cleared. Every change the team makes is on the
+/// ticket's timeline with who made it (`TicketFields.Changed`). Its kind holds on every write (the kit's invariants).
+/// An erasure of the customer blanks it, like the rest of what she told us on the ticket: the ticket stays the desk's
+/// record, and so does the fact that the field was answered — never what the answer was.
+// One answer per field per ticket.
+[Unique(Ticket, Field), PersonalData(TicketAnswers)]
+entity TicketFieldValue : FieldValue {
+  [CreatedAt] DateTime? CreatedAt;
+  [Required, DataSubject] Ticket Ticket;
+  security {
+    allow read, create, update when IsAgent;
+    // The customer reads what they were asked, on their own tickets.
+    allow read when IsAuthenticated where Field.Public && Ticket.Customer.Account == user;
+    // …and answers it as they raise a ticket (the help page, signed in or not): only a field the customer is asked and
+    // that is still in use, on a ticket whose conversation they are in. Never changed or removed by them afterwards.
+    // SECURITY-INVARIANT(helpdesk-a-customer-answers-only-what-they-are-asked): a customer can never write a team-only
+    // or retired field, nor any field on a ticket that is not theirs. Guarded by tests/fields.test.osy
+    // `a_customer_can_answer_only_what_they_are_asked_on_their_own_ticket`.
+    allow create when IsConversationCustomer
+      where Field.Public && Field.Active && IsCustomerIn(Ticket.Conversation.Id);
+  }
+}
+
+// ── a customer's and a company's fields: the team's ──────────────────────────────────────────────────────────────────
+
+/// Something the desk keeps about a customer — their plan, their preferred language for calls, a VIP note. The team's:
+/// never asked of the customer, never shown to them.
+[Unique(Name, "Another customer field already has that name.")]
+entity CustomerField : CustomField {
+  security { allow read when IsAgent; allow create, update when IsAdmin; }
+}
+
+/// A customer's answer to one field. It is about a person, so it is personal data: in their copy, and deleted with them.
+[Unique(Customer, Field), PersonalData(CustomerDetails, OnErasure.DeleteRow)]
+entity CustomerFieldValue : FieldValue {
+  [CreatedAt] DateTime? CreatedAt;
+  [Required, DataSubject] Customer Customer;
+  security { allow read, create, update when IsAgent; }
+}
+
+/// Something the desk keeps about a company — its industry, its contract number, its renewal date. The team's.
+[Unique(Name, "Another company field already has that name.")]
+entity CompanyField : CustomField {
+  security { allow read when IsAgent; allow create, update when IsAdmin; }
+}
+
+/// A company's answer to one field.
+[Unique(Company, Field)]
+entity CompanyFieldValue : FieldValue {
+  [Required] Company Company;
+  security { allow read, create, update when IsAgent; }
+}
+
+/// The form a request takes when nobody chose one — the default among those in use, else the first; none when no form
+/// is in use.
+TicketForm? DefaultForm() {
+  return TicketForm.Where(f => f.Active).OrderByDescending(f => f.IsDefault).ThenBy(f => f.Position).ThenBy(f => f.Name)
+    .FirstOrDefault();
+}

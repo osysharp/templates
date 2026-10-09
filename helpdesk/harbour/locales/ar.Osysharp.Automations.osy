@@ -1,0 +1,360 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Automations, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Automations · AutomationRules ──
+  /// AutomationRules · a control's name for screen readers
+  /// beside: "Name", "When", "Then", "Off — keep it, but do not run it"
+  accessibleName "Only if" => "فقط إذا";
+  /// AutomationRules · a control's name for screen readers
+  /// beside: "Add a rule"
+  accessibleName "Rules" => "القواعد";
+  /// AutomationRules · a control's name for screen readers
+  /// beside: "Name", "When", "Only if", "Off — keep it, but do not run it"
+  accessibleName "Then" => "ثم";
+  /// AutomationRules · a control's name for screen readers
+  accessibleName "What ran lately" => "ما نُفّذ مؤخرًا";
+  /// AutomationRules · a button's label · at most ~21 characters
+  /// shown through Button.label
+  button "Add a condition" => "إضافة شرط";
+  /// AutomationRules · a button's label · at most ~24 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Add the condition" => "إضافة الشرط";
+  /// AutomationRules · a button's label · at most ~18 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Add the step" => "إضافة الخطوة";
+  /// AutomationRules · a button's label · at most ~12 characters
+  /// shown through Button.label
+  button "Choose" => "اختر";
+  /// AutomationRules · a button's label · at most ~21 characters
+  /// shown through Button.label
+  button "Remove the rule" => "إزالة القاعدة";
+  /// AutomationRules · a button's label · at most ~20 characters
+  /// placeholders: {value} = …
+  /// shown through IconButton.label
+  button "Remove {value}" => "إزالة {value}";
+  /// AutomationRules · a button's label · at most ~31 characters
+  /// shown through Button.label
+  button "Restore the app's rule" => "استعادة قاعدة التطبيق";
+  /// AutomationRules · a description
+  /// placeholders: {noun} = noun
+  /// shown through SettingsSection.description
+  /// beside: "Rules, in the order they run"
+  description "Every run is also on its {noun}'s own history." => "يظهر كل تنفيذ أيضًا في سجل {noun} الخاص به.";
+  /// AutomationRules · a description
+  /// placeholders: {noun} = noun, {noun2} = noun
+  /// shown through SettingsPage.description
+  description "Rules that do the routine work on each {noun} when something happens — run in order, each run written on the {noun2}. The app's own rules keep its updates; copy one to change it for the team, or for yours." => "قواعد تنجز العمل الروتيني على كل {noun} عند حدوث أمر ما، وتُنفَّذ بالترتيب، ويُسجَّل كل تنفيذ على {noun2}. تحتفظ قواعد التطبيق نفسه بتحديثاته؛ انسخ إحداها لتعديلها للفريق، أو لنفسك.";
+  /// AutomationRules · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Dropdown.label
+  /// beside: "Add the condition"
+  label "Asks" => "يسأل عن";
+  /// AutomationRules · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Dropdown.label
+  label "Compared" => "المقارنة";
+  /// AutomationRules · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Dropdown.label
+  /// beside: "Choose", "Add the step"
+  label "Does" => "تنفّذ";
+  /// AutomationRules · a label (a field, a list item, a menu entry) · at most ~45 characters
+  /// shown through Switch.label
+  /// beside: "Name", "When", "Only if", "Then"
+  label "Off — keep it, but do not run it" => "متوقفة: احتفظ بها، لكن لا تنفّذها";
+  /// AutomationRules · a label (a field, a list item, a menu entry) · at most ~59 characters
+  /// placeholders: {noun} = noun
+  /// shown through Checkbox.label
+  label "The whole team's — it runs on every {noun}" => "للفريق كله: تُنفَّذ على كل {noun}";
+  /// AutomationRules · placeholder text inside an empty field · at most ~13 characters
+  /// shown through Dropdown.placeholder
+  /// beside: "Add the condition"
+  placeholder "Choose…" => "اختر…";
+  /// AutomationRules · placeholder text inside an empty field · at most ~44 characters
+  /// shown through Field.placeholder
+  /// beside: "When", "Only if", "Then", "Off — keep it, but do not run it"
+  placeholder "Urgent words raise the priority" => "الكلمات العاجلة ترفع الأولوية";
+  /// AutomationRules · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "A copy of one of the app's rules — it replaces the app's while it exists. Remove it to restore the app's." => "نسخة من إحدى قواعد التطبيق، تحل محل قاعدة التطبيق ما دامت موجودة. احذفها لاستعادة قاعدة التطبيق.";
+  /// AutomationRules · text on the page
+  /// shown through EmptyState.body
+  text "Add one for the work that always follows the same event — tag it, set it, tell somebody." => "أضف قاعدة للعمل الذي يتبع الحدث نفسه دائمًا: وسم، أو تعيين قيمة، أو إبلاغ شخص ما.";
+  /// AutomationRules · text on the page
+  /// placeholders: {noun} = noun
+  text "Always — on every {noun} it happens to." => "دائمًا: على كل {noun} يحدث له ذلك.";
+  /// AutomationRules · text on the page
+  /// shown through problem
+  text "Choose what it asks." => "اختر ما يسأل عنه.";
+  /// AutomationRules · text on the page
+  /// shown through problem
+  text "Choose what it does." => "اختر ما تفعله.";
+  /// AutomationRules · text on the page
+  /// shown through notice
+  text "Copied for the team — change it here; the app's rule waits until you restore it." => "نُسخت للفريق: عدّلها هنا، وستنتظر قاعدة التطبيق حتى تستعيدها.";
+  /// AutomationRules · text on the page
+  /// shown through notice
+  text "Copied for you — it replaces the app's rule on yours." => "نُسخت لك: تحل محل قاعدة التطبيق فيما يخصك.";
+  /// AutomationRules · text on the page
+  /// shown through TriggerLabel()
+  text "Every hour, while it holds" => "كل ساعة، ما دام الشرط قائمًا";
+  /// AutomationRules · text on the page
+  /// shown through notice
+  text "Locked — nobody's copy replaces it." => "مقفلة: لا تحل محلها نسخة أحد.";
+  /// AutomationRules · text on the page
+  text "Nothing yet — add what it does." => "لا شيء بعد، أضف ما تفعله.";
+  /// AutomationRules · text on the page
+  /// shown through FieldLabel.text
+  text "Only if — all of these hold" => "فقط إذا: تحققت كل هذه الشروط";
+  /// AutomationRules · text on the page
+  text "Open" => "فتح";
+  /// AutomationRules · text on the page
+  /// shown through notice
+  text "Restored the app's rule." => "استُعيدت قاعدة التطبيق.";
+  /// AutomationRules · text on the page
+  /// shown through FieldLabel.text
+  text "Then — in order" => "ثم، بالترتيب";
+  /// AutomationRules · text on the page
+  /// shown through notice
+  text "Unlocked." => "أُلغي القفل.";
+  /// AutomationRules · text on the page
+  /// placeholders: {noun} = noun
+  /// shown through EmptyState.body
+  text "When a rule runs on a {noun}, it is listed here — what it did, or why it stopped." => "عندما تُنفَّذ قاعدة على {noun}، تظهر هنا: ما الذي فعلته، أو لماذا توقفت.";
+  /// AutomationRules · text on the page
+  /// shown through noun
+  text "record" => "سجل";
+  /// AutomationRules · a title
+  /// shown through Dialog.title
+  title "New rule" => "قاعدة جديدة";
+  /// AutomationRules · a title
+  /// shown through EmptyState.title
+  title "No rules yet" => "لا توجد قواعد بعد";
+  /// AutomationRules · a title
+  /// shown through EmptyState.title
+  title "Nothing has run yet" => "لم يُنفَّذ شيء بعد";
+  /// AutomationRules · a title
+  /// shown through SettingsSection.title
+  /// beside: "What ran lately"
+  title "Rules, in the order they run" => "القواعد بترتيب تنفيذها";
+  /// AutomationRules · a title
+  /// shown through SettingsSection.title
+  /// beside: "Rules, in the order they run"
+  title "What ran lately" => "ما نُفّذ مؤخرًا";
+
+  // ── Osysharp.Automations · AutomationsSettings (/settings/automations) ──
+  /// AutomationsSettings · /settings/automations · a title
+  /// shown through [Title]
+  /// also in AutomationRules
+  title "Automations" => "الأتمتة";
+
+  // ── Osysharp.Automations · DraftOf ──
+  /// DraftOf · an error message
+  /// shown through ValidationException
+  /// also in SaveRule
+  error "That rule is gone — somebody removed it." => "لم تعد تلك القاعدة موجودة، فقد أزالها أحدهم.";
+  /// DraftOf · an error message
+  /// shown through ValidationException
+  error "That rule is no longer one of the app's." => "لم تعد تلك القاعدة من قواعد التطبيق.";
+
+  // ── Osysharp.Automations · FireSentence ──
+  /// FireSentence · text on the page
+  /// placeholders: {fire.RanAs} = fire.RanAs (string)
+  /// shown through FireSentence()
+  text " (as {fire.RanAs})" => " (بصفة {fire.RanAs})";
+  /// FireSentence · text on the page
+  /// placeholders: {ruleName} = ruleName (string)
+  /// shown through FireSentence()
+  text "Rule “{ruleName}”" => "القاعدة «{ruleName}»";
+  /// FireSentence · text on the page
+  /// placeholders: {ruleName} = ruleName (string)
+  /// shown through FireSentence()
+  text "The app's rule “{ruleName}”" => "قاعدة التطبيق «{ruleName}»";
+  /// FireSentence · text on the page
+  /// placeholders: {name} = name (string), {fire.Problem} = fire.Problem (string)
+  /// shown through FireSentence()
+  text "{name} was stopped: {fire.Problem}" => "أُوقفت {name}: {fire.Problem}";
+  /// FireSentence · text on the page
+  /// placeholders: {name} = name (string), {who} = who (string), {fire.Problem} = fire.Problem (string)
+  /// shown through FireSentence()
+  text "{name}{who} did nothing: {fire.Problem}" => "{name}{who} لم تفعل شيئًا: {fire.Problem}";
+  /// FireSentence · text on the page
+  /// placeholders: {name} = name (string), {who} = who (string), {Join} = string.Join(…) (string), {fire.Problem} = fire.Problem (string)
+  /// shown through FireSentence()
+  text "{name}{who} did {Join} — then {fire.Problem}" => "{name}{who} نفّذت {Join}، ثم {fire.Problem}";
+
+  // ── Osysharp.Automations · LockRule ──
+  /// LockRule · an error message
+  /// shown through ValidationException
+  error "That is not one of the app's rules." => "هذه ليست من قواعد التطبيق.";
+
+  // ── Osysharp.Automations · Osysharp.Automations.AutomationRule ──
+  /// Osysharp.Automations.AutomationRule · validation
+  /// shown through Osysharp.Automations.AutomationRule.Name [Required]
+  validation "Name the rule — it is what the record's history says." => "أعطِ القاعدة اسمًا، فهو ما يظهر في سجل التغييرات.";
+
+  // ── Osysharp.Automations · Osysharp.Automations.AutomationSettingsSections.Sections ──
+  /// Osysharp.Automations.AutomationSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  heading "Automation" => "الأتمتة";
+  /// Osysharp.Automations.AutomationSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Rules that do the routine work when something happens." => "قواعد تنجز العمل الروتيني عند حدوث أمر ما.";
+  /// Osysharp.Automations.AutomationSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through SettingsLink.Label
+  label "Automations" => "الأتمتة";
+
+  // ── Osysharp.Automations · Osysharp.Automations.AutomationWatchState ──
+  /// Osysharp.Automations.AutomationWatchState · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.Automations.AutomationWatchState.Watching
+  /// beside: "Stopped"
+  /// also in Osysharp.Webhooks.WebhookWatchState
+  label "Checking hourly" => "فحص كل ساعة";
+
+  // ── Osysharp.Automations · Osysharp.Automations.ConditionKind ──
+  /// Osysharp.Automations.ConditionKind · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Automations.ConditionKind.Hours
+  /// beside: "Choice", "Text", "Number", "Yes or no"
+  label "Hours since" => "ساعات منذ";
+
+  // ── Osysharp.Automations · Osysharp.Automations.ConditionOp ──
+  /// Osysharp.Automations.ConditionOp · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Automations.ConditionOp.Contains
+  /// beside: "is", "is not", "does not contain", "is at least", "is at most"
+  /// also in Osysharp.Explore.FilterOp
+  label "contains" => "يحتوي على";
+  /// Osysharp.Automations.ConditionOp · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.Automations.ConditionOp.DoesNotContain
+  /// beside: "is", "is not", "contains", "is at least", "is at most"
+  label "does not contain" => "لا يحتوي على";
+  /// Osysharp.Automations.ConditionOp · a label (a field, a list item, a menu entry) · at most ~8 characters
+  /// shown through Osysharp.Automations.ConditionOp.Is
+  /// beside: "is not", "contains", "does not contain", "is at least", "is at most"
+  /// also in Osysharp.Explore.FilterOp
+  label "is" => "يساوي";
+  /// Osysharp.Automations.ConditionOp · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Automations.ConditionOp.AtLeast
+  /// beside: "is", "is not", "contains", "does not contain", "is at most"
+  label "is at least" => "لا يقل عن";
+  /// Osysharp.Automations.ConditionOp · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Automations.ConditionOp.AtMost
+  /// beside: "is", "is not", "contains", "does not contain", "is at least"
+  label "is at most" => "لا يزيد عن";
+  /// Osysharp.Automations.ConditionOp · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Automations.ConditionOp.IsNot
+  /// beside: "is", "contains", "does not contain", "is at least", "is at most"
+  /// also in Osysharp.Explore.FilterOp
+  label "is not" => "لا يساوي";
+
+  // ── Osysharp.Automations · RowLine ──
+  /// RowLine · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through RuleLine.Whose
+  /// also in Osysharp.Automations.AutomationLayer
+  label "The team's" => "خاصة بالفريق";
+  /// RowLine · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through RuleLine.Whose
+  /// also in Osysharp.Automations.AutomationLayer
+  label "Yours" => "خاصة بك";
+
+  // ── Osysharp.Automations · RuleLines ──
+  /// RuleLines · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through RuleLine.Whose
+  label "The app's" => "من التطبيق";
+  /// RuleLines · text on the page
+  /// also in RowLine
+  text "and" => "و";
+
+  // ── Osysharp.Automations · RuleRow ──
+  /// RuleRow · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Copy for mine" => "نسخ لي";
+  /// RuleRow · a button's label · at most ~24 characters
+  /// shown through Button.label
+  button "Copy for the team" => "نسخ للفريق";
+  /// RuleRow · a button's label · at most ~10 characters
+  /// shown through Button.label
+  button "Lock" => "قفل";
+  /// RuleRow · a button's label · at most ~15 characters
+  /// shown through Button.label
+  /// beside: "Move up"
+  /// also in KnowledgeCategoryCard
+  button "Move down" => "نقل لأسفل";
+  /// RuleRow · a button's label · at most ~13 characters
+  /// shown through Button.label
+  button "Restore" => "استعادة";
+  /// RuleRow · a button's label · at most ~15 characters
+  /// shown through Button.label
+  /// beside: "Edit"
+  button "Switch on" => "تشغيل";
+  /// RuleRow · a button's label · at most ~12 characters
+  /// shown through Button.label
+  button "Unlock" => "إلغاء القفل";
+  /// RuleRow · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Badge.label
+  label "Locked" => "مقفلة";
+  /// RuleRow · text on the page
+  /// placeholders: {line.When} = line.When, {line.If} = line.If
+  /// beside: "When"
+  text "{line.When}, if {line.If}" => "{line.When}، إذا {line.If}";
+
+  // ── Osysharp.Automations · SaveRule ──
+  /// SaveRule · an error message
+  /// shown through ValidationException
+  error "Name the rule — it is what the record's history says." => "أعطِ القاعدة اسمًا، فهو ما يظهر في سجل التغييرات.";
+  /// SaveRule · an error message
+  /// shown through ValidationException
+  error "The app no longer has the rule this copies." => "لم يعد التطبيق يحتوي على القاعدة التي تنسخها هذه.";
+  /// SaveRule · an error message
+  /// shown through ValidationException
+  error "There is already a copy of that rule here — change that one." => "توجد هنا نسخة من تلك القاعدة بالفعل، عدّل تلك النسخة.";
+  /// SaveRule · an error message
+  /// placeholders: {original.Name} = original.Name (string)
+  /// shown through ValidationException
+  error "“{original.Name}” is locked — it runs as the app wrote it, and nobody replaces it." => "«{original.Name}» مقفلة: تعمل كما كتبها التطبيق، ولا يستبدلها أحد.";
+
+  // ── Osysharp.Automations · StepWords ──
+  /// StepWords · text on the page
+  /// shown through StepWords()
+  text "no" => null was "no" => "لا";
+  /// StepWords · text on the page
+  /// shown through StepWords()
+  text "yes" => null was "yes" => "نعم";
+
+  // ── Osysharp.Automations · StepWordsOf ──
+  /// StepWordsOf · text on the page
+  /// placeholders: {s.Action} = s.Action (string)
+  /// shown through StepWordsOf()
+  text "{s.Action} (no longer offered)" => "{s.Action} (لم يعد متاحًا)";
+
+  // ── Osysharp.Automations · SubjectFor ──
+  /// SubjectFor · an error message
+  /// shown through ValidationException
+  error "Nothing here has rules yet — a rule is about a record something happens to (an [Event]) and something can be done to (an [Action])." => null;
+  /// SubjectFor · an error message
+  /// placeholders: {key} = key (string), {Join} = string.Join(…) (string)
+  /// shown through ValidationException
+  error "There are no rules about '{key}'. There are about: {Join}." => null was "There are no automations for '{key}'. There are: {Join}." => "لا توجد أتمتة لـ '{key}'. الموجود: {Join}.";
+
+  // ── Osysharp.Automations · TestWordsIn ──
+  /// TestWordsIn · text on the page
+  /// placeholders: {flag} = flag (string)
+  text "{flag}: no" => "{flag}: لا";
+  /// TestWordsIn · text on the page
+  /// placeholders: {label} = label (string), {op} = op (string), {value} = value (string)
+  text "{label} {op} {value}" => "{label} {op} {value}";
+  /// TestWordsIn · text on the page
+  /// placeholders: {t.Condition} = t.Condition (string)
+  /// shown through TestWordsIn()
+  text "{t.Condition} (no longer offered)" => "{t.Condition} (لم يعد متاحًا)";
+
+  // ── Osysharp.Automations · WhenWords ──
+  /// WhenWords · text on the page
+  text "Every hour" => "كل ساعة";
+  /// WhenWords · text on the page
+  text "When it happens" => "عندما يحدث ذلك";
+  /// WhenWords · text on the page
+  /// placeholders: {trigger} = trigger (string)
+  text "When {trigger}" => "عند {trigger}";
+}

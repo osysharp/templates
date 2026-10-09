@@ -1,0 +1,101 @@
+// SETTINGS › AUDIT LOG — who changed the desk, newest first: access changes and settings changes together, narrowed by
+// kind, by period and by person. Admins only; what it reads, and why the trail opens to them for the settings alone, is
+// model/audit.osy.
+using Osysharp.Identity;
+
+[Route("/settings/audit")] [Layout(SettingsFrame)] [Authorize(IsAdmin)] [Render(CSR)] [Title("Audit log")]
+component AuditSettings() {
+  AuditArea area = AuditArea.Everything;
+  AuditPeriod period = AuditPeriod.Month;
+  string? who = null;
+  List<AuditLine> lines = [];
+  bool loaded = false;
+  DateTime now = DateTime.UtcNow;
+
+  on mount { Load(); }
+
+  /// A year of the chosen kind, newest first; the period and the person narrow it on the page.
+  action Load() {
+    now = DateTime.UtcNow;
+    lines = AuditLog(area, AuditSince(AuditPeriod.Year, now), "");
+    loaded = true;
+  }
+  action Show(AuditArea a) { area = a; who = null; Load(); }
+
+  render {
+    SettingsPage("Audit log", description: "Every change to the desk's settings and to somebody's access — what changed, from what to what, who made it and when. Nobody edits or deletes these.") {
+      Stack(gap: 4) {
+        Tabs {
+          foreach (var a in AuditArea.Members) { Tab(a.Label, selected: area == a, onPress: () => Show(a)); }
+        }
+        Row(gap: 3, wrap: Wrapping.Wrap, align: Align.End) {
+          Box(w: Layout.AtLeast(Tablet) ? "200px" : "100%") { Dropdown("Period", value: period); }
+          Box(w: Layout.AtLeast(Tablet) ? "240px" : "100%") {
+            Dropdown("Changed by", value: who, options: lines.Select(l => l.By).Distinct().OrderBy(b => b).ToArray(),
+                     placeholder: "Anyone") { p => Text(p); }
+          }
+        }
+        if (!loaded) {
+          Stack(gap: 2) { Skeleton(shape: SkeletonShape.Line); Skeleton(shape: SkeletonShape.Line); Skeleton(shape: SkeletonShape.Line); }
+        } else {
+          AuditList(lines.Where(l => l.At >= AuditSince(period, now) && (who == null || l.By == who)).ToList(),
+                    lines.Count >= AuditTake(), lines.Count == 0 && area == AuditArea.Everything);
+        }
+      }
+    }
+  }
+}
+
+/// The lines, one per change: when, what, the values, and who — the date beside it on a wide screen, above it on a
+/// phone. `capped`: the read stopped at its limit, so older changes are not here. `nothingYet`: nobody has changed
+/// anything in a year — as opposed to nothing matching what is chosen.
+[Composable]
+component AuditList(List<AuditLine> shown, bool capped, bool nothingYet) {
+  render {
+    Stack(gap: 0, bg: Colors.Surface, borderW: 1, border: Colors.Border, rounded: Radius.Lg, overflow: Overflow.Hidden) {
+      // The count heads a list; over nothing, the empty state says it in words instead.
+      if (shown.Count > 0) {
+        Row(gap: 3, align: Align.Center, wrap: Wrapping.Wrap, px: 4, py: 2, bg: Colors.Sunken, borderBW: 1, border: Colors.Border) {
+          Text(shown.Count == 1 ? "1 change" : shown.Count + " changes", fontFamily: Font.Mono, fontSize: FontSize.Caption,
+               color: Colors.TextMuted, fontVariant: FontVariant.TabularNums);
+          Spacer();
+          if (capped) { Text("The newest " + AuditTake() + " — narrow the period to see further back", fontSize: FontSize.Caption, color: Colors.TextMuted); }
+        }
+      }
+      if (shown.Count == 0) {
+        Box(p: 5) {
+          EmptyState(nothingYet ? "No changes yet" : "Nothing matches",
+                     body: nothingYet ? "When somebody changes the desk's settings or somebody's access, it is listed here — what, who and when."
+                                      : "Nobody made a change of this kind in this period. Try a longer period, or anyone.");
+        }
+      }
+      Stack(gap: 0, role: UiRole.List, label: "Changes") {
+        foreach (var l in shown) {
+          Row(gap: 4, align: Align.Start, wrap: Layout.AtLeast(Tablet) ? Wrapping.NoWrap : Wrapping.Wrap, px: 4, py: 3,
+              borderBW: 1, border: Colors.Border, role: UiRole.ListItem, label: l.What) {
+            // Beside the change on a wide screen; one line above it on a phone, where two would cost a row per change.
+            if (Layout.AtLeast(Tablet)) {
+              Stack(gap: 0, w: "120px", shrink: 0) {
+                Text(l.At.ToString("d MMM yyyy"), fontSize: FontSize.Caption, color: Colors.TextSecondary, fontVariant: FontVariant.TabularNums);
+                Text(l.At.ToString("HH:mm") + " UTC", fontFamily: Font.Mono, fontSize: FontSize.Caption, color: Colors.TextMuted);
+              }
+            } else {
+              Text(l.At.ToString("d MMM yyyy · HH:mm") + " UTC", fontSize: FontSize.Caption, color: Colors.TextMuted,
+                   fontVariant: FontVariant.TabularNums, w: "100%");
+            }
+            Stack(gap: 1, grow: 1, minW: "0") {
+              Row(gap: 2, align: Align.Center, wrap: Wrapping.Wrap) {
+                Badge(l.Area.Label, tone: l.Area == AuditArea.Access ? Tone.Primary : Tone.Default);
+                if (l.Refused) { Badge("Refused", tone: Tone.Warning); }
+                Text(l.What, fontWeight: FontWeight.Medium);
+              }
+              if (l.Detail != "") { Text(l.Detail, fontSize: FontSize.Label, color: Colors.TextSecondary); }
+              Text("by " + (l.By != "" ? l.By : "somebody no longer named") + (l.Reason != "" ? " — “" + l.Reason + "”" : ""),
+                   fontSize: FontSize.Caption, color: Colors.TextMuted);
+            }
+          }
+        }
+      }
+    }
+  }
+}

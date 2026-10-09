@@ -1,0 +1,48 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Clock, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Clock · ClockSettingsEditor ──
+  /// ClockSettingsEditor · a description
+  /// shown through SettingsPage.description
+  description "A day here is a day where the team works: \"today\", a week and a month start at midnight in this time zone, and follow its summer time. Reports count on it, and daily mail goes out by it." => "اليوم هنا هو يوم في المكان الذي يعمل فيه الفريق: \"اليوم\" والأسبوع والشهر تبدأ عند منتصف الليل في هذه المنطقة الزمنية، وتتبع توقيتها الصيفي. تُحسب التقارير وفقها، ويُرسل البريد اليومي بحسبها.";
+  /// ClockSettingsEditor · text on the page
+  /// shown through SaveBar.saved
+  text "Time and date saved." => "تم حفظ الوقت والتاريخ.";
+  /// ClockSettingsEditor · a title
+  /// shown through SettingsPage.title
+  /// also in ClockSettingsPage /settings/clock
+  title "Time and date" => "الوقت والتاريخ";
+
+  // ── Osysharp.Clock · ClockSettingsFields ──
+  /// ClockSettingsFields · a description
+  /// shown through SettingsSection.description
+  description "Where the team's day starts and ends, and the first day of a week." => "أين يبدأ يوم الفريق وأين ينتهي، وأول يوم في الأسبوع.";
+  /// ClockSettingsFields · a hint under a field
+  /// shown through SettingRow.hint
+  /// beside: "Monday in most of Europe; Sunday or Saturday elsewhere."
+  hint "Days, weeks and months start at midnight here." => "تبدأ الأيام والأسابيع والأشهر عند منتصف الليل هنا.";
+  /// ClockSettingsFields · a hint under a field
+  /// shown through SettingRow.hint
+  /// beside: "Days, weeks and months start at midnight here."
+  hint "Monday in most of Europe; Sunday or Saturday elsewhere." => "الاثنين في معظم أوروبا، والأحد أو السبت في أماكن أخرى.";
+  /// ClockSettingsFields · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through ZonePicker.label
+  label "Time zone" => "المنطقة الزمنية";
+  /// ClockSettingsFields · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Dropdown.label
+  label "Weeks start on" => "يبدأ الأسبوع يوم";
+  /// ClockSettingsFields · a title
+  /// shown through SettingsSection.title
+  title "Clock" => "الساعة";
+
+  // ── Osysharp.Clock · Osysharp.Clock.__Settings_ClockSettings_Section.Sections ──
+  /// Osysharp.Clock.__Settings_ClockSettings_Section.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "The time zone the team's days start in, and the day a week starts." => "المنطقة الزمنية التي تبدأ فيها أيام الفريق، واليوم الذي يبدأ فيه الأسبوع.";
+  /// Osysharp.Clock.__Settings_ClockSettings_Section.Sections · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through SettingsLink.Label
+  label "Time and date" => "الوقت والتاريخ";
+}

@@ -1,0 +1,51 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Organizations, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Organizations · AddDomain ──
+  /// AddDomain · an error message
+  /// placeholders: {d} = d (string)
+  /// shown through ValidationException
+  error "Another organisation already has {d}." => "{d} مسجّل بالفعل لمؤسسة أخرى.";
+  /// AddDomain · an error message
+  /// shown through ValidationException
+  error "That does not look like a mail domain — write it like acme.com." => "لا يبدو هذا نطاق بريد. اكتبه مثل acme.com.";
+  /// AddDomain · an error message
+  /// placeholders: {d} = d (string), {org.Name} = org.Name (string)
+  /// shown through ValidationException
+  error "{d} is a public mail service — anybody can have an address on it, so it cannot say who works for {org.Name}." => "{d} خدمة بريد عامة، يمكن لأي شخص امتلاك عنوان عليها، لذا لا يمكنها تحديد من يعمل لدى {org.Name}.";
+
+  // ── Osysharp.Organizations · Osysharp.Organizations.MembershipSource ──
+  /// Osysharp.Organizations.MembershipSource · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Organizations.MembershipSource.Local
+  /// beside: "Mail domain", "Invitation", "Single sign-on", "Directory (SCIM)"
+  label "Added here" => "أُضيف هنا";
+  /// Osysharp.Organizations.MembershipSource · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.Organizations.MembershipSource.Scim
+  /// beside: "Added here", "Mail domain", "Invitation", "Single sign-on"
+  label "Directory (SCIM)" => "الدليل (SCIM)";
+  /// Osysharp.Organizations.MembershipSource · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Organizations.MembershipSource.Invitation
+  /// beside: "Added here", "Mail domain", "Single sign-on", "Directory (SCIM)"
+  label "Invitation" => "دعوة";
+  /// Osysharp.Organizations.MembershipSource · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.Organizations.MembershipSource.Idp
+  /// beside: "Added here", "Mail domain", "Invitation", "Directory (SCIM)"
+  label "Single sign-on" => "تسجيل دخول موحّد";
+
+  // ── Osysharp.Organizations · Osysharp.Organizations.Organization ──
+  /// Osysharp.Organizations.Organization · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Organizations.Organization.Parent
+  /// beside: "Name", "Is active", "External id", "Source"
+  label "Parent" => "الجهة الأم";
+  /// Osysharp.Organizations.Organization · validation
+  /// shown through Osysharp.Organizations.Organization.Name [Required]
+  validation "Give the organisation a name." => "أدخل اسمًا للمؤسسة.";
+
+  // ── Osysharp.Organizations · Osysharp.Organizations.OrganizationDomain ──
+  /// Osysharp.Organizations.OrganizationDomain · validation
+  /// shown through Osysharp.Organizations.OrganizationDomain.Domain [Unique]
+  validation "Another organisation already has that domain." => "هذا النطاق مسجّل بالفعل لمؤسسة أخرى.";
+}

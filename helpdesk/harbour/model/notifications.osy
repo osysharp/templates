@@ -1,0 +1,71 @@
+// WHO IS TOLD WHAT — the desk's notifications, through Osysharp.Notifications: the bell beside the name in the bar, and
+// a mail of what was not read (each teammate's own choice, in the language they read the desk in).
+//
+// The desk tells a teammate:
+//   · what the inbox says they should know — a ticket offered or handed to them, a promise on theirs at risk or missed,
+//     and, to a queue's leads, a ticket nobody picked up (Osysharp.Inbox.Notifications tells them all; the leads are
+//     whoever `LeadsInbox` says, inbox.osy — nothing here);
+//   · that the customer wrote again, on a ticket they hold or follow;
+//   · that a colleague named them in a note (composer.osy), which seats them on the ticket;
+//   · what an automation was written to tell them (actions.osy) — in the rule's own words;
+//   · the kits' own events as they are — a bad answer (feedback.osy), an article to review (knowledge.osy), a webhook
+//     paused (webhooks.osy) — each says itself.
+//
+// ⚑ NEVER ABOUT A TICKET THEY MAY NOT OPEN. Each notification is asked, as it is delivered, read and mailed, whether its
+//   teammate may read the ticket under their own rules (the kit does, through the ticket's own security).
+//
+// ⚑ SAID WHEN READ. A notification keeps the event; the customer's name and the ticket's subject are read from the
+//   ticket when the bell is read — so an erased customer's name is in no notification.
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Notifications;
+
+/// Everybody on the desk has a bell, and their own notification preferences.
+policy ReceivesNotifications => IsAgent;
+
+// A teammate tells another from their own request — a note that names them. The rest is the desk's runs and timers.
+// Whoever answers privacy requests reads them, to count, copy and erase a teammate's (Osysharp.Privacy.Notifications).
+partial entity Notification { security { allow create when IsAgent; allow read when ManagesPrivacy; } }
+partial entity NotificationPreferences { security { allow read when ManagesPrivacy; } }
+
+app.Notifications = new NotificationsSetup { AppName = "Harbour" };
+
+/// The customer wrote again on `t`: whoever holds it and whoever follows it are told.
+[On]
+void TellCustomerWrote(CustomerWroteAgain e) {
+  var t = e.Ticket;
+  List<Principal> told = [];
+  if (t.Assignee != null) { told.Add(t.Assignee!); }
+  foreach (var f in Follower.Where(f => f.Ticket == t).Include(f => f.Agent).ToList()) { told.Add(f.Agent); }
+  NotifyAll(told, e);
+}
+
+// ── what the desk tells a teammate, said when they read it — the desk's own, never offered to a rule or a webhook ──────
+
+/// An automation told them — in the rule's own words (actions.osy, `TellHolder`/`TellLeads`).
+[Event("An automation said")]
+internal sealed class AutomationSaid {
+  public Ticket Ticket;
+  public string Message = "";
+  public override string Sentence() { return Message != "" ? Message : "An automation ran on a ticket."; }
+}
+
+/// Somebody answered in a side conversation on a ticket they hold or follow (side_conversations.osy).
+[Event("A side conversation was answered")]
+internal sealed class SideConversationAnswered {
+  public Ticket Ticket;
+  public Conversation? Side;
+  public override string Sentence() { return SideAnsweredWords(Side == null ? "" : Side.Id.ToString()); }
+}
+
+/// A colleague named them in a note (composer.osy) — a mention, mailed at once if they asked for that.
+[Event("Mentioned in a note")]
+internal sealed class MentionedInNote {
+  public Ticket Ticket;
+  public Principal? By;
+  public override string Sentence() {
+    var by = By == null ? "" : NotifierName(By);
+    return by != "" ? $"{by} mentioned you in a note." : "You were mentioned in a note.";
+  }
+}

@@ -1,0 +1,87 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Charts, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Charts · AnnotationLabel ──
+  /// AnnotationLabel · a control's name for screen readers
+  /// placeholders: {named} = named (string)
+  /// shown through AnnotationLabel()
+  accessibleName "{named} (above the top of this chart)" => "{named} (فوق أعلى هذا المخطط)";
+  /// AnnotationLabel · a control's name for screen readers
+  /// placeholders: {named} = named (string)
+  /// shown through AnnotationLabel()
+  accessibleName "{named} (below the bottom of this chart)" => "{named} (تحت أسفل هذا المخطط)";
+
+  // ── Osysharp.Charts · AnnotationMarks ──
+  /// AnnotationMarks · a control's name for screen readers
+  accessibleName "Annotations" => "تعليقات توضيحية";
+  /// AnnotationMarks · text on the page
+  /// placeholders: {a.Label} = a.Label, {a.Category} = a.Category
+  text "⚠ note \"{a.Label}\" names a category this chart does not have: \"{a.Category}\"" => "⚠ الملاحظة \"{a.Label}\" تذكر فئة غير موجودة في هذا المخطط: \"{a.Category}\"";
+
+  // ── Osysharp.Charts · BandLabel ──
+  /// BandLabel · a control's name for screen readers
+  /// placeholders: {Formatted} = Formatted(…) (string), {Formatted2} = Formatted(…) (string)
+  /// shown through BandLabel()
+  accessibleName "{Formatted} to {Formatted2}" => "من {Formatted} إلى {Formatted2}";
+  /// BandLabel · a control's name for screen readers
+  /// placeholders: {named} = named (string)
+  /// shown through BandLabel()
+  accessibleName "{named} (clipped to the range of this chart)" => "{named} (مقتطع إلى نطاق هذا المخطط)";
+
+  // ── Osysharp.Charts · CandleLabel ──
+  /// CandleLabel · a control's name for screen readers
+  /// shown through CandleLabel()
+  accessibleName "down" => "هبوط";
+  /// CandleLabel · a control's name for screen readers
+  /// shown through CandleLabel()
+  accessibleName "up" => "صعود";
+  /// CandleLabel · a control's name for screen readers
+  /// placeholders: {m.Label} = m.Label (string), {value} = … (string), {Formatted} = Formatted(…) (string), {Formatted2} = Formatted(…) (string), {Formatted3} = Formatted(…) (string), {Formatted4} = Formatted(…) (string)
+  /// shown through CandleLabel()
+  accessibleName "{m.Label} {value}: open {Formatted}, high {Formatted2}, low {Formatted3}, close {Formatted4}" => "{m.Label} {value}: الافتتاح {Formatted}، الأعلى {Formatted2}، الأدنى {Formatted3}، الإغلاق {Formatted4}";
+
+  // ── Osysharp.Charts · Chart ──
+  /// Chart · a control's name for screen readers
+  accessibleName "Chart" => "مخطط";
+  /// Chart · caption
+  /// shown through ChartTable.caption
+  caption "Chart data" => "بيانات المخطط";
+  /// Chart · text on the page
+  /// also in Pie
+  text "No data to plot" => "لا توجد بيانات لعرضها";
+
+  // ── Osysharp.Charts · ColumnTitle ──
+  /// ColumnTitle · text on the page
+  /// placeholders: {m.Label} = m.Label (string)
+  /// shown through ColumnTitle()
+  text "{m.Label} (close)" => "{m.Label} (الإغلاق)";
+
+  // ── Osysharp.Charts · Pie ──
+  /// Pie · a control's name for screen readers
+  accessibleName "Pie chart" => "مخطط دائري";
+  /// Pie · a control's name for screen readers
+  /// also in SliceLegend
+  accessibleName "Slices" => "الشرائح";
+
+  // ── Osysharp.Charts · SeriesLegend ──
+  /// SeriesLegend · a control's name for screen readers
+  accessibleName "Series" => "سلسلة";
+
+  // ── Osysharp.Charts · StackedColumns ──
+  /// StackedColumns · a control's name for screen readers
+  /// also in StackedBars
+  accessibleName "Stacked series" => "سلاسل متراكمة";
+
+  // ── Osysharp.Charts · TickLabel ──
+  /// TickLabel · a control's name for screen readers
+  /// placeholders: {ToString} = Convert.ToString(…) (double)
+  /// shown through TickLabel()
+  accessibleName "{ToString}K" => "{ToString} ألف";
+  /// TickLabel · a control's name for screen readers
+  /// placeholders: {ToString} = Convert.ToString(…) (double)
+  /// shown through TickLabel()
+  accessibleName "{ToString}M" => "{ToString} مليون";
+}

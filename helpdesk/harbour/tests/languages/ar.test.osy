@@ -1,0 +1,582 @@
+// HARBOUR IN ARABIC (D-RTL1) — the same desk, every word from locales/ar.osy (its own and its kits' — the Inbox, the
+// Composer, Conversations, Accounts, Privacy …), and every screen reading RIGHT TO LEFT: the rail on the right, the list
+// beside it, the ticket at the left; the customer's portal the same. Nothing in the app was written for it. Each screen
+// is photographed (`osy test --pixels`), at a desk's width and a phone's, light and dark.
+//
+// One place for the language: `osy init --template helpdesk` leaves this file out with locales/ar*.osy when Arabic is
+// not wanted, so the rest of the suite never reads a page in it. The worlds these tests stand in (`Office`, `Desk`,
+// `Bells`, …) and their helpers live beside the English tests.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.People;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Mail;
+using Osysharp.Mail.Receiving;
+using Osysharp.Inbox;
+using Osysharp.Knowledge;
+using Osysharp.Feedback;
+using Osysharp.Notifications;
+using Osysharp.Privacy;
+using Osysharp.Reports;
+using Osysharp.Clock;
+using Osysharp.Fields;
+using Osysharp.Webhooks;
+using Osysharp.Http;
+
+/// ⭐ A TICKET ARRIVES BY MAIL AND IS ANSWERED, IN ARABIC: Olivia's mail to support@ becomes a ticket; Ines reads the
+/// desk in Arabic — the navigation rail at the RIGHT, the ticket list beside it, the ticket at the LEFT — writes a reply
+/// and an internal note, and both land on the one timeline.
+[Test(Mailroom)]
+void a_ticket_arrives_by_mail_and_is_answered_on_the_desk_in_arabic() {
+  runas (Ines) { Watching(); }
+  runas (Ines) {
+    Deliver(FromOlivia("<ar1@larkspur.test>", "Invoice INV-2041 shows the wrong VAT number",
+      "Our VAT number on invoice INV-2041 is SE556677889901, not the old one. Can you send a corrected copy?"));
+    TestClock.Advance(TimeSpan.FromMinutes(1));
+    ReadMailbox();
+  }
+  var number = 0;
+  runas (Ines) { number = Ticket.Single(t => t.Title == "Invoice INV-2041 shows the wrong VAT number").Number; }
+
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + number);
+  Assert.Visible("Send");
+  Ui.Shot("rtl twin: a ticket on the desk in English, wide");
+  Ui.Visit("/ar/v/open/t/" + number);
+  Assert.Visible("كل المفتوحة");                                     // the views, in Arabic
+  Assert.Visible("Invoice INV-2041 shows the wrong VAT number");   // the customer's own words stay hers
+  // THE DIRECTION, measured: the rail's view names sit to the RIGHT of the ticket's composer.
+  Assert.RightOf("كل المفتوحة", "إرسال");
+  Assert.Visible("النوع");                                          // the ticket's type, a form, in Arabic
+  Assert.Visible("أكتوبر");                                        // its dates in ar-AE: Arabic months, Latin digits
+  Ui.Fill("الرد على Olivia Brandt", "شكرًا يا أوليفيا، سنرسل نسخة مصححة من الفاتورة INV-2041 اليوم.");
+  Ui.Click("إرسال");
+  Assert.Visible("سنرسل نسخة مصححة من الفاتورة INV-2041 اليوم.");
+  Ui.Click("ملاحظة داخلية");
+  Ui.Fill("ملاحظة داخلية", "رقم ضريبة القيمة المضافة الجديد: SE556677889901.");
+  Ui.Click("إضافة ملاحظة");
+  Assert.Visible("رقم ضريبة القيمة المضافة الجديد: SE556677889901.");
+  Ui.Shot("rtl: a ticket answered on the desk in Arabic, wide");
+  Ui.Theme("dark");
+  Ui.Shot("rtl: a ticket answered on the desk in Arabic, wide, dark");
+  Ui.Theme("light");
+  Ui.Visit("/ar/v/open");
+  Ui.Shot("rtl: the desk's open tickets in Arabic, wide");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/ar/v/open");
+  Assert.NoOverflow();
+  Ui.Shot("rtl: the desk's open tickets in Arabic, phone");
+  Ui.Visit("/ar/v/open/t/" + number);
+  Assert.NoOverflow();
+  Ui.Shot("rtl: a ticket in Arabic, phone");
+  runas (Ines) {
+    var t = Ticket.Single(x => x.Number == number);
+    Assert.Equal(1, Message.Count(m => m.Conversation == t.Conversation && m.Visibility == EntryVisibility.Internal));
+  }
+}
+
+/// ⭐ THE CUSTOMER'S VIEW IN ARABIC: Olivia reads her requests in Arabic in the portal — the team's reply, never its
+/// note — answers, and her reply reopens the ticket; on a phone too.
+[Test(Portal)]
+void the_customer_reads_and_answers_in_the_portal_in_arabic() {
+  var number = 0;
+  runas (Desk) {
+    var id = OpenTicket("olivia@larkspur.test", "Olivia Brandt", "Refund charged twice for order 88213",
+                        "The refund shows twice on the customer's card statement.");
+    number = Ticket.Single(t => t.Id == id).Number;
+    ReplyToTicket(id, "One of the two is a pending authorisation that drops off within five days.", false,
+                  TicketStatus.Single(s => s.Name == "Pending").Id);
+    ReplyToTicket(id, "Finance confirmed only one refund settled.", true);
+  }
+  Ui.Viewport(1280, 900);
+  Ui.SignInAs(Olivia);
+  Ui.Visit("/ar/my");
+  Assert.Visible("طلباتك");
+  Assert.Visible("بانتظار ردك");                                    // where it stands, in her words, in Arabic
+  Assert.Visible("Refund charged twice for order 88213");
+  Ui.Shot("rtl: the customer's requests in Arabic, wide");
+  Ui.Click("Refund charged twice for order 88213");
+  Assert.Visible("pending authorisation that drops off");
+  Assert.Hidden("Finance confirmed");
+  Ui.Fill("ردك", "شكرًا، اختفى المبلغ المكرر هذا الصباح.");
+  Ui.Click("إرسال الرد");
+  Assert.Visible("اختفى المبلغ المكرر هذا الصباح.");
+  Ui.Shot("rtl: the customer's request in Arabic, wide");
+  Ui.Theme("dark");
+  Ui.Shot("rtl: the customer's request in Arabic, wide, dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Assert.NoOverflow();
+  Ui.Shot("rtl: the customer's request in Arabic, phone");
+  Ui.Visit("/help");
+  Assert.NoOverflow();
+  Ui.Shot("rtl: the help page in Arabic, phone");
+  runas (Desk) { Assert.Equal(StatusCategory.Open, Ticket.Single(x => x.Number == number).Category); }
+}
+
+/// The settings in Arabic: the sections at the start, each page's fields mirrored, the mailboxes the kit draws.
+[Test(Mailroom)]
+void the_settings_in_arabic() {
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/ar/settings");
+  Assert.Visible("الإعدادات");
+  Ui.Shot("rtl: the settings in Arabic, wide");
+  Ui.Visit("/ar/settings/mailboxes");
+  Assert.Visible("support@helpdesk.test");
+  Ui.Shot("rtl: the mailboxes in Arabic, wide");
+  Ui.Visit("/ar/settings/fields");                                 // the types of request: a form IS the type
+  Assert.Visible("إضافة نوع");
+  Assert.Hidden("Add a type");
+  Ui.Shot("rtl: the ticket types and fields in Arabic, wide");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/ar/settings");
+  Assert.NoOverflow();
+  Ui.Shot("rtl: the settings in Arabic, phone");
+  Ui.Theme("dark");
+  Ui.Shot("rtl: the settings in Arabic, phone, dark");
+  Ui.Theme("light");
+}
+
+// ── settings ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Office)]
+void a_category_shown_by_its_name_reads_in_arabic() {
+  runas (Mira) {
+    Session.SetLanguage("ar");
+    Assert.Equal("قيد الانتظار", StatusCategory.Pending.Label);
+    Session.SetLanguage("en");
+  }
+  Ui.SignInAs(Mira);
+  Ui.Visit("/ar/settings/statuses");
+  Assert.Visible("قيد الانتظار");
+}
+
+[Test(Office)]
+void the_desks_clock_in_arabic() {
+  Ui.SignInAs(Mira);
+  Ui.Viewport(390, 844);
+  Ui.Visit("/ar/settings/clock");
+  Assert.Visible("الوقت والتاريخ");
+  Assert.Visible("المنطقة الزمنية");
+  // The day a week starts, in Arabic too — on the field, and in the list it opens.
+  Ui.Click("يبدأ الأسبوع يوم");
+  Assert.Visible("الخميس");      // Thursday — a word only the list says
+  Ui.Press("Escape");
+  Ui.Shot("settings-clock-phone-ar");
+  runas (Theo) {
+    Session.SetLanguage("ar");
+    Assert.Equal("الاثنين", DayOfWeek.Monday.Label);
+    Session.SetLanguage("en");
+  }
+}
+
+[Test(Automating)]
+void the_rules_page_reads_right_to_left_in_arabic() {
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ada);
+  Ui.Visit("/ar/settings/automations");
+  Assert.NoOverflow();
+  Ui.Shot("automations: the rules in Arabic, wide");
+  Ui.Viewport(390, 844);
+  Assert.NoOverflow();
+  Ui.Shot("automations: the rules in Arabic, phone");
+}
+
+[Test(Intake)]
+void the_customer_panel_and_the_fields_settings_in_arabic() {
+  PartyFieldsOfLarkspur();
+  var n = OliviasBug();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Theo);
+  // Right to left: the panel's fields on the left, the conversation beside them.
+  Ui.Visit("/ar/v/open/t/" + n);
+  Ui.Shot("customer-panel-fields-ar");
+  Ui.Viewport(1440, 1000);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/ar/settings/fields");
+  Ui.Shot("settings-fields-ar");
+}
+
+[Test(Bells)]
+void the_webhooks_settings_in_arabic() {
+  TwoSubscriptionsAndARetry();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/ar/settings/webhooks");
+  Assert.Visible("orders.example.test");
+  Ui.Shot("webhooks settings wide arabic");
+}
+
+[Test(Office)]
+void the_api_keys_and_an_integration_whose_owner_left_in_arabic() {
+  IssuedApiKey issued = new IssuedApiKey();
+  runas (Mira) {
+    var zapier = AddIntegration("Zapier", AppRole.Agent, owner: Theo);
+    issued = IssueApiKey(zapier, "Web form");
+    Deactivate(Theo, "Left the company");
+  }
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/ar/settings/api-keys");
+  Assert.Visible("المالك معطَّل", within: "Zapier");
+  Ui.Shot("settings-integrations-arabic");
+  Ui.Click("تغيير المالك", within: "Zapier");
+  Assert.Dialog("تغيير مالك Zapier");
+  Ui.Shot("settings-integration-reassign-arabic");
+}
+
+// ── a ticket's history ───────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Desk)]
+void a_tickets_history_reads_in_arabic() {
+  var number = TicketWithAHistory();
+  Ui.SignInAs(Lena);
+
+  // A desk's width: the timeline between the messages, and how it got here beside it.
+  Ui.Viewport(1600, 1000);
+  Ui.Visit("/ar/v/open/t/" + number);
+  Assert.Visible("سلّمها Ines Moreau إلى Rahul Kapoor.");                  // the inbox's facts, said in Arabic
+  Assert.Visible("الأولوية عادية ← عالية.");                               // its priorities' labels too
+  Assert.Visible("عُيّنت الحالة: Waiting on a refund.");                   // the team's own status name stays theirs
+  Assert.Visible("كيف وصلت إلى هنا");                                     // how it got here — the inbox's trail
+  Assert.Visible("English");                                              // the other languages, each in its own name
+  Assert.Visible("وصلت إلى Billing بالقاعدة «Money questions».");
+  Ui.Shot("history: a ticket's timeline and how it got here in Arabic, wide");
+
+  // …on a phone: the timeline, then how it got here from the queue's chip.
+  Ui.Viewport(390, 844);
+  Ui.Visit("/ar/v/open/t/" + number);
+  Assert.NoOverflow();
+  Assert.Visible("سلّمها Ines Moreau إلى Rahul Kapoor.");
+  Ui.Shot("history: a ticket's timeline in Arabic, phone");
+  // The thread opens on its newest entries; its earlier history is a scroll up.
+  Ui.Hover("وصلت إلى Billing بالقاعدة «Money questions».");
+  Ui.Shot("history: a ticket's earlier timeline in Arabic, phone");
+  Ui.Click("Engineering · L2");
+  Assert.Visible("كيف وصلت #" + number + " إلى هنا");
+  Assert.Visible("وصلت إلى Billing بالقاعدة «Money questions».");
+  Assert.NoOverflow();
+  Ui.Shot("history: how a ticket got here in Arabic, phone");
+}
+
+/// On a phone English is one press from Arabic. With more than one other language the top bar has no room for every
+/// name beside the page's title, so the language it is read in, by its own name, opens the rest.
+[Test(Desk)]
+void on_a_phone_english_is_one_press_from_arabic() {
+  Ui.SignInAs(Lena);
+  Ui.Viewport(390, 844);
+  Ui.Visit("/ar/v/open");
+  if (App.Languages.Count > 2) {
+    Assert.Hidden("English");                                            // folded away, out of the title's room
+    Ui.Click("العربية");                                                  // the language it is read in, by its own name
+    Ui.Shot("history: the language menu on a phone, in Arabic");
+  }
+  Ui.Click("English");
+  Assert.Visible("All open");
+  Assert.NoOverflow();
+}
+
+[Test(Desk)]
+void a_link_between_tickets_reads_from_the_right_in_arabic() {
+  var a = 0;
+  var b = 0;
+  runas (Ines) {
+    var printer = TicketOf(OpenTicket("olivia@larkspur.test", "", "Label printer offline", "The printer in bay 3 shows offline."));
+    var labels = TicketOf(OpenTicket("dev@orbit.test", "", "Labels will not print", ""));
+    LinkWork(labels.Id, printer.Id, "caused-by");
+    a = printer.Number;
+    b = labels.Number;
+  }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  // The kind in the reader's words, the subject in the customer's.
+  Ui.Visit("/ar/v/open/t/" + a);
+  Assert.Visible("تسببت في");
+  Assert.Visible("Labels will not print");
+  Ui.Shot("relations link panel wide arabic");
+}
+
+[Test(SideDesk)]
+void a_side_conversation_on_the_timeline_in_arabic() {
+  var n = CrushedPallet();
+  runas (Ines) {
+    StartSideConversationOn(Ticket.Single(x => x.Number == n).Id, "dev@orbit.test", "Crushed pallet on Monday's run",
+      "Can you check the pallet you delivered to Larkspur on Monday? It arrived crushed.");
+  }
+  Background.Settle();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/ar/v/open/t/" + n);
+  Ui.Shot("side card wide arabic");
+}
+
+// ── what the desk tells people ───────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Solving)]
+void the_customers_answer_lands_on_the_timeline_said_in_arabic() {
+  var id = SolvedForOlivia("Export to CSV drops the last row");
+  AnswerFeedbackByLink(QuestionLinkOf(id), FeedbackRating.Good, "Fixed within the hour — thank you.");
+  Background.Settle();
+  // Arabic isolates the customer's name and words from the sentence around them, so they read in their own direction.
+  Assert.True(TimelineIn(id, "ar").Any(l => l.StartsWith("أجاب") && l.Contains("Olivia Brandt") && l.Contains("بأن الأمر سار على ما يرام")
+                                             && l.Contains("Fixed within the hour — thank you.")));
+}
+
+[Test(Solving)]
+void in_arabic_the_question_and_the_timeline_read_right_to_left() {
+  var id = SolvedForOlivia("Invoice PDF is blank", "We regenerated the invoice.");
+  AnswerFeedbackByLink(QuestionLinkOf(id), FeedbackRating.Bad, "The PDF is still blank.");
+  Background.Settle();
+  var number = 0;
+  runas (Ines) { number = Ticket.Single(t => t.Id == id).Number; }
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Olivia);
+  Ui.Visit("/ar/my/" + number);
+  Assert.Visible("شكراً لإخبارنا");
+  Ui.Shot("feedback portal answered wide arabic");
+  Ui.SignInAs(Ines);
+  Ui.Visit("/ar/v/all/t/" + number);
+  Assert.Visible("بأن الأمر لم يسر على ما يرام");
+  Ui.Shot("feedback timeline wide arabic");
+}
+
+[Test(Bells)]
+void a_notification_is_said_in_arabic_to_a_teammate_who_reads_the_desk_in_it() {
+  MentionedThenHandedOver();
+  runas (Rahul) {
+    Session.SetLanguage("ar");
+    // A Latin name in an Arabic sentence is isolated (U+2068 … U+2069), so it reads in its own direction.
+    var arabic = TopOfMyBell().Sentence;
+    Assert.True(arabic.StartsWith("إشارة إليك من "), arabic);
+    Assert.True(arabic.Contains("Ines Moreau") && arabic.EndsWith(" في ملاحظة."), arabic);
+    Session.SetLanguage("en");
+  }
+}
+
+[Test(Bells)]
+void the_bell_in_arabic_reads_right_to_left() {
+  var ticket = OliviasTicket();
+  runas (Ines) { SendFromComposer("", ticket, "@Rahul Kapoor can you look?", true, [], "", -1, true, []); }
+  Background.Settle();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Rahul);
+  Ui.Visit("/ar/v/mine");
+  Ui.Click("الإشعارات");
+  Assert.Visible("إشارة إليك من Ines Moreau في ملاحظة.", within: "قائمة الإشعارات");
+  Ui.Shot("notifications-bell-wide-arabic");
+}
+
+// ── an Arabic-speaking customer ──────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Bilingual)]
+void the_mail_that_says_his_request_is_solved_is_in_arabic() {
+  var o = OmarsInvoice();
+  runas (Nadia) {
+    // Each value is isolated for right-to-left reading (Unicode isolates around the number and the subject).
+    var arabic = TicketSolvedMail(Ticket.Single(x => x.Id == o.Id), null, null).Subject;
+    Assert.True(arabic.StartsWith("تم حل طلبك"));
+    Assert.Contains(o.Number.ToString(), arabic);
+    Assert.Contains("لا أستطيع تنزيل الفاتورة", arabic);
+  }
+}
+
+[Test(Bilingual)]
+void the_solved_mail_in_arabic_says_what_the_team_did_in_his_language() {
+  var omar = OmarsInvoice();
+  Solves(omar.Id, "We resent the September invoice and fixed the download link.");
+  RenderedEmail? ar = null;
+  runas (Nadia) {
+    var omars = Ticket.Single(x => x.Id == omar.Id);
+    ar = TicketSolvedMail(omars, null, null, resolution: ResolutionIn(omars));
+  }
+  Assert.Contains("أعدنا إرسال فاتورة سبتمبر وأصلحنا رابط التنزيل.", ar!.Text);
+  Ui.Shot("mail: request solved, Arabic", ar!);
+}
+
+[Test(Portal)]
+void on_a_phone_the_chat_is_a_tab_in_arabic() {
+  Ui.Viewport(390, 844);
+  Ui.Visit("/ar/help");
+  Ui.Click("المحادثة");
+  Assert.Visible("تحدّث معنا");
+  Ui.Shot("phone-chat-tab-ar");
+}
+
+[Test(Bilingual)]
+void the_help_centre_and_the_chat_in_arabic() {
+  HarbourArticle("invoices", "Download an invoice", "Every invoice, as a PDF.",
+                 "Open Billing, pick the invoice and press Download — it opens as a PDF.");
+  Ui.Viewport(1280, 900);
+  Ui.Visit("/ar/help-centre");
+  Ui.Click("تحدث معنا");
+  Ui.Shot("help centre and chat: Arabic, wide");
+  Ui.Theme("dark");
+  Ui.Shot("help centre and chat: Arabic, wide, dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/ar/help-centre");
+  Assert.NoOverflow();
+  // The chat's button never covers the page's own offer to ask the team.
+  Assert.Clickable("اسأل الفريق");
+  Ui.Shot("help centre: Arabic, phone");
+}
+
+[Test(Office)]
+void a_copy_asked_for_in_arabic_reads_in_arabic_and_its_data_file_stays_the_same() {
+  PetraWithHistory();
+  var id = PetraAskedForACopyAndMiraApproved("ar");
+  var arabic = "";
+  runas (Mira) {
+    var r = PrivacyRequest.Single(x => x.Id == id);
+    var page = ReadableExportOf(r);
+    Assert.Contains("ما نحتفظ به عنك", page);                       // the page's own words
+    Assert.Contains("محادثاتك الأخرى معنا", page);                  // a holder's category
+    Assert.Contains("الرد عليك، وتحسين دعمنا", page);                     // …and why it is kept (a filled hole is isolated for direction)
+    Assert.Contains("كتبتَ", page);                                 // what a row is
+    Assert.Contains("SE556677889901", page);                         // her words stay hers
+    Assert.Contains("\"category\":\"conversations.service\"", ExportOf(r));
+    arabic = page;
+  }
+  Ui.Viewport(390, 844);
+  Ui.Shot("harbour-your-data-readable-arabic-phone", new RenderedEmail("", "") { Html = arabic });
+}
+
+[Test(Office)]
+void her_privacy_page_in_arabic_counts_in_arabics_dual() {
+  PetraWithHistory();
+  Ui.Viewport(390, 844);
+  Ui.SignInAs(Petra);
+  // Two of a kind is Arabic's own dual form, not "2".
+  Ui.Visit("/ar/privacy");
+  Assert.Visible("خصوصيتك");
+  Assert.Visible("نحتفظ باثنين منها عنك.");
+  Assert.NoOverflow();
+  Ui.Shot("harbour-your-privacy-phone-arabic");
+}
+
+// ── the help centre ──────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(HelpCentre)]
+void an_article_reads_in_arabic_and_one_not_yet_translated_says_so() {
+  Written();
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/ar/help-centre/a/reset-your-password");
+  Assert.Visible("إعادة تعيين كلمة المرور");
+  Ui.Shot("article-ar-wide-light");
+  Ui.Theme("dark");
+  Ui.Viewport(390, 844);
+  Ui.Shot("article-ar-phone-dark");
+  // An article nobody has translated yet: the original, and the page says so — in Arabic.
+  Ui.Theme("light");
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/ar/help-centre/a/download-an-invoice");
+  Assert.Visible("Download an invoice");
+  Ui.Shot("article-fallback-ar-wide-light");
+}
+
+[Test(HelpArticles)]
+void an_arabic_reader_gets_the_arabic_version() {
+  LoadHelpArticles();
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/ar/help-centre/a/use-a-custom-domain");
+  Assert.Visible("استخدم نطاقًا مخصصًا");
+  Ui.Viewport(390, 844);
+  Ui.Shot("help-articles-domain-ar-phone-light");
+}
+
+// ── reports ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(MonthOfWork)]
+void the_reports_in_arabic() {
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/ar/reports");
+  Ui.Shot("reports-overview-arabic-wide-light");
+  Ui.Viewport(390, 844);
+  Ui.Shot("reports-overview-arabic-phone-light");
+  Ui.Viewport(1600, 1000);
+  Ui.Visit("/ar/reports/build");
+  // Every field in the reader's language — the kit's (a ticket's reference, when it arrived) as well as the desk's own.
+  Assert.Visible("المرجع");
+  Assert.Hidden("Reference");
+  Ui.Fill("ابحث عن حقل", "الاستحقاق");
+  Assert.Visible("موعد الاستحقاق");
+  Ui.Shot("reports-builder-arabic-wide-light");
+  // A field past the ticket is named in Arabic on its filter's chip too — by the relation it is reached through, not by
+  // the English name of the record it is kept on.
+  Ui.Fill("ابحث عن حقل", "المستوى");
+  Ui.Click("تذكرة › الشركة › المستوى");
+  Ui.Click("تصفية");
+  Ui.Click("Premium");
+  Ui.Click("تطبيق التصفية");
+  Assert.Visible("المؤسسة › الفئة هو Premium");
+  Assert.Hidden("Customer account");
+  Ui.Shot("reports-builder-arabic-filter-by-tier-wide-light");
+}
+
+/// A custom field in the Arabic builder: its name is the desk's own words, as an admin wrote it; everything around it is
+/// in Arabic, and the tickets group by its options.
+[Test(MonthWithPlans)]
+void a_customer_field_groups_the_report_in_arabic() {
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/ar/reports/build");
+  Ui.Fill("ابحث عن حقل", "plan");
+  Ui.Click("Their plan");
+  Ui.Click("تجميع حسب");
+  Assert.Visible("Enterprise");
+  Ui.Shot("reports-builder-customer-field-arabic-wide-light");
+}
+
+// ── what an AI wrote ─────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Portal)]
+void what_an_ai_wrote_reads_right_to_left_in_arabic() {
+  var n = OliviasTicketAnsweredWithAi();
+  Ui.SignInAs(Desk);
+  Ui.Viewport(1600, 1000);
+  Ui.Visit("/ar/v/open/t/" + n);
+  Assert.Visible("مسودة ذكاء اصطناعي — لم تُرسل");
+  Assert.Visible("صاغه الذكاء الاصطناعي، وأرسله Ines Moreau");
+  Ui.Shot("ai-entries-ticket-wide-arabic");
+  Ui.SignInAs(Olivia);
+  Ui.Viewport(390, 844);
+  Ui.Visit("/ar/my/" + n);
+  Assert.Visible("كُتب بمساعدة الذكاء الاصطناعي، وراجعه وأرسله Ines Moreau");
+  Assert.NoOverflow();
+  Ui.Shot("ai-entries-portal-phone-arabic");
+}
+
+// ── the leftovers batch, in Arabic ───────────────────────────────────────────────────────────────────────────────────
+
+/// A duplicate's link offers the merge in Arabic, and Settings › Support address reads right to left — wide and on a
+/// phone.
+[Test(Mailroom)]
+void a_duplicates_merge_and_the_support_address_in_arabic() {
+  var original = 0;
+  var dup = 0;
+  runas (Ines) {
+    var o = TicketOf(OpenTicket("olivia@larkspur.test", "", "Invoices show the old VAT number", "Since Monday."));
+    var d = TicketOf(OpenTicket("sam@larkspur.test", "", "Wrong VAT number on our invoice", "Our March invoice."));
+    original = o.Number;
+    dup = d.Number;
+    Link(d, o, "duplicate");
+    UnitOfWork.Commit();
+  }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/ar/v/open/t/" + dup);
+  Assert.Visible("دمج في #" + original);
+  Ui.Shot("duplicate-merge-arabic-wide");
+  Ui.Visit("/ar/settings/support-address");
+  Assert.Visible("عنوان الدعم");
+  Ui.Shot("settings-support-address-arabic-wide");
+  Ui.Viewport(390, 844);
+  Assert.NoOverflow();
+  Ui.Shot("settings-support-address-arabic-phone");
+}

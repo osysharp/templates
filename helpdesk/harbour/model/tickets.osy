@@ -1,0 +1,216 @@
+// THE TICKET — what the desk adds on top of a conversation and an inbox item: a number, where it stands, what kind of
+// request it is, its labels and followers.
+//
+// ⚑ A TICKET IS AN INBOX ITEM (`Ticket : WorkItem`, Osysharp.Inbox). Its subject is the item's `Title`, how urgent it is
+//   the item's `Priority`, who has it the item's `Assignee`, its queue, its SLA promise and its clocks are the kit's —
+//   kept by the kit's own run (`WorkHandling`), told the four facts by the desk's lifecycle (workflow.osy). What is
+//   left here is what a ticket IS to a desk and nothing else.
+//
+// ⚑ WHERE A TICKET STANDS IS TWO THINGS, ON PURPOSE (the market study's "compiled skeleton vs admin rows"):
+//   - its CATEGORY — New, Open, Pending, On hold, Solved, Closed — is COMPILED. The views, the reports and the portal
+//     reason about the six categories, and each one tells the inbox what it means for the clocks (Pending waits on the
+//     customer, On hold on somebody else), so an admin can never configure a status into a state that does not pause;
+//   - its STATUS is an admin's row INSIDE a category — "Waiting on engineering", "Waiting on a refund" — so a team
+//     names its own work without touching what the platform guarantees.
+using Osysharp.Identity;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+
+/// The six fixed categories every status belongs to. ⚠ Appended, never inserted: an enum is stored by position.
+enum StatusCategory {
+  /// Nobody has answered yet — the first-reply clock is running.
+  New,
+  /// Being worked.
+  Open,
+  /// Waiting on the customer — every clock is paused.
+  Pending,
+  /// Waiting on somebody else (a vendor, engineering) — the customer is still waiting on us, so resolution time runs.
+  [Label("On hold")] OnHold,
+  /// Answered; closes by itself unless the customer writes again.
+  Solved,
+  /// Done for good. A new message starts a new ticket.
+  Closed,
+}
+
+/// Where the workflow has the ticket. Finer than the category in ONE place: an Open ticket either owes the customer a
+/// reply or has been answered — the difference between Zendesk's "next reply time" and a clock that breaches while the
+/// customer has said nothing. Every stage lands in exactly one category.
+enum Stage {
+  New,
+  Open,
+  [Label("Open, answered")] Answered,
+  Pending,
+  [Label("On hold")] OnHold,
+  Solved,
+  Closed,
+}
+
+
+/// A status as a team names it, inside one of the six categories. Admin-configured rows: `IsDefault` is the one a
+/// ticket takes when the workflow moves it into the category by itself (a customer's reply reopens it, a solved
+/// ticket closes after a week).
+entity TicketStatus {
+  // D-RTL1 — the desk's own words for a status, per language (an admin renames it in each on the settings page).
+  [Translatable, Required("A status needs a name."), MaxLength(60)] string Name;
+  StatusCategory Category;
+  /// Its place in the status menu, within its category.
+  int Position;
+  bool IsDefault;
+  /// A retired status keeps the tickets that hold it, and is offered for no new ones.
+  bool Active = true;
+  [Translatable, MaxLength(200)] string? Description;
+
+  security {
+    allow read when IsAgent;
+    allow create, update when IsAdmin;
+  }
+}
+
+/// A label on a ticket — "billing", "refund", "bug". Free-form, made as they are first used.
+entity Tag {
+  [Required, Unique("That tag already exists."), MaxLength(40)] string Name;
+  security { allow read, create when IsAgent; allow update, delete when IsAdmin; }
+}
+
+/// The ticket numbers people quote — "#1042".
+Counter TicketNumber = new() { Start = 1001 };
+
+/// ONE TICKET: a conversation the desk is answering, as an item in its inbox.
+///
+/// ⚑ Two people changing one ticket at once is refused for the second — two agents taking it, two setting its status —
+///   and the page says who got there first: the kit's item carries `[ConcurrencyCheck]`, and every ticket is one.
+[PersonalData(TicketNotes)]
+[Title($"#{Number} · {Title}")]
+entity Ticket : WorkItem {
+  [Counter(TicketNumber)] int Number;
+  /// The ONE timeline — every message, note and event.
+  [Required] Conversation Conversation;
+  /// Who asked — a customer of the desk, usually with no account (the item's `Requester` is their account, when they
+  /// have one).
+  [Required("Every ticket is somebody's request."), DataSubject] Customer Customer;
+  /// Where the workflow has it — the workflow's alone.
+  Stage Stage;
+  /// Which of the six categories that is — written by the workflow as the stage moves, read by every view.
+  StatusCategory Category = StatusCategory.New;
+  /// The team's own name for where it is, inside the category; null reads as the category's default.
+  TicketStatus? Status;
+  /// Since when it has been in that status — what "hours in its status" counts from (automations.osy). None: since it
+  /// arrived.
+  DateTime? StatusSince;
+  /// Its TYPE — the form it was asked on, or the one the team moved it to: what its fields are (fields.osy), the kind
+  /// the inbox's rules and promises name it by (`Kind`, the form's key), and whether solving it needs a root cause.
+  /// None only on a desk with no form in use.
+  TicketForm? Form;
+  /// Its answers to the desk's ticket fields — what the form asked and what the team filled in (fields.osy); a report
+  /// reads each field as a column of the ticket.
+  [ForeignKey(Ticket)] TicketFieldValue[] Fields;
+  /// A duplicate merged into another ticket is closed and points at it.
+  Ticket? MergedInto;
+  [Classification(Personal.Content), MaxLength(2000)] string? RootCause;
+  /// How it was solved, in the team's words — in the desk's memory too, so the next ticket like it finds the answer.
+  [Classification(Personal.Content), Searchable(Memory), MaxLength(2000)] string? Resolution;
+  /// Who we are waiting on while On hold — a vendor, engineering.
+  [Classification(Personal.Content), MaxLength(120)] string? WaitingOn;
+  /// Kept RESTRICTED with its conversation (Osysharp.Privacy) — the category keeping it (`conversations.claims`, or
+  /// `conversations.service` at the customer's own request; "" when nothing does), and until when (none: until a legal
+  /// hold, or the customer, lifts it). The ticket says so in place of the conversation, which is read only for a claim.
+  [MaxLength(60)] string KeptFor = "";
+  DateTime? KeptUntil;
+  /// Why the desk's privacy rules closed it — its conversation was erased, or kept out of use, at the customer's
+  /// request — said on the ticket in the reader's words (`PrivacyWords`). None for a ticket the team closed. Nothing on
+  /// it can be worked again; the customer's next message opens a follow-up (`FollowUpOf`).
+  PrivacyLine? ClosedFor;
+  /// The closed ticket this one follows — the customer wrote again on its conversation after it was closed.
+  Ticket? FollowUpOf;
+  /// How many times a solved ticket came back. Three is a different conversation.
+  int ReopenCount;
+  /// What the customer last said about how it went — kept here by Feedback's `Answered` (feedback.osy) so a report
+  /// counts satisfaction by agent, queue or company in the same statement as everything else about the ticket. None:
+  /// not asked, or not answered.
+  Osysharp.Feedback.FeedbackRating? Rating;
+  /// Reminders sent while waiting on the customer, and on whoever it is on hold for.
+  int ChasesSent;
+  int HoldChasesSent;
+
+  [ForeignKey(Ticket)] TicketTag[] Tags;
+  [ForeignKey(Ticket)] Follower[] Followers;
+
+  security {
+    allow read, create, update when IsAgent;
+    // A customer reads their own tickets — and their colleagues' when their company shares them.
+    allow read when IsConversationCustomer where Customer.Account == user
+      || (Customer.Company != null && Customer.Company.SharesTickets
+          && (Customer.Company.People.Any(p => p.Account == user)
+              || Membership.Any(m => m.Organization.Id == Customer.Company.Id && m.Member == user && m.IsActive)));
+    // …and whoever is IN its conversation reads it — the account, or the browser that sent it from the web form (the
+    // same rule the conversation's own entries follow, so a sender can read the reference they were given).
+    allow read when IsConversationCustomer where IsCustomerIn(Conversation.Id);
+    // A customer raises one (the portal, the web form) on a conversation they are in.
+    allow create when IsConversationCustomer where IsCustomerIn(Conversation.Id);
+    // …asking, not deciding: how it is worked is the team's. (Who holds it is the inbox's floor for everybody.)
+    deny create when !IsAgent where MergedInto != null || Status != null || Priority == WorkPriority.Urgent;
+    deny read RootCause when !IsAgent;
+  }
+}
+
+/// The tickets on a conversation — usually one; a follow-up after a closed one, or a merge, makes more.
+partial entity Conversation { [ForeignKey(Conversation)] Ticket[] Tickets; }
+
+/// A tag on a ticket.
+[Unique(Ticket, Tag)]
+entity TicketTag {
+  [Required] Ticket Ticket;
+  [Required] Tag Tag;
+  security { allow read, create, delete when IsAgent; }
+}
+
+/// A teammate following a ticket they do not own — told when it moves.
+[Unique(Ticket, Agent)]
+entity Follower {
+  [Required] Ticket Ticket;
+  [Required] Agent Agent;
+  security { allow read, create, delete when IsAgent; }
+}
+
+/// The category a stage belongs to — one line per stage, so a new stage cannot be added without saying.
+StatusCategory CategoryOf(Stage s) {
+  if (s == Stage.New) { return StatusCategory.New; }
+  if (s == Stage.Open || s == Stage.Answered) { return StatusCategory.Open; }
+  if (s == Stage.Pending) { return StatusCategory.Pending; }
+  if (s == Stage.OnHold) { return StatusCategory.OnHold; }
+  if (s == Stage.Solved) { return StatusCategory.Solved; }
+  return StatusCategory.Closed;
+}
+
+/// The status a ticket takes when the workflow moves it into `category` by itself — the admin's default for it.
+TicketStatus? DefaultStatus(StatusCategory category) {
+  return TicketStatus.Where(s => s.Category == category && s.Active)
+    .OrderByDescending(s => s.IsDefault).ThenBy(s => s.Position).FirstOrDefault();
+}
+
+/// What a ticket's status reads as, to the team: the admin's name, or the category's own.
+string StatusName(Ticket t) => t.Status != null ? t.Status.Name : t.Category.Label;
+
+/// A new ticket for `customer` on `conversation` — the item's facts the inbox routes and promises by (the customer's
+/// company and account, the channel it came in on, its type and so its kind), filled in once, here, for every way a
+/// ticket starts. `form`: its type — none takes the desk's default.
+Ticket NewTicket(string subject, Conversation conversation, Customer customer, TicketForm? form = null,
+                 WorkPriority priority = WorkPriority.Normal) {
+  return NewTicketOfType(subject, conversation, customer, form ?? DefaultForm(), priority);
+}
+
+/// `NewTicket`, of the type the caller has already settled (`FormFor` — none when no form is in use), so the desk's
+/// default form is not read a second time.
+Ticket NewTicketOfType(string subject, Conversation conversation, Customer customer, TicketForm? type,
+                       WorkPriority priority = WorkPriority.Normal) {
+  return new Ticket { Title = subject, Conversation = conversation, Customer = customer, Form = type,
+                      Kind = type == null ? "" : type.Key,
+                      Priority = priority, Organization = customer.Company, Requester = customer.Account,
+                      Channel = conversation.ReplyChannel ?? "",
+                      // Their language as known now — a new customer's from the message just written, when the offline
+                      // detector was sure of it — so a rule that routes by language sees it on arrival.
+                      Language = customer.Language ?? CustomerLanguageOf(conversation) ?? "" };
+}

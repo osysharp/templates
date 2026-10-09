@@ -1,0 +1,302 @@
+// THE SETTINGS AREA, DRIVEN AS AN ADMIN DRIVES IT — nothing is saved until Save, Discard throws an edit away, Undo steps
+// back one change, a section a person may not open is not offered to them, and a shared view lands in the rail.
+// `osy test --pixels` photographs each (Ui.Shot); Docs/OsySharp/design/helpdesk/settings/ keeps the ones worth keeping.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.People;
+using Osysharp.Inbox;
+using Osysharp.Fields;
+using Osysharp.Conversations;
+
+[Test(Office)]
+void the_status_page_saves_only_on_save_discards_on_discard_and_undoes_one_change() {
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/statuses");
+  Assert.Visible("Statuses", within: "Settings sections");
+  Assert.Hidden("Unsaved changes");
+  // The person in the corner is labelled with their own role — Mira runs the desk.
+  Assert.Visible("Admin", within: "Page header");
+  // A desk nobody has changed says nothing about who changed it (the starting set is the system's).
+  Assert.Hidden("Changed by");
+
+  // An edit is not saved by typing it: the bar says so, and Discard puts the name back.
+  Ui.Fill("Name", "Waiting on the bank", within: "Waiting on a refund");
+  Assert.Visible("Unsaved changes");
+  Ui.Shot("settings-statuses-unsaved");
+  Ui.Click("Discard");
+  Assert.Hidden("Unsaved changes");
+  runas (Mira) { Assert.True(TicketStatus.Any(s => s.Name == "Waiting on a refund")); }
+
+  // Adding a status is a change Undo steps back.
+  Ui.Click("Add a status to Pending");   // its announced name — one of six "Add a status" buttons
+  Assert.Visible("Undo add a status");
+  Ui.Click("Undo add a status");
+  Assert.Hidden("Unsaved changes");
+  runas (Mira) { Assert.Equal(2, TicketStatus.Count(s => s.Category == StatusCategory.Pending)); }
+
+  // Saved: it lands, and the section says who changed it.
+  Ui.Fill("Name", "Waiting on the bank", within: "Waiting on a refund");
+  Ui.Click("Save");
+  Assert.Visible("Statuses saved.");
+  runas (Mira) { Assert.True(TicketStatus.Any(s => s.Name == "Waiting on the bank")); }
+  Ui.Visit("/settings/statuses");
+  Assert.Visible("Changed by Mira Okafor");
+  Ui.Shot("settings-statuses");
+}
+
+// A status category with no [Label] of its own (`Pending`) is shown by its name — and that word is the desk's to translate
+// like "On hold" beside it, in a function (server) and on the page (client); read in Swedish and Arabic in tests/languages/.
+[Test(Office)]
+void a_category_shown_by_its_name_reads_in_the_readers_language() {
+  runas (Mira) { Assert.Equal("Pending", StatusCategory.Pending.Label); }
+}
+
+/// EVERY KIT'S SECTIONS, IN ONE PLACE, AND THE HOME SAYS WHAT EACH IS FOR (D-SETTINGSREG1): the desk announces its own
+/// two (Statuses, Fields and forms); People, Access changes, Tiers, the inbox's six and the composer's two are announced
+/// by their kits — nobody lists them — and each still opens in the desk's own frame.
+[Test(Office)]
+void an_admin_finds_every_section_announced_and_the_home_is_an_overview() {
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings");
+  foreach (var section in new List<string> { "Statuses", "Fields and forms", "People", "Access changes", "Tiers", "Queues",
+                                             "Routing", "SLA policies", "Business hours", "Saved replies", "Macros" }) {
+    Assert.Visible(section, within: "Settings sections");
+  }
+  Assert.Visible("A reply and the things that go with it, applied in one move.", within: "All settings");
+  Assert.Visible("Your names for where a ticket is, inside the six fixed categories.", within: "All settings");
+  Ui.Shot("settings-home");
+  Ui.Click("Macros", within: "Settings sections");
+  Assert.Visible("No macros yet");
+  Assert.Visible("Harbour Desk", within: "Main navigation");
+  Ui.Shot("settings-macros");
+  Ui.Theme("dark");
+  Ui.Visit("/settings");
+  Ui.Shot("settings-home-dark");
+}
+
+[Test(Office)]
+void an_agent_is_offered_only_the_settings_an_agent_may_open() {
+  Ui.SignInAs(Theo);
+  Ui.Visit("/settings");
+  Assert.Visible("Saved replies", within: "Settings sections");
+  Assert.Hidden("People");
+  Assert.Hidden("SLA policies");
+  // STATUSES ARE AN ADMIN'S (polish slice 2 asked: the screenshot showed a person labelled "Agent" editing them —
+  // the label was wrong, she was an admin). An agent is labelled Agent, is not offered the page, cannot open it, and
+  // cannot write a status.
+  Assert.Visible("Agent", within: "Page header");
+  Assert.Hidden("Statuses", within: "Settings sections");
+  // …and the page itself is refused, not merely unlisted.
+  Ui.Visit("/settings/people");
+  Assert.Hidden("Invite someone");
+  Ui.Visit("/settings/statuses");
+  Assert.Hidden("Add a status");
+  Assert.Hidden("Waiting on a refund");
+  runas (Theo) {
+    Assert.Throws(() => { new TicketStatus { Name = "Sneaky", Category = StatusCategory.Open, Position = 9 }; UnitOfWork.Commit(); });
+  }
+  runas (Mira) { Assert.False(TicketStatus.Any(s => s.Name == "Sneaky")); }
+}
+
+[Test(Office)]
+void the_team_is_looked_after_from_the_people_page() {
+  Ui.Viewport(1600, 960);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/people");
+  Assert.Visible("Theo Brandt", within: "Everyone");
+  Ui.Click("Theo Brandt");
+  Ui.Click("Lead", within: "Give a role");
+  Assert.Visible("Theo Brandt is now Lead.");
+  Ui.Shot("settings-people");
+  Ui.Visit("/settings/access");
+  Assert.Visible("Granted Lead — Theo Brandt");
+  Ui.Shot("settings-access");
+}
+
+/// An admin issues a teammate a key on Settings › API keys (shown once); a program presenting it works the desk API as
+/// that teammate; revoked on the same page, it is refused at the next request.
+/// SECURITY-INVARIANT(api-keys-are-issued-and-revoked-by-people-managers-alone), as the desk wires it.
+[Test(Office)]
+void an_admin_issues_a_teammate_an_api_key_and_revoking_it_shuts_the_api_at_once() {
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/api-keys");
+  Assert.Visible("API keys", within: "Settings sections");
+  Agent? theo = null;
+  runas (Mira) { theo = Agent.Single(a => a.Email == "theo@helpdesk.test"); }
+  Ui.Click("Issue a key");
+  Ui.Select("For", theo!);
+  Ui.Fill("What it is for", "Status page sync");
+  Ui.Click("Issue it");
+  Assert.Visible("The key for Theo Brandt — Status page sync");
+  Ui.Shot("settings-api-key-once");
+  // The key the page showed once — issued here to read it back for the program; the page's own is the same kind.
+  IssuedApiKey issued = new IssuedApiKey();
+  runas (Mira) { issued = IssueApiKey(theo!, "Reporting"); }
+  Assert.Equal(200, Api.Get("/api/rest/v1/desk/statuses", apiKey: issued.Key).StatusCode);
+  Ui.Visit("/settings/api-keys");
+  Assert.Visible("Acts as Theo Brandt", within: "Keys in use");
+  Ui.Shot("settings-api-keys");
+  Ui.Click("Revoke", within: "Reporting — Theo Brandt");
+  Ui.Click("Revoke it");
+  Assert.Visible("a request that presents it is refused from now on.");
+  Assert.Equal(401, Api.Get("/api/rest/v1/desk/statuses", apiKey: issued.Key).StatusCode);
+  // An agent may not issue one.
+  runas (Theo) { Assert.Denied(() => IssueApiKey(Theo, "Mine")); }
+}
+
+/// An admin adds an integration on Settings › API keys — a name and what it may do, its first key shown once. A program
+/// presenting its key works the desk under the integration's own name: the ticket it opens and the note it leaves are
+/// signed "Zapier", not by a teammate. It is never put on a queue, and switching it off shuts its keys out at once.
+/// SECURITY-INVARIANT(an-integration-never-signs-in), as the desk wires it.
+[Test(Office)]
+void an_admin_adds_an_integration_and_what_it_does_is_signed_with_its_own_name() {
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/api-keys");
+  Assert.Visible("No integrations yet");
+  Ui.Click("Add an integration");
+  Ui.Fill("Name", "Zapier");
+  Ui.Click("Agent", within: "What it may do");
+  Ui.Shot("settings-integration-add");
+  Ui.Click("Add it and issue a key");
+  Assert.Visible("The key for Zapier — Zapier");
+  Ui.Click("I have copied it");
+  Assert.Visible("Acts as Zapier", within: "Keys in use");
+  Ui.Shot("settings-integrations-wide-light");
+  Ui.Theme("dark");
+  Ui.Shot("settings-integrations-wide-dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/settings/api-keys");
+  Assert.Visible("Zapier", within: "Integrations");
+  Ui.Shot("settings-integrations-phone");
+  Ui.Viewport(1440, 900);
+
+  // The key the page showed once — issued again here so the program can present one.
+  IssuedApiKey issued = new IssuedApiKey();
+  runas (Mira) { issued = IssueApiKey(Integration.Single(i => i.DisplayName == "Zapier"), "Web form"); }
+  var opened = Api.Post("/api/rest/v1/desk/tickets", new { email = "dana@example.test", subject = "Order 2231 never arrived",
+                                                          text = "Sent from the web form." }, apiKey: issued.Key);
+  Assert.Equal(201, opened.StatusCode);
+  var n = JsonSerializer.Deserialize<TicketData>(opened.Body).Number;
+  Background.Settle();
+  Assert.Equal(200, Api.Post($"/api/rest/v1/desk/tickets/{n}/replies", new { text = "Order looked up: shipped 2 Oct.", note = true },
+                             apiKey: issued.Key).StatusCode);
+  runas (Mira) {
+    Assert.Equal("Zapier", Message.Single(m => m.Text == "Order looked up: shipped 2 Oct.").ByName);
+    // A program is never routed a ticket.
+    var zapier = Integration.Single(i => i.DisplayName == "Zapier");
+    Assert.Equal(0, QueueMember.Count(m => m.Member == zapier));
+    Deactivate(zapier, "Moved the web form to the mailbox");
+  }
+  Assert.Equal(401, Api.Get("/api/rest/v1/desk/statuses", apiKey: issued.Key).StatusCode);
+}
+
+/// An integration outlives the teammate who answered for it: Theo leaves, his account is deactivated, and the program
+/// keeps working the desk API. Settings › API keys says "Owner deactivated", and an admin gives it to somebody who is
+/// here, which lands in the access trail like every other change to access.
+[Test(Office)]
+void an_integration_whose_owner_left_keeps_working_and_an_admin_reassigns_it() {
+  IssuedApiKey issued = new IssuedApiKey();
+  runas (Mira) {
+    var zapier = AddIntegration("Zapier", AppRole.Agent, owner: Theo);
+    issued = IssueApiKey(zapier, "Web form");
+    Deactivate(Theo, "Left the company");
+  }
+  Assert.Equal(200, Api.Get("/api/rest/v1/desk/statuses", apiKey: issued.Key).StatusCode);
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/api-keys");
+  Assert.Visible("Owned by Theo Brandt", within: "Zapier");
+  Assert.Visible("Owner deactivated", within: "Zapier");
+  Ui.Shot("settings-integration-owner-left-wide-light");
+  Ui.Theme("dark");
+  Ui.Shot("settings-integration-owner-left-wide-dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/settings/api-keys");
+  Assert.Visible("Owner deactivated", within: "Zapier");
+  Ui.Shot("settings-integration-owner-left-phone");
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/settings/api-keys");
+  Agent? mira = null;
+  runas (Mira) { mira = Agent.Single(a => a.Email == "mira@helpdesk.test"); }
+  Ui.Click("Reassign", within: "Zapier");
+  Ui.Select("New owner", mira!);
+  Ui.Fill("Why", "Theo left the team");
+  Ui.Click("Reassign it");
+  Assert.Visible("Zapier is now answered for by Mira Okafor. Its keys go on working.");
+  Assert.Hidden("Owner deactivated");
+  Ui.Visit("/settings/access");
+  Assert.Visible("Gave the integration “Zapier” to Mira Okafor");
+  Assert.Equal(200, Api.Get("/api/rest/v1/desk/statuses", apiKey: issued.Key).StatusCode);
+}
+
+// The rail's "Views" heading appears with the first shared view — not before, over nothing.
+[Test(Office)]
+void the_rail_says_shared_views_only_once_there_is_one() {
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/open");
+  Assert.Visible("Companies", within: "Main navigation");
+  Assert.Hidden("Views", within: "Main navigation");
+  runas (Mira) {
+    new InboxView { Name = "Everything urgent", AtLeast = WorkPriority.Urgent };
+    UnitOfWork.Commit();
+  }
+  Ui.Visit("/v/open");
+  Assert.Visible("Views", within: "Main navigation");
+  Assert.Visible("Everything urgent", within: "Main navigation");
+}
+
+[Test(Office)]
+void a_shared_view_lands_in_the_rail_and_lists_what_it_asks_for() {
+  runas (Mira) {
+    OpenTicket("someone@atlas.test", "Someone at Atlas", "Containers stuck in customs", "Since Monday.", WorkPriority.High);
+    OpenTicket("someone@larkspur.test", "Someone at Larkspur", "Invoice copy", "Please resend.", WorkPriority.Low);
+    new InboxView { Name = "Enterprise, urgent", Tier = TierNamed("Enterprise"), AtLeast = WorkPriority.High };
+    UnitOfWork.Commit();
+  }
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/open");
+  Ui.Click("Enterprise, urgent", within: "Main navigation");
+  Assert.Visible("Containers stuck in customs");
+  Assert.Title("Enterprise, urgent");
+  Assert.Hidden("Invoice copy");
+  Ui.Shot("shared-view");
+}
+
+/// Routing is the inbox's page (Osysharp.Inbox's `RoutingRuleSettings`) with the desk's own action on it: a rule that
+/// tags what it matches says so in the desk's words ("tag:customs").
+[Test(Office)]
+void routing_rules_are_written_on_their_settings_page() {
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/routing");
+  Assert.Visible("1. Money questions");                 // the desk's starting rule
+  Ui.Click("Add a rule");
+  // A new rule shows its declared defaults at once (F-STAGE2-6): it is in use the moment it is made.
+  Assert.Checked("In use", within: "2. New rule");
+  Ui.Fill("Words in the title", "customs", within: "2. New rule");
+  Ui.Fill("Tag it", "customs", within: "2. New rule");
+  Ui.Fill("Name", "Customs to Theo", within: "2. New rule");
+  Ui.Shot("settings-routing-rule");
+  Ui.Click("Save");
+  Assert.Visible("Routing saved.");
+  runas (Mira) {
+    var rule = RoutingRule.Single(r => r.Name == "Customs to Theo");
+    Assert.Equal("customs", rule.TitleContains);
+    Assert.Equal("customs", rule.AppAction);
+  }
+  // …and it does what it says to the next ticket that matches.
+  runas (Mira) {
+    var id = OpenTicket("someone@atlas.test", "Someone at Atlas", "Containers stuck in customs", "Since Monday.");
+    Assert.True(TicketTag.Any(x => x.Ticket.Id == id && x.Tag.Name == "customs"));
+  }
+}

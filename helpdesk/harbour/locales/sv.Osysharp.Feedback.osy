@@ -1,0 +1,283 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Feedback, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Feedback · AnswerMyFeedback ──
+  /// AnswerMyFeedback · an error message
+  /// shown through ValidationException
+  error "That is not a question we asked you." => "Det är ingen fråga vi har ställt till dig.";
+
+  // ── Osysharp.Feedback · AskAbout ──
+  /// AskAbout · an error message
+  /// shown through ValidationException
+  error "Whom should we ask? Give their account, or the address to mail the question to." => "Vem ska vi fråga? Ange kontot, eller adressen frågan ska mejlas till.";
+  /// AskAbout · an error message
+  /// placeholders: {address} = address (string)
+  /// shown through ValidationException
+  error "“{address}” is not an address a question can be mailed to." => "”{address}” är ingen adress som en fråga kan mejlas till.";
+
+  // ── Osysharp.Feedback · FeedbackAppName ──
+  /// FeedbackAppName · an image's description for screen readers
+  /// shown through FeedbackAppName()
+  alt "us" => "oss";
+
+  // ── Osysharp.Feedback · FeedbackCard ──
+  /// FeedbackCard · a control's name for screen readers
+  accessibleName "How did we do?" => "Hur gick det?";
+  /// FeedbackCard · a button's label · at most ~9 characters
+  /// shown through Button.label
+  /// beside: "Good"
+  button "Bad" => "Dåligt";
+  /// FeedbackCard · a button's label · at most ~34 characters
+  /// shown through Button.announceAs
+  /// beside: "Good"
+  button "Bad — it did not go well" => "Dåligt, det gick inte bra";
+  /// FeedbackCard · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Change to bad" => "Ändra till dåligt";
+  /// FeedbackCard · a button's label · at most ~20 characters
+  /// shown through Button.label
+  button "Change to good" => "Ändra till bra";
+  /// FeedbackCard · a button's label · at most ~10 characters
+  /// shown through Button.label
+  /// beside: "Bad"
+  button "Good" => "Bra";
+  /// FeedbackCard · a button's label · at most ~27 characters
+  /// shown through Button.announceAs
+  /// beside: "Bad"
+  button "Good — it went well" => "Bra, det gick bra";
+  /// FeedbackCard · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Save comment" => "Spara kommentar";
+  /// FeedbackCard · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Send comment" => "Skicka kommentar";
+  /// FeedbackCard · a label (a field, a list item, a menu entry) · at most ~38 characters
+  /// shown through TextAreaField.label
+  label "Anything to add? (optional)" => "Något att lägga till? (frivilligt)";
+  /// FeedbackCard · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Done.label
+  label "Comment saved" => "Kommentaren är sparad";
+  /// FeedbackCard · a label (a field, a list item, a menu entry) · at most ~38 characters
+  /// shown through TextAreaField.label
+  label "What went wrong? (optional)" => "Vad gick fel? (frivilligt)";
+  /// FeedbackCard · text on the page
+  /// placeholders: {view.ClosesAt} = view.ClosesAt
+  text "It was open until {view.ClosesAt}. Thank you all the same." => "Den var öppen till och med {view.ClosesAt}. Tack ändå.";
+  /// FeedbackCard · text on the page
+  /// beside: "Good"
+  text "One click is your answer. You can add a comment after." => "Ett klick är ditt svar. Du kan lägga till en kommentar efteråt.";
+  /// FeedbackCard · text on the page
+  text "Thank you for telling us" => "Tack för att du berättade";
+  /// FeedbackCard · text on the page
+  text "The work was opened again. We will ask when it is done." => "Arbetet öppnades igen. Vi frågar när det är klart.";
+  /// FeedbackCard · text on the page
+  text "This question has closed" => "Frågan har stängts";
+  /// FeedbackCard · text on the page
+  text "We are not asking about this now" => "Vi frågar inte om det här just nu";
+  /// FeedbackCard · text on the page
+  /// placeholders: {view.ChangeUntil.Value} = view.ChangeUntil.Value
+  text "You can change your answer until {view.ChangeUntil.Value}." => "Du kan ändra ditt svar till och med {view.ChangeUntil.Value}.";
+  /// FeedbackCard · text on the page
+  text "You said" => "Du svarade";
+  /// FeedbackCard · text on the page
+  text "Your answer can no longer be changed." => "Ditt svar kan inte längre ändras.";
+
+  // ── Osysharp.Feedback · FeedbackMailQuestion ──
+  /// FeedbackMailQuestion · a link or button in an email · at most ~9 characters
+  /// beside: "Good"
+  mailLink "Bad" => "Dåligt";
+  /// FeedbackMailQuestion · a link or button in an email · at most ~10 characters
+  /// beside: "Bad"
+  mailLink "Good" => "Bra";
+  /// FeedbackMailQuestion · text in an email
+  /// beside: "Good", "One click is your answer. You can add a comment on the page it opens, and change your mind for a while after."
+  mailText "How did we do?" => "Hur gick det?";
+  /// FeedbackMailQuestion · text in an email
+  /// beside: "How did we do?", "Good"
+  mailText "One click is your answer. You can add a comment on the page it opens, and change your mind for a while after." => "Ett klick är ditt svar. Du kan lägga till en kommentar på sidan som öppnas och ändra dig en tid efteråt.";
+
+  // ── Osysharp.Feedback · FeedbackQuestionMail ──
+  /// FeedbackQuestionMail · the preview line an inbox shows beside an email's subject
+  /// shown through EmailLayout.preview
+  mailPreview "One click tells us — good or bad." => "Ett klick räcker: bra eller dåligt.";
+  /// FeedbackQuestionMail · an email's subject line
+  /// placeholders: {ask.Title} = ask.Title (string)
+  mailSubject "How did we do? {ask.Title}" => "Hur gick det? {ask.Title}";
+  /// FeedbackQuestionMail · text in an email
+  /// shown through EmailLayout.footer
+  mailText "We ask once about each piece of work. Answer or not, nothing else follows from this mail." => "Vi frågar en gång om varje ärende. Oavsett om du svarar eller inte följer inget annat av det här mejlet.";
+  /// FeedbackQuestionMail · text on the page
+  /// shown through EmailHeading.text
+  /// also in FeedbackCard
+  /// also in Osysharp.Privacy.Feedback.FeedbackPersonalData.Export
+  text "How did we do?" => "Hur gick det?";
+
+  // ── Osysharp.Feedback · FeedbackResults ──
+  /// FeedbackResults · a control's name for screen readers
+  accessibleName "Comments" => "Kommentarer";
+  /// FeedbackResults · a control's name for screen readers
+  accessibleName "Feedback results" => "Resultat av återkoppling";
+  /// FeedbackResults · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Metric.label
+  /// beside: "Said good", "Answered", "Good", "Bad"
+  label "Asked" => "Tillfrågade";
+  /// FeedbackResults · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Metric.label
+  /// beside: "Answered", "Good", "Bad", "Asked"
+  label "Said good" => "Svarade bra";
+  /// FeedbackResults · a subtitle
+  /// shown through Card.subtitle
+  /// beside: "Said good", "What people wrote"
+  subtitle "Answers given in each seven days, good above and bad below." => "Svar som getts varje sjudagarsperiod, bra ovanför och dåligt nedanför.";
+  /// FeedbackResults · text on the page
+  text "Nobody has written a comment yet." => "Ingen har skrivit en kommentar än.";
+  /// FeedbackResults · text on the page
+  /// placeholders: {weeks} = weeks
+  /// shown through EmptyState.body
+  text "When work is done and people are asked how it went, their answers appear here — the last {weeks} weeks." => "När arbete är klart och folk tillfrågas hur det gick visas svaren här, för de senaste {weeks} veckorna.";
+  /// FeedbackResults · a title
+  /// shown through EmptyState.title
+  title "Nobody has been asked yet" => "Ingen har tillfrågats än";
+  /// FeedbackResults · a title
+  /// shown through Card.title
+  /// beside: "Said good", "What people wrote"
+  title "Week by week" => "Vecka för vecka";
+  /// FeedbackResults · a title
+  /// shown through Card.title
+  /// beside: "Said good", "Week by week"
+  title "What people wrote" => "Vad folk skrev";
+
+  // ── Osysharp.Feedback · FeedbackSettingsEditor ──
+  /// FeedbackSettingsEditor · a description
+  /// shown through SettingsPage.description
+  description "When a piece of work is done, the person it was for is asked one question — how did we do? — with good or bad and room for a comment. They answer from the mail, with no account, or signed in." => "När ett arbete är klart får den det gjordes för en enda fråga, hur gick det, med bra eller dåligt och plats för en kommentar. De svarar från mejlet, utan konto, eller inloggade.";
+  /// FeedbackSettingsEditor · text on the page
+  /// shown through SaveBar.saved
+  text "Feedback settings saved." => "Inställningarna för återkoppling är sparade.";
+
+  // ── Osysharp.Feedback · FeedbackSettingsFields ──
+  /// FeedbackSettingsFields · a description
+  /// shown through SettingsSection.description
+  /// beside: "Asking"
+  description "How long a person can change their answer, and how long answers are kept before they are deleted." => "Hur länge man kan ändra sitt svar, och hur länge svar sparas innan de raderas.";
+  /// FeedbackSettingsFields · a description
+  /// shown through SettingsSection.description
+  /// beside: "Answers"
+  description "Whether people are asked, how long after the work is done, and how long the question stays open." => "Om folk tillfrågas, hur länge efter att arbetet är klart, och hur länge frågan är öppen.";
+  /// FeedbackSettingsFields · a hint under a field
+  /// shown through DurationField.hint
+  hint "After this, the question can no longer be answered. At most 180 days." => "Därefter kan frågan inte längre besvaras. Högst 180 dagar.";
+  /// FeedbackSettingsFields · a hint under a field
+  /// shown through DurationField.hint
+  hint "How long after answering a person can change their mind. At most 90 days." => "Hur länge efter svaret man kan ändra sig. Högst 90 dagar.";
+  /// FeedbackSettingsFields · a hint under a field
+  /// shown through DurationField.hint
+  hint "How long after the work is done the question is mailed. Zero sends it with the app's own mail, if it sends one." => "Hur länge efter att arbetet är klart frågan mejlas. Noll skickar den med appens eget mejl, om den skickar något.";
+  /// FeedbackSettingsFields · a hint under a field
+  /// shown through SettingRow.hint
+  /// beside: "Ask after"
+  hint "Off, nobody is asked. Answers already given are kept." => "Av: ingen tillfrågas. Svar som redan getts sparas.";
+  /// FeedbackSettingsFields · a hint under a field
+  /// shown through DurationField.hint
+  hint "Questions and answers older than this are deleted. Between 30 days and 10 years." => "Frågor och svar som är äldre än så raderas. Mellan 30 dagar och 10 år.";
+  /// FeedbackSettingsFields · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through DurationField.label
+  label "Ask after" => "Fråga efter";
+  /// FeedbackSettingsFields · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Switch.label
+  label "Ask how it went" => "Fråga hur det gick";
+  /// FeedbackSettingsFields · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through DurationField.label
+  label "Can be changed for" => "Kan ändras i";
+  /// FeedbackSettingsFields · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through DurationField.label
+  label "Keep answers for" => "Spara svar i";
+  /// FeedbackSettingsFields · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through DurationField.label
+  label "Open for" => "Öppen i";
+  /// FeedbackSettingsFields · a title
+  /// shown through SettingsSection.title
+  /// beside: "Asking"
+  title "Answers" => "Svar";
+  /// FeedbackSettingsFields · a title
+  /// shown through SettingsSection.title
+  /// beside: "Answers"
+  title "Asking" => "Fråga";
+
+  // ── Osysharp.Feedback · FeedbackWeeks ──
+  /// FeedbackWeeks · a control's name for screen readers
+  /// beside: "now"
+  accessibleName "Good each week" => "Bra varje vecka";
+  /// FeedbackWeeks · a control's name for screen readers
+  /// placeholders: {w.Starts} = w.Starts, {w.Good} = w.Good, {w.Bad} = w.Bad
+  accessibleName "Week of {w.Starts}: {w.Good} good, {w.Bad} bad" => "Veckan från {w.Starts}: {w.Good} bra, {w.Bad} dåliga";
+
+  // ── Osysharp.Feedback · GiveFeedbackReply ──
+  /// GiveFeedbackReply · an error message
+  /// shown through ValidationException
+  error "Keep your comment under 2,000 characters." => "Håll kommentaren under 2 000 tecken.";
+  /// GiveFeedbackReply · an error message
+  /// placeholders: {ask.ClosesAt} = ask.ClosesAt (DateTime)
+  /// shown through ValidationException
+  error "This question closed on {ask.ClosesAt}. Thank you all the same." => "Frågan stängdes {ask.ClosesAt}. Tack ändå.";
+  /// GiveFeedbackReply · an error message
+  /// shown through ValidationException
+  error "We are not asking about this any more — the work was opened again. We will ask when it is done." => "Vi frågar inte om det här längre, eftersom arbetet öppnades igen. Vi frågar när det är klart.";
+  /// GiveFeedbackReply · an error message
+  /// shown through ValidationException
+  error "Your answer can no longer be changed. Thank you for it." => "Ditt svar kan inte längre ändras. Tack för det.";
+
+  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackChange ──
+  /// Osysharp.Feedback.FeedbackChange · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Feedback.FeedbackChange.Changed
+  /// beside: "Answered"
+  label "Changed" => "Ändrat";
+
+  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackMailState ──
+  /// Osysharp.Feedback.FeedbackMailState · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Feedback.FeedbackMailState.NotMailed
+  /// beside: "Waiting to be mailed", "Mailed"
+  label "Not mailed" => "Inte mejlad";
+  /// Osysharp.Feedback.FeedbackMailState · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Osysharp.Feedback.FeedbackMailState.Waiting
+  /// beside: "Mailed", "Not mailed"
+  label "Waiting to be mailed" => "Väntar på att mejlas";
+
+  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackRating ──
+  /// Osysharp.Feedback.FeedbackRating · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.Feedback.FeedbackRating.Bad
+  /// beside: "Good"
+  /// also in FeedbackCard
+  /// also in FeedbackResults
+  label "Bad" => "Dåligt";
+  /// Osysharp.Feedback.FeedbackRating · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Feedback.FeedbackRating.Good
+  /// beside: "Bad"
+  /// also in FeedbackCard
+  /// also in FeedbackResults
+  label "Good" => "Bra";
+
+  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackReplyState ──
+  /// Osysharp.Feedback.FeedbackReplyState · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Feedback.FeedbackReplyState.Applied
+  /// beside: "Waiting", "Refused"
+  label "Applied" => "Tillämpad";
+
+  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackStage ──
+  /// Osysharp.Feedback.FeedbackStage · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.Feedback.FeedbackStage.Withdrawn
+  /// beside: "Open", "Answered", "Settled", "Closed"
+  label "No longer asked" => "Frågas inte längre";
+  /// Osysharp.Feedback.FeedbackStage · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Feedback.FeedbackStage.Settled
+  /// beside: "Open", "Answered", "Closed", "No longer asked"
+  label "Settled" => "Avgjord";
+
+  // ── Osysharp.Feedback · Osysharp.Feedback.__Settings_FeedbackSettings_Section.Sections ──
+  /// Osysharp.Feedback.__Settings_FeedbackSettings_Section.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Whether people are asked how it went, when, and how long answers are kept." => "Om folk tillfrågas hur det gick, när, och hur länge svaren sparas.";
+}

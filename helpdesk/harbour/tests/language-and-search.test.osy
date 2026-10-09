@@ -1,0 +1,302 @@
+// LANGUAGE AND SEARCH (H8 + H11) — a customer writing in Swedish or Arabic is read by the team in English and answered
+// in their own language, on the desk, in the portal and in the mail that says their request is solved; the search box
+// and "Seen before" find tickets by what they are about, whatever language they were written in, how the team solved
+// ones like them, and the articles that may answer them — never a team playbook outside the team. Without the desk's
+// keys, each says what is off. Each screen is photographed (`osy test --pixels`).
+//
+// No model is called: the model key is answered as set (`ModelKeyIsSet.Stub`) and the model by a phrasebook
+// (`LlmClient.Complete.Stub`); search runs on the deterministic words embedder (`TestEmbedder.Use`).
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Knowledge;
+using Osysharp.MachineTranslation;
+using Osysharp.Memory.Testing;
+using Osysharp.Inbox;
+
+/// Harbour's help centre (Nadia, Leo, Clara) with its keys answered and its model a phrasebook.
+[TestFixture]
+void Bilingual() {
+  HelpCentre();
+  ModelKeyIsSet.Stub(name => true);
+  LlmClient.Complete.Stub(p => Phrasebook(p));
+  TestEmbedder.Use(new WordsEmbedder());
+  // Ana writes Swedish, Omar Arabic — customers by mail, with no account.
+}
+
+/// What the stubbed model answers — the translations a person would give, for the texts these tests write; anything
+/// else tagged with its target language.
+string Phrasebook(string prompt) {
+  var start = prompt.IndexOf("<text>\n") + 7;
+  var end = prompt.IndexOf("\n</text>");
+  var text = start > 6 && end > start ? prompt.Substring(start, end - start) : "";
+  var to = prompt.Contains("into the language tagged sv") ? "sv" : prompt.Contains("into the language tagged ar") ? "ar" : "en";
+  if (text.StartsWith("Hej! Jag försöker ladda ner fakturan")) {
+    return "Hi! I am trying to download the invoice for September, but the PDF never opens. Can you send it again?";
+  }
+  if (text.StartsWith("مرحبًا، لا أستطيع تنزيل فاتورة")) {
+    return "Hello, I cannot download the invoice for September. The PDF never opens. Can you send it again?";
+  }
+  if (text.StartsWith("We resent the September invoice") && to == "sv") {
+    return "Vi skickade septemberfakturan igen och lagade nedladdningslänken.";
+  }
+  if (text.StartsWith("We resent the September invoice") && to == "ar") {
+    return "أعدنا إرسال فاتورة سبتمبر وأصلحنا رابط التنزيل.";
+  }
+  if (text.StartsWith("Sorry about that") && to == "sv") {
+    return "Förlåt för det — septemberfakturan finns som bilaga igen, och nedladdningslänken fungerar nu.";
+  }
+  if (text.StartsWith("Sorry about that") && to == "ar") {
+    return "نعتذر عن ذلك — أرفقنا فاتورة سبتمبر مرة أخرى، ورابط التنزيل يعمل الآن.";
+  }
+  return "[" + to + "] " + text;
+}
+
+/// A customer writes to support by mail — as the mailbox's receiver hands it to the desk — and the language work after
+/// it runs. Answers the ticket.
+Ticket WritesIn(string email, string name, string subject, string text) {
+  var id = Guid.Empty;
+  runas (Nadia) { id = OpenTicket(email, name, subject, text); }
+  Background.Settle();
+  Ticket? t = null;
+  runas (Nadia) { t = Ticket.Single(x => x.Id == id); }
+  return t!;
+}
+
+/// Nadia answers the ticket `ticket` — and the reply's renderings are made after it is written. By id: the test body
+/// runs signed out, and a row it cannot read is not handed to a function (an-entity-argument-is-one-the-caller-can-read).
+void Answers(Guid ticket, string text) {
+  runas (Nadia) {
+    var t = Ticket.Single(x => x.Id == ticket);
+    Post(t.Conversation, text);
+    UnitOfWork.Commit();
+  }
+  Background.Settle();
+}
+
+/// Nadia solves the ticket `ticket` with `summary` — what the next ticket like it finds. By id, as `Answers`.
+void Solves(Guid ticket, string summary) {
+  runas (Nadia) {
+    var t = Ticket.Single(x => x.Id == ticket);
+    TakeWork(t, null);
+    SetStatus(t.Id, TicketStatus.Single(s => s.Name == "Solved").Id, summary: summary);
+  }
+  Background.Settle();
+}
+
+Ticket AnasInvoice() {
+  return WritesIn("ana@example.se", "Ana Lind", "Fakturan går inte att ladda ner",
+    "Hej! Jag försöker ladda ner fakturan för september men PDF:en öppnas aldrig. Kan ni skicka den igen?");
+}
+
+Ticket OmarsInvoice() {
+  return WritesIn("omar@example.ae", "Omar Haddad", "لا أستطيع تنزيل الفاتورة",
+    "مرحبًا، لا أستطيع تنزيل فاتورة سبتمبر. ملف PDF لا يفتح أبدًا. هل يمكنكم إرسالها مرة أخرى؟");
+}
+
+// ── language ───────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Bilingual)]
+void a_swedish_customer_is_read_in_english_and_answered_in_swedish() {
+  var t = AnasInvoice();
+  runas (Nadia) {
+    var hers = Message.Single(m => m.Conversation == t.Conversation && m.Direction == MessageDirection.Inbound);
+    Assert.Equal("sv", hers.Language);
+    Assert.Equal(TextSource.Machine, hers.CanonicalSource);
+    Assert.Equal("Hi! I am trying to download the invoice for September, but the PDF never opens. Can you send it again?",
+                 hers.CanonicalText);
+    // What she wrote is kept as she wrote it.
+    Assert.True(hers.Text.StartsWith("Hej! Jag försöker"));
+    // Her language is the ticket's — what routing reads, and what her mails are written in.
+    Assert.Equal("sv", Ticket.Single(x => x.Id == t.Id).Language);
+  }
+  Answers(t.Id, "Sorry about that — the September invoice is attached again, and the download link works now.");
+  runas (Nadia) {
+    var sent = MessageText.Single(r => r.Message.Conversation == t.Conversation);
+    Assert.Equal("sv", sent.Language);
+    Assert.Equal("Förlåt för det — septemberfakturan finns som bilaga igen, och nedladdningslänken fungerar nu.", sent.Text);
+    Assert.True(sent.WasDelivered);
+  }
+}
+
+[Test(HelpCentre)]
+void without_the_model_key_nothing_is_translated_and_the_ticket_says_so() {
+  var t = AnasInvoice();
+  runas (Nadia) {
+    var hers = Message.Single(m => m.Conversation == t.Conversation && m.Direction == MessageDirection.Inbound);
+    Assert.Equal(TextSource.Original, hers.CanonicalSource);
+    var status = LanguageStatusOf(t.Conversation.Id);
+    Assert.True(status.Off);
+    Assert.Equal("The model key is missing — give the secret HarbourModel a value, and translation starts again.", status.Reason);
+  }
+}
+
+[Test(HelpCentre)]
+void a_request_the_team_takes_down_keeps_no_card_number() {
+  // Taken down from a call, as the customer's own words — through the same write as everything a customer writes.
+  var t = WritesIn("ana@example.se", "Ana Lind", "The charge failed", "Please charge 4111 1111 1111 1111 again, cvv 123.");
+  runas (Nadia) {
+    var m = Message.Single(x => x.Conversation == t.Conversation && x.Direction == MessageDirection.Inbound);
+    Assert.True(!m.Text.Contains("4111 1111 1111 1111"));
+    Assert.Contains("[card ••••1111]", m.Text);
+    Assert.Contains("cvv [•••]", m.Text);
+  }
+}
+
+// ── search ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Bilingual)]
+void the_search_box_finds_a_ticket_written_in_swedish_by_its_english_words_and_how_we_solved_one_like_it() {
+  var ana = AnasInvoice();
+  var omar = OmarsInvoice();
+  Solves(omar.Id, "Resent the September invoice as a PDF attachment and cleared the broken download link.");
+  runas (Nadia) {
+    var found = SearchDesk("download the invoice for September PDF never opens");
+    Assert.Equal("", found.MeaningOff);
+    Assert.True(found.Tickets.Any(f => f.Number == ana.Number));
+    Assert.True(found.Tickets.Any(f => f.Number == omar.Number));
+    Assert.Equal(1, SearchDesk("resent the September invoice PDF attachment broken download link").Answers.Count(a => a.Number == omar.Number));
+    // A ticket number goes straight to it.
+    Assert.Equal(ana.Number, SearchDesk("#" + ana.Number).Tickets[0].Number);
+  }
+}
+
+[Test(Bilingual)]
+void seen_before_lists_a_ticket_like_this_one_and_how_it_was_solved_and_the_articles() {
+  var omar = OmarsInvoice();
+  Solves(omar.Id, "Resent the September invoice as a PDF attachment and cleared the broken download link.");
+  HarbourArticle("invoices", "Download an invoice", "Every invoice, as a PDF.",
+                 "Open Billing, pick the invoice and press Download — it opens as a PDF.");
+  var ana = AnasInvoice();
+  runas (Nadia) {
+    var seen = SeenBeforeOf(ana.Id);
+    var like = seen.Tickets.Single(f => f.Number == omar.Number);
+    Assert.Equal("Resent the September invoice as a PDF attachment and cleared the broken download link.", like.Passage);
+    Assert.True(seen.Tickets.All(f => f.Number != ana.Number));
+  }
+}
+
+[Test(Bilingual)]
+void a_team_playbook_is_offered_to_the_team_and_never_to_a_customer() {
+  HarbourArticle("escalations", "When an invoice will not download", "What the team checks first.",
+                 "Check the invoice download link, resend the invoice as a PDF, and note the browser.");
+  runas (Nadia) {
+    Assert.Equal(1, KnowledgeByMeaning("invoice will not download resend the invoice PDF", includeTeam: true).Hits.Count(h => h.TeamOnly));
+    // The help centre's own search — whoever runs it — never offers it.
+    Assert.Equal(0, KnowledgeByMeaning("invoice will not download resend the invoice PDF").Hits.Count(h => h.TeamOnly));
+    Assert.Equal(0, SearchKnowledge("invoice download").Hits.Count(h => h.TeamOnly));
+  }
+  runas (Clara) {
+    Assert.Equal(0, KnowledgeByMeaning("invoice will not download resend the invoice PDF", includeTeam: true).Hits.Count);
+  }
+}
+
+[Test(HelpCentre)]
+void without_the_embedding_key_the_search_box_matches_words_and_says_so() {
+  var ana = AnasInvoice();
+  runas (Nadia) {
+    var found = SearchDesk("fakturan");
+    Assert.Equal("Search by meaning is off until the embedding key is set — these are matches by words.", found.MeaningOff);
+    Assert.Equal(ana.Number, found.Tickets.Single().Number);
+    Assert.Equal("Tickets like this one are found by meaning — that is off until the embedding key is set.",
+                 SeenBeforeOf(ana.Id).MeaningOff);
+  }
+}
+
+// ── on screen ──────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Bilingual)]
+void the_search_page_finds_tickets_answers_and_articles() {
+  var omar = OmarsInvoice();
+  Solves(omar.Id, "Resent the September invoice as a PDF attachment and cleared the broken download link.");
+  AnasInvoice();
+  HarbourArticle("invoices", "Download an invoice", "Every invoice, as a PDF.",
+                 "Open Billing, pick the invoice and press Download — it opens as a PDF.");
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Nadia);
+  Ui.Visit("/search");
+  Ui.Fill("What are you looking for?", "download the September invoice PDF");
+  Ui.Within("Search results") { Ui.Click("Search"); }
+  Assert.Visible("Tickets");
+  Assert.Visible("Fakturan går inte att ladda ner");
+  Assert.Visible("How we solved it before");
+  Assert.Visible("Download an invoice");
+  Ui.Shot("search: tickets, past answers and articles, wide");
+  Ui.Theme("dark");
+  Ui.Shot("search: tickets, past answers and articles, wide, dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  // On a phone the page is the screen — the list is one press back.
+  Ui.Visit("/search");
+  Ui.Fill("What are you looking for?", "download the September invoice PDF");
+  Ui.Within("Search results") { Ui.Click("Search"); }
+  Assert.Visible("Fakturan går inte att ladda ner");
+  Assert.NoOverflow();
+  Ui.Shot("search: phone");
+}
+
+/// A ticket "Seen before" finds may be the problem this one is another report of: one press links this ticket as an
+/// incident of it — solving the problem then solves this — and the panel says so instead of offering it again.
+[Test(Bilingual)]
+void seen_before_links_this_ticket_as_an_incident_of_the_problem_it_repeats() {
+  var omar = OmarsInvoice();
+  var ana = AnasInvoice();
+  Background.Settle();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Nadia);
+  Ui.Visit("/v/all/t/" + ana.Number);
+  Ui.Click("Find tickets like it");
+  Assert.Visible("Link as an incident of #" + omar.Number);
+  Ui.Click("Link as an incident of #" + omar.Number);
+  Assert.Visible("An incident of #" + omar.Number);
+  Assert.Hidden("Link as an incident of");
+  Assert.Visible("Incident of", within: "Links");
+  runas (Nadia) { Assert.Equal(omar.Number, ProblemNumberOf(ana)); }
+  Ui.Shot("ticket: seen before, linked as an incident, wide");
+}
+
+[Test(Bilingual)]
+void a_ticket_shows_both_texts_and_what_was_seen_before() {
+  var omar = OmarsInvoice();
+  Solves(omar.Id, "Resent the September invoice as a PDF attachment and cleared the broken download link.");
+  var ana = AnasInvoice();
+  Answers(ana.Id, "Sorry about that — the September invoice is attached again, and the download link works now.");
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Nadia);
+  Ui.Visit("/v/all/t/" + ana.Number);
+  // Her message in English, said to be a translation; our reply said to have gone in Swedish.
+  Assert.Visible("Hi! I am trying to download the invoice for September, but the PDF never opens. Can you send it again?");
+  Assert.Visible("Translated from Swedish");
+  Assert.Visible("Sent in Swedish");
+  Assert.Visible("Seen before");
+  // It looks when asked — searching by meaning is paid for, so opening the ticket did not.
+  Ui.Click("Find tickets like it");
+  Assert.Visible("#" + omar.Number);
+  Ui.Click("Show the original");
+  Assert.Visible("Hej! Jag försöker ladda ner fakturan för september men PDF:en öppnas aldrig. Kan ni skicka den igen?");
+  Ui.Click("Show what they received");
+  Assert.Visible("Förlåt för det — septemberfakturan finns som bilaga igen, och nedladdningslänken fungerar nu.");
+  Ui.Shot("ticket: both texts, and seen before, wide");
+  Ui.Theme("dark");
+  Ui.Shot("ticket: both texts, and seen before, wide, dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/v/all/t/" + ana.Number);
+  Assert.Visible("Translated from Swedish");
+  Assert.NoOverflow();
+  Ui.Shot("ticket: both texts, phone");
+  // On a phone "Seen before" is a sheet from the ticket's head.
+  Ui.Click("Seen before");
+  Assert.Visible("#" + omar.Number);
+  Ui.Shot("ticket: seen before, phone");
+}
+
+[Test(HelpCentre)]
+void a_ticket_says_when_translation_is_off() {
+  var ana = AnasInvoice();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Nadia);
+  Ui.Visit("/v/all/t/" + ana.Number);
+  Assert.Visible("Translation is off");
+  Assert.Visible("The model key is missing — give the secret HarbourModel a value, and translation starts again.");
+  Ui.Shot("ticket: translation is off, wide");
+}

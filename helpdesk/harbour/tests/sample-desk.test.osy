@@ -1,0 +1,804 @@
+// A DESK AT REAL VOLUME — a month of a support team's work, for the tests, the screenshots and the memory harness.
+//
+// ⛔ IT LIVES UNDER `tests/`, AND THAT IS THE GATE. Harbour is Osyrin's own support desk: real people's questions and
+//   bug reports. Code under `tests/` is compiled only into a test run's throwaway branch, never into what `osy compile`
+//   deploys — so a production desk has no function that could fill it with invented customers and tickets, by any
+//   caller, through any door (the API, `osyrin run`, a page). It sat in `model/` as a public function until 2026-10-02,
+//   where any admin could have called it on the live desk. Guarded by HarbourShipsNoSampleDataTests.
+//   A test calls it as `SeedDemoDesk(n)` inside a `runas` of a desk admin; the memory harness fills a desk by running
+//   one of those tests (`--seed demo/helpdesk:<test>:N`).
+//
+// `SeedDemoDesk()` writes ~30 customer companies with
+// their people, 8 teammates, and `tickets` tickets over the last 30 days through the same model the desk uses —
+// conversations with the customer's words, the team's replies and notes, statuses moved through the workflow. It is
+// DETERMINISTIC (a seeded generator), so two runs make the same desk and a screenshot can be retaken.
+//
+// ⚑ THE HISTORY IS IMPORTED, CLOCKS AND ALL. Messages and events carry the time they happened, and so do the runs:
+//   each ticket ARRIVED when its conversation started (`ArrivedAt`, which the inbox's run counts every promise from),
+//   it was handed to its agent then (`WorkHandling.RaiseHandOver(…, at: …)`), and every move the seed makes is raised
+//   AT the time it happened (`RaiseReply(t, at: …)` — the lifecycle tells the inbox at that same instant) — so each
+//   ticket's SLA clock is as far along as its history says, and a desk seeded in one go reads like a month of work
+//   rather than five hundred clocks started together.
+//
+// ⚑ AND NO TWO TICKETS READ ALIKE. Each request is a template rolled with its own details (an order number, a
+//   country, an integration, a colleague's name) and a subject is never used twice; the templates are weighted (a
+//   password reset comes in far more often than a DPA), and none is used twice within twenty rows of the queue's own
+//   due-first order — so a screen of the list never shows the same complaint twice.
+//
+// ⚑ AND THE DESK IS COPING. An open ticket is timed against ITS OWN promise (its policy, in that policy's hours —
+//   business hours are walked as business hours), so most clocks have plenty left, a few are in their last quarter
+//   and a handful are past. A first screen of red is a desk in crisis, not a desk.
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.ServiceHours;
+using Osysharp.Inbox;
+using Osysharp.Privacy;
+using Osysharp.Fields;
+
+/// A small, deterministic generator — the same seed gives the same desk.
+public class Dice {
+  public long State = 20261001;
+  public int Next(int n) {
+    State = (State * 1103515245 + 12345) % 2147483648;
+    var v = Convert.ToInt(State / 65536);
+    return n <= 0 ? 0 : v % n;
+  }
+  public string Of(string[] xs) { return xs[Next(xs.Length)]; }
+}
+
+/// One request as the desk would receive it.
+public class Request {
+  public string Subject;
+  public string Text;
+  public string Reply;
+  public string Note;
+  public string Tag;
+  /// Its type — the key of the form it is filed on (the desk's starting types, `SetUpDesk`).
+  public string Type = "question";
+  /// How often this kind of request comes in, against the others — a password reset far more often than a DPA.
+  public int Weight = 1;
+}
+
+List<Request> Requests() {
+  return [
+    R("Invoice {inv} shows the wrong VAT line", "The invoice {inv} lists 25% VAT on a reverse-charge order. Our accountant needs a corrected copy before {weekday}.", "Thanks for spotting this. The reverse-charge flag was missing on that order; I've corrected it and attached a fresh PDF of {inv}.", "Billing confirmed the flag bug only hits orders edited after checkout.", "billing", "problem", 2),
+    R("Card payments failing for customers in {country}", "Since {time} every card payment from our customers in {country} is declined at the last step. Everywhere else is fine and we changed nothing.", "We can see the declines too: the 3-D Secure challenge is timing out with one acquirer for {country}. We've switched you to the fallback route while they fix it.", "3DS challenge timeouts on the primary route, {country} only.", "payments", "incident", 2),
+    R("{format} export stuck at {pct}%", "The weekly {format} export has been at {pct}% since {time} and nobody on the team can start a new one.", "The export worker was waiting on a locked file. I've released it and your {format} export finished a minute ago.", "Lock on the export bucket again. Engineering has a ticket open for the retry logic.", "exports", "incident"),
+    R("Move the {team} workspace to another account", "We're reorganising and need to move our {team} workspace under the parent company's account. Is that possible without losing history?", "Yes. An owner of both accounts can transfer it from Settings, Workspaces, Transfer. History, files and members all move with it.", "", "workspaces", "question"),
+    R("{idp} sign-in lands people in the sandbox", "After signing in with {idp} some of our people end up in our sandbox tenant instead of production.", "The {idp} app still sends the sandbox as its default relay state. Setting it to your production address fixes it; steps below.", "Customer's IdP config, not ours. Sent the relay-state doc.", "sso", "problem"),
+    R("Statement for {month} in Japanese", "Our finance team in Osaka would like the {month} statement in Japanese for their records.", "Statements are available in Japanese. I've switched your billing language and re-issued {month}; it's under Billing, Statements.", "", "billing", "question"),
+    R("{integration} webhooks arriving twice", "Our endpoint receives each order.paid webhook from {integration} twice, about {n} seconds apart. We return 200 on the first.", "Your endpoint answers after 12 seconds, past our 10-second timeout, so we retry. Answering first and processing afterwards stops the duplicates.", "Their endpoint is slow. Not a bug, but the timeout could be clearer in the docs.", "webhooks", "question"),
+    R("Password reset mail not arriving for {person}", "{person} has asked for a reset three times today and nothing arrives, not even in spam.", "Your mail filter is quarantining our reset messages. I've sent {person} a one-time sign-in link by text instead, and the details for your IT team.", "", "login", "problem", 3),
+    R("Add {n} seats from 1 {month}", "We're hiring in {month}. Can we add {n} seats starting on the 1st rather than today?", "Done: {n} seats are scheduled from 1 {month}, and the first invoice for them comes with that renewal.", "", "seats", "task"),
+    R("Chart labels unreadable in dark mode on {browser}", "In dark mode the axis labels on the revenue chart are dark grey on near-black in {browser}.", "Thanks, that's a bug in our dark theme. It's fixed in tonight's release; until then the light theme shows them correctly.", "Reproduced on {browser}. Linked to the theming fix.", "bug", "problem"),
+    R("429s on /v2/orders at {n} requests a minute", "We're at about {n} requests a minute and still get 429s on /v2/orders. Our plan says 600.", "The limit is per token as well as per account, and your integration shares one token across several workers. A token per worker clears it.", "", "api", "question"),
+    R("Refund for order {order} shows twice", "The refund for order {order} shows twice on the customer's card statement.", "One of the two is a pending authorisation that drops off within five days; only one refund was settled. The settlement report for {order} is attached.", "Checked with Finance: only one refund settled.", "refunds", "question", 2),
+    R("iOS app signs everyone out after an hour", "Since the last update the iOS app signs everyone out roughly every hour. {person} lost a half-filled order twice today.", "Version 4.12 shortened the session by mistake. 4.12.1 is in review with Apple and restores the 30-day session.", "Engineering confirmed. Fix in 4.12.1.", "mobile", "incident"),
+    R("CSV import rejects {n} rows with DD/MM/YYYY dates", "Our import file uses DD/MM/YYYY and {n} rows fail with 'invalid date'.", "The importer reads dates in your workspace's locale, which is set to US. Switching it to UK reads your file correctly.", "", "imports", "question", 2),
+    R("Audit log export for our {month} ISO audit", "Our auditors arrive in {month} and want every admin action from the last 12 months as a file.", "You can export the audit log from Settings, Security, Audit log: choose the last 12 months and CSV. It includes admin, agent and API actions.", "", "security", "question"),
+    R("Alerts still going to {person}", "Order alerts still go to {person}, who left in {month}. We removed them from the team.", "Their address was still on two alert rules. I've removed it from both and added your ops address instead.", "", "notifications", "task"),
+    R("Shipping labels printing at A4 on the {site} printer", "Labels from the {site} warehouse come out at A4 instead of 4x6 since yesterday.", "The {site} printer profile reset after the update. Setting the label size back to 4x6 under Printing fixes it; screenshot attached.", "", "printing", "question"),
+    R("Restrict {area} exports to admins", "We'd like only admins to be able to export {area} data.", "Yes: Settings, Roles, Members, untick 'Export data'. Admins keep it.", "", "permissions", "question"),
+    R("{integration} sync has not run since {weekday}", "The nightly sync to {integration} has not run since {weekday}. No errors in our logs.", "Your {integration} API key expired on {weekday}. Once a new key is entered under Integrations the sync catches up by itself.", "", "integrations", "problem", 2),
+    R("Quote for {n} more seats", "We're rolling out to the warehouse teams. What would {n} more seats cost on our plan?", "I've passed this to your account manager, who'll send a quote today; volume pricing starts at 150 seats.", "Sales loop: the account manager owns this account.", "sales", "question"),
+    R("Two-step codes rejected for {person}", "{person}'s authenticator codes are rejected every time since they got a new phone.", "The new phone's clock was four minutes off. Turning on automatic time fixed it, and here are the recovery steps in case.", "", "login", "question", 2),
+    R("Keep {country} customer data in region", "Can our customers' data in {country} stay in the region? Our DPA requires it.", "Yes. New workspaces can be created in the EU region, and existing ones moved. I've attached our DPA and the region guide.", "", "security", "question"),
+    R("{month} report says {n} orders more than the dashboard", "The {month} report shows {n} more orders than the dashboard for the same month.", "The dashboard excludes cancelled orders and the report includes them; {n} were cancelled in {month}. A filter on the report makes them match.", "", "reports", "question"),
+    R("Portal still shows our old logo", "Our customer portal still shows the old logo after {person} updated it on {weekday}.", "The new logo was uploaded to the email settings rather than the portal. I've copied it across; a hard refresh shows it.", "", "branding", "task"),
+    R("Search finds nothing before {month}", "Searching for any order from before {month} returns no results, though the orders are there.", "Search covers the last 12 months by default. The 'All time' toggle under the search box finds the older ones.", "", "search", "question"),
+    R("Give a contractor access to {project} only", "We're bringing in a contractor and want them to see the {project} project and nothing else.", "Invite them as a Guest and add them to {project} only. Guests see the projects they're added to and nothing else.", "", "permissions", "question"),
+    R("Calendar events an hour late in {calendar}", "Since the clocks changed, every synced event shows an hour late in {calendar}.", "Your calendar connection still had the old time-zone rule cached. Reconnecting it under Integrations, Calendar refreshes the rule.", "Known DST issue with cached connections. Fix scheduled.", "integrations", "problem"),
+    R("Close our account at the end of {month}", "We've decided not to renew. Please close the account when our term ends in {month}.", "Sorry to see you go. The account is set to close at the end of {month}, and you'll get an export of all your data a week before.", "Retention: offered the annual discount, declined.", "billing", "task"),
+    R("Bulk price change times out on {big} products", "Changing the price on {big} products at once fails after a minute with a timeout.", "Bulk edits over 1,000 rows run in the background now, with a notification when they're done. I've re-run yours and it completed.", "", "bug", "problem"),
+    R("Where is the changelog for API v{v}?", "Is there a changelog for API v{v}? We'd like to know before fields change.", "It's under Developers, Changelog, and you can subscribe to it by mail or RSS from the same page.", "", "api", "question"),
+    R("Order confirmations going to spam at {mailhost}", "Customers on {mailhost} say the order confirmation lands in spam since {weekday}.", "Your domain's DKIM record changed on {weekday}. The record below restores the signature; {mailhost} picks it up within a few hours.", "", "email", "problem"),
+    R("Countersigned DPA needed before {weekday}", "Legal needs a countersigned DPA before we go live on {weekday}.", "I've sent the DPA for e-signature to your legal contact; it's countersigned on our side.", "", "security", "task"),
+    R("Scanner adds a zero to every SKU at {site}", "Every SKU scanned at {site} gets a leading zero, so nothing matches.", "Your scanners send EAN-13 and your SKUs are UPC-A. Turning on 'Strip leading zero' under Scanning makes them match.", "", "hardware", "question"),
+    R("Invoice mail shows $ instead of {currency}", "Our invoices are in {currency} but the email shows a dollar sign.", "The email template used the account default rather than the invoice currency. Fixed: new invoices show {currency}.", "Template bug, fixed in the mail renderer.", "billing", "problem"),
+    R("SLA report counts breaches on {holiday}", "The SLA report counts breaches on {holiday}, when we're closed.", "Your business hours didn't list {holiday}. I've added it, and the report recalculates tonight.", "", "reports", "question"),
+    R("Change the sender name on notifications to {brand}", "Notifications come from 'Harbour Notifications'. Can they come from {brand} instead?", "Yes: Settings, Email, Sender name. It applies to every notification from the next one on.", "", "branding", "question"),
+    R("Duplicate customer records after {integration} import", "The {integration} import on {weekday} created {n} duplicate customers.", "The import matched on name rather than email. I've merged the {n} duplicates and switched the match to email for next time.", "Merged by script; customer informed.", "imports", "problem"),
+    R("Can't attach files over {mb} MB", "{person} can't attach a {mb} MB drawing to an order; it just spins.", "The attachment limit on your plan is 25 MB. I've raised it to 100 MB for your account at no charge.", "", "files", "question"),
+    R("{browser} shows a blank page after login", "Since {weekday}, logging in from {browser} shows a blank page. Other browsers work.", "An extension in {browser} was blocking our script. Allowing our domain in it fixes the blank page; details below.", "Ad-blocker list update. Asked the list maintainers to whitelist us.", "bug", "problem"),
+    R("Tax rate for {country} is out of date", "Checkout still charges the old tax rate for {country}.", "The {country} rate changed on the 1st and your manual override kept the old one. I've removed the override; the current rate applies now.", "", "tax", "problem"),
+    R("Reports are slow for the {team} team", "Opening any report takes over {n} seconds for the {team} team since Monday.", "Their reports were reading a full year by default. I've set them to the last 90 days, and they open in a second or two.", "", "performance", "problem"),
+    // ── added in polish slice 2: a desk sees more kinds of request than forty, and some far more often than others ──
+    R("Receipt for order {order} for the {month} close", "Our finance team needs a receipt for order {order} for the {month} close. The order page only shows the invoice.", "I've attached the receipt for {order}. You can download any receipt yourself under Orders, Receipts, too.", "", "billing", "question", 3),
+    R("Discount code {code} not applying at checkout", "Customers tell us the code {code} says 'not valid' at checkout, though it runs until the end of {month}.", "{code} was set to new customers only. I've opened it to everyone; it works at checkout now.", "Campaign set up with the wrong audience. Not a bug.", "checkout", "problem", 2),
+    R("{person} locked out after too many attempts", "{person} typed an old password a few times and is now locked out. Can you let them back in?", "The lock lifts by itself after 30 minutes, but I've cleared it now; {person} can sign in again, and a reset link is on its way to them.", "", "login", "problem", 3),
+    R("New billing address in {city}", "We've moved our office to {city}. Please put the new address on invoices from now on.", "Updated: invoices from today carry the {city} address. Earlier invoices keep the old one, as the law expects.", "", "billing", "task", 2),
+    R("Moving to the annual plan from {month}", "We'd like to move from monthly to annual billing when our {month} renewal comes round. Is there a discount?", "Annual billing is two months free. I've scheduled the switch for your {month} renewal; nothing changes before then.", "Upsell: annual, scheduled.", "sales", "question", 2),
+    R("Android app crashes opening order {order}", "Every time {person} opens order {order} in the Android app it closes itself. Other orders open fine.", "That order has a product with an emoji in its name, which the Android app trips on. 4.12.2 fixes it; until then the web app opens it.", "Reproduced: emoji in product title. Linked to the mobile fix.", "mobile", "problem"),
+    R("Remove {person} from our account", "{person} has left the company. Please remove them and move their open orders to me.", "Done: {person} is removed, signed out everywhere, and their open orders are yours now.", "", "permissions", "task", 2),
+    R("Export every {area} record before we migrate", "We're moving our CRM in {month}. How do we export every {area} record with its history?", "Settings, Data, Export lets you choose {area} records with history as one file; it's emailed to you when it's ready.", "", "exports", "question"),
+    R("Gift cards refused for customers in {country}", "Customers in {country} can't redeem gift cards; checkout says 'not available in your region'.", "Gift cards were limited to your home market. I've added {country}; they redeem now.", "", "payments", "problem"),
+    R("Charged twice for the {month} subscription", "Our card was charged twice for the {month} subscription, on the 1st and the 2nd.", "The second charge was a retry that should have been cancelled. I've refunded it; it shows on your card in three to five days.", "Retry after a slow bank answer. Payments team aware.", "billing", "problem", 2),
+    R("Low-stock alerts stopped at {site}", "We stopped getting low-stock alerts for the {site} warehouse around {weekday}.", "The {site} warehouse lost its alert contact when it was renamed. I've put your ops address back and sent a test alert.", "", "notifications", "problem"),
+    R("API key for our new {integration} connection", "We're connecting {integration} and need an API key that can only read orders.", "You can make one under Developers, API keys: choose 'Read orders' only. I've linked our {integration} guide too.", "", "api", "task"),
+    R("Payout for {month} has not arrived", "Our payout for {month} hasn't reached our bank yet. It usually lands by the 5th.", "The payout went out on the 3rd and was held by your bank for a name check. It should land today; the reference is in Billing, Payouts.", "", "payments", "question", 2),
+    R("Checkout in {language}", "Most of our customers in {country} would rather check out in {language}. Is that possible?", "Yes: Settings, Store, Languages, add {language}. The checkout follows the customer's browser language from then on.", "", "checkout", "question"),
+    R("Order {order} stuck in 'processing'", "Order {order} has said 'processing' since {weekday}, and the customer is asking where it is.", "The payment for {order} was waiting on a 3-D Secure answer that never came. I've captured it; the order is moving again.", "", "orders", "problem", 2),
+    R("VAT number rejected for our {country} company", "Checkout rejects our {country} VAT number as invalid, but it's on the EU register.", "The EU register was down when you entered it. I've re-checked it and it's accepted now; reverse charge applies to your orders.", "VIES outage that afternoon.", "tax", "problem"),
+    R("Dashboard slow in {browser} since {weekday}", "Since {weekday} the dashboard takes ages to load in {browser}. It's fine on my colleague's laptop.", "Your {browser} profile had a corrupted cache for our site. Clearing site data fixed it on our test machine; steps below.", "", "performance", "problem"),
+    R("Setting up single sign-on with {idp}", "We'd like everyone to sign in with {idp}. Where do we start?", "Settings, Security, Single sign-on: choose {idp} and follow the four steps. I'm happy to join a call while your IT team sets it up.", "", "sso", "question", 2),
+    R("Prices showing in dollars for {country}", "Customers in {country} see prices in dollars instead of {currency}.", "{country} was set to the default currency. I've set it to {currency}; prices show correctly now.", "", "checkout", "problem"),
+    R("Scheduled report skips {weekday}s", "Our daily report arrives every day except {weekday}.", "The schedule was saved with {weekday} unticked. I've ticked it; the next one arrives on {weekday}.", "", "reports", "question"),
+    R("Pause our subscription over {month}", "We close every {month}. Can we pause the subscription for the month?", "Yes. I've paused it for {month}; your data stays and billing starts again on the 1st after.", "", "billing", "task"),
+    R("{integration} webhook signatures fail to verify", "Since {weekday}, every webhook signature from {integration} fails to verify on our side.", "Your signing secret was rotated on {weekday}. The new one is under Developers, Webhooks; updating it on your side fixes the check.", "", "webhooks", "problem"),
+    R("Add {person} as a billing contact", "Please add {person} as a billing contact so they get the invoices too.", "Done: {person} receives every invoice and payment reminder from now on.", "", "billing", "task", 2),
+    R("Stock counts off by {n} at {site}", "After Friday's count our stock at {site} is off by {n} units on several products.", "Two scanners at {site} uploaded the same count. I've removed the duplicate upload; the {n} units are back.", "Duplicate count upload. Asked product for a dedupe check.", "inventory", "problem"),
+    R("Order confirmation in {language} too", "Can our order confirmation go out in {language} as well as English?", "Yes: the confirmation template has a {language} version under Email, Templates. I've switched it on.", "", "email", "question"),
+    R("Session timeout for {team} is too short", "The {team} team gets signed out every 15 minutes. Can it be longer for them?", "Session length is set per role. I've raised it to 8 hours for the {team} role, with sign-out on browser close.", "", "security", "question"),
+  ];
+}
+
+/// The details one request is written with — rolled ONCE per ticket (so its subject, its words and the reply agree),
+/// and different for every ticket, so no two read alike.
+public class Details {
+  public string Inv = "";
+  public string Order = "";
+  public string N = "";
+  public string Big = "";
+  public string Pct = "";
+  public string Mb = "";
+  public string V = "";
+  public string Time = "";
+  public string Weekday = "";
+  public string Month = "";
+  public string Country = "";
+  public string Format = "";
+  public string Team = "";
+  public string Idp = "";
+  public string Integration = "";
+  public string Browser = "";
+  public string Site = "";
+  public string Area = "";
+  public string Project = "";
+  public string Calendar = "";
+  public string Mailhost = "";
+  public string Currency = "";
+  public string Holiday = "";
+  public string Brand = "";
+  public string Code = "";
+  public string City = "";
+  public string Language = "";
+  public string Person = "";
+  public void Roll(Dice d, string person) {
+    Inv = "INV-" + (4100 + d.Next(5800));
+    Order = (10000 + d.Next(89999)).ToString();
+    N = (3 + d.Next(60)).ToString();
+    Big = (1200 + d.Next(8000)).ToString("N0");
+    Pct = (80 + d.Next(19)).ToString();
+    Mb = (30 + d.Next(70)).ToString();
+    V = (2 + d.Next(3)).ToString();
+    Time = (7 + d.Next(10)).ToString("00") + ":" + (d.Next(12) * 5).ToString("00");
+    Weekday = d.Of(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]);
+    Month = d.Of(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]);
+    Country = d.Of(["Germany", "France", "Spain", "Italy", "the Netherlands", "Poland", "Ireland", "Portugal", "Austria", "Belgium", "Denmark", "Finland"]);
+    Format = d.Of(["CSV", "Excel", "PDF", "JSON", "Parquet"]);
+    Team = d.Of(["Marketing", "Finance", "Support", "Operations", "Design", "Sales", "Logistics"]);
+    Idp = d.Of(["Okta", "Azure AD", "Google Workspace", "OneLogin", "JumpCloud"]);
+    Integration = d.Of(["Shopify", "Salesforce", "HubSpot", "NetSuite", "Xero", "QuickBooks", "Zapier", "WooCommerce", "Dynamics 365"]);
+    Browser = d.Of(["Safari", "Firefox", "Edge", "Chrome on Android", "Brave"]);
+    Site = d.Of(["Leeds", "Rotterdam", "Lyon", "Gdańsk", "Dublin", "Malmö", "Porto"]);
+    Area = d.Of(["customer", "order", "invoice", "contact", "product"]);
+    Project = d.Of(["Atlas", "Beacon", "Harbour", "Juniper", "Northstar", "Pioneer", "Quarry"]);
+    Calendar = d.Of(["Outlook", "Google Calendar", "Apple Calendar"]);
+    Mailhost = d.Of(["Gmail", "Outlook.com", "Yahoo Mail", "iCloud Mail", "GMX"]);
+    Currency = d.Of(["kr", "€", "£", "zł", "CHF"]);
+    Holiday = d.Of(["Easter Monday", "Whit Monday", "Boxing Day", "Ascension Day", "May Day"]);
+    Brand = d.Of(["our own name", "the store's name", "our support address"]);
+    Code = d.Of(["SPRING", "WELCOME", "AUTUMN", "VIP", "BACK2SCHOOL", "FRIENDS", "LOYAL"]) + (5 + d.Next(45));
+    City = d.Of(["Hamburg", "Utrecht", "Bilbao", "Turin", "Kraków", "Cork", "Aarhus", "Tampere", "Graz", "Ghent"]);
+    Language = d.Of(["German", "French", "Spanish", "Italian", "Dutch", "Polish", "Swedish", "Portuguese"]);
+    Person = person;
+  }
+  public string Fill(string s) {
+    var r = s;
+    r = r.Replace("{inv}", Inv);
+    r = r.Replace("{order}", Order);
+    r = r.Replace("{n}", N);
+    r = r.Replace("{big}", Big);
+    r = r.Replace("{pct}", Pct);
+    r = r.Replace("{mb}", Mb);
+    r = r.Replace("{v}", V);
+    r = r.Replace("{time}", Time);
+    r = r.Replace("{weekday}", Weekday);
+    r = r.Replace("{month}", Month);
+    r = r.Replace("{country}", Country);
+    r = r.Replace("{format}", Format);
+    r = r.Replace("{team}", Team);
+    r = r.Replace("{idp}", Idp);
+    r = r.Replace("{integration}", Integration);
+    r = r.Replace("{browser}", Browser);
+    r = r.Replace("{site}", Site);
+    r = r.Replace("{area}", Area);
+    r = r.Replace("{project}", Project);
+    r = r.Replace("{calendar}", Calendar);
+    r = r.Replace("{mailhost}", Mailhost);
+    r = r.Replace("{currency}", Currency);
+    r = r.Replace("{holiday}", Holiday);
+    r = r.Replace("{brand}", Brand);
+    r = r.Replace("{code}", Code);
+    r = r.Replace("{city}", City);
+    r = r.Replace("{language}", Language);
+    r = r.Replace("{person}", Person);
+    return r;
+  }
+}
+
+Request R(string subject, string text, string reply, string note, string tag, string type, int weight = 1) {
+  return new Request { Subject = subject, Text = text, Reply = reply, Note = note, Tag = tag, Type = type, Weight = weight };
+}
+
+/// Which request template a seeded subject was written from (its index in `Requests()`), or -1 for none — read by
+/// matching the template's fixed words in order around its `{…}` holes. The tests use it to check the desk's variety.
+int TemplateOf(string subject) {
+  var requests = Requests();
+  for (var k = 0; k < requests.Count; k++) {
+    if (Fits(requests[k].Subject, subject)) { return k; }
+  }
+  return -1;
+}
+
+/// Does `subject` read as `template` with its `{…}` holes filled? Each fixed piece in order: the first at the start,
+/// the last at the end, the ones between somewhere after the one before.
+bool Fits(string template, string subject) {
+  var pieces = new List<string>();
+  var rest = template;
+  while (rest.Contains("{")) {
+    var open = rest.IndexOf("{");
+    pieces.Add(rest.Substring(0, open));
+    rest = rest.Substring(rest.IndexOf("}") + 1);
+  }
+  pieces.Add(rest);
+  if (pieces.Count == 1) { return subject == template; }
+  if (!subject.StartsWith(pieces[0]) || !subject.EndsWith(pieces[pieces.Count - 1])) { return false; }
+  var at = pieces[0].Length;
+  for (var k = 1; k < pieces.Count - 1; k++) {
+    if (pieces[k] == "") { continue; }
+    var found = subject.IndexOf(pieces[k], at);
+    if (found < 0) { return false; }
+    at = found + pieces[k].Length;
+  }
+  return subject.Length - pieces[pieces.Count - 1].Length >= at;
+}
+
+/// The desk as a team that already runs it has it: its starting statuses, queues and promises (`SetUpDesk`), and who is
+/// responsible for its customers' data NAMED. A fresh install asks an admin to name that — the banner on every desk page
+/// until they do, which is right there and is proven by the privacy tests (they set the desk up without this). A test or
+/// a screenshot of the working desk has answered it, so the shots show the product rather than its first-run prompt.
+/// Answers false when the desk was already set up.
+bool SetUpTestDesk() {
+  var made = SetUpDesk();
+  if (!PrivacyController.Any(c => c.LegalName != "")) {
+    new PrivacyController { LegalName = "Harbour Desk Ltd" };
+    UnitOfWork.Commit();
+  }
+  return made;
+}
+
+/// Fill the desk. Answers how many tickets it made; 0 when the desk already has tickets.
+int SeedDemoDesk(int tickets = 500) {
+  if (Ticket.Any()) { return 0; }
+  SetUpTestDesk();
+  // A desk that is live reads its mailbox: mail to support@ becomes tickets from the moment the desk is filled.
+  WatchSupportMailbox();
+  var dice = new Dice();
+  // The answers to the desk's fields come from a die of their own: they draw nothing from the desk's die, so adding
+  // them changed no request, customer or history the seed rolls.
+  var fieldDice = new Dice { State = 20261002 };
+  var asking = SeedDeskFields();
+  var now = DateTime.UtcNow;
+  var me = User.FirstOrDefault(a => a.Id == Session.CurrentUser!.Id);
+
+  // ── the team ─────────────────────────────────────────────────────────────────────────────────────────────────
+  // A teammate is an ACCOUNT, and accounts are the sign-in flow's (or an operator's) alone to make — so the team is
+  // whoever already has one and a desk role: an invited teammate is an `Agent`, an account an operator added with
+  // `osy user add <email> --role Admin` is a `User`. Every one of them is put on the desk's queues.
+  var team = User.Where(a => a.IsActive).OrderBy(a => a.Email).ToList()
+    .Where(a => RoleGrant.Any(g => g.Member == a && (g.Role == AppRole.Agent || g.Role == AppRole.Lead || g.Role == AppRole.Admin)))
+    .ToList();
+  if (team.Count == 0) { throw new ValidationException("Nobody on the team has a role yet — give someone the Agent role first."); }
+  // Everybody on the team works the desk's queues (only a queue's members may hold its tickets).
+  foreach (var a in team) { JoinTheDesk(a); }
+  var standard = TierNamed("Standard");
+  var premium = TierNamed("Premium");
+  var enterprise = TierNamed("Enterprise");
+
+  // ── the customers ────────────────────────────────────────────────────────────────────────────────────────────
+  var companyNames = ["Larkspur Freight", "Orbit Labs", "Kestrel Bank", "Alpenglow Outdoors", "Brightline Health",
+    "Cobalt Studio", "Driftwood Hotels", "Evergreen Grocers", "Fathom Analytics", "Granite Legal", "Harborview Clinic",
+    "Ironbark Logistics", "Juniper Schools", "Keystone Insurance", "Lumen Energy", "Meridian Travel", "Nimbus Cloud",
+    "Oakridge Realty", "Pinecrest Foods", "Quill Publishing", "Redwood Outfitters", "Saltmarsh Marine", "Tidewater Ports",
+    "Umber Coffee", "Vantage Media", "Willow Care", "Xenon Robotics", "Yardline Sports", "Zephyr Air", "Copperleaf Finance"];
+  var first = ["Hanna", "Tomás", "Dev", "Maya", "Jonas", "Aiko", "Ruth", "Pierre", "Sofia", "Liam", "Amara", "Kenji", "Olivia",
+    "Mateo", "Priya", "Noah", "Zainab", "Lucas", "Ingrid", "Omar", "Chloé", "Arjun", "Freya", "Diego", "Yara", "Felix",
+    "Nia", "Emil", "Leila", "Sam"];
+  var last = ["Lindqvist", "Aguirre", "Patel", "Chen", "Weber", "Tanaka", "Okafor", "Laurent", "Rossi", "O'Brien", "Mensah",
+    "Sato", "Brandt", "García", "Raman", "Murphy", "Haddad", "Silva", "Nilsen", "Farouk", "Dubois", "Nair", "Holm",
+    "Torres", "Saleh", "Becker", "Owusu", "Berg", "Rahimi", "Kowalski"];
+  var people = new List<Customer>();
+  for (var i = 0; i < companyNames.Count; i++) {
+    var cn = companyNames[i];
+    var domain = cn.ToLower().Replace(" ", "") + ".test";
+    var tier = i % 7 == 1 ? enterprise : (i % 3 == 1 ? premium : standard);
+    var company = new Company { Name = cn, Tier = tier, SharesTickets = i % 2 == 0,
+                                Notes = i % 4 == 0 ? "Renewal in " + ["March", "June", "September", "November"][i % 4 == 0 ? (i / 4) % 4 : 0] + " — keep the account manager in the loop." : null };
+    new OrganizationDomain { Organization = company, Domain = domain };
+    if (tier != standard) { AddToAccountTeam(company, team[dice.Next(team.Count)], AccountTeamRole.Owner); }
+    var count = 2 + dice.Next(3);
+    for (var k = 0; k < count; k++) {
+      var f = dice.Of(first);
+      var l = dice.Of(last);
+      var c = new Customer { DisplayName = f + " " + l, Company = company, CreatedByVisit = null };
+      var email = f.ToLower().Replace("á", "a").Replace("é", "e").Replace("í", "i") + "." + l.ToLower().Replace("'", "").Replace("í", "i").Replace("é", "e") + "@" + domain;
+      new ContactPoint { Party = c, Kind = ContactPointKind.Email, Value = email, IsPreferred = true };
+      people.Add(c);
+    }
+  }
+  UnitOfWork.Commit();
+
+  // ── a month of tickets ───────────────────────────────────────────────────────────────────────────────────────
+  // Three passes. (1) PLAN every ticket: who, how urgent, where it ends up, and when each step happened — the open
+  // ones timed against their own SLA promise, so the desk is mostly on time, a few tickets at risk and a handful late
+  // (as a desk that is coping looks), rather than a first screen of red. (2) WRITE the plans, in the order the queue
+  // will show them (due first), each with a request that none of the twenty before it used. (3) MAKE them.
+  var requests = Requests();
+  var statuses = TicketStatus.ToList();
+  var colleagues = ["Anna", "Ben", "Carla", "Dmitri", "Eva", "Femi", "Greta", "Hugo", "Isla", "Jakob", "Kira", "Luis"];
+  var followUps = [
+    "Thanks, that helped, but it happened again an hour ago. Could you take another look?",
+    "Quick follow-up: is there any news on this?",
+    "We tried that and nothing changed, I'm afraid.",
+    "{person} says it's still happening on their side.",
+    "Could you send the steps in writing? Our IT team needs them before {weekday}.",
+    "That fixed most of it, but the {month} numbers are still off.",
+  ];
+  var calendars = new Calendars();
+  // Read once: the policies and the default tier (a query per ticket was most of the planning time).
+  var policies = Promises();
+  var fallbackTier = DefaultTier();
+  var plans = new List<Plan>();
+  for (var i = 0; i < tickets; i++) {
+    var p = new Plan { Index = i, Who = people[dice.Next(people.Count)] };
+    // Where it ends up, by age: old work is mostly done; this week's is mostly live.
+    // A month of work: most of it spread over the 30 days, a third of it from the last three.
+    var ageMinutes = dice.Next(10) < 7 ? dice.Next(60 * 24 * 30) : dice.Next(60 * 24 * 3) + 5;
+    // A desk always has work just in: one ticket in ten arrived a moment ago and nobody has picked it up.
+    p.JustIn = i % 10 == 0;
+    var roll = dice.Next(100);
+    p.Stage = ageMinutes > 60 * 24 * 6
+      // A week-old ticket is settled: closed, solved, or waiting on its customer — a desk does not leave week-old
+      // answers sitting in Open, and a seed that did drew a queue of nothing but long-breached promises.
+      ? (roll < 76 ? Stage.Closed : (roll < 93 ? Stage.Solved : Stage.Pending))
+      : ageMinutes > 60 * 24
+        ? (roll < 40 ? Stage.Solved : (roll < 60 ? Stage.Pending : (roll < 68 ? Stage.OnHold : (roll < 85 ? Stage.Answered : Stage.Open))))
+        : (roll < 35 ? Stage.New : (roll < 60 ? Stage.Open : (roll < 80 ? Stage.Answered : (roll < 90 ? Stage.Pending : Stage.Solved))));
+    if (p.JustIn) { p.Stage = Stage.New; }
+    p.Agent = team[dice.Next(team.Count)];
+    if (me != null && p.Stage != Stage.Closed && dice.Next(8) == 0) { p.Agent = me; }
+    p.Assigned = p.JustIn ? null
+      : (p.Stage == Stage.New ? (dice.Next(3) == 0 ? p.Agent : null) : (dice.Next(9) == 0 && p.Stage == Stage.Open ? null : p.Agent));
+    var priorityRoll = dice.Next(100);
+    p.Priority = priorityRoll < 6 ? WorkPriority.Urgent : (priorityRoll < 24 ? WorkPriority.High : (priorityRoll < 88 ? WorkPriority.Normal : WorkPriority.Low));
+    p.ByMail = dice.Next(10) < 6;
+    var tier = p.Who.Company != null && p.Who.Company.Tier != null ? p.Who.Company.Tier : fallbackTier;
+    var policy = PolicyIn(policies, p.Priority, tier);
+    if (Owed(p.Stage)) { TimeOwed(p, policy, calendars.Of(policy.ServiceHours!), dice, now); }
+    else { TimeSettled(p, ageMinutes, dice, now); }
+    plans.Add(p);
+  }
+
+  // (2) The queue's own order — the inbox's "All open, due first": the tickets being worked (new, owed, answered —
+  // on hold is the inbox's Waiting), soonest due first with the missed ones on top, then everything else. Each ticket
+  // gets its request as it is MADE (step 3, in plan order, so the desk starts filling at once), and the request is one
+  // no ticket within eighteen places of it in THIS order already has — so whichever order the tickets are written in,
+  // no screen of the queue shows the same complaint twice. Weighted (a password reset far more often than a DPA), and
+  // never a subject the desk already has.
+  // A missed promise still owed sorts first (counted from the miss), then every running clock — an answered ticket's
+  // is its resolution deadline, which the list counts down too — then everything the view does not hold.
+  var order = plans.OrderBy(p => Counting(p) ? (p.Due!.Value < now ? 0 : 1) : 2).ThenBy(p => Counting(p) ? p.Due : null)
+    .ThenBy(p => p.Opened).ToList();
+  var place = new Dictionary<int, int>();
+  for (var q = 0; q < order.Count; q++) { place[order[q].Index] = q; }
+  var slot = new List<int>();
+  foreach (var x in order) { slot.Add(-1); }
+  var used = new HashSet<string>();
+  // A spent request (a subject with no details left to vary) is never offered again.
+  var spent = new HashSet<int>();
+
+  // (3) Make them, in the order they were planned (so ticket numbers are not sorted by due time).
+  var made = 0;
+  foreach (var p in plans) {
+    var at0 = place[p.Index];
+    var near = new HashSet<int>();
+    for (var j = Math.Max(0, at0 - 18); j <= Math.Min(order.Count - 1, at0 + 18); j++) {
+      if (slot[j] >= 0) { near.Add(slot[j]); }
+    }
+    p.Details = new Details();
+    var tries = 0;
+    while (p.Template < 0 && tries < 200) {
+      var k = PickRequest(requests, near, spent, dice);
+      for (var go = 0; go < 30 && p.Template < 0; go++) {
+        p.Details.Roll(dice, dice.Of(colleagues));
+        var subject = p.Details.Fill(requests[k].Subject);
+        if (!used.Contains(subject)) { p.Template = k; p.Subject = subject; }
+      }
+      if (p.Template < 0) { spent.Add(k); }
+      tries = tries + 1;
+    }
+    used.Add(p.Subject);
+    slot[at0] = p.Template;
+    var req = requests[p.Template];
+    var who = p.Who;
+    var details = p.Details;
+    var opened = p.Opened;
+    var conversation = new Conversation { Subject = p.Subject, StartedAt = opened, LastEntryAt = opened,
+                                          LastCustomerEntryAt = opened, ReplyChannel = p.ByMail ? "email" : "web",
+                                          ReplyEndpoint = p.ByMail ? "support@helpdesk.test" : "portal" };
+    new Participant { Conversation = conversation, Party = who, Role = ParticipantRole.Customer, JoinedAt = opened };
+    new Message { Conversation = conversation, At = opened, Visibility = EntryVisibility.Customer,
+                  Direction = MessageDirection.Inbound, ChannelKey = p.ByMail ? "email" : "web",
+                  Endpoint = p.ByMail ? "support@helpdesk.test" : "portal", Text = details.Fill(req.Text), ByParty = who, ByName = who.DisplayName };
+    var agent = p.Agent;
+    var assigned = p.Assigned;
+    var ticket = NewTicket(p.Subject, conversation, who, asking.TypeOf(req.Type), p.Priority);
+    ticket.ArrivedAt = opened;
+    ticket.RootCause = req.Type == "incident" ? "Recorded by the team." : null;
+    var at = opened;
+    // A month of history is IMPORTED history: each line names the agent who wrote it and claims no member, because
+    // an entry made by a member is made by that member (Osysharp.Conversations' an-entry-is-signed-by-its-writer)
+    // and this runs as one admin. An importer from another helpdesk writes it the same way.
+    if (p.Stage != Stage.New) {
+      at = p.Replied;
+      new Message { Conversation = conversation, At = at, Visibility = EntryVisibility.Customer, Direction = MessageDirection.Outbound,
+                    ChannelKey = p.ByMail ? "email" : "web", Endpoint = p.ByMail ? "support@helpdesk.test" : "portal",
+                    Text = dice.Of(["Hi ", "Hello ", "Thanks for writing in, "]) + who.DisplayName.Split(" ")[0] + ",\n\n"
+                      + details.Fill(req.Reply) + "\n\n" + agent.DisplayName + "\nHarbour Support",
+                    ByName = agent.DisplayName };
+      if (req.Note != "" && dice.Next(2) == 0) {
+        new Message { Conversation = conversation, At = at.AddMinutes(-6), Visibility = EntryVisibility.Internal,
+                      Direction = MessageDirection.Internal, ChannelKey = "internal", Text = details.Fill(req.Note),
+                      ByName = agent.DisplayName };
+      }
+    }
+    if (p.Stage == Stage.Open) {
+      at = p.Wrote;
+      new Message { Conversation = conversation, At = at, Visibility = EntryVisibility.Customer, Direction = MessageDirection.Inbound,
+                    ChannelKey = p.ByMail ? "email" : "web", Text = details.Fill(dice.Of(followUps)),
+                    ByParty = who, ByName = who.DisplayName };
+      conversation.LastCustomerEntryAt = at;
+    }
+    conversation.LastEntryAt = at;
+    if (req.Tag != "" && dice.Next(3) > 0) {
+      var tag = Tag.FirstOrDefault(g => g.Name == req.Tag) ?? new Tag { Name = req.Tag };
+      new TicketTag { Ticket = ticket, Tag = tag };
+    }
+    AnswerSeeded(ticket, req, p.Stage, opened, asking, fieldDice);
+    UnitOfWork.Commit();
+    // Handed to its agent when they picked it up — a few minutes after it arrived (the inbox records the hand-over, and
+    // its trail and the ticket's timeline say so, at that time).
+    if (assigned != null) {
+      var pickedUp = Between(p.Opened, p.Opened.AddMinutes(2 + dice.Next(20)), p.Stage == Stage.New ? now.AddMinutes(-1) : p.Replied);
+      WorkHandling.RaiseHandOver(ticket, assigned, null, at: pickedUp);
+    }
+    MoveSeeded(ticket, p.Stage, statuses, dice,
+               new History { Opened = p.Opened, Replied = p.Replied, Wrote = p.Wrote, Moved = p.Moved, Closed = p.Closed });
+    made = made + 1;
+  }
+  return made;
+}
+
+/// One seeded ticket before it is written — everything decided about it, in the order it was decided.
+public class Plan {
+  public int Index;
+  public Customer Who;
+  public bool JustIn;
+  public Stage Stage = Stage.New;
+  public User Agent;
+  public User? Assigned;
+  public WorkPriority Priority = WorkPriority.Normal;
+  public bool ByMail;
+  public DateTime Opened = DateTime.UtcNow;
+  public DateTime Replied = DateTime.UtcNow;
+  public DateTime Wrote = DateTime.UtcNow;
+  public DateTime Moved = DateTime.UtcNow;
+  public DateTime Closed = DateTime.UtcNow;
+  /// When the clock the queue shows runs out — set only for a ticket the team owes something.
+  public DateTime? Due;
+  public int Template = -1;
+  public string Subject = "";
+  public Details Details;
+}
+
+/// Is a ticket in `s` being worked — what the inbox's "All open" lists (on hold waits, under Waiting)?
+bool Worked(Stage s) => s == Stage.New || s == Stage.Open || s == Stage.Answered;
+
+/// Does the list show a countdown for this ticket — worked, with a promise still running (a reply, or the resolution of
+/// an answered one)?
+bool Counting(Plan p) => p.Due != null && Worked(p.Stage);
+
+/// Does the team owe a ticket in `s` something on a clock?
+bool Owed(Stage s) => s == Stage.New || s == Stage.Open || s == Stage.Answered || s == Stage.OnHold;
+
+/// Time a ticket the team owes against its own promise, so the queue reads like a desk that is coping: most clocks
+/// with plenty left, about one in twelve in their last stretch, and a handful (one in thirty) past. `f` is how much of
+/// the promise has been used — counted in the policy's own hours, so business hours are business hours.
+void TimeOwed(Plan p, Promised policy, Calendar hours, Dice dice, DateTime now) {
+  var band = dice.Next(100);
+  var f = band < 89 ? 0.05 + dice.Next(60) / 100.0          // on time: 5–64% used
+    : (band < 97 ? 0.78 + dice.Next(17) / 100.0              // at risk: 78–94% used
+    : 1.05 + dice.Next(70) / 100.0);                          // late: 5–74% past it
+  if (p.JustIn) { f = 0.02 + dice.Next(25) / 100.0; }
+  if (p.Stage == Stage.New) {
+    // The first-reply clock runs from the moment it arrived.
+    p.Opened = hours.Back(now, Scale(policy.FirstReplyWithin, f));
+    p.Due = hours.Back(now, Scale(policy.FirstReplyWithin, f - 1.0));
+    p.Replied = p.Opened; p.Wrote = p.Opened; p.Moved = p.Opened; p.Closed = p.Opened;
+    return;
+  }
+  if (p.Stage == Stage.Open) {
+    // The customer wrote again: the next-reply clock runs from their message. Before it, the request and the team's
+    // first answer, close enough together that the resolution clock is not the one in trouble.
+    p.Wrote = hours.Back(now, Scale(policy.NextReplyWithin, f));
+    p.Opened = p.Wrote.AddMinutes(-(policy.ResolveWithin.TotalMinutes * (0.05 + dice.Next(25) / 100.0)));
+    p.Replied = Between(p.Opened, hours.Forward(p.Opened, Scale(policy.FirstReplyWithin, 0.2 + dice.Next(60) / 100.0)), p.Wrote.AddMinutes(-5));
+    p.Due = hours.Back(now, Scale(policy.NextReplyWithin, f - 1.0));
+    p.Moved = p.Wrote; p.Closed = p.Wrote;
+    return;
+  }
+  // Answered, or on hold: only the resolution clock runs, from the request. The first reply came well inside its own
+  // promise, and a hold some while after it.
+  p.Opened = hours.Back(now, Scale(policy.ResolveWithin, f));
+  p.Replied = Between(p.Opened, hours.Forward(p.Opened, Scale(policy.FirstReplyWithin, 0.2 + dice.Next(60) / 100.0)), now.AddMinutes(-2));
+  p.Moved = Later(p.Replied, 2 + dice.Next(90), now);
+  p.Wrote = p.Replied; p.Closed = p.Moved;
+  p.Due = hours.Back(now, Scale(policy.ResolveWithin, f - 1.0));
+}
+
+/// Time a ticket nobody owes anything on a clock — waiting on its customer, solved, or closed — by its age alone.
+void TimeSettled(Plan p, int ageMinutes, Dice dice, DateTime now) {
+  p.Opened = now.AddMinutes(-ageMinutes);
+  p.Replied = Later(p.Opened, 15 + dice.Next(240), now);
+  p.Wrote = p.Replied;
+  // Where it went next, and when: a pend soon after the reply, a solve some hours later, a close days later.
+  p.Moved = p.Stage == Stage.Pending ? Later(p.Replied, 2 + dice.Next(90), now) : Later(p.Replied, 30 + dice.Next(60 * 30), now);
+  p.Closed = p.Stage == Stage.Closed ? Later(p.Moved, 60 * 24 + dice.Next(60 * 24 * 3), now) : p.Moved;
+}
+
+/// `span` scaled by `f` — negative when `f` is.
+TimeSpan Scale(TimeSpan span, double f) => TimeSpan.FromMinutes(span.TotalMinutes * f);
+
+/// `t`, kept between `from` and `to` (and `from` when the two have crossed).
+DateTime Between(DateTime from, DateTime t, DateTime to) {
+  if (t > to) { t = to; }
+  return t < from ? from : t;
+}
+
+/// What a policy promises, read once for the whole seed — its three budgets and the hours they count in.
+public class Promised {
+  public WorkPriority? Priority;
+  public Guid? Tier;
+  public TimeSpan FirstReplyWithin;
+  public TimeSpan NextReplyWithin;
+  public TimeSpan ResolveWithin;
+  public Osysharp.ServiceHours.ServiceHours? ServiceHours;
+}
+
+/// Every active policy with its targets — two reads, however many tickets are planned.
+List<Promised> Promises() {
+  var targets = SlaTarget.Include(t => t.Policy).ToList();
+  var all = new List<Promised>();
+  foreach (var x in Osysharp.Inbox.SlaPolicy.Where(x => x.Active).Include(x => x.Tier).Include(x => x.Hours).ToList()) {
+    var mine = targets.Where(t => t.Policy.Id == x.Id).ToList();
+    all.Add(new Promised { Priority = x.Priority, Tier = x.Tier == null ? null : x.Tier.Id, ServiceHours = x.Hours,
+      FirstReplyWithin = mine.Where(t => t.Metric == SlaMetric.FirstResponse).Select(t => t.Within).FirstOrDefault(),
+      NextReplyWithin = mine.Where(t => t.Metric == SlaMetric.NextResponse).Select(t => t.Within).FirstOrDefault(),
+      ResolveWithin = mine.Where(t => t.Metric == SlaMetric.Resolution).Select(t => t.Within).FirstOrDefault() });
+  }
+  return all;
+}
+
+/// The inbox's choice over policies already read — the tier's own policy for the priority, else the default one (the
+/// desk's policies state a priority and, sometimes, a tier: the most specific match is exactly this).
+Promised PolicyIn(List<Promised> all, WorkPriority priority, OrganizationTier? tier) {
+  if (tier != null) {
+    foreach (var x in all) { if (x.Priority == priority && x.Tier != null && x.Tier.Value == tier.Id) { return x; } }
+  }
+  foreach (var x in all) { if (x.Priority == priority && x.Tier == null) { return x; } }
+  return all[0];
+}
+
+/// A weighted request no ticket `near` this one in the queue has, and not `spent`.
+int PickRequest(List<Request> requests, HashSet<int> near, HashSet<int> spent, Dice dice) {
+  var total = 0;
+  for (var k = 0; k < requests.Count; k++) {
+    if (!near.Contains(k) && !spent.Contains(k)) { total = total + requests[k].Weight; }
+  }
+  var pick = dice.Next(total);
+  for (var k = 0; k < requests.Count; k++) {
+    if (near.Contains(k) || spent.Contains(k)) { continue; }
+    if (pick < requests[k].Weight) { return k; }
+    pick = pick - requests[k].Weight;
+  }
+  return dice.Next(requests.Count);
+}
+
+/// An SLA calendar the seed can walk — the policy's service hours as their windows, in their zone. With no windows it
+/// is the clock on the wall.
+public class Calendar {
+  public List<ServiceWindow> Windows = [];
+  public Zone Tz;
+
+  /// The instant `span` of working time before `at` (after it, for a negative span) — where a clock that has used
+  /// `span` by `at` started.
+  public DateTime Back(DateTime at, TimeSpan span) {
+    if (span.TotalMinutes < 0.0) { return Forward(at, TimeSpan.FromMinutes(-span.TotalMinutes)); }
+    if (Windows.Count == 0) { return at.AddMinutes(-span.TotalMinutes); }
+    var left = span.TotalMinutes;
+    var day = DateOnly.FromDateTime(at.InZone(Tz));
+    for (var d = 0; d < 400; d++) {
+      var date = day.AddDays(-d);
+      foreach (var w in Windows.Where(x => x.Day == date.DayOfWeek).OrderByDescending(x => x.Start).ToList()) {
+        var s = Tz.Resolve(date, TimeOnly.FromTimeSpan(w.Start));
+        var e = Tz.Resolve(date, TimeOnly.FromTimeSpan(w.End));
+        if (e > at) { e = at; }
+        if (s >= e) { continue; }
+        var have = (e - s).TotalMinutes;
+        if (have >= left) { return e.AddMinutes(-left); }
+        left = left - have;
+      }
+    }
+    return at.AddMinutes(-span.TotalMinutes);
+  }
+
+  /// The instant `span` of working time after `from`.
+  public DateTime Forward(DateTime from, TimeSpan span) {
+    if (Windows.Count == 0) { return from.AddMinutes(span.TotalMinutes); }
+    var left = span.TotalMinutes;
+    var day = DateOnly.FromDateTime(from.InZone(Tz));
+    for (var d = 0; d < 400; d++) {
+      var date = day.AddDays(d);
+      foreach (var w in Windows.Where(x => x.Day == date.DayOfWeek).OrderBy(x => x.Start).ToList()) {
+        var s = Tz.Resolve(date, TimeOnly.FromTimeSpan(w.Start));
+        var e = Tz.Resolve(date, TimeOnly.FromTimeSpan(w.End));
+        if (s < from) { s = from; }
+        if (s >= e) { continue; }
+        var have = (e - s).TotalMinutes;
+        if (have >= left) { return s.AddMinutes(left); }
+        left = left - have;
+      }
+    }
+    return from.AddMinutes(span.TotalMinutes);
+  }
+}
+
+/// Each policy's calendar, read once.
+public class Calendars {
+  public Dictionary<Guid, Calendar> Known = new Dictionary<Guid, Calendar>();
+  public Calendar Of(Osysharp.ServiceHours.ServiceHours hours) {
+    if (Known.ContainsKey(hours.Id)) { return Known[hours.Id]; }
+    var c = new Calendar { Tz = hours.Zone, Windows = ServiceWindow.Where(w => w.ServiceHours == hours).ToList() };
+    Known[hours.Id] = c;
+    return c;
+  }
+}
+
+/// When each step of a seeded ticket's history happened.
+public class History {
+  public DateTime Opened;
+  public DateTime Replied;
+  public DateTime Wrote;
+  public DateTime Moved;
+  public DateTime Closed;
+}
+
+/// `minutes` after `after`, but never later than a minute ago — history is in the past.
+DateTime Later(DateTime after, int minutes, DateTime now) {
+  var t = after.AddMinutes(minutes);
+  var latest = now.AddMinutes(-1);
+  if (t > latest) { t = latest; }
+  return t < after ? after : t;
+}
+
+/// Walk a seeded ticket's run to where its history says it is — each move raised AT the time it happened, so the
+/// clocks it arms count from then (the run itself started when the conversation did: `StartedAt` in workflow.osy).
+void MoveSeeded(Ticket t, Stage stage, List<TicketStatus> statuses, Dice dice, History h) {
+  if (stage == Stage.New) { return; }
+  SupportTicket.RaiseReply(t, at: h.Replied);
+  if (stage == Stage.Open) { SupportTicket.RaiseCustomerWrote(t, at: h.Wrote); }
+  if (stage == Stage.Pending) {
+    var waiting = statuses.Where(s => s.Category == StatusCategory.Pending).ToList();
+    t.Status = waiting[dice.Next(waiting.Count)];
+    SupportTicket.RaisePend(t, at: h.Moved);
+  }
+  if (stage == Stage.OnHold) {
+    var holding = statuses.Where(s => s.Category == StatusCategory.OnHold).ToList();
+    t.Status = holding[dice.Next(holding.Count)];
+    SupportTicket.RaiseHold(t, t.Status.Name, at: h.Moved);
+  }
+  if (stage == Stage.Solved || stage == Stage.Closed) { SupportTicket.RaiseSolve(t, "Answered.", at: h.Moved); }
+  if (stage == Stage.Closed) { SupportTicket.RaiseClose(t, at: h.Closed); }
+  UnitOfWork.Commit();
+}
+
+// ── the desk's fields (H1) ──────────────────────────────────────────────────────────────────────────────────────────
+
+/// What the sample desk asks, and on which form.
+public class SeedAsking {
+  public TicketForm Question;
+  public TicketForm Problem;
+  public TicketForm Outage;
+  public TicketForm TeamTask;
+  public TicketField Product;
+  public TicketField Order;
+  public TicketField Worked;
+  public TicketField Since;
+  public TicketField Area;
+  /// The form a request of this type is filed on.
+  public TicketForm TypeOf(string type) {
+    if (type == "problem") { return Problem; }
+    if (type == "incident") { return Outage; }
+    if (type == "task") { return TeamTask; }
+    return Question;
+  }
+}
+
+/// A store's support desk asks which part of the product it is about, always; for a problem also the order, whether it
+/// worked before and — only then — since when; and the team files the area it lands in.
+SeedAsking SeedDeskFields() {
+  var product = new TicketField { Name = "Product", Kind = FieldKind.Choice, Public = true, Required = true, Position = 0,
+                                  Options = "Storefront\nCheckout and payments\nIntegrations\nReports\nAccount and sign-in" };
+  var order = new TicketField { Name = "Order number", Kind = FieldKind.Text, Public = true, Position = 1,
+                                Hint = "On the receipt, like 42494." };
+  var worked = new TicketField { Name = "Did it work before?", Kind = FieldKind.YesNo, Public = true, Position = 2 };
+  var since = new TicketField { Name = "Broken since", Kind = FieldKind.Date, Public = true, Position = 3 };
+  var area = new TicketField { Name = "Area", Kind = FieldKind.Choice, Position = 4,
+                               Options = "Frontend\nBackend\nPayments provider\nCustomer's setup" };
+  // The desk's starting types (`SetUpDesk`) — a question and a problem ask the customer which product; a problem asks
+  // more; an outage is the team's to file, with the product it hit.
+  var question = TicketForm.Single(f => f.Key == "question");
+  new FormField { Form = question, Field = product, Position = 0 };
+  var problem = TicketForm.Single(f => f.Key == "problem");
+  new FormField { Form = problem, Field = product, Position = 0 };
+  new FormField { Form = problem, Field = order, Position = 1 };
+  new FormField { Form = problem, Field = worked, Position = 2 };
+  new FormField { Form = problem, Field = since, Position = 3, ShowWhen = worked, ShowValue = "yes" };
+  new FormField { Form = problem, Field = area, Position = 4 };
+  var outage = TicketForm.Single(f => f.Key == "incident");
+  new FormField { Form = outage, Field = product, Position = 0 };
+  return new SeedAsking { Question = question, Problem = problem, Outage = outage, TeamTask = TicketForm.Single(f => f.Key == "task"),
+                          Product = product, Order = order, Worked = worked,
+                          Since = since, Area = area };
+}
+
+/// The product a request's label points at.
+string ProductOf(string tag) {
+  if (tag == "billing" || tag == "payments" || tag == "checkout" || tag == "tax" || tag == "sales") { return "Checkout and payments"; }
+  if (tag == "api" || tag == "webhooks" || tag == "integrations" || tag == "imports" || tag == "exports") { return "Integrations"; }
+  if (tag == "reports" || tag == "performance") { return "Reports"; }
+  if (tag == "login" || tag == "sso" || tag == "security" || tag == "permissions") { return "Account and sign-in"; }
+  return "Storefront";
+}
+
+/// A seeded ticket's answers, as its customer gave them on its form — and the team's area once somebody looked.
+void AnswerSeeded(Ticket t, Request req, Stage stage, DateTime opened, SeedAsking a, Dice dice) {
+  // A task asks nothing; every other type names the product; only a problem goes on to the order and since when.
+  if (req.Type == "task") { return; }
+  new TicketFieldValue { Ticket = t, Field = a.Product, Value = ProductOf(req.Tag) };
+  if (req.Type != "problem") { return; }
+  if (dice.Next(3) > 0) { new TicketFieldValue { Ticket = t, Field = a.Order, Value = (40000 + dice.Next(9000)).ToString() }; }
+  var worked = dice.Next(10) < 7;
+  new TicketFieldValue { Ticket = t, Field = a.Worked, Value = worked ? "yes" : "no" };
+  if (worked) {
+    new TicketFieldValue { Ticket = t, Field = a.Since, Value = opened.AddDays(-dice.Next(6)).ToString("yyyy-MM-dd") };
+  }
+  if (stage != Stage.New && dice.Next(3) > 0) {
+    new TicketFieldValue { Ticket = t, Field = a.Area, Value = dice.Of(["Frontend", "Backend", "Payments provider", "Customer's setup"]) };
+  }
+}

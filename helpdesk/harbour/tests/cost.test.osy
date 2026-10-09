@@ -1,0 +1,231 @@
+// WHAT A TICKET COSTS — the statements one more ticket sends to the database, held as budgets (ledger osysharp-aos,
+// "Cost batch — SP-73 Part A fixes"). Harbour is a product Osyrin runs, and every statement here is paid on every ticket
+// a desk opens. A change that makes a ticket dearer turns these red, with both numbers in the message.
+//
+// ⚑ ONE MORE, NOT THE FIRST: each test opens one ticket before its mark — the first pays what only the first pays (a
+//   counter row, a first run of each workflow). A test settles at once the background work a deployed app queues, so
+//   these are upper bounds on production.
+//
+// The desk (Ines and Rahul, agents; Lena, a lead; Olivia and Dev, customers) is in desk.test.osy: statuses, forms,
+// tiers, SLA policies and queues set up, as a live desk has them.
+using Osysharp.Identity;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+
+[Test(Desk)]
+void one_more_ticket_opened_at_the_desk_stays_within_its_budget() {
+  runas (Ines) {
+    OpenTicket("first@cost.test", "First Caller", "The first one pays for itself", "Warming up.");
+    var mark = Cost.Mark();
+    OpenTicket("next@cost.test", "Next Caller", "Export stuck at 99%", "Since this morning.");
+    Log.Information("Desk ticket: " + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips, "
+      + Cost.RequestsSince(mark) + " requests, " + Cost.ServerCallsSince(mark) + " server calls");
+    // Measured 56 on 2026-10-06, three runs, once the hourly clock is started when the app LOADS (D-KITSTART1, an
+    // `[OnStart]` hook in Automations): no delivery asks whether the clock is running (one statement a ticket), and no
+    // ticket starts it or re-reads which events the rules care about after it started (what made the second ticket
+    // dearer than the third). 60 before (D-EVENTINTEREST1: ItemArrived not written, Webhooks with no subscription not
+    // run, Automations on TicketArrived only, its rules read once a delivery), 66 every event heard (S3c), 72 one
+    // transaction an event (S3b), 53 before events existed (S2).
+    // Measured 55 on 2026-10-07, twice, once a routing rule's placement is its own event (ItemRouted, D-COMPOSE1 S4): this
+    // ticket matches no rule, so its ItemQueued — bookkeeping the timeline no longer hears — is not written, and
+    // TicketArrived is the one event left (56 just before, on the same tree with the split taken out, twice).
+    // Measured 50 on 2026-10-07, three runs (D-SETTINGCACHE1): app settings worked out once and kept, and a unit of work
+    // sending a read once while nothing it read has changed (55 on the tree before, measured beside it).
+    // ⚑ HELD AT THE MEASURED VALUE, not with a margin: what this holds out is ONE statement a delivery (D-KITSTART1) and
+    //   one event a ticket (S4), and a 5% margin would let either back in unseen.
+    Assert.AtMost(50, Cost.StatementsSince(mark));
+    // …in 38–39 round trips to the database, three runs (43 before D-SETTINGCACHE1; 44 before the ItemRouted split; 48–50
+    // before D-KITSTART1; 54 every event heard, S3c; 60–61 one transaction an event, S3b; 37–38 before events were
+    // delivered after their commit). 5%.
+    Assert.AtMost(41, Cost.RoundTripsSince(mark));
+  }
+}
+
+/// Opening a ticket from the inbox: the page, its server calls and the reads they make.
+[Test(Desk)]
+void opening_a_ticket_from_the_inbox_stays_within_its_budget() {
+  var n = 0;
+  runas (Ines) {
+    OpenTicket("olivia@larkspur.test", "", "Export stuck at 99%", "Since this morning.");
+    OpenTicket("dev@orbit.test", "", "Card payments failing", "Every card is declined.");
+    n = Ticket.Single(t => t.Title == "Card payments failing").Number;
+  }
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open");
+  Assert.Visible("Card payments failing");
+  var mark = Cost.Mark();
+  Ui.Visit("/v/open/t/" + n);
+  Assert.Visible("Every card is declined.");
+  Log.Information("Inbox open: " + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips, "
+    + Cost.RequestsSince(mark) + " requests, " + Cost.ServerCallsSince(mark) + " server calls");
+  // Measured 140 on 2026-10-07, three runs, before and after D-SETTINGCACHE1 alike (144 on 2026-10-06 with suiteperf's
+  // batching and the open's call reading the caller and the translator's key once; 170 when the parts first asked in ONE
+  // call, `OpenTicketView`; 204 with a call each): 5%.
+  Assert.AtMost(147, Cost.StatementsSince(mark));
+  // …and what the reader waits for: 6 requests, 1 of them a server call, three runs on 2026-10-07 — the same on the tree
+  // before D-SETTINGCACHE1, so the old budget (16 and 3, from 15 and 3 measured 2026-10-06) had fallen behind what the
+  // page asks. One request of margin; the call held exactly.
+  Assert.AtMost(7, Cost.RequestsSince(mark));
+  Assert.AtMost(1, Cost.ServerCallsSince(mark));
+}
+
+/// Moving to another ticket inside the desk costs no more than opening the first one did. Every part of a ticket that
+/// needs the server — the thread's event lines and read mark, the inbox's trail and words, the draft, the customer's
+/// record, the legal hold — is handed its piece of ONE call (`OpenTicketView`); before that each part asked on its own,
+/// fourteen calls a move, each refetching the page's reads after it. "Seen before" looks when asked: it searches by
+/// meaning, which the desk pays for, so a move never spends on it.
+[Test(Desk)]
+void moving_to_a_second_ticket_costs_no_more_than_opening_the_first() {
+  // Two tickets the desk routes alike — one queue, one shape — so the second open is compared with its like: a title
+  // that names money goes to Billing, whose tickets read one more row, and the comparison would be between queues.
+  runas (Ines) {
+    OpenTicket("first@cost.test", "First Caller", "Export stuck at 99%", "Since this morning.");
+    OpenTicket("next@cost.test", "Next Caller", "Cards declined at checkout", "Every card is declined.");
+  }
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open");
+  Assert.Visible("Cards declined at checkout");
+  var mark = Cost.Mark();
+  Ui.Click("Export stuck at 99%");
+  Assert.Visible("Since this morning.");
+  var first = Cost.StatementsSince(mark);
+  var again = Cost.Mark();
+  Ui.Click("Cards declined at checkout");
+  Assert.Visible("Every card is declined.");
+  var second = Cost.StatementsSince(again);
+  var firstRequests = Cost.RequestsSince(mark) - Cost.RequestsSince(again);
+  // The move is ONE server call (`OpenTicketView`), and it asks no more of the network than the first open did.
+  // Measured 2026-10-06 over eight runs, once a page's reads started in one event-loop turn go as one batch: a move is
+  // 5 requests every time (the first open 6). Re-measured 2026-10-07, three runs: 6 and 6, before and after
+  // D-SETTINGCACHE1 alike — held at that.
+  Assert.Equal(1, Cost.ServerCallsSince(again));
+  Assert.AtMost(firstRequests, Cost.RequestsSince(again));
+  Assert.AtMost(6, Cost.RequestsSince(again));
+  // "Seen before" has not looked: it offers to, since a search by meaning is paid for.
+  Assert.Visible("Find tickets like it");
+  // Back to the first: it is still open in the desk, read, and asks the server for nothing.
+  var back = Cost.Mark();
+  Ui.Within("Open tickets") { Ui.Click("Export stuck at 99%"); }
+  Assert.Visible("Since this morning.");
+  var returned = Cost.StatementsSince(back);
+  Log.Information("Moving: first " + first + " statements, second " + second + ", back " + returned + "; requests first "
+    + firstRequests + ", second " + Cost.RequestsSince(again) + ", server calls " + Cost.ServerCallsSince(again));
+  // Measured 2026-10-07, three runs: first 103, second 102, back 1 (D-SETTINGCACHE1; 103 / 103 / 2 on the tree before;
+  // 105 / 105 on 2026-10-06; 116 and 115 before the open's call stopped reading the caller's row and the translator's key
+  // twice; with a call per part it was first 123–126, second 130). Both moves include marking an unread ticket read — a
+  // real write, and the page's reads of it refetching. A 5% margin on the second, and never more than the first; one
+  // statement of margin on going back.
+  Assert.AtMost(107, second);
+  Assert.AtMost(first, second);
+  Assert.AtMost(2, returned);
+}
+
+[Test(Desk)]
+void one_more_ticket_through_the_web_form_stays_within_its_budget() {
+  SubmitRequest("The first one pays for itself", "Warming up.", "First Visitor", "first@cost.test");
+  var mark = Cost.Mark();
+  SubmitRequest("Card payments failing", "Every card is declined.", "Next Visitor", "next@cost.test");
+  Log.Information("Web form ticket: " + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips, "
+    + Cost.RequestsSince(mark) + " requests, " + Cost.ServerCallsSince(mark) + " server calls");
+  // Measured 88 on 2026-10-06, three runs, with the hourly clock started when the app loads (D-KITSTART1 — the desk ticket's four
+  // statements, above); 92 before (D-EVENTINTEREST1), 98 with every event heard (S3c), 104 one transaction each (S3b),
+  // 81 before events existed (S2): a 5% margin. UNCHANGED by the ItemRouted split (D-COMPOSE1 S4: 88 / 73–75 before and
+  // after, twice each): "Card payments failing" is one the desk's "Money questions" rule routes, so its placement IS news
+  // on the timeline and its event is written — only a ticket no rule touches saves. Measured 80 on 2026-10-07, three runs
+  // (D-SETTINGCACHE1: settings kept, a unit of work's reads sent once; 88 on the tree before).
+  Assert.AtMost(84, Cost.StatementsSince(mark));
+  // …in 65–66 round trips to the database, three runs (74 before D-SETTINGCACHE1; 78 before D-KITSTART1; 83–84 every
+  // event heard, S3c; 90 one delivery transaction per event, S3b; 63 before events). 5%.
+  Assert.AtMost(70, Cost.RoundTripsSince(mark));
+}
+
+// ── what a page asks of the server (D-PAGEREQ1) ──────────────────────────────────────────────────────────────────────
+//
+// Requests are what a reader WAITS for: on a phone every one is a network round trip, wherever the database is. So each
+// page action here holds its requests and its server calls beside its statements.
+
+/// A ticket opened at the desk from New ticket — one more, after the first.
+[Test(Desk)]
+void a_ticket_opened_at_the_desk_from_its_page_stays_within_its_request_budget() {
+  Ui.SignInAs(Ines);
+  Ui.Visit("/new");
+  Ui.Fill("Customer's address", "first@cost.test");
+  Ui.Fill("Subject", "The first one pays for itself");
+  Ui.Click("Open the ticket");
+  Assert.Visible("The first one pays for itself");
+  Ui.Visit("/new");
+  Ui.Fill("Customer's address", "next@cost.test");
+  Ui.Fill("Subject", "Export stuck at 99%");
+  Ui.Fill("What they said", "Since this morning.");
+  var mark = Cost.Mark();
+  Ui.Click("Open the ticket");
+  Assert.Visible("Since this morning.");
+  Log.Information("Desk page ticket: " + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips, "
+    + Cost.RequestsSince(mark) + " requests, " + Cost.ServerCallsSince(mark) + " server calls");
+  // Measured on 2026-10-06: 17 requests, 2 server calls, 235 statements — the click and the ticket's page it lands on
+  // (18–19 and 245–246 earlier the same day, before suiteperf's batching). One request of margin, the calls held
+  // exactly, 5% on the statements. Re-measured with the inbox's typed events (D-COMPOSE1 S3b): 13 requests, 2 calls,
+  // 245 statements twice (230 just before) — inside the budget, so it stays. With the ticket's events delivered together
+  // (S3c): 13–14 requests, 2 calls, 239 statements twice (141–143 round trips, 148–150 before). With an event no handler
+  // cares about not written (D-EVENTINTEREST1): 14 requests, 2 calls, 233–234 statements, 137–138 round trips, three runs.
+  // With the hourly clock started when the app loads (D-KITSTART1): 13–14 requests, 2 calls, 229–230 statements, 132–134
+  // round trips, three runs. With a rule's placement its own event (ItemRouted, D-COMPOSE1 S4) — this ticket matches no
+  // rule, so its ItemQueued is not written: 14 requests, 2 calls, 228 statements, 132 round trips, two runs (229 / 132 /
+  // 13–14 just before, twice). With app settings kept and a unit of work's reads sent once (D-SETTINGCACHE1): 13–14
+  // requests, 2 calls, 217 statements, 119–120 round trips, three runs (228 / 130 on the tree before, beside it).
+  // One request of margin, the calls held exactly, 5% on the statements.
+  Assert.AtMost(15, Cost.RequestsSince(mark));
+  Assert.AtMost(2, Cost.ServerCallsSince(mark));
+  Assert.AtMost(228, Cost.StatementsSince(mark));
+}
+
+/// A request sent from the help page's form — one more, after the first.
+[Test(Desk)]
+void a_ticket_through_the_web_form_page_stays_within_its_request_budget() {
+  Ui.Visit("/help");
+  Ui.Fill("Your name", "First Visitor");
+  Ui.Fill("Your email", "first@cost.test");
+  Ui.Fill("Subject", "The first one pays for itself");
+  Ui.Fill("What happened", "Warming up.");
+  Ui.Click("Send request");
+  Assert.Visible("We have your request");
+  Ui.Visit("/help");
+  Ui.Fill("Your name", "Next Visitor");
+  Ui.Fill("Your email", "next@cost.test");
+  Ui.Fill("Subject", "Card payments failing");
+  Ui.Fill("What happened", "Every card is declined.");
+  var mark = Cost.Mark();
+  Ui.Click("Send request");
+  Assert.Visible("We have your request");
+  Log.Information("Web-form page ticket: " + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips, "
+    + Cost.RequestsSince(mark) + " requests, " + Cost.ServerCallsSince(mark) + " server calls");
+  // Measured over five runs on 2026-10-06: 1 request, which is 1 server call, and 128 statements. A request cannot be
+  // sent in fewer than one, so those are held exactly. Re-measured twice with the ticket's three events delivered
+  // together in one transaction (D-COMPOSE1 S3c): 138 statements, 91–92 round trips (144 and 96 one transaction per
+  // event, S3b; 125 with one event a ticket). With an event no handler cares about not written (D-EVENTINTEREST1):
+  // 132 statements, 84–85 round trips, twice. With the hourly clock started when the app loads (D-KITSTART1): 128
+  // statements, 80–82 round trips, three runs. With app settings kept and a unit of work's reads sent once
+  // (D-SETTINGCACHE1): 119 statements, 72–73 round trips, three runs (128 / 81 on the tree before). 5%.
+  Assert.AtMost(1, Cost.RequestsSince(mark));
+  Assert.AtMost(1, Cost.ServerCallsSince(mark));
+  Assert.AtMost(125, Cost.StatementsSince(mark));
+}
+
+/// The ONE call a ticket's parts open with (`OpenTicketView`) — its statements, for a ticket after the first. Who is
+/// reading is taken from the request by id rather than read as a row by each part that asks, and the translator asks
+/// for its key once. Measured 25 before both, 22 after (2026-10-06); 19 with a unit of work's reads sent once
+/// (D-SETTINGCACHE1, 2026-10-07, three runs). The budget is the measured value.
+[Test(Desk)]
+void the_call_a_ticket_opens_with_stays_within_its_budget() {
+  runas (Ines) {
+    var first = TicketOf(OpenTicket("first@cost.test", "First Caller", "Export stuck at 99%", "Since this morning."));
+    var next = TicketOf(OpenTicket("next@cost.test", "Next Caller", "Card payments failing", "Every card is declined."));
+    OpenTicketView(first.Id);
+    var mark = Cost.Mark();
+    OpenTicketView(next.Id);
+    Log.Information("Ticket view call: " + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips");
+    Assert.AtMost(19, Cost.StatementsSince(mark));
+  }
+}
+

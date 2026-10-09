@@ -1,0 +1,186 @@
+// LANGUAGE AND SEARCH — Harbour's own model and embedder, with Harbour's own keys.
+//
+// ⚑ TRANSLATION: every customer message gains a copy in English (the desk's language), and every reply reaches each
+//   customer in theirs — after the message is written, never in the commit that writes it (Osysharp.Conversations), by
+//   the desk's own model (Osysharp.Conversations.MachineTranslation). Languages are told offline first; the model is
+//   asked to translate, and to detect only a text too short to tell.
+// ⚑ SEARCH BY MEANING: the copies in English, the resolutions the team writes and the help centre's articles are
+//   indexed by the desk's embedder, so the search box and "Seen before" find a ticket by what it is about, whatever
+//   words or language it was written in.
+// ⚑ NEITHER KEY IS SET HERE, and the desk works without them: with no model key nothing is translated and the ticket
+//   says so ("Translation is off — …"); with no embedding key the search box matches words and says so. Set them with
+//   `osyrin app secret set HarbourModel …` / `… HarbourEmbedding …`.
+using Osysharp.Conversations;
+using Osysharp.Memory;
+using Osysharp.Knowledge;
+using Osysharp.Models.Anthropic;
+
+// The model that translates — the desk's default model, on the desk's own key.
+app.DefaultModel = new LlmConfig {
+  Client = new AnthropicClient { ApiKey = Secret.HarbourModel },
+  Model  = "claude-haiku-4-5",
+};
+
+// The embedder that indexes by meaning — the desk's own key.
+app.Embedding = new EmbeddingConfig {
+  Provider   = EmbeddingProvider.OpenAI,
+  Model      = "text-embedding-3-small",
+  ApiKey     = Secret.HarbourEmbedding,
+  Dimensions = 1536,
+};
+
+// ── search ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// One ticket a search found.
+public class TicketFound {
+  public int Number;
+  public string Title = "";
+  public string Status = "";
+  public string Customer = "";
+  /// The words that matched — the passage of its conversation, or its resolution.
+  public string Passage = "";
+}
+
+/// What the desk's search found: tickets, past answers (how tickets were solved), and articles.
+public class DeskFound {
+  public string Query = "";
+  public List<TicketFound> Tickets = [];
+  public List<TicketFound> Answers = [];
+  public List<KnowledgeHit> Articles = [];
+  /// Search by meaning could not run (no embedding key): what the desk is told, and the results are matches by words.
+  public string MeaningOff = "";
+}
+
+/// What the desk sees when search by meaning cannot run.
+string MeaningOffSentence() {
+  return "Search by meaning is off until the embedding key is set — these are matches by words.";
+}
+
+/// Search the desk: tickets by what their conversations say, the answers the team gave when it solved one, and the
+/// help centre's articles (the team's own included) — by meaning, in any language a customer wrote in. A ticket number
+/// ("#1042", "1042") goes straight to that ticket.
+[Authorize(IsAgent)]
+public DeskFound SearchDesk(string query) {
+  var q = query.Trim();
+  var found = new DeskFound { Query = q };
+  if (q == "") { return found; }
+  var number = 0;
+  if (int.TryParse(q.StartsWith("#") ? q.Substring(1) : q, out var asked) && asked > 0) { number = asked; }
+  if (number > 0) {
+    found.Tickets = TicketsFound(Ticket.Where(t => t.Number == number).Select(t => t.Id).ToList(), []);
+  }
+  try {
+    var hits = SearchConversations(q, 10);
+    var byConversation = hits.Select(h => h.Conversation).ToList();
+    var ids = Ticket.Where(t => byConversation.Contains(t.Conversation.Id)).Select(t => t.Id).ToList();
+    found.Tickets = found.Tickets.Concat(TicketsFound(ids, hits)).ToList();
+    found.Answers = AnswersFound(q);
+  } catch (Exception e) {
+    Log.Warning("Search by meaning is off: " + e.Message);
+    found.MeaningOff = MeaningOffSentence();
+    var words = q.ToLower();
+    var byWords = Ticket.Where(t => t.Title.ToLower().Contains(words) || (t.Resolution != null && t.Resolution.ToLower().Contains(words)))
+      .OrderByDescending(t => t.Number).Take(10).Select(t => t.Id).ToList();
+    found.Tickets = found.Tickets.Concat(TicketsFound(byWords, [])).ToList();
+  }
+  var articles = KnowledgeByMeaning(q, includeTeam: true, take: 5);
+  found.Articles = articles.Unavailable == "" ? articles.Hits : SearchKnowledge(q, includeTeam: true, take: 5).Hits;
+  return found;
+}
+
+/// The tickets `ids` as a search lists them — in the order `hits` ranks them, then newest first, each once — with the
+/// passage that matched, or (`solved`) how it was solved where it was. One read.
+List<TicketFound> TicketsFound(List<Guid> ids, List<ConversationHit> hits, bool solved = false) {
+  if (ids.Count == 0) { return []; }
+  var rows = Ticket.Where(t => ids.Contains(t.Id))
+    .Select(t => new TicketFoundRow { Id = t.Id, Number = t.Number, Title = t.Title, Category = t.Category,
+                                      StatusName = t.Status == null ? "" : t.Status.Name, Customer = t.Customer.DisplayName,
+                                      Conversation = t.Conversation.Id, Resolution = t.Resolution ?? "" })
+    .ToList();
+  List<TicketFound> found = [];
+  foreach (var h in hits) {
+    foreach (var r in rows.Where(x => x.Conversation == h.Conversation)) {
+      if (!found.Any(f => f.Number == r.Number)) { found.Add(Listed(r, solved && r.Resolution != "" ? r.Resolution : h.Passage)); }
+    }
+  }
+  foreach (var r in rows.OrderByDescending(x => x.Number)) {
+    if (!found.Any(f => f.Number == r.Number)) { found.Add(Listed(r, solved ? r.Resolution : "")); }
+  }
+  return found;
+}
+
+/// A ticket's facts as one read gives them.
+class TicketFoundRow {
+  public Guid Id;
+  public int Number;
+  public string Title = "";
+  public StatusCategory Category;
+  public string StatusName = "";
+  public string Customer = "";
+  public Guid Conversation;
+  public string Resolution = "";
+}
+
+TicketFound Listed(TicketFoundRow r, string passage) {
+  return new TicketFound { Number = r.Number, Title = r.Title, Status = r.StatusName != "" ? r.StatusName : r.Category.Label,
+                           Customer = r.Customer, Passage = passage };
+}
+
+/// How the team solved tickets like `query` — their resolutions, by meaning, the closest first.
+List<TicketFound> AnswersFound(string query) {
+  var hits = Memory.Search(query, of: [Ticket], limit: 10);
+  List<Guid> ids = [];
+  foreach (var h in hits) { if (!ids.Contains(h.SourceEntityId)) { ids.Add(h.SourceEntityId); } }
+  if (ids.Count == 0) { return []; }
+  var rows = Ticket.Where(t => ids.Contains(t.Id) && t.Resolution != null)
+    .Select(t => new TicketFoundRow { Id = t.Id, Number = t.Number, Title = t.Title, Category = t.Category,
+                                      StatusName = t.Status == null ? "" : t.Status.Name, Customer = t.Customer.DisplayName,
+                                      Conversation = t.Conversation.Id, Resolution = t.Resolution ?? "" })
+    .ToList();
+  List<TicketFound> found = [];
+  foreach (var id in ids) {
+    var r = rows.FirstOrDefault(x => x.Id == id);
+    if (r != null) { found.Add(Listed(r, r.Resolution)); }
+    if (found.Count >= 5) { break; }
+  }
+  return found;
+}
+
+// ── seen before ────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// What the desk has seen like a ticket before: other tickets that read like it (any channel, any language), how each
+/// was solved, and the articles that may answer it.
+public class SeenBefore {
+  public List<TicketFound> Tickets = [];
+  public List<KnowledgeHit> Articles = [];
+  /// Search by meaning could not run (no embedding key) — what the panel says instead.
+  public string MeaningOff = "";
+  /// The number of the problem this ticket is already an incident of — 0 when it is none's.
+  public int IncidentOf;
+}
+
+/// What the desk has seen like ticket `ticketId` before.
+[Authorize(IsAgent)]
+public SeenBefore SeenBeforeOf(Guid ticketId) {
+  var seen = new SeenBefore();
+  var t = Ticket.Single(x => x.Id == ticketId);
+  seen.IncidentOf = ProblemNumberOf(t);
+  try {
+    var similar = SimilarConversations(t.Conversation, 5);
+    var byConversation = similar.Select(h => h.Conversation).ToList();
+    var ids = Ticket.Where(x => byConversation.Contains(x.Conversation.Id) && x.Id != ticketId).Select(x => x.Id).ToList();
+    // How each was solved, where it was — the answer the desk gave last time.
+    seen.Tickets = TicketsFound(ids, similar, solved: true);
+    var articles = KnowledgeByMeaning(t.Title, includeTeam: true, take: 3);
+    // A ticket with nothing to compare yet asks the index nothing — the article search is what says it is off.
+    if (articles.Unavailable != "") {
+      seen.MeaningOff = "Tickets like this one are found by meaning — that is off until the embedding key is set.";
+      return seen;
+    }
+    seen.Articles = articles.Hits;
+  } catch (Exception e) {
+    Log.Warning("Seen before is off: " + e.Message);
+    seen.MeaningOff = "Tickets like this one are found by meaning — that is off until the embedding key is set.";
+  }
+  return seen;
+}

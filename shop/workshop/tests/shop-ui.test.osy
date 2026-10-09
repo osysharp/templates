@@ -4,8 +4,8 @@ using Osysharp.Shop;
 
 [TestFixture]
 void Window() {
-  new ShopSettings { Name = "Rust & Chrome", Currency = "EUR", CurrencySymbol = "€", OrderPrefix = "RC-", HoldDays = 3,
-                     DeliveryFee = 95m };
+  new ShopSettings { Name = "Rust & Chrome", Currency = "EUR", CurrencySymbol = "€", OrderPrefix = "RC-", HoldDays = 3, VatPercent = 25m,
+                     DeliveryFee = 95m, BankDetails = "Nobody — this is a demo, and there is no account." };
   var road = new Category { Name = "Road", Slug = "road", Rank = 1 };
   var track = new Category { Name = "Track", Slug = "track", Rank = 2 };
   var touring = new Category { Name = "Touring", Slug = "touring", Rank = 3 };
@@ -75,9 +75,11 @@ principal Workshop => ShopAccount.Single(s => s.Email == "erik@rustandchrome.tes
 
 /// Reserves one bike for a visit the way the checkout does — bank transfer, collection — and answers its reference.
 string Reserve(string visitId, string bike) {
-  AddToBag(visitId, Variant.Single(v => v.Product.Name == bike), 1);
-  return PlaceOrder(visitId, "Anna Lindqvist", "anna@example.test", "", Fulfilment.Collect, Payment.BankTransfer,
-                    "", "", "", "").Reference;
+  runas (new Visitor { Id = visitId }) {
+    AddToBag(Variant.Single(v => v.Product.Name == bike), 1);
+    return PlaceOrder("Anna Lindqvist", "anna@example.test", "", "collect", "banktransfer",
+                      "", "", "", "").Reference;
+  }
 }
 
 [Test(Window)]
@@ -108,6 +110,22 @@ void the_bag_with_a_bike_in_it() {
   Assert.Visible("€980", within: "Bag");
   // The empty state belongs to an EMPTY bag — never beside a line.
   Assert.Hidden("Nothing in the bag yet.");
+}
+
+/// The bag draws each line with the shop kit's own helpers — `SpecFor` for the year and frame size, `CoverPhotoFor` for
+/// the photograph — which are pure, so they are sent to the browser with the page and run there: opening the bag over
+/// rows the page already holds asks the server nothing.
+[Test(Window)]
+void the_bag_draws_its_lines_with_the_kits_helpers_in_the_browser() {
+  Ui.Visit("/");
+  Ui.Click("PX-10");
+  Ui.Click("Add to bag");
+  Assert.Visible("In your bag");
+  var mark = Cost.Mark();
+  Ui.Click("Bag, 1 item(s)");
+  Assert.Visible("1972 · 58 cm", within: "Bag");
+  Assert.Equal(0, Cost.RequestsSince(mark));
+  Assert.Equal(0, Cost.ServerCallsSince(mark));
 }
 
 [Test(Window)]
@@ -141,7 +159,7 @@ void checking_out_reserves_the_bike() {
   // Bank transfer EXPLICITLY: with Stripe keys in `.secrets` the checkout pre-selects Card, and a UI test must never
   // reach the real Stripe — the card path is proven against a stubbed Stripe in payments.test.osy.
   Ui.Click("Bank transfer");
-  Ui.Click("Reserve");
+  Ui.Click("Order and pay");
   Assert.Visible("Reserved.");
   Assert.Visible("Order RC-1041");
   Assert.Visible("Nobody — this is a demo, and there is no account");   // no invented bank number on a public page
@@ -161,29 +179,62 @@ void a_delivery_needs_an_address() {
   Ui.Fill("Name", "Anna Lindqvist");
   Ui.Fill("Email", "anna@example.test");
   Ui.Click("Insured delivery");
-  Ui.Click("Reserve");
+  Ui.Click("Order and pay");
   Assert.Visible("For delivery we need the full address.");
   Assert.Hidden("Reserved.");
 }
 
 [Test(Window)]
 void a_bike_reserved_by_someone_else_leaves_the_bag_and_says_so() {
-  AddToBag("visit-a", Variant.Single(v => v.Product.Name == "Super"), 1);
-  Reserve("visit-b", "Super");                          // another visitor gets there first
+  runas (new Visitor { Id = "visit-a" }) {
+    AddToBag(Variant.Single(v => v.Product.Name == "Super"), 1);
+    Reserve("visit-b", "Super");                          // another visitor gets there first
 
-  var e = Assert.Throws<Exception>(() => PlaceOrder("visit-a", "Anna Lindqvist", "anna@example.test", "",
-                                                    Fulfilment.Collect, Payment.BankTransfer, "", "", "", ""));
-  Assert.Contains("Super", e.Message);
-  Assert.Equal(0, BagCount("visit-a"));                 // the stale line is gone, so the bag the visitor sees is true
-  Assert.Equal(1, OrderLine.Count(l => l.Held));        // …and no second hold on the same bike was made
+    var e = Assert.Throws<Exception>(() => PlaceOrder("Anna Lindqvist", "anna@example.test", "",
+                                                      "collect", "banktransfer", "", "", "", ""));
+    Assert.Contains("Super", e.Message);
+    Assert.Equal(0, BagCount());                 // the stale line is gone, so the bag the visitor sees is true
+  }
+  runas (Workshop) { Assert.Equal(1, OrderLine.Count(l => l.Held)); }   // …and no second hold on the same bike was made
 }
 
 [Test(Window)]
 void a_visitor_cannot_read_anyone_elses_order() {
-  Reserve("visit-b", "Pista");
-  Assert.Equal(1, OrderLine.Count());      // the reservation is public — the catalogue shows it
-  Assert.Equal(0, OrderContact.Count());   // the name and address behind it are not
+  var reference = Reserve("visit-b", "Pista");
+  // Another visitor — who may know the reference, it is on the receipt — reads nothing of it: not the order, not what
+  // is in it, not the name and address behind it (D-ORDERLINK1).
+  Assert.Equal(0, Order.Count());
+  Assert.Null(Order.SingleOrDefault(o => o.Reference == reference));
+  Assert.Equal(0, OrderLine.Count());
+  Assert.Equal(0, OrderContact.Count());
+  // The visitor who placed it reads the order and its lines — and still not the contact, which is the workshop's.
+  runas (new Visitor { Id = "visit-b" }) {
+    Assert.Equal(1, OrderLine.Count());
+    Assert.Equal(0, OrderContact.Count());
+  }
   runas (Workshop) { Assert.Equal(1, OrderContact.Count()); }   // …and the workshop does see them
+}
+
+// An order opens through its signed link — the one every mail about it carries — in any browser; its reference, in
+// the same place, opens the shop's own "link run out" page and nothing of the order (D-ORDERLINK1).
+[Test(Window)]
+void an_order_opens_through_its_link_and_never_by_its_reference() {
+  var reference = Reserve("visit-o", "Pista");
+  var link = "";
+  runas (Workshop) { link = $"{OrderLink.For(Order.Single(o => o.Reference == reference))}"; }
+  runas (new Visitor { Id = "visit-phone" }) {
+    Ui.Visit($"/order/{link}");
+    Assert.Visible($"Order {reference}");
+    Assert.Visible("Pista");
+    Assert.Hidden("Anna Lindqvist");                                 // what it holds, never who it is for
+    Ui.Shot("an order through its link");
+    Ui.Visit($"/order/{reference}");
+    Assert.Visible("This link has run out.");
+    Assert.Hidden("Pista");
+    Ui.Shot("an order's reference in the address");
+    Ui.Visit($"/paid/{reference}/stripe-cs_1");
+    Assert.Visible("This link has run out.");
+  }
 }
 
 // A FLAT nav item (no children) is listed ONCE in the footer — as a link, with no caption above it repeating the same
@@ -192,4 +243,16 @@ void a_visitor_cannot_read_anyone_elses_order() {
 void the_footer_lists_a_flat_nav_item_once() {
   Ui.Visit("/");
   Assert.TextIs("Archive", within: "Site footer");
+}
+
+[Test(Window)]
+void a_bike_page_tells_a_search_engine_what_it_is() {
+  var bike = Product.Single(p => p.Name == "PX-10");
+  Ui.Visit("/bike/" + bike.Id);
+  Assert.Title("PX-10 | " + TheShop().Name);
+  Assert.Head(HeadTag.Canonical, "/bike/" + bike.Id);
+  var sitemap = Api.Get("/sitemap.xml");
+  Assert.Equal(200, sitemap.StatusCode);
+  Assert.Contains("/bike/" + bike.Id + "</loc>", sitemap.Body);
+  Assert.Contains("Disallow: /checkout", Api.Get("/robots.txt").Body);
 }

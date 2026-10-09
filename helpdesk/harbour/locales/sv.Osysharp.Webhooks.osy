@@ -1,0 +1,388 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Webhooks, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Webhooks · AddWebhook ──
+  /// AddWebhook · an error message
+  /// shown through ValidationException
+  /// also in ChangeWebhook
+  error "Give the subscription a name — it is how you will recognise it in the list." => "Ge prenumerationen ett namn. Det är så du känner igen den i listan.";
+
+  // ── Osysharp.Webhooks · CheckedEvents ──
+  /// CheckedEvents · an error message
+  /// placeholders: {name} = name (string), {Join} = string.Join(…) (string)
+  /// shown through ValidationException
+  error "'{name}' is not an event this app sends. It sends: {Join}." => "'{name}' är inte en händelse som appen skickar. Den skickar: {Join}.";
+  /// CheckedEvents · an error message
+  /// shown through ValidationException
+  error "Choose at least one event to send." => "Välj minst en händelse att skicka.";
+
+  // ── Osysharp.Webhooks · CheckedUrl ──
+  /// CheckedUrl · an error message
+  /// placeholders: {host} = host (string)
+  /// shown through ValidationException
+  error "'{host}' is not a host that can be reached from the internet." => "'{host}' är inte en värd som kan nås från internet.";
+  /// CheckedUrl · an error message
+  /// shown through ValidationException
+  error "A webhook goes to an https:// address — what it carries is signed, and must not be read on the way." => "En webhook skickas till en https://-adress. Innehållet är signerat och får inte kunna läsas på vägen.";
+  /// CheckedUrl · an error message
+  /// shown through ValidationException
+  error "Give the endpoint's address — like https://example.com/hooks/orders." => "Ange slutpunktens adress, till exempel https://example.com/hooks/orders.";
+  /// CheckedUrl · an error message
+  /// shown through ValidationException
+  error "That address has a space in it — copy it again from the receiving system." => "Adressen innehåller ett mellanslag. Kopiera den igen från det mottagande systemet.";
+  /// CheckedUrl · an error message
+  /// shown through ValidationException
+  error "That address is longer than 2,000 characters." => "Adressen är längre än 2 000 tecken.";
+
+  // ── Osysharp.Webhooks · Days ──
+  /// Days · a description
+  /// shown through Days()
+  description "1 day" => "1 dag";
+  /// Days · a description
+  /// shown through Days()
+  description "1 hour" => "1 timme";
+  /// Days · a description
+  /// placeholders: {d} = d (int) — {d} is a count: give one text per plural form
+  /// shown through Days()
+  description "{d} days" => { one: "{d} dag", other: "{d} dagar" };
+  /// Days · a description
+  /// placeholders: {h} = h (int) — {h} is a count: give one text per plural form
+  /// shown through Days()
+  description "{h} hours" => { one: "{h} timme", other: "{h} timmar" };
+
+  // ── Osysharp.Webhooks · HealthOf ──
+  /// HealthOf · text on the page
+  /// placeholders: {s.LastDeliveredAt} = s.LastDeliveredAt (DateTime)
+  /// shown through HealthOf()
+  text "Last delivered {s.LastDeliveredAt}." => "Senast levererad {s.LastDeliveredAt}.";
+  /// HealthOf · text on the page
+  /// placeholders: {s.LastFailedAt} = s.LastFailedAt (DateTime), {Sentence} = Sentence(…) (string)
+  /// shown through HealthOf()
+  text "Last try refused {s.LastFailedAt} — {Sentence} It is tried again until it is taken or given up on." => "Senaste försöket nekades {s.LastFailedAt}: {Sentence} Det försöks igen tills det tas emot eller ges upp.";
+  /// HealthOf · text on the page
+  /// shown through HealthOf()
+  text "Nothing sent yet." => "Inget skickat än.";
+  /// HealthOf · text on the page
+  /// placeholders: {s.PausedAt} = s.PausedAt (DateTime), {s.FailingInARow} = s.FailingInARow (int), {Sentence} = Sentence(…) (string) — {s.FailingInARow} is a count: give one text per plural form
+  /// shown through HealthOf()
+  text "Paused {s.PausedAt} after {s.FailingInARow} deliveries in a row were given up on — the last: {Sentence} Fix the endpoint, then resume it." => { one: "Pausad {s.PausedAt} efter att en leverans gavs upp. Felet: {Sentence} Åtgärda slutpunkten och återuppta den sedan.", other: "Pausad {s.PausedAt} efter att {s.FailingInARow} leveranser i rad gavs upp. Det senaste felet: {Sentence} Åtgärda slutpunkten och återuppta den sedan." };
+  /// HealthOf · text on the page
+  /// placeholders: {s.PausedAt} = s.PausedAt (DateTime)
+  /// shown through HealthOf()
+  text "Paused {s.PausedAt} — its endpoint answered that it is gone (HTTP 410). Point it at the right address, then resume it." => "Pausad {s.PausedAt}. Slutpunkten svarade att den inte finns längre (HTTP 410). Peka den mot rätt adress och återuppta den sedan.";
+  /// HealthOf · text on the page
+  /// placeholders: {s.PausedAt} = s.PausedAt (DateTime)
+  /// shown through HealthOf()
+  text "Paused {s.PausedAt} — nothing is sent until it is resumed." => "Pausad {s.PausedAt}. Inget skickas förrän den återupptas.";
+
+  // ── Osysharp.Webhooks · NewWebhookSecret ──
+  /// NewWebhookSecret · text on the page
+  /// placeholders: {ToBase64String} = Convert.ToBase64String(…) (string)
+  /// shown through NewWebhookSecret()
+  text "whsec_{ToBase64String}" => "whsec_{ToBase64String}";
+
+  // ── Osysharp.Webhooks · Osysharp.Webhooks.WebhookDeliveryState ──
+  /// Osysharp.Webhooks.WebhookDeliveryState · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Osysharp.Webhooks.WebhookDeliveryState.Retrying
+  /// beside: "Sending", "Delivered", "Failed", "Done", "Not sent"
+  label "Waiting to try again" => "Väntar på nytt försök";
+
+  // ── Osysharp.Webhooks · Osysharp.Webhooks.WebhookOutcome ──
+  /// Osysharp.Webhooks.WebhookOutcome · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Webhooks.WebhookOutcome.GaveUp
+  /// beside: "Delivered", "Not sent"
+  label "Gave up" => "Gav upp";
+
+  // ── Osysharp.Webhooks · Osysharp.Webhooks.WebhookPause ──
+  /// Osysharp.Webhooks.WebhookPause · a label (a field, a list item, a menu entry) · at most ~48 characters
+  /// shown through Osysharp.Webhooks.WebhookPause.Failing
+  /// beside: "Paused"
+  label "Paused — its endpoint kept failing" => "Pausad, slutpunkten misslyckades gång på gång";
+
+  // ── Osysharp.Webhooks · Osysharp.Webhooks.WebhookPaused.Sentence ──
+  /// Osysharp.Webhooks.WebhookPaused.Sentence · text on the page
+  /// placeholders: {Why} = Why (string)
+  /// shown through Sentence()
+  text "Paused: its endpoint kept failing — {Why}" => null;
+  /// Osysharp.Webhooks.WebhookPaused.Sentence · text on the page
+  /// shown through Sentence()
+  text "Paused: its endpoint kept failing." => "Pausad: slutpunkten misslyckades gång på gång.";
+
+  // ── Osysharp.Webhooks · Osysharp.Webhooks.WebhookSettingsSections.Sections ──
+  /// Osysharp.Webhooks.WebhookSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  heading "Integrations" => "Integrationer";
+  /// Osysharp.Webhooks.WebhookSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Tell other systems when something happens here." => "Berätta för andra system när något händer här.";
+  /// Osysharp.Webhooks.WebhookSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through SettingsLink.Label
+  label "Webhooks" => "Webhooks";
+
+  // ── Osysharp.Webhooks · Osysharp.Webhooks.WebhookSubscription ──
+  /// Osysharp.Webhooks.WebhookSubscription · validation
+  /// shown through Osysharp.Webhooks.WebhookSubscription.Name [Required]
+  validation "A subscription needs a name." => "En prenumeration behöver ett namn.";
+
+  // ── Osysharp.Webhooks · SendTestWebhook ──
+  /// SendTestWebhook · an error message
+  /// shown through ValidationException
+  error "Choose an event to send a sample of." => "Välj en händelse att skicka ett exempel på.";
+
+  // ── Osysharp.Webhooks · SendWebhookAgain ──
+  /// SendWebhookAgain · an error message
+  /// shown through ValidationException
+  error "Its document has been removed — it was kept for a short while only, so it cannot be sent again." => "Dokumentet har tagits bort. Det sparades bara en kort tid, så det kan inte skickas igen.";
+  /// SendWebhookAgain · an error message
+  /// shown through ValidationException
+  error "Its subscription was removed." => "Prenumerationen har tagits bort.";
+  /// SendWebhookAgain · an error message
+  /// shown through ValidationException
+  error "Only a delivery that failed is sent again." => "Bara en leverans som misslyckades kan skickas igen.";
+  /// SendWebhookAgain · an error message
+  /// shown through NotFoundException
+  error "That delivery is no longer in the log." => "Leveransen finns inte längre i loggen.";
+
+  // ── Osysharp.Webhooks · SubscriptionById ──
+  /// SubscriptionById · an error message
+  /// shown through NotFoundException
+  error "That subscription is gone — it may have been removed." => "Prenumerationen finns inte längre. Den kan ha tagits bort.";
+
+  // ── Osysharp.Webhooks · WebhookDeliveryRow ──
+  /// WebhookDeliveryRow · a control's name for screen readers
+  accessibleName "The document" => "Dokumentet";
+  /// WebhookDeliveryRow · a control's name for screen readers
+  accessibleName "What was sent" => "Det som skickades";
+  /// WebhookDeliveryRow · a control's name for screen readers
+  /// placeholders: {value} = …, {d.SubscriptionName} = d.SubscriptionName
+  accessibleName "{value} to {d.SubscriptionName}" => "{value} till {d.SubscriptionName}";
+  /// WebhookDeliveryRow · a button's label · at most ~23 characters
+  /// shown through IconButton.label
+  button "Hide the details" => "Dölj detaljerna";
+  /// WebhookDeliveryRow · a button's label · at most ~24 characters
+  /// shown through Button.label
+  button "Hide the document" => "Dölj dokumentet";
+  /// WebhookDeliveryRow · a button's label · at most ~16 characters
+  /// shown through Button.label
+  button "Send again" => "Skicka igen";
+  /// WebhookDeliveryRow · a button's label · at most ~23 characters
+  /// shown through IconButton.label
+  button "Show the details" => "Visa detaljerna";
+  /// WebhookDeliveryRow · a button's label · at most ~24 characters
+  /// shown through Button.label
+  button "Show the document" => "Visa dokumentet";
+  /// WebhookDeliveryRow · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Badge.label
+  label "Test" => "Test";
+  /// WebhookDeliveryRow · text on the page
+  /// placeholders: {d.NextAttemptAt} = d.NextAttemptAt
+  text "Next try at {d.NextAttemptAt}." => "Nästa försök {d.NextAttemptAt}.";
+  /// WebhookDeliveryRow · text on the page
+  text "No document." => "Inget dokument.";
+  /// WebhookDeliveryRow · text on the page
+  /// shown through said
+  text "Sent again — it is being tried." => "Skickad igen. Den försöks nu.";
+  /// WebhookDeliveryRow · text on the page
+  /// placeholders: {d.BodyRemovedAt} = d.BodyRemovedAt
+  text "The document was removed {d.BodyRemovedAt} — it is kept only a short while." => "Dokumentet togs bort {d.BodyRemovedAt}. Det sparas bara en kort tid.";
+  /// WebhookDeliveryRow · text on the page
+  /// beside: "pre-wrap"
+  text "The endpoint answered:" => "Slutpunkten svarade:";
+  /// WebhookDeliveryRow · text on the page
+  /// placeholders: {d.SubscriptionName} = d.SubscriptionName
+  text "to {d.SubscriptionName}" => "till {d.SubscriptionName}";
+
+  // ── Osysharp.Webhooks · WebhookRetentionWords ──
+  /// WebhookRetentionWords · a description
+  /// placeholders: {Days} = Days(…) (string), {Days2} = Days(…) (string)
+  /// shown through WebhookRetentionWords()
+  description "Every document sent and every try, newest first. A document is kept {Days} after it is delivered or given up on, then removed; its line stays {Days2}." => "Varje dokument som skickats och varje försök, nyast först. Ett dokument sparas i {Days} efter att det levererats eller getts upp, och tas sedan bort. Dess rad finns kvar i {Days2}.";
+
+  // ── Osysharp.Webhooks · WebhookRow ──
+  /// WebhookRow · a button's label · at most ~20 characters
+  /// shown through Button.label
+  /// beside: "Edit", "Send a test", "Roll the secret", "Remove"
+  button "Its deliveries" => "Dess leveranser";
+  /// WebhookRow · a button's label · at most ~11 characters
+  /// shown through Button.label
+  /// beside: "Edit", "Send a test", "Roll the secret", "Its deliveries"
+  button "Pause" => "Pausa";
+  /// WebhookRow · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Edit", "Send a test", "Roll the secret", "Its deliveries"
+  button "Resume" => "Återuppta";
+  /// WebhookRow · a button's label · at most ~21 characters
+  /// shown through Button.label
+  /// beside: "Edit", "Send a test", "Its deliveries", "Remove"
+  button "Roll the secret" => "Byt hemlighet";
+  /// WebhookRow · a button's label · at most ~17 characters
+  /// shown through Button.label
+  /// beside: "Edit", "Roll the secret", "Its deliveries", "Remove"
+  button "Send a test" => "Skicka ett test";
+  /// WebhookRow · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Badge.label
+  label "Paused — failing" => "Pausad, misslyckas";
+  /// WebhookRow · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Badge.label
+  label "Retrying" => "Försöker igen";
+  /// WebhookRow · text on the page
+  /// placeholders: {line.SecretEnding} = line.SecretEnding
+  /// beside: "Edit"
+  text "Signing secret {line.SecretEnding}" => "Signeringshemlighet {line.SecretEnding}";
+
+  // ── Osysharp.Webhooks · WebhookSubscriptions ──
+  /// WebhookSubscriptions · a control's name for screen readers
+  accessibleName "Delivery log" => "Leveranslogg";
+  /// WebhookSubscriptions · a control's name for screen readers
+  /// beside: "Add a webhook"
+  accessibleName "Endpoints" => "Slutpunkter";
+  /// WebhookSubscriptions · a control's name for screen readers
+  /// beside: "Name", "Cancel"
+  accessibleName "Events" => "Händelser";
+  /// WebhookSubscriptions · a control's name for screen readers
+  accessibleName "Signing secret" => "Signeringshemlighet";
+  /// WebhookSubscriptions · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Add a webhook" => "Lägg till webhook";
+  /// WebhookSubscriptions · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Add it" => "Lägg till";
+  /// WebhookSubscriptions · a button's label · at most ~27 characters
+  /// shown through Button.label
+  button "Change the endpoint" => "Byt slutpunkt";
+  /// WebhookSubscriptions · a button's label · at most ~15 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Remove it" => "Ta bort";
+  /// WebhookSubscriptions · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Show 25 more" => "Visa 25 till";
+  /// WebhookSubscriptions · a button's label · at most ~27 characters
+  /// shown through Button.label
+  /// beside: "One endpoint"
+  button "Show every endpoint" => "Visa alla slutpunkter";
+  /// WebhookSubscriptions · a description
+  /// shown through SettingsSection.description
+  /// beside: "Delivery log"
+  description "Each gets the events it takes, signed with its own secret. One that keeps failing is paused, and says why." => "Varje slutpunkt får de händelser den tar emot, signerade med sin egen hemlighet. En som misslyckas gång på gång pausas och visar varför.";
+  /// WebhookSubscriptions · a description
+  /// shown through SettingsPage.description
+  description "Tell other systems when something happens here. Each event is sent to the endpoints that take it as a signed JSON document, and tried again while an endpoint is down." => "Berätta för andra system när något händer här. Varje händelse skickas som ett signerat JSON-dokument till de slutpunkter som tar emot den, och skickas igen så länge en slutpunkt inte svarar.";
+  /// WebhookSubscriptions · a hint under a field
+  /// shown through Field.hint
+  hint "An https:// address that answers 2xx when it has the document." => "En https://-adress som svarar 2xx när den har tagit emot dokumentet.";
+  /// WebhookSubscriptions · a hint under a field
+  /// shown through Field.hint
+  hint "It keeps its secret." => "Den behåller sin hemlighet.";
+  /// WebhookSubscriptions · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Field.label
+  label "Endpoint" => "Slutpunkt";
+  /// WebhookSubscriptions · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Dropdown.label
+  /// beside: "Cancel"
+  label "Event" => "Händelse";
+  /// WebhookSubscriptions · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Field.label
+  label "New endpoint" => "Ny slutpunkt";
+  /// WebhookSubscriptions · a label (a field, a list item, a menu entry) · at most ~33 characters
+  /// placeholders: {value} = …
+  /// shown through Switch.label
+  label "Only what failed{value}" => "Bara det som misslyckades{value}";
+  /// WebhookSubscriptions · placeholder text inside an empty field · at most ~16 characters
+  /// shown through Field.placeholder
+  /// beside: "Events", "Cancel"
+  placeholder "Order sync" => "Ordersynk";
+  /// WebhookSubscriptions · placeholder text inside an empty field · at most ~45 characters
+  /// shown through Field.placeholder
+  placeholder "https://example.com/hooks/orders" => "https://example.com/hooks/orders";
+  /// WebhookSubscriptions · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "A made-up document of the event you choose, signed like any other, tried once." => "Ett påhittat dokument för händelsen du väljer, signerat som alla andra, och skickat en gång.";
+  /// WebhookSubscriptions · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Nothing more is sent to it, and anything still waiting is not sent. Its lines stay in the log until they age out." => "Inget mer skickas till den, och det som fortfarande väntar skickas inte. Dess rader finns kvar i loggen tills de blir för gamla.";
+  /// WebhookSubscriptions · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "The endpoint gets a signed JSON document each time one of the events you choose happens." => "Slutpunkten får ett signerat JSON-dokument varje gång någon av händelserna du väljer inträffar.";
+  /// WebhookSubscriptions · text on the page
+  /// shown through notice
+  text "A sample was sent — its line is at the top of the log." => "Ett exempel skickades. Dess rad finns överst i loggen.";
+  /// WebhookSubscriptions · text on the page
+  /// shown through EmptyState.body
+  text "Add one to send this app's events to another system — your own service, an automation tool, a data warehouse." => "Lägg till en för att skicka appens händelser till ett annat system: din egen tjänst, ett automatiseringsverktyg eller ett datalager.";
+  /// WebhookSubscriptions · text on the page
+  /// beside: "I have copied it"
+  text "Copy it into the receiving system now — it is not shown again. The receiver checks every document's webhook-signature header with it." => "Kopiera den till det mottagande systemet nu, den visas inte igen. Mottagaren kontrollerar varje dokuments webhook-signature-huvud med den.";
+  /// WebhookSubscriptions · text on the page
+  /// shown through FieldLabel.text
+  text "Events it takes" => "Händelser den tar emot";
+  /// WebhookSubscriptions · text on the page
+  /// shown through EmptyState.body
+  text "Every document was taken by its endpoint." => "Varje dokument togs emot av sin slutpunkt.";
+  /// WebhookSubscriptions · text on the page
+  /// beside: "Show every endpoint"
+  text "One endpoint" => "En slutpunkt";
+  /// WebhookSubscriptions · text on the page
+  /// shown through Hint.text
+  text "This app sends no events yet." => "Appen skickar inga händelser än.";
+  /// WebhookSubscriptions · text on the page
+  /// shown through EmptyState.body
+  text "When an event happens, each document sent for it is listed here." => "När en händelse inträffar listas varje dokument som skickas för den här.";
+  /// WebhookSubscriptions · text on the page
+  /// placeholders: {Trim} = name.Trim(…)
+  /// shown through notice
+  text "“{Trim}” added." => "”{Trim}” har lagts till.";
+  /// WebhookSubscriptions · text on the page
+  /// placeholders: {line.Name} = line.Name
+  /// shown through notice
+  text "“{line.Name}” paused — nothing is sent to it until it is resumed." => "”{line.Name}” pausad. Inget skickas till den förrän den återupptas.";
+  /// WebhookSubscriptions · text on the page
+  /// placeholders: {line.Name} = line.Name
+  /// shown through notice
+  text "“{line.Name}” resumed — events from now on are sent to it." => "”{line.Name}” återupptagen. Händelser från och med nu skickas till den.";
+  /// WebhookSubscriptions · text on the page
+  /// placeholders: {removingName} = removingName
+  /// shown through notice
+  text "“{removingName}” removed." => "”{removingName}” har tagits bort.";
+  /// WebhookSubscriptions · a title
+  /// shown through Dialog.title
+  title "Add a webhook" => "Lägg till en webhook";
+  /// WebhookSubscriptions · a title
+  /// shown through SettingsSection.title
+  /// beside: "Endpoints"
+  title "Delivery log" => "Leveranslogg";
+  /// WebhookSubscriptions · a title
+  /// shown through SettingsSection.title
+  /// beside: "Delivery log"
+  title "Endpoints" => "Slutpunkter";
+  /// WebhookSubscriptions · a title
+  /// shown through EmptyState.title
+  title "No webhooks yet" => "Inga webhooks än";
+  /// WebhookSubscriptions · a title
+  /// shown through EmptyState.title
+  title "Nothing has failed" => "Inget har misslyckats";
+  /// WebhookSubscriptions · a title
+  /// shown through EmptyState.title
+  title "Nothing sent yet" => "Inget skickat än";
+  /// WebhookSubscriptions · a title
+  /// placeholders: {removingName} = removingName
+  /// shown through Dialog.title
+  title "Remove “{removingName}”?" => "Ta bort ”{removingName}”?";
+  /// WebhookSubscriptions · a title
+  /// shown through Dialog.title
+  title "Send a test" => "Skicka ett test";
+  /// WebhookSubscriptions · a title
+  /// placeholders: {secretFor} = secretFor
+  /// shown through Card.title
+  title "The signing secret for “{secretFor}”" => "Signeringshemligheten för ”{secretFor}”";
+
+  // ── Osysharp.Webhooks · WebhooksSettings (/settings/webhooks) ──
+  /// WebhooksSettings · /settings/webhooks · a title
+  /// shown through [Title]
+  /// also in WebhookSubscriptions
+  title "Webhooks" => "Webhooks";
+}

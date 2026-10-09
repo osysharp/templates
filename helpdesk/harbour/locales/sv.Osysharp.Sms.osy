@@ -1,0 +1,18 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Sms, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Sms · Osysharp.Sms.ISmsSender.NotReadyReason ──
+  /// Osysharp.Sms.ISmsSender.NotReadyReason · note
+  /// placeholders: {Key} = Key (string)
+  /// shown through NotReadyReason()
+  note "The text-message sender '{Key}' is not ready — its credentials are not set." => "SMS-avsändaren '{Key}' är inte klar: dess inloggningsuppgifter saknas.";
+
+  // ── Osysharp.Sms · Osysharp.Sms.SmsStatus ──
+  /// Osysharp.Sms.SmsStatus · a label (a field, a list item, a menu entry) · at most ~47 characters
+  /// shown through Osysharp.Sms.SmsStatus.Held
+  /// beside: "Waiting", "Sent"
+  label "Not sent — no text-message sender" => "Inte skickat, ingen sms-avsändare";
+}

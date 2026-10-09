@@ -1,0 +1,310 @@
+// THE DESK'S VERBS — everything a person does to a ticket, each one a server function that writes, tells the timeline
+// what happened, and commits. Pages call these; so do the tests, and so does the seed.
+//
+// ⚑ EVERY CHANGE IS ON THE TIMELINE. "Status set to Pending" is the desk's own; "Ines handed it to Rahul.", "Priority
+//   Normal → High." and a missed promise are the inbox's events, written on the same timeline by `InboxOnTheTimeline`
+//   (inbox.osy).
+//   The timeline says what was true at the time; the ticket says what is true now.
+//
+// ⚑ WHO HAS A TICKET IS THE INBOX'S (Osysharp.Inbox): take, hand on, release, move and escalate are the kit's verbs and
+//   its screens, and a change somebody else already made is refused with the sentence that names them. What stays
+//   here is what a ticket IS to a desk — its status, its type, its labels, its followers, a merge.
+using Osysharp.Identity;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Automations;
+using Osysharp.Fields;
+
+// ── raising a ticket ──────────────────────────────────────────────────────────────────────────────────────────────
+
+/// A customer asks for help — on the portal (signed in) or the web form (signed out). Their message opens a
+/// conversation, and the conversation becomes a ticket. Answers the ticket's NUMBER — the reference the customer quotes,
+/// and all a signed-out sender may know of it (they cannot read the ticket itself). `formId` is the type of request they
+/// chose (none: the default form) and `answers` what it asked them — checked here again, whatever the page checked
+/// (fields.osy `Checked`).
+[AllowAnonymous]
+public int SubmitRequest(string subject, string text, string name = "", string email = "",
+                         Guid? formId = null, List<FieldAnswer>? answers = null) {
+  var what = subject.Trim();
+  if (what == "") { throw new ValidationException("Give your request a subject: one line saying what is wrong."); }
+  if (text.Trim() == "") { throw new ValidationException("Tell us what happened, so we can help."); }
+  var me = Session.CurrentUser;
+  var address = email.Trim().ToLower();
+  if (me == null && !address.Contains("@")) { throw new ValidationException("Give us an address to answer you at."); }
+  var form = FormFor(formId);
+  var kept = Checked(form, answers ?? new List<FieldAnswer>(), outside: true);
+
+  var conversation = StartConversation(text, what, name);
+  var seat = MySeat(conversation);
+  var party = seat!.Party;
+  // A signed-out sender's address is a CLAIM on their visit's party — how our answer reaches them by mail.
+  if (me == null && !ContactPoint.Any(p => p.Party == party && p.Kind == ContactPointKind.Email && p.Value == address)) {
+    new ContactPoint { Party = party!, Kind = ContactPointKind.Email, Value = address, IsPreferred = true };
+  }
+  var ticket = NewTicketOfType(what, conversation, (party as Customer)!, form);
+  KeepAnswers(ticket, kept);
+  UnitOfWork.Commit();
+  return ticket.Number;
+}
+
+/// The team opens a ticket for somebody — a call taken down, a mail forwarded by hand. The description is the first
+/// message, as the customer's own words; the caller takes a seat. `formId`/`answers`: its type and what the team already
+/// knows — every field on it, the team's too, none of them required (the team is never stopped by a question).
+public Guid OpenTicket(string email, string name, string subject, string text,
+                       WorkPriority? priority = null, Guid? formId = null, List<FieldAnswer>? answers = null) {
+  if (subject.Trim() == "") { throw new ValidationException("Give the ticket a subject."); }
+  if (!email.Contains("@")) { throw new ValidationException("Whose ticket is it? Give their address."); }
+  var form = FormFor(formId);
+  var kept = Checked(form, answers ?? new List<FieldAnswer>(), outside: false);
+  var customer = CustomerFor(email, name);
+  var conversation = OpenConversation(customer, subject.Trim());
+  // Their words, as their own message — through the kit, so they are scrubbed at rest (a card number read out on the
+  // phone is never kept) and translated and indexed like every message a customer writes.
+  if (text.Trim() != "") { TakeDown(conversation, customer, text); }
+  var ticket = NewTicketOfType(subject.Trim(), conversation, customer, form, priority ?? WorkPriority.Normal);
+  KeepAnswers(ticket, kept);
+  UnitOfWork.Commit();
+  return ticket.Id;
+}
+
+// ── writing on a ticket ───────────────────────────────────────────────────────────────────────────────────────────
+
+/// The team writes on a ticket: a public reply (`note` false) or an internal note — and, in the same act, sets its
+/// status (`statusId`, none to leave it). `markdown`: written in the composer, so shown formatted. `seen` is the last timeline place the writer had on screen: a colleague's
+/// reply posted after it refuses the send with a sentence naming them (Osysharp.Conversations' `AnsweredSince`), so a
+/// customer is never answered twice.
+public void ReplyToTicket(Guid ticketId, string text, bool note = false, Guid? statusId = null, int seen = -1,
+                          List<Guid>? fileIds = null, bool markdown = false) {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  if (!note && seen >= 0) {
+    var first = AnsweredSince(t.Conversation, seen);
+    if (first != null) {
+      throw new ValidationException($"{first.ByName} replied at {first.At:HH:mm} while you were writing. "
+                                    + "Read their reply. Yours is still here if it needs sending.");
+    }
+  }
+  // Files go with it — a screenshot annotated for the customer, or one for the team on a note (OwnFiles: the writer's own).
+  Post(t.Conversation, text, note ? EntryVisibility.Internal : EntryVisibility.Customer, files: OwnFiles(fileIds),
+       format: markdown ? TextFormat.Markdown : TextFormat.Plain);
+  if (!note) {
+    SupportTicket.RaiseReply(t);
+    // Answering a ticket nobody holds takes it — when the writer may hold it (they are in its queue).
+    var me = Session.CurrentUser!;
+    if (t.Assignee == null && MayHold(me, t)) { TakeWork(t); }
+  }
+  if (statusId != null) { MoveTo(t, TicketStatus.Single(s => s.Id == statusId)); }
+  UnitOfWork.Commit();
+}
+
+/// A customer writes on their ticket from the portal.
+[AllowAnonymous]
+public void CustomerReply(Guid ticketId, string text, List<Guid>? fileIds = null) {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  Reply(t.Conversation, text, OwnFiles(fileIds));
+  SupportTicket.RaiseCustomerWrote(t);
+  UnitOfWork.Commit();
+}
+
+/// A mail arrived — on a ticket's conversation it continues the ticket; on a new conversation it opens one. What the
+/// desk's mailbox receiver (`DeskMail`, model/mail.osy) calls once `ReceiveMail` has placed it.
+public void MailArrived(Conversation conversation) {
+  // An answer in a SIDE conversation is filed in it by the kit and said on the ticket's timeline — it is never a ticket
+  // of its own; whoever holds the ticket is told (`DeskChat.SideAnswered`, which the kit calls).
+  if (conversation.SideOf != null) {
+    UnitOfWork.Commit();
+    return;
+  }
+  // The newest ticket on it — a conversation may carry a closed ticket and the follow-up that came after it.
+  var t = conversation.Tickets.OrderByDescending(x => x.Number).FirstOrDefault();
+  if (t == null) {
+    var requester = Participant.Where(p => p.Conversation == conversation && p.Role == ParticipantRole.Customer)
+      .Select(p => p.Party).FirstOrDefault() as Customer;
+    if (requester == null) { return; }
+    NewTicket(conversation.Subject ?? "(no subject)", conversation, requester);
+  } else if (t.Category != StatusCategory.Closed) {
+    SupportTicket.RaiseCustomerWrote(t);
+  } else {
+    // Closed for good — four quiet days after it was solved, a merge, or the customer's own privacy request. What they
+    // wrote now is new work, and a closed ticket cannot be worked: it opens a FOLLOW-UP on the same conversation, which
+    // says what it follows. (A merged ticket's conversation lives on in the ticket it was merged into.)
+    if (t.MergedInto != null) { SupportTicket.RaiseCustomerWrote(t.MergedInto!); }
+    else {
+      var next = NewTicket(conversation.Subject ?? t.Title, conversation, t.Customer, t.Form, t.Priority);
+      next.FollowUpOf = t;
+      TicketLine(next, "helpdesk.follow-up", new TicketFacts { Number = t.Number });
+    }
+  }
+  UnitOfWork.Commit();
+}
+
+// ── where it stands ───────────────────────────────────────────────────────────────────────────────────────────────
+
+/// Move a ticket to a status — inside its category it is a relabel; across categories the workflow moves it (and its
+/// clocks) by the event that means that move. Solving a problem solves its open incidents with it (relations.osy), each
+/// customer told by the solve notice.
+void MoveTo(Ticket t, TicketStatus status, string waitingOn = "", string summary = "") {
+  var from = t.Category;
+  var to = status.Category;
+  if (from == to) {
+    if (t.Status == status) { return; }
+    t.Status = status;
+    // A relabel inside the category starts its clock here; a move across categories, in the workflow (`Arrive`).
+    t.StatusSince = DateTime.UtcNow;
+    Raise(new TicketStatusChanged { Ticket = t });
+  } else {
+    if (to == StatusCategory.New) {
+      throw new ValidationException("A ticket cannot go back to New. Set it Open instead.");
+    }
+    if (to == StatusCategory.Closed && from != StatusCategory.Solved) {
+      throw new ValidationException("Solve the ticket first; it closes when the customer has had their answer.");
+    }
+    t.Status = status;
+    if (to == StatusCategory.Open) {
+      if (from == StatusCategory.Solved) { SupportTicket.RaiseReopen(t, "reopened by the team"); }
+      else if (from == StatusCategory.Pending || from == StatusCategory.OnHold) { SupportTicket.RaiseResume(t); }
+      else { SupportTicket.RaiseReply(t); }   // New → Open is an answer by definition: nothing else moves it on
+    }
+    if (to == StatusCategory.Pending) { SupportTicket.RaisePend(t); }
+    if (to == StatusCategory.OnHold) { SupportTicket.RaiseHold(t, waitingOn != "" ? waitingOn : status.Name); }
+    if (to == StatusCategory.Solved) {
+      var blocked = IncidentsBlock(t);
+      if (blocked != "") { throw new ValidationException(blocked); }
+      SupportTicket.RaiseSolve(t, summary);
+      SolveIncidents(t, summary);
+    }
+    if (to == StatusCategory.Closed) { SupportTicket.RaiseClose(t); }
+  }
+  TicketLine(t, "helpdesk.status", new TicketFacts { Name = status.Name });
+}
+
+/// Set a ticket's status from the status menu. `expected` is the status the page showed.
+public void SetStatus(Guid ticketId, Guid statusId, Guid? expected = null, string waitingOn = "", string summary = "") {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  if (expected != null && (t.Status == null || t.Status.Id != expected)) {
+    throw new ValidationException($"{NameOfLastChange(t)} changed its status to {StatusName(t)}. Have another look.");
+  }
+  MoveTo(t, TicketStatus.Single(s => s.Id == statusId), waitingOn, summary);
+  UnitOfWork.Commit();
+}
+
+/// The same status for many tickets at once — the list's bulk action. Answers how many moved; a ticket that cannot make
+/// the move (a New one asked to close) is left where it is.
+public int SetStatusOf(Guid[] ticketIds, Guid statusId) {
+  var status = TicketStatus.Single(s => s.Id == statusId);
+  var moved = 0;
+  foreach (var t in Ticket.Where(x => ticketIds.Contains(x.Id)).ToList()) {
+    if (status.Category == StatusCategory.New) { continue; }
+    if (status.Category == StatusCategory.Closed && t.Category != StatusCategory.Solved) { continue; }
+    // A problem whose incidents cannot be solved yet stays as it is, with them.
+    if (status.Category == StatusCategory.Solved && t.Category != StatusCategory.Solved && IncidentsBlock(t) != "") { continue; }
+    MoveTo(t, status);
+    moved = moved + 1;
+  }
+  UnitOfWork.Commit();
+  return moved;
+}
+
+/// Who made the latest change on a ticket's timeline — what a refusal names.
+string NameOfLastChange(Ticket t) {
+  var last = ConversationEvent.Where(e => e.Conversation == t.Conversation && e.Source == "Helpdesk")
+    .OrderByDescending(e => e.Sequence).FirstOrDefault();
+  return last == null || last.ByName == "" ? "Someone" : last.ByName;
+}
+
+// ── how urgent, what kind, which labels ───────────────────────────────────────────────────────────────────────────
+
+/// How urgent a ticket is — the inbox's to change (`Prioritise`): its promise is read again, every running clock is
+/// retargeted keeping the time used, and the timeline says "Priority Normal → High.". A closed ticket keeps its own.
+public void SetPriority(Guid ticketId, WorkPriority priority) {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  if (t.Priority == priority) { return; }
+  if (t.Category == StatusCategory.Closed) { throw new ValidationException("A closed ticket keeps the priority it closed with."); }
+  Prioritise(t, priority);
+  UnitOfWork.Commit();
+}
+
+/// The same status for many tickets at once — the list's own bulk menu (`onMore` on the kit's `WorkList`). Answers the
+/// sentence the list says: how many moved, and how many could not make the move.
+public string SetStatusOfMany(Guid statusId, List<Guid> ticketIds) {
+  var status = TicketStatus.Single(s => s.Id == statusId);
+  var moved = SetStatusOf(ticketIds.ToArray(), statusId);
+  var left = ticketIds.Count - moved;
+  return moved + " set to " + status.Name + "." + (left > 0 ? " " + left + " could not make that move and were left as they were." : "");
+}
+
+/// Record what caused an incident — what solving one asks for.
+public void SetRootCause(Guid ticketId, string rootCause) {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  t.RootCause = rootCause.Trim() == "" ? null : rootCause.Trim();
+  UnitOfWork.Commit();
+}
+
+/// Label a ticket — the tag is made on first use.
+public void AddTag(Guid ticketId, string name) {
+  var clean = name.Trim().ToLower().Replace(" ", "-");
+  if (clean == "") { return; }
+  var t = Ticket.Single(x => x.Id == ticketId);
+  var tag = Tag.FirstOrDefault(g => g.Name == clean) ?? new Tag { Name = clean };
+  if (!TicketTag.Any(x => x.Ticket == t && x.Tag == tag)) {
+    new TicketTag { Ticket = t, Tag = tag };
+    Raise(new TicketChanged { Ticket = t });
+  }
+  UnitOfWork.Commit();
+}
+
+public void RemoveTag(Guid ticketId, string name) {
+  foreach (var x in TicketTag.Where(x => x.Ticket.Id == ticketId && x.Tag.Name == name).ToList()) { x.Delete(); }
+  UnitOfWork.Commit();
+}
+
+public int TagMany(Guid[] ticketIds, string name) {
+  var clean = name.Trim().ToLower().Replace(" ", "-");
+  if (clean == "") { return 0; }
+  var tag = Tag.FirstOrDefault(g => g.Name == clean) ?? new Tag { Name = clean };
+  var count = 0;
+  foreach (var t in Ticket.Where(x => ticketIds.Contains(x.Id)).ToList()) {
+    if (!TicketTag.Any(x => x.Ticket == t && x.Tag == tag)) {
+      new TicketTag { Ticket = t, Tag = tag };
+      Raise(new TicketChanged { Ticket = t });
+      count = count + 1;
+    }
+  }
+  UnitOfWork.Commit();
+  return count;
+}
+
+/// Follow a ticket you do not own — or stop.
+public void Follow(Guid ticketId, bool following) {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  var me = Agent.Single(a => a.Id == Session.CurrentUser!.Id);
+  var row = Follower.FirstOrDefault(f => f.Ticket == t && f.Agent == me);
+  if (following && row == null) { new Follower { Ticket = t, Agent = me }; }
+  if (!following && row != null) { row.Delete(); }
+  UnitOfWork.Commit();
+}
+
+// ── merging duplicates ────────────────────────────────────────────────────────────────────────────────────────────
+
+/// Fold a duplicate into the ticket it repeats: the duplicate is closed and points at the survivor, its requester is
+/// copied on the survivor's conversation, and both timelines say what happened. Messages are never moved — the
+/// duplicate's timeline stays exactly as it was written.
+public void MergeInto(Guid duplicateId, Guid survivorId) {
+  if (duplicateId == survivorId) { throw new ValidationException("A ticket cannot be merged into itself."); }
+  var dup = Ticket.Single(x => x.Id == duplicateId);
+  var into = Ticket.Single(x => x.Id == survivorId);
+  if (dup.Category == StatusCategory.Closed) { throw new ValidationException($"#{dup.Number} is already closed."); }
+  if (into.Category == StatusCategory.Closed) { throw new ValidationException($"#{into.Number} is closed. Merge into an open ticket."); }
+  dup.MergedInto = into;
+  if (into.Customer != dup.Customer) { SeatParty(into.Conversation, dup.Customer, ParticipantRole.Cc); }
+  var said = Message.Where(m => m.Conversation == dup.Conversation && m.Direction == MessageDirection.Inbound)
+    .OrderByDescending(m => m.Sequence).FirstOrDefault();
+  // The surviving ticket says what came in, and the customer's last words on it — facts, said for whoever reads them.
+  // …and who the customer is, where erasing who they are reaches it.
+  TicketLine(into, "helpdesk.merged-here", new TicketFacts { Number = dup.Number, Was = dup.Title, Now = said != null ? said.Text : "" },
+             dup.Customer.DisplayName, dup.Customer);
+  // …and the two stay linked, so each one's panel says so — unless a link of that kind already says something else.
+  if (!WorkLink.Any(l => l.Kind == "duplicate" && (l.From == dup || l.To == dup || l.From == into))) { Link(dup, into, "duplicate"); }
+  SupportTicket.RaiseMerge(dup, into.Number);
+  UnitOfWork.Commit();
+}

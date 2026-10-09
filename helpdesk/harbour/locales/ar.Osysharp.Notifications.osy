@@ -1,0 +1,200 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Notifications, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Notifications · KitSentence ──
+  /// KitSentence · text on the page
+  /// shown through KitSentence()
+  text "You were mentioned." => "تمت الإشارة إليك.";
+  /// KitSentence · text on the page
+  /// placeholders: {by} = by (string)
+  /// shown through KitSentence()
+  text "{by} mentioned you." => "إشارة إليك من {by}.";
+
+  // ── Osysharp.Notifications · NotificationBell ──
+  /// NotificationBell · a control's name for screen readers
+  accessibleName "Your notifications" => "إشعاراتك";
+  /// NotificationBell · a button's label · at most ~19 characters
+  /// shown through ShellCountButton.label
+  button "Notifications" => "الإشعارات";
+
+  // ── Osysharp.Notifications · NotificationDigestMail ──
+  /// NotificationDigestMail · a button's label · at most ~38 characters
+  /// placeholders: {NotificationsAppName} = NotificationsAppName(…) (string)
+  /// shown through EmailButton.label
+  /// beside: "While you were away", "These are waiting for you. Each one opens where it happened."
+  button "Open {NotificationsAppName}" => "افتح {NotificationsAppName}";
+  /// NotificationDigestMail · the preview line an inbox shows beside an email's subject
+  /// shown through EmailLayout.preview
+  mailPreview "What happened while you were away, newest first." => "ما حدث أثناء غيابك، الأحدث أولًا.";
+  /// NotificationDigestMail · an email's subject line
+  /// placeholders: {NotificationsAppName} = NotificationsAppName(…) (string)
+  mailSubject "1 thing waiting for you in {NotificationsAppName}" => "شيء واحد بانتظارك في {NotificationsAppName}";
+  /// NotificationDigestMail · an email's subject line
+  /// placeholders: {items.Count} = items.Count (int), {NotificationsAppName} = NotificationsAppName(…) (string) — {items.Count} is a count: give one text per plural form
+  mailSubject "{items.Count} things waiting for you in {NotificationsAppName}" => { zero: "لا شيء بانتظارك في {NotificationsAppName}", one: "شيء واحد بانتظارك في {NotificationsAppName}", two: "شيئان بانتظارك في {NotificationsAppName}", few: "{items.Count} أشياء بانتظارك في {NotificationsAppName}", many: "{items.Count} شيئًا بانتظارك في {NotificationsAppName}", other: "{items.Count} شيء بانتظارك في {NotificationsAppName}" };
+  /// NotificationDigestMail · text in an email
+  /// shown through EmailLayout.footer
+  mailText "You get this because you have not read these in the app. Change what is mailed to you under Settings › Notifications." => "تصلك هذه الرسالة لأنك لم تقرأ هذه في التطبيق. غيّر ما يُرسل إليك بالبريد من الإعدادات › الإشعارات.";
+  /// NotificationDigestMail · text on the page
+  /// shown through EmailText.text
+  /// beside: "While you were away"
+  text "These are waiting for you. Each one opens where it happened." => "هذه بانتظارك. كل واحد منها يُفتح حيث حدث.";
+  /// NotificationDigestMail · text on the page
+  /// shown through EmailHeading.text
+  /// beside: "These are waiting for you. Each one opens where it happened."
+  text "While you were away" => "أثناء غيابك";
+
+  // ── Osysharp.Notifications · NotificationList ──
+  /// NotificationList · a control's name for screen readers
+  /// beside: "Notifications", "All"
+  accessibleName "Notification list" => "قائمة الإشعارات";
+  /// NotificationList · a button's label · at most ~9 characters
+  /// shown through Tab.label
+  button "All" => "الكل";
+  /// NotificationList · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Mark all read" => "تعليم الكل كمقروء";
+  /// NotificationList · a button's label · at most ~30 characters
+  /// shown through Button.label
+  button "Notification settings" => "إعدادات الإشعارات";
+  /// NotificationList · a button's label · at most ~12 characters
+  /// shown through Tab.label
+  /// beside: "All"
+  button "Unread" => "غير المقروءة";
+  /// NotificationList · a button's label · at most ~24 characters
+  /// placeholders: {unread} = unread
+  /// shown through Tab.label
+  /// beside: "All"
+  button "Unread · {unread}" => "غير المقروءة · {unread}";
+  /// NotificationList · text on the page
+  /// shown through EmptyState.body
+  text "Nothing unread. What you have read stays under All for a while." => "لا شيء غير مقروء. ما قرأته يبقى تحت «الكل» لبعض الوقت.";
+  /// NotificationList · text on the page
+  text "Notifications" => "الإشعارات";
+  /// NotificationList · text on the page
+  /// shown through EmptyState.body
+  text "When something needs you — a mention, work handed to you, a promise at risk — it appears here." => "عندما يحتاجك شيء، مثل إشارة إليك أو عمل أُسند إليك أو وعد معرّض للخطر، يظهر هنا.";
+  /// NotificationList · a title
+  /// shown through EmptyState.title
+  /// also in KnowledgeFront
+  /// also in ReportStatus
+  title "Nothing here yet" => "لا شيء هنا بعد";
+  /// NotificationList · a title
+  /// shown through EmptyState.title
+  title "You are all caught up" => "لقد اطّلعت على كل شيء";
+
+  // ── Osysharp.Notifications · NotificationMailItem ──
+  /// NotificationMailItem · text in an email
+  /// placeholders: {line.At} = line.At (DateTime)
+  mailText "{line.At} UTC" => "{line.At} UTC";
+
+  // ── Osysharp.Notifications · NotificationMentionMail ──
+  /// NotificationMentionMail · a button's label · at most ~13 characters
+  /// shown through EmailButton.label
+  button "Open it" => "افتحه";
+  /// NotificationMentionMail · the preview line an inbox shows beside an email's subject
+  /// shown through EmailLayout.preview
+  mailPreview "You were mentioned, and have not read it yet." => "تمت الإشارة إليك ولم تقرأ ذلك بعد.";
+  /// NotificationMentionMail · an email's subject line
+  /// placeholders: {NotificationsAppName} = NotificationsAppName(…) (string)
+  mailSubject "You were mentioned in {NotificationsAppName}" => "تمت الإشارة إليك في {NotificationsAppName}";
+  /// NotificationMentionMail · an email's subject line
+  /// placeholders: {NotifierName} = NotifierName(…) (string), {NotificationsAppName} = NotificationsAppName(…) (string)
+  mailSubject "{NotifierName} mentioned you in {NotificationsAppName}" => "إشارة إليك من {NotifierName} في {NotificationsAppName}";
+  /// NotificationMentionMail · text in an email
+  /// shown through EmailLayout.footer
+  mailText "You get this because you asked for mentions at once. Change it under Settings › Notifications." => "تصلك هذه الرسالة لأنك طلبت وصول الإشارات فورًا. غيّر ذلك من الإعدادات › الإشعارات.";
+
+  // ── Osysharp.Notifications · NotificationPreferencesEditor ──
+  /// NotificationPreferencesEditor · a description
+  /// shown through SettingsPage.description
+  description "The bell shows everything as it happens. These are yours alone: what is mailed to you when you have not read it in the app." => "يعرض الجرس كل شيء لحظة حدوثه. هذه الإعدادات لك وحدك: ما يُرسل إليك بالبريد حين لا تقرؤه في التطبيق.";
+  /// NotificationPreferencesEditor · text on the page
+  /// shown through SaveBar.saved
+  text "Your notification preferences are saved." => "تم حفظ تفضيلات إشعاراتك.";
+  /// NotificationPreferencesEditor · a title
+  /// shown through SettingsPage.title
+  /// also in NotificationPreferencesPage /settings/notifications
+  title "Notifications" => "الإشعارات";
+
+  // ── Osysharp.Notifications · NotificationPreferencesFields ──
+  /// NotificationPreferencesFields · a description
+  /// shown through SettingsSection.description
+  description "Mail is only ever about what you have not read here. Mail goes to the address you sign in with." => "لا يتناول البريد إلا ما لم تقرأه هنا. يُرسل البريد إلى العنوان الذي تسجّل الدخول به.";
+  /// NotificationPreferencesFields · a hint under a field
+  /// shown through SettingRow.hint
+  hint "A mention waits a few minutes first — read it here and no mail is sent." => "تنتظر الإشارة بضع دقائق أولًا، فإن قرأتها هنا لن يُرسل أي بريد.";
+  /// NotificationPreferencesFields · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Dropdown.label
+  label "Mail me" => "راسلني بالبريد";
+
+  // ── Osysharp.Notifications · NotificationRow ──
+  /// NotificationRow · a control's name for screen readers
+  accessibleName "Unread" => "غير المقروءة";
+  /// NotificationRow · text on the page
+  /// placeholders: {TimeAgo} = TimeAgo(…), {n.Times} = n.Times
+  text "{TimeAgo} · {n.Times} times" => { zero: "{TimeAgo} · {n.Times} مرة", one: "{TimeAgo} · {n.Times} مرة", two: "{TimeAgo} · {n.Times} مرة", few: "{TimeAgo} · {n.Times} مرات", many: "{TimeAgo} · {n.Times} مرة", other: "{TimeAgo} · {n.Times} مرة" };
+
+  // ── Osysharp.Notifications · NotificationsAppName ──
+  /// NotificationsAppName · an image's description for screen readers
+  /// shown through NotificationsAppName()
+  alt "your app" => "تطبيقك";
+
+  // ── Osysharp.Notifications · Osysharp.Notifications.NotificationMail ──
+  /// Osysharp.Notifications.NotificationMail · a label (a field, a list item, a menu entry) · at most ~54 characters
+  /// shown through Osysharp.Notifications.NotificationMail.Daily
+  /// beside: "Mentions at once, everything else in a daily digest", "Nothing — I read them in the app"
+  label "A daily digest of what I have not seen" => "ملخص يومي لما لم أطّلع عليه";
+  /// Osysharp.Notifications.NotificationMail · a label (a field, a list item, a menu entry) · at most ~72 characters
+  /// shown through Osysharp.Notifications.NotificationMail.MentionsAtOnce
+  /// beside: "A daily digest of what I have not seen", "Nothing — I read them in the app"
+  label "Mentions at once, everything else in a daily digest" => "الإشارات فورًا، وكل ما عداها في ملخص يومي";
+  /// Osysharp.Notifications.NotificationMail · a label (a field, a list item, a menu entry) · at most ~45 characters
+  /// shown through Osysharp.Notifications.NotificationMail.Off
+  /// beside: "Mentions at once, everything else in a daily digest", "A daily digest of what I have not seen"
+  label "Nothing — I read them in the app" => "لا شيء، أقرؤها في التطبيق";
+
+  // ── Osysharp.Notifications · Osysharp.Notifications.NotificationState ──
+  /// Osysharp.Notifications.NotificationState · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Osysharp.Notifications.NotificationState.Merged
+  /// beside: "Waiting", "Shown", "Shown — mail due", "Not shown"
+  label "Joined an unread one" => "انضم إلى إشعار غير مقروء";
+  /// Osysharp.Notifications.NotificationState · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Notifications.NotificationState.Withheld
+  /// beside: "Waiting", "Shown", "Shown — mail due", "Joined an unread one"
+  label "Not shown" => "لم يُعرض";
+  /// Osysharp.Notifications.NotificationState · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Notifications.NotificationState.Shown
+  /// beside: "Waiting", "Shown — mail due", "Not shown", "Joined an unread one"
+  label "Shown" => "معروض";
+  /// Osysharp.Notifications.NotificationState · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.Notifications.NotificationState.MailDue
+  /// beside: "Waiting", "Shown", "Not shown", "Joined an unread one"
+  label "Shown — mail due" => "معروض، والبريد مستحق";
+
+  // ── Osysharp.Notifications · Osysharp.Notifications.NotificationWatchState ──
+  /// Osysharp.Notifications.NotificationWatchState · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.Notifications.NotificationWatchState.Watching
+  /// beside: "Stopped"
+  /// also in Osysharp.Feedback.FeedbackWatchState
+  label "Sweeping hourly" => "يعمل كل ساعة";
+
+  // ── Osysharp.Notifications · Osysharp.Notifications.__Settings_NotificationPreferences_Section.Sections ──
+  /// Osysharp.Notifications.__Settings_NotificationPreferences_Section.Sections · a heading
+  /// shown through SettingsLink.Group
+  heading "You" => "أنت";
+  /// Osysharp.Notifications.__Settings_NotificationPreferences_Section.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "What is mailed to you when you have not seen it here." => "ما يُرسل إليك بالبريد حين لا تراه هنا.";
+  /// Osysharp.Notifications.__Settings_NotificationPreferences_Section.Sections · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through SettingsLink.Label
+  label "Notifications" => "الإشعارات";
+
+  // ── Osysharp.Notifications · __Settings_NotificationPreferences_Row ──
+  /// __Settings_NotificationPreferences_Row · an error message
+  /// shown through ValidationException
+  error "Sign in to see your own settings." => "سجّل الدخول لترى إعداداتك.";
+}

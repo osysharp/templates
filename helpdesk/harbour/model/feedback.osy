@@ -1,0 +1,130 @@
+// "HOW DID WE DO?" — every solved ticket asks its customer, through Osysharp.Feedback: one good-or-bad answer and a
+// comment if they want, from the solve mail with no account, or on the ticket in the portal.
+//
+// ⚑ THE SOLVE MAIL IS A REAL NOTICE. When a ticket is solved — by the team, with its problem, or after a week of silence
+//   — its customer is mailed that it is solved (what was done, when the team wrote it), in their language, threaded on
+//   their conversation so a reply reopens it, and the question rides in it. A problem's incidents each get their own.
+//
+// ⚑ THE ANSWER IS A FACT ON THE TICKET. It lands on the timeline as "helpdesk.feedback" (said in the reader's language),
+//   a bad one tells whoever holds the ticket and the queue's leads, and `CustomerSaid` is the plain signal for code that
+//   acts on it later (an automation closing what the customer confirmed helped).
+using Osysharp.Identity;
+using Osysharp.Mail;
+using Osysharp.EmailTemplates;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Feedback;
+using Osysharp.Fields;
+
+/// The team reads what customers said; admins decide whether and when they are asked (Settings › Feedback).
+policy ReadsFeedback => IsAgent;
+policy ManagesFeedback => IsAdmin;
+
+app.Feedback = new FeedbackSetup { AppName = "Harbour Support" };
+
+/// The customer answered about a solved ticket, or changed their answer: on the ticket's timeline, and a bad one is told
+/// to whoever holds the ticket and the queue's leads. Heard after the commit, as the app.
+[On]
+void TicketAnswered(FeedbackAnswered e) {
+  var ask = e.Ask;
+  if (ask.About is not Ticket) { return; }
+  var t = (Ticket)ask.About;
+  // Kept on the ticket, for the reports (reports.osy): satisfaction is a ticket's figure like any other.
+  if (t.Rating != ask.Rating) { t.Rating = ask.Rating; }
+  var bad = ask.Rating == FeedbackRating.Bad;
+  TicketLine(t, "helpdesk.feedback",
+             new TicketFacts { Name = bad ? "bad" : "good", Now = ask.Comment ?? "", Number = e.Change == FeedbackChange.Changed ? 1 : 0 },
+             t.Customer.DisplayName ?? "", t.Customer);
+  if (bad) {
+    List<Principal> told = [];
+    if (t.Assignee != null) { told.Add(t.Assignee!); }
+    foreach (var lead in InboxLeads(t)) { told.Add(lead); }
+    NotifyAll(told, e);
+  }
+}
+
+/// What the customer last said about how ticket `ticketId` went — good, bad, or none yet. The "customer confirms it
+/// helped" signal: a rule or an AI step that closes a ticket only once its customer said it helped reads this.
+[Authorize(IsAgent)]
+public FeedbackRating? CustomerSaid(Guid ticketId) {
+  var t = Ticket.FirstOrDefault(x => x.Id == ticketId);
+  return t == null ? null : FeedbackRatingOf(t);
+}
+
+// ── solved ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// Ticket `t` was solved (the workflow's Solved state, as the app): its customer is asked how it went, and mailed a
+/// notice that it is solved — carrying the question, unless Settings › Feedback mails that later or not at all.
+void TicketSolved(Ticket t) {
+  var customer = t.Customer;
+  var address = AddressOf(customer);
+  var asked = AskForFeedback(t, $"#{t.Number} · {t.Title}", person: customer.Account, address: address,
+                             language: t.Language);
+  if (address == "") { return; }
+  var question = TakeFeedbackMail(asked);
+  var problem = ProblemOf(t);
+  var said = TicketSolvedMail(t, problem, question, resolution: ResolutionIn(t));
+  var thread = ConversationThreadKey.Where(k => k.Conversation == t.Conversation && k.ChannelKey == "email")
+    .OrderBy(k => k.CreatedAt).Select(k => k.Key).ToList();
+  var sent = SendMail(new MailMessage {
+    To = [address], Subject = said.Subject, Html = said.Html, Text = said.Text,
+    InReplyTo = thread.Count > 0 ? thread[thread.Count - 1] : "", References = thread,
+  }, "ticket-solved-" + t.Id.ToString() + "-" + t.ReopenCount.ToString());
+  // A reply to the notice is a reply on the ticket — the conversation keeps its id, as it keeps every mail it sent.
+  if (sent.MessageId != "" && !ConversationThreadKey.Any(k => k.Conversation == t.Conversation && k.Key == sent.MessageId)) {
+    new ConversationThreadKey { Conversation = t.Conversation, ChannelKey = "email", Key = sent.MessageId };
+  }
+}
+
+/// Ticket `t` is being worked again: its unanswered question is taken back (an answer already given is kept).
+void TicketReopened(Ticket t) {
+  WithdrawFeedback(t);
+}
+
+/// The problem `t` is an incident of, or null.
+Ticket? ProblemOf(Ticket t) {
+  var link = WorkLink.FirstOrDefault(l => l.From.Id == t.Id && l.Kind == "incident");
+  if (link == null) { return null; }
+  var problemId = link.To.Id;
+  return Ticket.FirstOrDefault(x => x.Id == problemId);
+}
+
+/// What was done on `t`, in its customer's language — the team writes it in theirs, and the desk's translator renders it
+/// (the original when there is none, or it is not ready, or it fails: a solved notice is never held back for words).
+public string? ResolutionIn(Ticket t) {
+  if (t.Resolution == null || t.Resolution == "" || t.Language == "") { return t.Resolution; }
+  var translator = ReadyTranslator();
+  if (translator == null) { return t.Resolution; }
+  try {
+    var from = translator!.Detect(t.Resolution!);
+    if (from == "" || from.ToLower().StartsWith(t.Language.ToLower())) { return t.Resolution; }
+    return translator!.Translate(t.Resolution!, from, t.Language, App.Setting<ConversationsSetup>().Glossary);
+  } catch (Exception e) {
+    Log.Warning("The solved notice for #" + t.Number + " goes in the team's words: " + e.Message);
+    return t.Resolution;
+  }
+}
+
+/// "Your request is solved" — what was done, that a reply opens it again, and how we did — in the customer's language.
+/// `resolution`: what was done in their language (`ResolutionIn`) — the team's own words when not given.
+[Email]
+public component TicketSolvedMail(Ticket t, Ticket? problem, FeedbackLinks? question, string? resolution = null) {
+  language => t.Language;
+  subject => $"Your request #{t.Number} is solved — {t.Title}";
+  render {
+    EmailLayout("Harbour Support", preview: "We have solved your request. Reply if anything is still wrong.",
+                footer: "You get this because you asked us for help. Reply to this mail to write to the team.") {
+      EmailHeading("Your request is solved");
+      EmailText($"#{t.Number} · {t.Title}");
+      if (problem != null) {
+        EmailText("It was part of a wider problem, which we have now fixed for everyone it affected.");
+      }
+      if (t.Resolution != null && t.Resolution != "") {
+        Text("What we did", fontSize: FontSize.Label, fontWeight: FontWeight.Semibold, color: Colors.TextMuted);
+        EmailText(resolution ?? t.Resolution!);
+      }
+      EmailNote("If anything is still not right, reply to this mail — it opens your request again.");
+      if (question != null) { FeedbackMailQuestion(question!); }
+    }
+  }
+}

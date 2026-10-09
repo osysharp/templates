@@ -1,0 +1,172 @@
+// THE DESK'S WEBHOOKS (H12) — Ines, who runs the desk, subscribes the company's order system to what happens to tickets:
+// each event is the desk's own (events.osy — the same ones its automations run on), sent as the ticket the API answers
+// (`TicketData`), signed. An endpoint that keeps failing is paused, and the desk's admins are told in their bell.
+// `osy test --pixels` photographs Settings › Webhooks (Docs/OsySharp/design/side-conversations-api/).
+//
+// The bells (Ines an agent and admin, Rahul, Lena; Olivia at Larkspur) are notifications.test.osy's.
+using Osysharp.Identity;
+using Osysharp.Inbox;
+using Osysharp.Webhooks;
+using Osysharp.Notifications;
+using Osysharp.Http;
+using Osysharp.Fields;
+using Osysharp.Knowledge;
+
+/// One request the order system received, as the stub saw it.
+entity HookReceived {
+  [MaxLength(2000)] string Url = "";
+  string Body = "";
+  [MaxLength(200)] string MessageId = "";
+  [MaxLength(40)] string Timestamp = "";
+  [MaxLength(400)] string Signature = "";
+  security { allow read, create when IsAuthenticated || IsAnonymous || IsAgent; }
+}
+
+/// What the order system answers — `status` — keeping each request it got.
+HttpResponse OrderSystem(string url, string body, Dictionary<string, string> headers, int status) {
+  new HookReceived { Url = url, Body = body, MessageId = headers["webhook-id"], Timestamp = headers["webhook-timestamp"],
+                     Signature = headers["webhook-signature"] };
+  return new HttpResponse { StatusCode = status, Body = status < 300 ? "ok" : "upstream unavailable" };
+}
+
+/// Ines subscribes the order system to new tickets and status changes. Answers it, with its secret.
+WebhookCreated OrderSync() {
+  WebhookCreated made = new WebhookCreated();
+  runas (Ines) {
+    made = AddWebhook("Order system", "https://orders.example.test/hooks/harbour",
+                      ["ticket-arrived", "ticket-status-changed"]);
+  }
+  return made;
+}
+
+/// The settings page's world: the order system subscribed (one delivery that went, then one it refused and is
+/// retrying) and a status page. Shared by Settings › Webhooks here and its Arabic visit in tests/languages/ar.test.osy.
+void TwoSubscriptionsAndARetry() {
+  TestClock.Set(new DateTime(2030, 5, 6, 9, 0, 0));
+  Http.Post.Stub((url, body, headers) => OrderSystem(url, body, headers, 200));
+  OrderSync();
+  runas (Ines) { AddWebhook("Status page", "https://status.example.test/incidents", ["inbox.promise-at-risk"]); }
+  OliviasTicket("Order 4471 never arrived");
+  Background.Settle();
+  Http.Post.Stub((url, body, headers) => OrderSystem(url, body, headers, 503));
+  OliviasTicket("Invoice 2215 shows the wrong VAT number");
+  Background.Settle();
+}
+
+[Test(Bells)]
+void a_new_ticket_and_its_status_change_are_sent_signed_as_the_api_answers_them() {
+  Http.Post.Stub((url, body, headers) => OrderSystem(url, body, headers, 200));
+  var made = OrderSync();
+  var id = OliviasTicket("Order 4471 never arrived");
+  Background.Settle();
+  var created = HookReceived.Single();
+  Assert.True(VerifyWebhook(made.Secret, created.MessageId, created.Timestamp, created.Signature, created.Body));
+  Assert.Contains("\"type\":\"ticket-arrived\"", created.Body);
+  Assert.Contains("Order 4471 never arrived", created.Body);
+  Assert.Contains("olivia@larkspur.test", created.Body);
+  runas (Ines) {
+    var t = Ticket.Single(x => x.Id == id);
+    SetStatus(t.Id, TicketStatus.Single(s => s.Name == "Pending").Id);
+  }
+  Background.Settle();
+  var moved = HookReceived.Single(r => r.Body.Contains("ticket-status-changed"));
+  Assert.Contains("\"Category\":\"Pending\"", moved.Body);
+  Assert.True(VerifyWebhook(made.Secret, moved.MessageId, moved.Timestamp, moved.Signature, moved.Body));
+  // A reply is not an event it takes — nothing more is sent.
+  runas (Ines) { ReplyToTicket(id, "We are tracing it with the carrier."); }
+  Background.Settle();
+  Assert.Equal(2, HookReceived.Count());
+}
+
+/// Every desk event is offered under its own name — the same events the automations run on, with nothing to list them.
+[Test(Bells)]
+[runas(Ines)]
+void the_desks_events_are_its_automation_triggers_by_name() {
+  var offered = WebhookEventChoices();
+  foreach (var name in ["ticket-arrived", "ticket-changed", "customer-wrote-again", "ticket-status-changed", "inbox.promise-at-risk", "inbox.holder-changed"]) {
+    Assert.Contains(name, offered.Select(c => c.Name).ToList());
+  }
+  Assert.Equal("A ticket arrives", offered.Single(c => c.Name == "ticket-arrived").Label);
+  // A notice the desk tells somebody is its own business, never offered to another system.
+  Assert.DoesNotContain("inbox-told", offered.Select(c => c.Name).ToList());
+}
+
+/// The order system is down: every ticket's document is retried and given up on, and after five in a row the
+/// subscription is paused — and Ines, an admin, is told in her bell.
+[Test(Bells)]
+void an_endpoint_that_keeps_failing_is_paused_and_the_admins_are_told() {
+  TestClock.Set(new DateTime(2030, 5, 6, 9, 0, 0));
+  Http.Post.Stub((url, body, headers) => OrderSystem(url, body, headers, 503));
+  OrderSync();
+  foreach (var s in ["One", "Two", "Three", "Four", "Five"]) { OliviasTicket("Order " + s + " never arrived"); }
+  Background.Settle();
+  for (var tries = 1; tries < 10; tries = tries + 1) {
+    TestClock.Advance(WaitAfter(tries));
+    Background.Settle();
+  }
+  runas (Ines) {
+    var s = WebhookSubscription.Single();
+    Assert.False(s.Active);
+    Assert.Equal(WebhookPause.Failing, s.Paused);
+    var line = TopOfMyBell();
+    Assert.Equal("Paused: its endpoint kept failing — HTTP 503", line.Sentence);
+    Assert.Equal("Webhook · Order system", line.Title);
+    Assert.Equal("/settings/webhooks", line.Link);
+  }
+  // Rahul, an agent, manages no webhooks — and is told nothing.
+  runas (Rahul) { Assert.Equal(0, MyNotificationLines().Count(l => l.Title.StartsWith("Webhook"))); }
+}
+
+/// Only an admin sees Settings › Webhooks; it lists the subscription and its delivery log — wide, dark, a phone (and in
+/// Arabic in tests/languages/ar.test.osy).
+[Test(Bells)]
+void settings_webhooks_shows_each_endpoint_and_its_delivery_log() {
+  TwoSubscriptionsAndARetry();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Rahul);
+  Ui.Visit("/settings/webhooks");
+  Assert.Hidden("Order system");
+  Ui.SignInAs(Ines);
+  Ui.Visit("/settings/webhooks");
+  Assert.Visible("Order system");
+  Assert.Visible("orders.example.test");
+  Assert.Visible("Retrying");
+  Ui.Click("Show the details", within: "A ticket arrives #1003 to Order system");
+  Ui.Shot("webhooks settings wide");
+  Ui.Theme("dark");
+  Ui.Shot("webhooks settings wide dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/settings/webhooks");
+  Assert.NoOverflow();
+  Ui.Shot("webhooks settings phone");
+}
+
+/// The docs site is told when an article is published — an event of the Knowledge kit's that no line of the desk names
+/// or reacted to before. Ines subscribes to it by its own name; with no document for an article version, it is sent as
+/// its type and id, which the docs site reads back through the API.
+[Test(Bells)]
+void the_docs_site_is_told_when_an_article_is_published() {
+  Http.Post.Stub((url, body, headers) => OrderSystem(url, body, headers, 200));
+  runas (Ines) {
+    AddWebhook("Docs site", "https://docs.example.test/hooks/harbour", ["knowledge.article-published"]);
+    var shelf = new KnowledgeCategory { Name = "Billing", Slug = "billing", Position = 1 };
+    new KnowledgeSection { Category = shelf, Name = "Invoices", Slug = "invoices", Position = 1 };
+    UnitOfWork.Commit();
+  }
+  var version = Guid.Empty;
+  runas (Rahul) {
+    var d = NewKnowledgeArticle(KnowledgeSection.Single(x => x.Slug == "invoices"), "Change your billing address");
+    d.Body = "Open **Billing** and choose **Edit address**.";
+    UnitOfWork.Commit();
+    SendKnowledgeForReview(d);
+    version = d.Id;
+  }
+  Background.Settle();
+  Assert.Equal(0, HookReceived.Count());
+  runas (Lena) { PublishKnowledge(KnowledgeRevision.Single(r => r.Id == version)); }
+  Background.Settle();
+  var sent = HookReceived.Single();
+  Assert.Contains("\"type\":\"knowledge.article-published\"", sent.Body);
+  Assert.Contains(version.ToString(), sent.Body);
+}

@@ -1,0 +1,60 @@
+// THE VIEW ROUTES — `/v/<view>` picks what the list holds (the frame reads the route); the page beside the list is
+// the "nothing open" state: the inbox's overview of the view (how much is late, at risk, unheld, waiting) and the keys
+// that work it — never a blank pane. A desk with no tickets yet, and a teammate who is in no queue yet, each get a
+// sentence saying what is going on and what to do.
+using Osysharp.Identity;
+using Osysharp.Inbox;
+
+[Route("/v/{view}")]
+[Layout(DeskFrame)]
+[Authorize(IsAgent)]
+[Render(CSR)]
+[Title("Helpdesk")]
+component ViewPage(string view) {
+  live var queueId = IdAfter(view, "q-");
+  live var savedId = IdAfter(view, "v-");
+  live var queueNames = Queue.Where(q => q.Id == queueId).Select(q => q.Name).ToList();
+  live var savedNames = InboxView.Where(v => v.Id == savedId).Select(v => v.Name).ToList();
+  live var name = queueNames.Count > 0 ? queueNames[0] : (savedNames.Count > 0 ? savedNames[0] : BuiltInNamed(view).Label);
+  live var any = Ticket.Count();
+  live var me = Session.CurrentUser;
+  live var meId = me == null ? Guid.Empty : me.Id;
+  live var myQueues = QueueMember.Count(m => m.Member.Id == meId && m.Active);
+  // The top bar names the queue being worked ("All open"), not the app — the app is the brand above it.
+  on change { Navigation.SetTitle(name); }
+  render {
+    Stack(gap: 0, grow: 1, h: "100%", minH: "0", bg: Colors.Bg) {
+      // Somebody on the team who is in no queue may hold no ticket — the inbox gives them nothing and refuses their
+      // Take. Said where they will see it, with who can change it, instead of a Take that only ever says no.
+      if (myQueues == 0) {
+        Box(px: 5, pt: 4) {
+          Alert("You are not in any queue yet, so you cannot take tickets and the inbox hands you none. "
+                + "An admin adds you on Settings › Queues.", tone: Tone.Warning);
+        }
+      }
+      if (any == 0) {
+        Stack(gap: 4, align: Align.Center, justify: Justify.Center, grow: 1, p: 6) { EmptyDesk(); }
+      }
+      if (any > 0) {
+        InboxOverview(view, title: savedNames.Count > 0 ? savedNames[0] : "", noun: "ticket") {
+          KeyLine(KeyCommands, "set a status, go to a ticket");
+          KeyLine(KeySend, "send the reply");
+        }
+      }
+    }
+  }
+}
+
+/// A desk with no tickets yet: where they come from, and the one thing to do now.
+[Composable]
+component EmptyDesk() {
+  action NewTicket() { Navigation.Go("/new"); }
+  render {
+    Stack(gap: 3, maxW: "400px", align: Align.Center, role: UiRole.Region, label: "Empty desk") {
+      Text("No tickets yet", fontSize: FontSize.Subhead, fontWeight: FontWeight.Semibold);
+      Text("They arrive from the help page, from mail to the support address, and from New ticket — and land here, in the queue a rule names or in Support.",
+           color: Colors.TextMuted, fontSize: FontSize.Label, textAlign: TextAlign.Center);
+      Button("New ticket", onPress: NewTicket, tone: Tone.Ghost);
+    }
+  }
+}

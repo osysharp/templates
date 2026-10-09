@@ -1,0 +1,2677 @@
+// sv (Svenska): the words of Helpdesk, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── (every entity) ──
+  /// (every entity) · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through the time a record was created or last changed
+  /// beside: "Modified at"
+  label "Created at" => "Skapad";
+  /// (every entity) · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through the time a record was created or last changed
+  /// beside: "Created at"
+  label "Modified at" => "Ändrad";
+
+  // ── AccessSettings (/settings/access) ──
+  /// AccessSettings · /settings/access · a description
+  /// shown through SettingsPage.description
+  /// also in AccessSettings /settings/access
+  description "Every change to somebody's access — a role, an account switched off, a lost phone, a sign-out — with who made it and why. Nobody edits or deletes these." => "Varje ändring av någons behörighet, som en roll, ett avstängt konto, en tappad telefon eller en utloggning, med vem som gjorde den och varför. Ingen kan redigera eller radera dessa.";
+  /// AccessSettings · /settings/access · a title
+  /// shown through SettingsPage.title
+  /// also in AccessSettings /settings/access
+  title "Access changes" => "Behörighetsändringar";
+
+  // ── AccessTrailList ──
+  /// AccessTrailList · a title
+  /// shown through EmptyState.title
+  /// also in AuditList
+  title "No changes yet" => "Inga ändringar än";
+
+  // ── AddCc ──
+  /// AddCc · an error message
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ValidationException
+  error "#{t.Number} is closed — nothing more is sent on it." => "#{t.Number} är stängt, inget mer skickas i det.";
+  /// AddCc · an error message
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ValidationException
+  error "#{t.Number} is kept out of use — nobody is added to it." => "#{t.Number} är spärrat från användning, ingen läggs till.";
+
+  // ── Agent ──
+  /// Agent · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Agent.Signature
+  label "Signature" => "Signatur";
+
+  // ── ApiSetStatus ──
+  /// ApiSetStatus · an error message
+  /// shown through ValidationException
+  error "That is not one of the desk's statuses — GET /statuses lists them." => "Det är inte en av supportens statusar. GET /statuses listar dem.";
+
+  // ── ApiTag ──
+  /// ApiTag · an error message
+  /// shown through ValidationException
+  error "Give the tag — a word or two, like billing." => "Ange taggen, ett eller två ord, till exempel billing.";
+
+  // ── AskWithoutAnAccount ──
+  /// AskWithoutAnAccount · a title
+  /// shown through PageHead.title
+  /// also in AskWithoutAnAccountPage /privacy/ask
+  title "Ask about your data" => "Fråga om dina uppgifter";
+
+  // ── AssignTicket ──
+  /// AssignTicket · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through [Action] AssignTicket
+  /// beside: "Assign to"
+  label "Teammate" => "Kollega";
+
+  // ── AuditArea ──
+  /// AuditArea · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through AuditArea.Everything
+  /// beside: "Access", "Desk settings"
+  label "All changes" => "Alla ändringar";
+  /// AuditArea · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through AuditArea.Settings
+  /// beside: "All changes", "Access"
+  label "Desk settings" => "Deskens inställningar";
+
+  // ── AuditList ──
+  /// AuditList · a control's name for screen readers
+  accessibleName "Changes" => "Ändringar";
+  /// AuditList · text on the page
+  text "1 change" => "1 ändring";
+  /// AuditList · text on the page
+  /// shown through EmptyState.body
+  text "Nobody made a change of this kind in this period. Try a longer period, or anyone." => "Ingen gjorde en sådan ändring under perioden. Prova en längre period, eller vem som helst.";
+  /// AuditList · text on the page
+  /// placeholders: {AuditTake} = AuditTake(…) (int) — {AuditTake} is a count: give one text per plural form
+  text "The newest {AuditTake} — narrow the period to see further back" => "De {AuditTake} senaste — välj en kortare period för att se längre bakåt";
+  /// AuditList · text on the page
+  /// shown through EmptyState.body
+  text "When somebody changes the desk's settings or somebody's access, it is listed here — what, who and when." => "När någon ändrar deskens inställningar eller någons behörighet visas det här — vad, vem och när.";
+  /// AuditList · text on the page
+  /// placeholders: {value} = … (string), {value2} = … (string)
+  text "by {value}{value2}" => "av {value}{value2}";
+  /// AuditList · text on the page
+  text "somebody no longer named" => "någon som inte längre har ett namn här";
+  /// AuditList · text on the page
+  /// placeholders: {shown.Count} = shown.Count (int) — {shown.Count} is a count: give one text per plural form
+  text "{shown.Count} changes" => "{shown.Count} ändringar";
+
+  // ── AuditLog ──
+  /// AuditLog · text on the page
+  /// placeholders: {value} = … (string)
+  /// shown through AuditLine.Detail
+  text "Refused: {value}" => "Avvisad: {value}";
+
+  // ── AuditPeriod ──
+  /// AuditPeriod · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through AuditPeriod.Year
+  /// beside: "Last 7 days", "Last 30 days", "Last 90 days"
+  label "Last year" => "Senaste året";
+
+  // ── AuditSettings (/settings/audit) ──
+  /// AuditSettings · /settings/audit · a description
+  /// shown through SettingsPage.description
+  description "Every change to the desk's settings and to somebody's access — what changed, from what to what, who made it and when. Nobody edits or deletes these." => "Varje ändring av deskens inställningar och av någons behörighet — vad som ändrades, från vad till vad, vem som gjorde det och när. Ingen kan redigera eller ta bort dem.";
+  /// AuditSettings · /settings/audit · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Dropdown.label
+  label "Changed by" => "Ändrad av";
+  /// AuditSettings · /settings/audit · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Dropdown.label
+  label "Period" => "Period";
+  /// AuditSettings · /settings/audit · placeholder text inside an empty field · at most ~12 characters
+  /// shown through Dropdown.placeholder
+  placeholder "Anyone" => "Vem som helst";
+  /// AuditSettings · /settings/audit · a title
+  /// shown through SettingsPage.title
+  /// also in AuditSettings /settings/audit
+  title "Audit log" => "Granskningslogg";
+
+  // ── AutomationSaid.Sentence ──
+  /// AutomationSaid.Sentence · text on the page
+  /// shown through Sentence()
+  text "An automation ran on a ticket." => "En automatisering kördes på ett ärende.";
+
+  // ── ChartTable ──
+  /// ChartTable · text on the page
+  /// also in __PersonalDataExport2
+  text "Category" => "Kategori";
+
+  // ── CompaniesPage (/companies) ──
+  /// CompaniesPage · /companies · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through DataGrid.label
+  /// also in DeskNav
+  label "Companies" => "Företag";
+  /// CompaniesPage · /companies · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through GridColumn.Label
+  label "Open tickets" => "Öppna ärenden";
+  /// CompaniesPage · /companies · a subtitle
+  /// shown through PageHead.subtitle
+  subtitle "Every customer company, its plan, and what it has open." => "Alla kundföretag, deras plan och vad de har öppet.";
+  /// CompaniesPage · /companies · a title
+  /// shown through PageHead.title
+  /// also in CompaniesPage /companies
+  title "Companies" => "Företag";
+
+  // ── Company ──
+  /// Company · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Company.Fields
+  /// beside: "Shares tickets", "Notes", "People"
+  /// also in Customer
+  /// also in TicketView
+  /// also in Ticket
+  label "Fields" => "Fält";
+  /// Company · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Company.Notes
+  /// beside: "Shares tickets", "People", "Fields"
+  label "Notes" => "Anteckningar";
+  /// Company · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Company.SharesTickets
+  /// beside: "Notes", "People", "Fields"
+  label "Shares tickets" => "Delar ärenden";
+
+  // ── CompanyFieldValue ──
+  /// CompanyFieldValue · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through CompanyFieldValue.Company
+  /// also in Customer
+  /// also in CompaniesPage /companies
+  label "Company" => "Företag";
+
+  // ── ConversationBubble ──
+  /// ConversationBubble · text on the page
+  /// also in ThreadMessage
+  /// also in PortalChrome
+  /// also in DeskTickets
+  text "Customer" => "Kund";
+
+  // ── ConversationComposer ──
+  /// ConversationComposer · a control's name for screen readers
+  /// also in Composer
+  /// also in MyRequestPage /my/{number}
+  accessibleName "Attach files" => "Bifoga filer";
+  /// ConversationComposer · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through TextAreaField.label
+  /// beside: "Attach files"
+  /// also in Composer
+  /// also in SavedReplySettings
+  /// also in MailCustomer
+  label "Reply" => "Svara";
+
+  // ── ConversationPresenceChip ──
+  /// ConversationPresenceChip · text on the page
+  /// also in DeskCopy.EventSentence
+  text "The customer" => "Kunden";
+
+  // ── ConversationTranscript ──
+  /// ConversationTranscript · a control's name for screen readers
+  /// also in ConversationThread
+  /// also in TicketView
+  accessibleName "Conversation" => "Konversation";
+
+  // ── CopiedOnTicket ──
+  /// CopiedOnTicket · a control's name for screen readers
+  accessibleName "Copied" => "Kopior";
+  /// CopiedOnTicket · a button's label · at most ~13 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Copy in" => "Lägg till";
+  /// CopiedOnTicket · a button's label · at most ~21 characters
+  /// shown through Button.label
+  button "Copy someone in" => "Lägg till en kopia";
+  /// CopiedOnTicket · a button's label · at most ~42 characters
+  /// placeholders: {s.Party.DisplayName} = s.Party.DisplayName (string)
+  /// shown through IconButton.label
+  button "Take {s.Party.DisplayName} off" => "Ta bort {s.Party.DisplayName}";
+  /// CopiedOnTicket · a hint under a field
+  /// shown through Field.hint
+  /// beside: "Copy in"
+  hint "They are sent every reply from now on, and read this ticket when they sign in." => "De får varje svar från och med nu, och kan läsa ärendet när de loggar in.";
+  /// CopiedOnTicket · text on the page
+  /// shown through SectionLabel.text
+  text "Copied" => "Kopior";
+  /// CopiedOnTicket · text on the page
+  text "Nobody else was sent its replies." => "Ingen annan fick dess svar.";
+  /// CopiedOnTicket · text on the page
+  text "Only the customer is sent its replies." => "Bara kunden får dess svar.";
+
+  // ── CopyInByAddress ──
+  /// CopyInByAddress · an error message
+  /// shown through ValidationException
+  /// also in AddCc
+  error "Give the address to copy in — like ana@example.com." => "Ange adressen som ska få en kopia, till exempel ana@example.com.";
+
+  // ── CustomerDetails ──
+  /// CustomerDetails · a label (a field, a list item, a menu entry) · at most ~66 characters
+  /// shown through DataCategory.Label
+  label "What our team noted about you in our own fields" => "Det vårt team har noterat om dig i våra egna fält";
+  /// CustomerDetails · text on the page
+  text "Answering you, knowing who we are talking to" => "Att svara dig och veta vem vi pratar med";
+  /// CustomerDetails · text on the page
+  text "knowing who we are talking to when you write" => "att veta vem vi pratar med när du skriver";
+
+  // ── CustomerPanel ──
+  /// CustomerPanel · a control's name for screen readers
+  /// beside: "Tags"
+  accessibleName "New tag" => "Ny tagg";
+  /// CustomerPanel · a button's label · at most ~15 characters
+  /// shown through IconButton.label
+  /// beside: "Tags"
+  button "Add a tag" => "Lägg till tagg";
+  /// CustomerPanel · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Details", "Opened"
+  button "Follow" => "Följ";
+  /// CustomerPanel · a button's label · at most ~15 characters
+  /// shown through Button.label
+  /// beside: "Details", "Opened"
+  button "Following" => "Följer";
+  /// CustomerPanel · a button's label · at most ~20 characters
+  /// placeholders: {g} = g (string)
+  /// shown through IconButton.label
+  button "Remove tag {g}" => "Ta bort taggen {g}";
+  /// CustomerPanel · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through HoldControl.label
+  /// beside: "Their other tickets", "Tags", "Details", "How it got here"
+  label "ticket #{t.Number}" => "ärende #{t.Number}";
+  /// CustomerPanel · placeholder text inside an empty field · at most ~16 characters
+  /// beside: "Tags"
+  placeholder "Add a tag…" => "Lägg till tagg…";
+  /// CustomerPanel · text on the page
+  /// shown through SectionLabel.text
+  /// beside: "Opened"
+  text "Details" => "Detaljer";
+  /// CustomerPanel · text on the page
+  /// shown through SectionLabel.text
+  text "How it got here" => "Så hamnade det här";
+  /// CustomerPanel · text on the page
+  text "Opened" => "Öppnat";
+  /// CustomerPanel · text on the page
+  /// placeholders: {t.ReopenCount} = t.ReopenCount (int) — {t.ReopenCount} is a count: give one text per plural form
+  text "Reopened {t.ReopenCount}×" => { one: "Återöppnat {t.ReopenCount} gång", other: "Återöppnat {t.ReopenCount} gånger" };
+  /// CustomerPanel · text on the page
+  /// shown through SectionLabel.text
+  text "Their other tickets" => "Deras andra ärenden";
+  /// CustomerPanel · text on the page
+  text "This is their first." => "Det här är deras första.";
+
+  // ── CustomerRecord ──
+  /// CustomerRecord · a control's name for screen readers
+  accessibleName "The customer's record" => "Kundens post";
+  /// CustomerRecord · a button's label · at most ~14 characters
+  /// shown through Button.label
+  button "Merge in" => "Slå ihop";
+  /// CustomerRecord · text on the page
+  /// placeholders: {s.Shares} = s.Shares (string)
+  text "Also writes from {s.Shares}" => "Skriver också från {s.Shares}";
+  /// CustomerRecord · text on the page
+  /// shown through done
+  text "Separated again." => "Åtskilda igen.";
+  /// CustomerRecord · text on the page
+  /// placeholders: {name} = name (string)
+  /// shown through done
+  text "{name} is merged into this record." => "{name} har slagits ihop med den här posten.";
+
+  // ── CustomerStatus ──
+  /// CustomerStatus · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through CustomerStatus()
+  label "In progress" => "Pågår";
+  /// CustomerStatus · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through CustomerStatus()
+  /// also in StatusCategory
+  /// also in Stage
+  label "Solved" => "Löst";
+  /// CustomerStatus · a label (a field, a list item, a menu entry) · at most ~31 characters
+  /// shown through CustomerStatus()
+  label "Waiting for your reply" => "Väntar på ditt svar";
+
+  // ── CustomerWroteAgain.Sentence ──
+  /// CustomerWroteAgain.Sentence · text on the page
+  /// shown through Sentence()
+  text "The customer wrote again." => "Kunden skrev igen.";
+  /// CustomerWroteAgain.Sentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through Sentence()
+  text "{who} wrote again." => "{who} skrev igen.";
+
+  // ── DemoSupportAddress ──
+  /// DemoSupportAddress · text on the page
+  /// shown through DemoSupportAddress()
+  text "support@helpdesk.test" => "support@helpdesk.test";
+
+  // ── DeskAddressEditor ──
+  /// DeskAddressEditor · a description
+  /// shown through SettingsPage.description
+  description "Customers write here, and the desk's replies and notices come from it. The portal tells customers they can write to it too." => "Kunderna skriver hit, och supportens svar och meddelanden skickas härifrån. Portalen talar också om för kunderna att de kan skriva hit.";
+  /// DeskAddressEditor · text on the page
+  /// shown through Refusal()
+  text "Support address is at most 200 characters." => "Supportadressen får vara högst 200 tecken.";
+  /// DeskAddressEditor · text on the page
+  /// shown through Refusal()
+  text "Support address is needed." => "Supportadress behövs.";
+  /// DeskAddressEditor · text on the page
+  /// shown through SaveBar.saved
+  text "Support address saved." => "Supportadressen är sparad.";
+  /// DeskAddressEditor · a title
+  /// shown through SettingsPage.title
+  /// also in DeskAddressPage /settings/support-address
+  title "Support address" => "Supportadress";
+
+  // ── DeskAddressFields ──
+  /// DeskAddressFields · a description
+  /// shown through SettingsSection.description
+  description "The address the desk is known by." => "Adressen som supporten är känd under.";
+  /// DeskAddressFields · a hint under a field
+  /// shown through Field.hint
+  hint "For example support@yourcompany.com." => "Till exempel support@dittforetag.se.";
+  /// DeskAddressFields · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Field.label
+  /// also in __Settings_DeskAddress_Section.Sections
+  label "Support address" => "Supportadress";
+
+  // ── DeskCopy.EventSentence ──
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int), {t.Was} = t.Was (string), {who} = who (string)
+  /// shown through EventSentence()
+  text "#{value} ({t.Was}) from {who} was merged into this ticket." => "#{value} ({t.Was}) från {who} slogs ihop med det här ärendet.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int), {t.Was} = t.Was (string), {who} = who (string), {last} = last (string)
+  /// shown through EventSentence()
+  text "#{value} ({t.Was}) from {who} was merged into this ticket. Their last message: “{last}”" => "#{value} ({t.Was}) från {who} slogs ihop med det här ärendet. Deras senaste meddelande: ”{last}”";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int), {who} = who (string)
+  /// shown through EventSentence()
+  text "#{value} from {who} was merged into this ticket." => "#{value} från {who} slogs ihop med det här ärendet.";
+  /// DeskCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "A field was changed." => "Ett fält ändrades.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int), {t.Name} = t.Name (string)
+  /// shown through EventSentence()
+  text "A message was split into #{value}: {t.Name}." => "Ett meddelande delades av till #{value}: {t.Name}.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int)
+  /// shown through EventSentence()
+  text "Merged into #{value}." => "Sammanslaget med #{value}.";
+  /// DeskCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "Reminded the customer we are waiting on them." => "Påminde kunden om att vi väntar på hen.";
+  /// DeskCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "Reopened: the customer wrote back." => "Återöppnat: kunden svarade.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int) — {value} is a count: give one text per plural form
+  /// shown through EventSentence()
+  text "Solved after {value} days with no word from the customer." => { one: "Löst efter en dag utan svar från kunden.", other: "Löst efter {value} dagar utan svar från kunden." };
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int) — {value} is a count: give one text per plural form
+  /// shown through EventSentence()
+  text "Solved its {value} incidents with it." => { one: "Löste sin incident tillsammans med det.", other: "Löste sina {value} incidenter tillsammans med det." };
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int)
+  /// shown through EventSentence()
+  text "Solved with its problem, #{value}." => "Löst tillsammans med sitt problem, #{value}.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int), {t.Name} = t.Name (string)
+  /// shown through EventSentence()
+  text "Split from #{value} ({t.Name}) — the customer's message moved here." => "Avdelat från #{value} ({t.Name}). Kundens meddelande flyttades hit.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {t.Name} = t.Name (string)
+  /// shown through EventSentence()
+  text "Status set to {t.Name}." => "Status satt till {t.Name}.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {t.Name} = t.Name (string), {t.Rule} = t.Rule (string)
+  /// shown through EventSentence()
+  text "Tagged {t.Name} — rule “{t.Rule}”." => "Taggat {t.Name}, regeln ”{t.Rule}”.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {t.Name} = t.Name (string)
+  /// shown through EventSentence()
+  text "The automation “{t.Name}” ran." => "Automatiseringen ”{t.Name}” kördes.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int)
+  /// shown through EventSentence()
+  text "The customer wrote after #{value} was closed — this follows it." => "Kunden skrev efter att #{value} stängdes, och det här följer upp det.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {t.Name} = t.Name (string)
+  /// shown through EventSentence()
+  text "Type set to {t.Name}." => "Typ satt till {t.Name}.";
+  /// DeskCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "a customer" => "en kund";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {said} = said (string)
+  /// shown through EventSentence()
+  text "{who} changed their answer: it did not go well — “{said}”" => "{who} ändrade sitt svar: det gick inte bra: ”{said}”";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through EventSentence()
+  text "{who} changed their answer: it did not go well." => "{who} ändrade sitt svar: det gick inte bra.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {said} = said (string)
+  /// shown through EventSentence()
+  text "{who} changed their answer: it went well — “{said}”" => "{who} ändrade sitt svar: det gick bra: ”{said}”";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through EventSentence()
+  text "{who} changed their answer: it went well." => "{who} ändrade sitt svar: det gick bra.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {said} = said (string)
+  /// shown through EventSentence()
+  text "{who} said it did not go well — “{said}”" => "{who} svarade att det inte gick bra: ”{said}”";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {said} = said (string)
+  /// shown through EventSentence()
+  text "{who} said it went well — “{said}”" => "{who} svarade att det gick bra: ”{said}”";
+
+  // ── DeskFeedbackPage (/feedback) ──
+  /// DeskFeedbackPage · /feedback · a subtitle
+  /// shown through PageHead.subtitle
+  subtitle "What customers said when their tickets were solved — the last twelve weeks." => "Vad kunderna svarade när deras ärenden löstes, de senaste tolv veckorna.";
+
+  // ── DeskFrame ──
+  /// DeskFrame · a button's label · at most ~58 characters
+  /// shown through Button.label
+  button "Name who is responsible for customer data" => "Ange vem som ansvarar för kunduppgifter";
+  /// DeskFrame · a button's label · at most ~16 characters
+  /// shown through IconButton.label
+  /// also in EmptyDesk
+  button "New ticket" => "Nytt ärende";
+  /// DeskFrame · a heading
+  /// shown through Command.Group
+  heading "Desk" => "Supportcenter";
+  /// DeskFrame · a heading
+  /// shown through Command.Group
+  heading "Go to ticket" => "Gå till ärende";
+  /// DeskFrame · a heading
+  /// shown through Command.Group
+  heading "This ticket" => "Det här ärendet";
+  /// DeskFrame · a heading
+  /// shown through Command.Group
+  heading "Views" => "Vyer";
+  /// DeskFrame · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Command.Label
+  label "New ticket" => "Nytt ärende";
+  /// DeskFrame · a label (a field, a list item, a menu entry) · at most ~52 characters
+  /// shown through Command.Label
+  label "Search tickets, answers and articles…" => "Sök ärenden, svar och artiklar…";
+  /// DeskFrame · a label (a field, a list item, a menu entry) · at most ~34 characters
+  /// placeholders: {open} = open (int), {st.Name} = st.Name (string)
+  /// shown through Command.Label
+  label "Set #{open} to {st.Name}" => "Sätt #{open} till {st.Name}";
+  /// DeskFrame · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Command.Label
+  /// also in DeskNav
+  label "Settings" => "Inställningar";
+  /// DeskFrame · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Command.Label
+  label "Take the open ticket" => "Ta det öppna ärendet";
+  /// DeskFrame · placeholder text inside an empty field · at most ~47 characters
+  /// shown through ShellSearch.placeholder
+  placeholder "Search tickets, people or #number" => "Sök ärenden, personer eller #nummer";
+  /// DeskFrame · placeholder text inside an empty field · at most ~59 characters
+  /// shown through CommandMenu.placeholder
+  placeholder "Take a ticket, set a status, go to a view…" => "Ta ett ärende, ändra status, gå till en vy…";
+
+  // ── DeskLinks.Kinds ──
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Back
+  accessibleName "Caused" => "Orsakade";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Says
+  accessibleName "Caused by" => "Orsakat av";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Says
+  accessibleName "Duplicate of" => "Dubblett av";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Back
+  accessibleName "Duplicated by" => "Har dubblett";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Says
+  accessibleName "Incident of" => "Incident av";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Back
+  accessibleName "Problem behind" => "Problemet bakom";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Says
+  accessibleName "Related to" => "Relaterat till";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Says
+  accessibleName "Split from" => "Avdelat från";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Back
+  accessibleName "Split into" => "Avdelat till";
+  /// DeskLinks.Kinds · a button's label · at most ~16 characters
+  /// shown through LinkKind.Act
+  button "Merge into" => "Slå ihop med";
+
+  // ── DeskNav ──
+  /// DeskNav · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through NavItem.Label
+  label "Desk" => "Support";
+  /// DeskNav · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through NavItem.Label
+  label "Reports" => "Rapporter";
+
+  // ── DeskReplies.Mentionable ──
+  /// DeskReplies.Mentionable · text on the page
+  /// placeholders: {name} = name (string)
+  /// shown through MentionChoice.Refusal
+  text "{name} cannot open this ticket, so a note cannot name them. Ask a lead to add them to its queue, or write it without their name." => "{name} kan inte öppna det här ärendet, så en anteckning kan inte nämna dem. Be en teamledare att lägga till dem i ärendets kö, eller skriv utan deras namn.";
+
+  // ── DeskReplies.Send ──
+  /// DeskReplies.Send · text on the page
+  /// placeholders: {Name} = ….Name (string)
+  /// shown through Send()
+  text "Sent, and set to {Name}." => "Skickat och satt till {Name}.";
+
+  // ── DeskReportWords ──
+  /// DeskReportWords · text on the page
+  /// also in RoleWord
+  text "Agent" => "Handläggare";
+  /// DeskReportWords · text on the page
+  text "Channel" => "Kanal";
+  /// DeskReportWords · text on the page
+  text "Company" => "Företag";
+  /// DeskReportWords · text on the page
+  text "Priority" => "Prioritet";
+  /// DeskReportWords · text on the page
+  text "Queue" => "Kö";
+  /// DeskReportWords · text on the page
+  text "Solved" => "Lösta";
+  /// DeskReportWords · text on the page
+  text "Tier" => "Nivå";
+  /// DeskReportWords · text on the page
+  text "solve" key "report-finish-verb" => "lösa";
+  /// DeskReportWords · text on the page
+  text "ticket" => "ärende";
+  /// DeskReportWords · text on the page
+  text "tickets" => "ärenden";
+
+  // ── DeskSearchPage (/search) ──
+  /// DeskSearchPage · /search · a control's name for screen readers
+  accessibleName "Search results" => "Sökresultat";
+  /// DeskSearchPage · /search · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// shown through Field.label
+  label "What are you looking for?" => "Vad letar du efter?";
+  /// DeskSearchPage · /search · placeholder text inside an empty field · at most ~69 characters
+  /// shown through Field.placeholder
+  placeholder "A problem, a customer's words, or a ticket number" => "Ett problem, kundens egna ord eller ett ärendenummer";
+  /// DeskSearchPage · /search · a subtitle
+  /// shown through PageHead.subtitle
+  /// beside: "What are you looking for?"
+  subtitle "Tickets, past answers and articles — by what they are about, in any language a customer wrote in." => "Ärenden, tidigare svar och artiklar, efter vad de handlar om, på vilket språk kunden än skrev.";
+  /// DeskSearchPage · /search · text on the page
+  /// shown through SectionLabel.text
+  text "Articles" => "Artiklar";
+  /// DeskSearchPage · /search · text on the page
+  /// shown through SectionLabel.text
+  text "How we solved it before" => "Så löste vi det förut";
+  /// DeskSearchPage · /search · text on the page
+  text "Searching…" => "Söker…";
+  /// DeskSearchPage · /search · text on the page
+  /// shown through SectionLabel.text
+  /// also in DeskReportWords
+  text "Tickets" => "Ärenden";
+  /// DeskSearchPage · /search · text on the page
+  /// shown through EmptyState.body
+  text "Try the customer's own words, or fewer of them." => "Prova kundens egna ord, eller färre av dem.";
+  /// DeskSearchPage · /search · a title
+  /// placeholders: {found.Query} = found.Query (string)
+  /// shown through EmptyState.title
+  title "Nothing found for “{found.Query}”" => "Inget hittades för ”{found.Query}”";
+
+  // ── DeskSettingsSections.Sections ──
+  /// DeskSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  heading "Tickets" => "Ärenden";
+  /// DeskSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "What a ticket asks beyond its subject." => "Vad ett ärende frågar efter utöver rubriken.";
+  /// DeskSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Who changed the desk's settings or somebody's access, from what to what." => "Vem som ändrade deskens inställningar eller någons behörighet, från vad till vad.";
+  /// DeskSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Your names for where a ticket is, inside the six fixed categories." => "Era namn för var ett ärende befinner sig, inom de sex fasta kategorierna.";
+  /// DeskSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through SettingsLink.Label
+  label "Audit log" => "Granskningslogg";
+  /// DeskSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through SettingsLink.Label
+  label "Fields and forms" => "Fält och formulär";
+  /// DeskSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through SettingsLink.Label
+  label "Statuses" => "Statusar";
+
+  // ── DeskTickets ──
+  /// DeskTickets · a hint under a field
+  /// shown through ReportMeasure.Hint
+  hint "Of the customers who answered, the share who said it went well." => "Andelen av kunderna som svarade som sa att det gick bra.";
+  /// DeskTickets · a hint under a field
+  /// shown through ReportMeasure.Hint
+  hint "Tickets whose customer said how it went." => "Ärenden där kunden sa hur det gick.";
+  /// DeskTickets · a hint under a field
+  /// shown through ReportMeasure.Hint
+  hint "Tickets whose customer said it went well." => "Ärenden där kunden sa att det gick bra.";
+  /// DeskTickets · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through ReportMeasure.Label
+  label "Rated" => "Betygsatta";
+  /// DeskTickets · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through ReportMeasure.Label
+  label "Rated good" => "Betygsatta som bra";
+  /// DeskTickets · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through ReportMeasure.Label
+  label "Satisfaction" => "Nöjdhet";
+  /// DeskTickets · text on the page
+  text "Arrived" => "Inkom";
+  /// DeskTickets · text on the page
+  text "First reply at" => "Första svar";
+  /// DeskTickets · text on the page
+  text "Requester" => "Beställare";
+  /// DeskTickets · text on the page
+  text "Solved at" => "Löst";
+  /// DeskTickets · text on the page
+  text "Where it stands" => "Läge";
+
+  // ── DeskWords.Metric ──
+  /// DeskWords.Metric · text on the page
+  /// shown through Metric()
+  text "first reply" => "första svar";
+  /// DeskWords.Metric · text on the page
+  /// shown through Metric()
+  text "next reply" => "nästa svar";
+
+  // ── EmptyDesk ──
+  /// EmptyDesk · a control's name for screen readers
+  accessibleName "Empty desk" => "Tomt supportcenter";
+  /// EmptyDesk · text on the page
+  /// beside: "They arrive from the help page, from mail to the support address, and from New ticket — and land here, in the queue a rule names or in Support.", "New ticket"
+  text "No tickets yet" => "Inga ärenden än";
+  /// EmptyDesk · text on the page
+  /// beside: "No tickets yet", "New ticket"
+  text "They arrive from the help page, from mail to the support address, and from New ticket — and land here, in the queue a rule names or in Support." => "De kommer från hjälpsidan, från e-post till supportadressen och från Nytt ärende, och hamnar här, i den kö som en regel anger eller i Support.";
+
+  // ── FeedbackByLinkPage (/feedback/{link}) ──
+  /// FeedbackByLinkPage · /feedback/{link} · a title
+  /// shown through [Title]
+  /// also in FeedbackByLinkPage /feedback/{link}
+  title "How did we do?" => "Hur gick det?";
+
+  // ── FeedbackChoicePage (/feedback/{link}/{choice}) ──
+  /// FeedbackChoicePage · /feedback/{link}/{choice} · a title
+  /// shown through [Title]
+  /// also in FeedbackChoicePage /feedback/{link}/{choice}
+  title "Thank you" => "Tack";
+
+  // ── FeedbackSettingsEditor ──
+  /// FeedbackSettingsEditor · a title
+  /// shown through SettingsPage.title
+  /// also in FeedbackSettingsPage /settings/feedback
+  /// also in DeskFeedbackPage /feedback
+  title "Feedback" => "Återkoppling";
+
+  // ── FieldChangeWords ──
+  /// FieldChangeWords · text on the page
+  /// placeholders: {field} = field (string), {Quoted} = Quoted(…) (string), {Quoted2} = Quoted(…) (string)
+  /// shown through FieldChangeWords()
+  text "{field} changed from {Quoted} to {Quoted2}." => "{field} ändrat från {Quoted} till {Quoted2}.";
+  /// FieldChangeWords · text on the page
+  /// placeholders: {field} = field (string)
+  /// shown through FieldChangeWords()
+  text "{field} changed." => "{field} ändrades.";
+  /// FieldChangeWords · text on the page
+  /// placeholders: {field} = field (string), {Quoted} = Quoted(…) (string)
+  /// shown through FieldChangeWords()
+  text "{field} cleared (was {Quoted})." => "{field} rensat (var {Quoted}).";
+  /// FieldChangeWords · text on the page
+  /// placeholders: {field} = field (string), {Quoted} = Quoted(…) (string)
+  /// shown through FieldChangeWords()
+  text "{field} set to {Quoted}." => "{field} satt till {Quoted}.";
+
+  // ── FieldRow ──
+  /// FieldRow · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Save"
+  /// also in FieldListSection
+  /// also in ApiKeyManager
+  /// also in PersonPanel
+  button "Cancel" => "Avbryt";
+
+  // ── FieldSettings (/settings/fields) ──
+  /// FieldSettings · /settings/fields · a button's label · at most ~16 characters
+  /// shown through Button.label
+  button "Add a type" => "Lägg till typ";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FormLine()
+  description "A type of request the customer chooses on the help page." => "En typ av förfrågan som kunden väljer på hjälpsidan.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FormLine()
+  description "A type the team sets on the ticket. The customer is offered it once it asks them something." => "En typ som teamet sätter på ärendet. Kunden erbjuds den när den frågar hen något.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.description
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  description "Every question a form can ask, in the order the ticket shows them. A question asked of the customer is on the help page; the rest are the team's, on the ticket. A field is retired, never deleted: tickets keep their answers." => "Varje fråga ett formulär kan ställa, i den ordning ärendet visar dem. En fråga till kunden finns på hjälpsidan; resten är teamets, på ärendet. Ett fält pensioneras, det raderas aldrig: ärenden behåller sina svar.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FormLine()
+  description "The type a request takes when nobody chose another." => "Den typ en förfrågan får när ingen har valt en annan.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through SettingsPage.description
+  description "What the desk asks about a ticket — the product, a version, an order number — and the forms that ask it, and what it keeps about a customer and a company. A form is a type of request: the customer's choice, the team's to change on the ticket." => "Vad desken frågar om ett ärende, till exempel produkten, en version eller ett ordernummer, och formulären som frågar det, samt vad den sparar om en kund och ett företag. Ett formulär är en typ av förfrågan: kundens val, och teamets att ändra på ärendet.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.description
+  /// beside: "Ticket fields", "Customer fields", "Add a type", "Fields and forms saved."
+  description "What the team keeps about a customer company — shown and edited beside its people's tickets." => "Vad teamet sparar om ett kundföretag. Visas och redigeras bredvid ärendena från dess personer.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.description
+  /// beside: "Ticket fields", "Company fields", "Add a type", "Fields and forms saved."
+  description "What the team keeps about a person who writes in — shown and edited beside their tickets, never to them." => "Vad teamet sparar om en person som skriver till oss. Visas och redigeras bredvid deras ärenden, aldrig för dem.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.records
+  /// beside: "Ticket fields", "Customer fields", "Add a type", "Fields and forms saved."
+  description "companies" => "företag";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.record
+  /// beside: "Ticket fields", "Customer fields", "Add a type", "Fields and forms saved."
+  description "company" => "företag";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.record
+  /// beside: "Ticket fields", "Company fields", "Add a type", "Fields and forms saved."
+  description "customer" => "kund";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.records
+  /// beside: "Ticket fields", "Company fields", "Add a type", "Fields and forms saved."
+  description "customers" => "kunder";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.record
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  description "ticket" => "ärende";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.records
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  description "tickets" => "ärenden";
+  /// FieldSettings · /settings/fields · a hint under a field
+  /// shown through FieldListSection.nameHint
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  hint "A saved view finds it by its name: field:order-number=…" => "En sparad vy hittar det med namnet: field:order-number=…";
+  /// FieldSettings · /settings/fields · a hint under a field
+  /// shown through FormSection.keyHint
+  hint "What routing rules, SLA policies and views name it by — lower-case words and hyphens. Fixed once saved." => "Det namn som routningsregler, SLA-policyer och vyer använder: ord med små bokstäver och bindestreck. Kan inte ändras när den är sparad.";
+  /// FieldSettings · /settings/fields · a label (a field, a list item, a menu entry) · at most ~47 characters
+  /// shown through FieldListSection.publicLabel
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  label "Ask the customer on the help page" => "Fråga kunden på hjälpsidan";
+  /// FieldSettings · /settings/fields · a label (a field, a list item, a menu entry) · at most ~41 characters
+  /// shown through Switch.label
+  label "Solving it needs a root cause" => "För att lösa den krävs en grundorsak";
+  /// FieldSettings · /settings/fields · a subtitle
+  /// shown through FieldListSection.about
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  subtitle "Something the desk asks about a ticket." => "Något som supportcentret frågar om ett ärende.";
+  /// FieldSettings · /settings/fields · a subtitle
+  /// shown through FieldListSection.about
+  /// beside: "Ticket fields", "Customer fields", "Add a type", "Fields and forms saved."
+  subtitle "Something the desk keeps about a company." => "Något desken sparar om ett företag.";
+  /// FieldSettings · /settings/fields · a subtitle
+  /// shown through FieldListSection.about
+  /// beside: "Ticket fields", "Company fields", "Add a type", "Fields and forms saved."
+  subtitle "Something the desk keeps about a customer." => "Något desken sparar om en kund.";
+  /// FieldSettings · /settings/fields · text on the page
+  /// shown through SaveBar.saved
+  /// beside: "Ticket fields", "Customer fields", "Company fields", "Add a type"
+  text "Fields and forms saved." => "Fälten och formulären är sparade.";
+  /// FieldSettings · /settings/fields · a title
+  /// shown through FieldListSection.title
+  /// beside: "Ticket fields", "Customer fields", "Add a type", "Fields and forms saved."
+  title "Company fields" => "Företagsfält";
+  /// FieldSettings · /settings/fields · a title
+  /// shown through FieldListSection.title
+  /// beside: "Ticket fields", "Company fields", "Add a type", "Fields and forms saved."
+  title "Customer fields" => "Kundfält";
+  /// FieldSettings · /settings/fields · a title
+  /// shown through SettingsPage.title
+  /// also in FieldSettings /settings/fields
+  title "Fields and forms" => "Fält och formulär";
+  /// FieldSettings · /settings/fields · a title
+  /// shown through FieldListSection.title
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  title "Ticket fields" => "Ärendefält";
+
+  // ── FormFor ──
+  /// FormFor · an error message
+  /// shown through ValidationException
+  error "That kind of request is no longer offered. Reload the page and choose again." => "Den typen av förfrågan erbjuds inte längre. Ladda om sidan och välj igen.";
+
+  // ── FormSection ──
+  /// FormSection · a button's label · at most ~27 characters
+  /// shown through Button.label
+  /// also in StatusSettings /settings/statuses
+  button "Make it the default" => "Gör den till standard";
+  /// FormSection · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Switch.label
+  /// beside: "180px"
+  /// also in SlaPolicySettings
+  /// also in RoutingRuleSettings
+  /// also in SharedViewSettings
+  label "In use" => "Används";
+
+  // ── Front (/) ──
+  /// Front · / · text on the page
+  text "Opening…" => "Öppnar…";
+  /// Front · / · a title
+  /// shown through [Title]
+  title "Harbour Support" => "Harbour Support";
+
+  // ── HelpCentreSearchPage (/help-centre/search) ──
+  /// HelpCentreSearchPage · /help-centre/search · a title
+  /// shown through [Title]
+  /// also in HelpCentreResultsPage /help-centre/search/{query}
+  /// also in DeskSearchPage /search
+  title "Search" => "Sök";
+
+  // ── HelpPage (/help) ──
+  /// HelpPage · /help · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Write another" => "Skriv en till";
+  /// HelpPage · /help · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Done.label
+  label "We have your request" => "Vi har fått din förfrågan";
+  /// HelpPage · /help · text on the page
+  /// beside: "We have your request", "Write another"
+  text ", and you can follow it under Your requests." => ", och du kan följa det under Dina förfrågningar.";
+  /// HelpPage · /help · text on the page
+  /// placeholders: {sent} = sent (int)
+  text "Open #{sent}" => "Öppna #{sent}";
+  /// HelpPage · /help · text on the page
+  /// beside: "How can we help?"
+  text "Tell us what happened. A person on the team answers, usually within a working day and sooner for anything urgent." => "Berätta vad som hände. En person i teamet svarar, oftast inom en arbetsdag och snabbare om det är brådskande.";
+  /// HelpPage · /help · text on the page
+  /// placeholders: {sent} = sent (int), {value} = … (string)
+  /// beside: "We have your request", "Write another"
+  text "Your reference is #{sent}. We'll answer by mail{value}" => "Ditt referensnummer är #{sent}. Vi svarar via e-post{value}";
+  /// HelpPage · /help · a title
+  /// shown through [Title]
+  title "Get help" => "Få hjälp";
+
+  // ── HoldReviewPage (/v/{view}/h/{id}) ──
+  /// HoldReviewPage · /v/{view}/h/{id} · text on the page
+  text "This review is not one you may open." => "Det här är inte en granskning som du får öppna.";
+  /// HoldReviewPage · /v/{view}/h/{id} · a title
+  /// shown through [Title]
+  title "Legal hold review" => "Granskning av rättsligt bevarande";
+
+  // ── HoursSettings (/settings/hours) ──
+  /// HoursSettings · /settings/hours · a title
+  /// shown through [Title]
+  /// also in BusinessHoursSettings
+  /// also in HoursSettings /settings/hours
+  title "Business hours" => "Kontorstider";
+
+  // ── InviteForm ──
+  /// InviteForm · placeholder text inside an empty field · at most ~23 characters
+  /// shown through Field.placeholder
+  /// beside: "A note (optional)", "Send invitation"
+  /// also in QueueSettings
+  /// also in NewTicketForm
+  /// also in RequestForm
+  placeholder "name@company.com" => "namn@foretag.se";
+
+  // ── KeptBody ──
+  /// KeptBody · text on the page
+  /// shown through KeptBody()
+  text "A legal hold keeps it as long as the hold stands. When the hold is lifted it is kept for the rest of its period, then erased." => "Ett rättsligt bevarande behåller den så länge bevarandet gäller. När bevarandet hävs sparas den resten av sin lagringstid och raderas sedan.";
+  /// KeptBody · text on the page
+  /// shown through KeptBody()
+  text "It is erased when its period ends." => "Den raderas när lagringstiden tar slut.";
+  /// KeptBody · text on the page
+  /// placeholders: {next} = next (string)
+  /// shown through KeptBody()
+  text "The customer asked to be erased, and this conversation concerns a claim, so it is kept — out of use. The ticket is closed and its promises stopped. Nobody reads it on the desk; it is read only for the claim, and every read is recorded. {next}" => "Kunden bad om att bli raderad, och den här konversationen gäller ett anspråk, så den sparas men används inte. Ärendet är stängt och dess löften har stoppats. Ingen läser den i supportcentret; den läses bara för anspråket, och varje läsning registreras. {next}";
+  /// KeptBody · text on the page
+  /// shown through KeptBody()
+  text "The customer asked us to stop using their data until they say otherwise. Nothing is erased, and nothing is read. The ticket is closed; if they write to us again, that opens a new one." => "Kunden bad oss sluta använda sina uppgifter tills hen säger något annat. Inget raderas och inget läses. Ärendet är stängt; om kunden skriver till oss igen öppnas ett nytt.";
+
+  // ── KeptConversation ──
+  /// KeptConversation · a control's name for screen readers
+  accessibleName "Kept conversation" => "Sparad konversation";
+  /// KeptConversation · a button's label · at most ~30 characters
+  /// shown through Button.label
+  button "Read it for the claim" => "Läs den för anspråket";
+  /// KeptConversation · text on the page
+  text "This read is recorded, with your name." => "Den här läsningen registreras, med ditt namn.";
+  /// KeptConversation · a title
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ShellSheet.title
+  title "Kept conversation · #{t.Number}" => "Sparad konversation · #{t.Number}";
+
+  // ── KeptCustomer ──
+  /// KeptCustomer · a control's name for screen readers
+  /// also in CustomerPanel
+  accessibleName "Customer" => "Kund";
+  /// KeptCustomer · text on the page
+  /// beside: "Who they are is out of use with the conversation it belongs to."
+  text "Customer kept for legal claims" => "Kund sparad för rättsliga anspråk";
+  /// KeptCustomer · text on the page
+  /// beside: "Customer kept for legal claims"
+  text "Who they are is out of use with the conversation it belongs to." => "Vem personen är används inte längre, liksom konversationen den hör till.";
+
+  // ── KeptHeadline ──
+  /// KeptHeadline · text on the page
+  /// placeholders: {ToString} = ….ToString(…) (DateTime)
+  /// shown through KeptHeadline()
+  text "Kept for legal claims until {ToString}" => "Sparad för rättsliga anspråk till och med {ToString}";
+  /// KeptHeadline · text on the page
+  /// shown through KeptHeadline()
+  text "Kept for legal claims while a legal hold stands" => "Sparad för rättsliga anspråk medan ett rättsligt bevarande gäller";
+  /// KeptHeadline · text on the page
+  /// shown through KeptHeadline()
+  text "Restricted at the customer's request" => "Begränsad på kundens begäran";
+
+  // ── KnowledgeArticleDeskPage (/knowledge/a/{id}) ──
+  /// KnowledgeArticleDeskPage · /knowledge/a/{id} · a title
+  /// shown through [Title]
+  /// also in KnowledgeArticleLanguagePage /knowledge/a/{id}/{language}
+  /// also in KnowledgeArticleDeskPage /knowledge/a/{id}
+  title "Article" => "Artikel";
+
+  // ── KnowledgeCategoriesPage (/knowledge/categories) ──
+  /// KnowledgeCategoriesPage · /knowledge/categories · a title
+  /// shown through [Title]
+  /// also in KnowledgeShelvesDesk
+  /// also in KnowledgeCategoriesPage /knowledge/categories
+  title "Categories" => "Kategorier";
+
+  // ── KnowledgeDeskLine ──
+  /// KnowledgeDeskLine · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Badge.label
+  /// also in KnowledgeArticleDesk
+  /// also in KnowledgeCategoryCard
+  /// also in KnowledgeShelfCard
+  label "Team only" => "Bara teamet";
+
+  // ── KnowledgeDeskPage (/knowledge) ──
+  /// KnowledgeDeskPage · /knowledge · a title
+  /// shown through [Title]
+  /// also in KnowledgeDesk
+  /// also in KnowledgeSettingsEditor
+  /// also in KnowledgeSettingsPage /settings/knowledge
+  title "Knowledge base" => "Kunskapsbas";
+
+  // ── KnowledgeFrame ──
+  /// KnowledgeFrame · a control's name for screen readers
+  /// shown through AppChrome.Product
+  /// also in DeskFrame
+  /// also in SettingsFrame
+  accessibleName "Harbour Desk" => "Harbour Desk";
+  /// KnowledgeFrame · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through MenuAction.Label
+  /// also in DeskFrame
+  /// also in SettingsFrame
+  label "Appearance" => "Utseende";
+  /// KnowledgeFrame · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through MenuAction.Label
+  /// also in DeskFrame
+  /// also in PortalChrome
+  /// also in SettingsFrame
+  label "Sign out" => "Logga ut";
+  /// KnowledgeFrame · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through MenuAction.Label
+  /// also in DeskFrame
+  /// also in PortalChrome
+  /// also in SettingsFrame
+  label "Your account" => "Ditt konto";
+  /// KnowledgeFrame · tagline
+  /// shown through AppChrome.Tagline
+  /// also in DeskFrame
+  /// also in SettingsFrame
+  tagline "Support" => "Support";
+
+  // ── KnowledgeFront ──
+  /// KnowledgeFront · text on the page
+  /// shown through KnowledgeHero.question
+  /// beside: "1080px"
+  /// also in HelpPage /help
+  text "How can we help?" => "Hur kan vi hjälpa till?";
+
+  // ── KnowledgeReviewPage (/knowledge/review) ──
+  /// KnowledgeReviewPage · /knowledge/review · a title
+  /// shown through [Title]
+  /// also in KnowledgeReviewQueue
+  /// also in KnowledgeReviewPage /knowledge/review
+  title "Waiting for review" => "Väntar på granskning";
+
+  // ── KnowledgeSearchBox ──
+  /// KnowledgeSearchBox · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Search the help centre"
+  /// also in FilterEditor
+  /// also in DeskSearchPage /search
+  button "Search" => "Sök";
+
+  // ── LanguageChoice ──
+  /// LanguageChoice · a control's name for screen readers
+  accessibleName "Language" => "Språk";
+
+  // ── LanguageName ──
+  /// LanguageName · text on the page
+  text "Dansk" key "endonym" => "Dansk";
+  /// LanguageName · text on the page
+  text "Deutsch" key "endonym" => "Deutsch";
+  /// LanguageName · text on the page
+  text "English" key "endonym" => "English";
+  /// LanguageName · text on the page
+  text "Español" key "endonym" => "Español";
+  /// LanguageName · text on the page
+  text "Français" key "endonym" => "Français";
+  /// LanguageName · text on the page
+  text "Italiano" key "endonym" => "Italiano";
+  /// LanguageName · text on the page
+  text "Nederlands" key "endonym" => "Nederlands";
+  /// LanguageName · text on the page
+  text "Norsk" key "endonym" => "Norsk";
+  /// LanguageName · text on the page
+  text "Polski" key "endonym" => "Polski";
+  /// LanguageName · text on the page
+  text "Português" key "endonym" => "Português";
+  /// LanguageName · text on the page
+  text "Suomi" key "endonym" => "Suomi";
+  /// LanguageName · text on the page
+  text "Svenska" key "endonym" => "Svenska";
+  /// LanguageName · text on the page
+  text "العربية" key "endonym" => "العربية";
+  /// LanguageName · text on the page
+  text "中文" key "endonym" => "中文";
+  /// LanguageName · text on the page
+  text "日本語" key "endonym" => "日本語";
+
+  // ── LinkAsIncidentOf ──
+  /// LinkAsIncidentOf · an error message
+  /// placeholders: {problem} = problem (int)
+  /// shown through ValidationException
+  error "There is no ticket #{problem}." => "Det finns inget ärende #{problem}.";
+
+  // ── LinkGonePage (/link-gone) ──
+  /// LinkGonePage · /link-gone · text on the page
+  /// shown through EmptyState.body
+  text "Links in our mails work for a while, and some only once. To reach us, write from Get help — or sign in to see your requests." => "Länkar i våra mejl fungerar en tid, och vissa bara en gång. För att nå oss, skriv via Få hjälp, eller logga in för att se dina ärenden.";
+  /// LinkGonePage · /link-gone · a title
+  /// shown through EmptyState.title
+  /// also in LinkGonePage /link-gone
+  title "This link has run out" => "Länken har gått ut";
+
+  // ── MailCustomer ──
+  /// MailCustomer · an error message
+  /// placeholders: {reply.Title} = reply.Title (string), {Join} = string.Join(…) (string)
+  /// shown through ValidationException
+  error "“{reply.Title}” has a placeholder this ticket cannot fill: {Join}." => "”{reply.Title}” har en platshållare som det här ärendet inte kan fylla i: {Join}.";
+  /// MailCustomer · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through [Action] MailCustomer
+  /// beside: "Reply"
+  label "Mail the customer" => "Mejla kunden";
+
+  // ── MailboxViews ──
+  /// MailboxViews · text on the page
+  /// placeholders: {ToString} = w.LastPolledAt.Value.ToString(…) (DateTime)
+  /// shown through LastAsked
+  /// also in AuditList
+  text "{ToString} UTC" => "{ToString} UTC";
+
+  // ── MeaningOffSentence ──
+  /// MeaningOffSentence · message
+  /// shown through MeaningOffSentence()
+  message "Search by meaning is off until the embedding key is set — these are matches by words." => "Sökning på innebörd är avstängd tills inbäddningsnyckeln är inställd. Det här är träffar på ord.";
+
+  // ── MentionedInNote.Sentence ──
+  /// MentionedInNote.Sentence · text on the page
+  /// shown through Sentence()
+  text "You were mentioned in a note." => "Du nämndes i en anteckning.";
+  /// MentionedInNote.Sentence · text on the page
+  /// placeholders: {by} = by (string)
+  /// shown through Sentence()
+  text "{by} mentioned you in a note." => "{by} nämnde dig i en anteckning.";
+
+  // ── MergeInto ──
+  /// MergeInto · an error message
+  /// placeholders: {dup.Number} = dup.Number (int)
+  /// shown through ValidationException
+  error "#{dup.Number} is already closed." => "#{dup.Number} är redan stängt.";
+  /// MergeInto · an error message
+  /// placeholders: {into.Number} = into.Number (int)
+  /// shown through ValidationException
+  error "#{into.Number} is closed. Merge into an open ticket." => "#{into.Number} är stängt. Slå ihop med ett öppet ärende.";
+  /// MergeInto · an error message
+  /// shown through ValidationException
+  error "A ticket cannot be merged into itself." => "Ett ärende kan inte slås ihop med sig självt.";
+
+  // ── MoveTicketTo ──
+  /// MoveTicketTo · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through [Action] MoveTicketTo
+  /// beside: "Queue"
+  label "Move to queue" => "Flytta till kö";
+
+  // ── MoveTo ──
+  /// MoveTo · an error message
+  /// shown through ValidationException
+  error "A ticket cannot go back to New. Set it Open instead." => "Ett ärende kan inte gå tillbaka till Ny. Sätt det till Öppet i stället.";
+  /// MoveTo · an error message
+  /// shown through ValidationException
+  error "Solve the ticket first; it closes when the customer has had their answer." => "Lös ärendet först; det stängs när kunden har fått sitt svar.";
+
+  // ── MyPrivacy ──
+  /// MyPrivacy · a control's name for screen readers
+  /// beside: "Your privacy", "Ask us", "What we keep"
+  /// also in MyRequestsPage /my
+  accessibleName "Your requests" => "Dina förfrågningar";
+  /// MyPrivacy · text on the page
+  /// shown through SectionLabel.text
+  /// also in MyRequestsPage /my
+  /// also in MyRequestPage /my/{number}
+  text "Your requests" => "Dina förfrågningar";
+  /// MyPrivacy · a title
+  /// shown through PageHead.title
+  /// beside: "Ask us", "Your requests", "What we keep"
+  /// also in MyPrivacyPage /privacy
+  title "Your privacy" => "Din integritet";
+
+  // ── MyRequestPage (/my/{number}) ──
+  /// MyRequestPage · /my/{number} · a button's label · at most ~16 characters
+  /// shown through Button.label
+  /// beside: "Attach files"
+  button "Send reply" => "Skicka svar";
+  /// MyRequestPage · /my/{number} · a label (a field, a list item, a menu entry) · at most ~41 characters
+  /// shown through TextAreaField.label
+  /// beside: "Send reply"
+  label "Not solved after all? Tell us" => "Inte löst ändå? Berätta för oss";
+  /// MyRequestPage · /my/{number} · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through TextAreaField.label
+  /// beside: "Send reply"
+  label "Your reply" => "Ditt svar";
+  /// MyRequestPage · /my/{number} · text on the page
+  /// placeholders: {number} = number (int)
+  /// shown through EmptyState.body
+  text "There is no request #{number} you can see." => "Det finns ingen förfrågan #{number} som du kan se.";
+  /// MyRequestPage · /my/{number} · text on the page
+  /// placeholders: {t.Number} = t.Number (int)
+  text "This request is closed. Write a new one from Get help and mention #{t.Number}." => "Förfrågan är stängd. Skriv en ny från Få hjälp och nämn #{t.Number}.";
+  /// MyRequestPage · /my/{number} · a title
+  /// shown through EmptyState.title
+  title "Not one of yours" => "Inte en av dina";
+  /// MyRequestPage · /my/{number} · a title
+  /// shown through [Title]
+  title "Your request" => "Din förfrågan";
+
+  // ── MyRequestsPage (/my) ──
+  /// MyRequestsPage · /my · text on the page
+  text "New request" => "Ny förfrågan";
+  /// MyRequestsPage · /my · text on the page
+  /// placeholders: {support} = support (string)
+  /// shown through EmptyState.body
+  text "Requests you send from the help page, or by mail to {support}, appear here." => "Förfrågningar som du skickar från hjälpsidan, eller via e-post till {support}, visas här.";
+  /// MyRequestsPage · /my · text on the page
+  /// placeholders: {r.Requester} = r.Requester (string), {Ago} = Osysharp.Inbox.Ago(…) (string)
+  text "{r.Requester} · updated {Ago} ago" => "{r.Requester} · uppdaterad för {Ago} sedan";
+  /// MyRequestsPage · /my · a title
+  /// shown through EmptyState.title
+  title "Nothing yet" => "Inget än";
+  /// MyRequestsPage · /my · a title
+  /// shown through [Title]
+  title "Your requests" => "Dina förfrågningar";
+
+  // ── NewTicketForm ──
+  /// NewTicketForm · a control's name for screen readers
+  accessibleName "New ticket" => "Nytt ärende";
+  /// NewTicketForm · a button's label · at most ~21 characters
+  /// shown through Button.label
+  button "Open the ticket" => "Öppna ärendet";
+  /// NewTicketForm · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Field.label
+  label "Customer's address" => "Kundens adress";
+  /// NewTicketForm · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through TextAreaField.label
+  /// beside: "220px", "Subject", "180px", "Open the ticket"
+  label "What they said" => "Vad de sa";
+  /// NewTicketForm · placeholder text inside an empty field · at most ~41 characters
+  /// shown through Field.placeholder
+  /// beside: "220px", "What they said", "180px", "Open the ticket"
+  /// also in RequestForm
+  placeholder "One line saying what is wrong" => "En rad som säger vad som är fel";
+  /// NewTicketForm · text on the page
+  /// shown through problem
+  /// also in RequestForm
+  text "Some answers need another look — each says what, above." => "Några svar behöver ses över. Vart och ett säger vad, ovan.";
+
+  // ── NewTicketPage (/new) ──
+  /// NewTicketPage · /new · a subtitle
+  /// shown through PageHead.subtitle
+  subtitle "For a request that reached you some other way: a call, a chat, a mail forwarded by hand." => "För en förfrågan som nådde dig på annat sätt: ett samtal, en chatt, ett mejl som vidarebefordrats för hand.";
+  /// NewTicketPage · /new · a title
+  /// shown through PageHead.title
+  /// also in NewTicketPage /new
+  title "New ticket" => "Nytt ärende";
+
+  // ── NotificationPreferencesFields ──
+  /// NotificationPreferencesFields · a title
+  /// shown through SettingsSection.title
+  /// also in DeskAddressFields
+  title "Mail" => "Mejl";
+
+  // ── OpenTabs ──
+  /// OpenTabs · a control's name for screen readers
+  accessibleName "Open tickets" => "Öppna ärenden";
+  /// OpenTabs · a control's name for screen readers
+  accessibleName "unsent reply" => "osänt svar";
+  /// OpenTabs · a button's label · at most ~30 characters
+  /// placeholders: {TicketInPath} = TicketInPath(…) (int)
+  /// shown through IconButton.label
+  button "Close #{TicketInPath}" => "Stäng #{TicketInPath}";
+
+  // ── OpenTicket ──
+  /// OpenTicket · an error message
+  /// shown through ValidationException
+  error "Give the ticket a subject." => "Ge ärendet en rubrik.";
+  /// OpenTicket · an error message
+  /// shown through ValidationException
+  error "Whose ticket is it? Give their address." => "Vems ärende är det? Ange personens adress.";
+
+  // ── Osysharp.ActionOutcome ──
+  /// Osysharp.ActionOutcome · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.ActionOutcome.Invalid
+  /// beside: "Done", "Not allowed", "Gone", "Failed"
+  /// also in Osysharp.Conversations.MergeState
+  /// also in Osysharp.Conversations.SplitState
+  /// also in Osysharp.Automations.FireOutcome
+  label "Refused" => "Avvisad";
+
+  // ── Osysharp.ActionParameterKind ──
+  /// Osysharp.ActionParameterKind · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.ActionParameterKind.Number
+  /// beside: "Text", "Decimal", "Yes or no", "Date", "Date and time", "Time of day"
+  /// also in Osysharp.RecordFieldKind
+  /// also in Osysharp.Fields.FieldKind
+  /// also in Osysharp.Automations.ConditionKind
+  label "Number" => "Tal";
+
+  // ── Osysharp.Conversations.Conversation ──
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Conversations.Conversation.Subject
+  /// beside: "Started at", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint", "Started by visit"
+  /// also in SideConversationStarter
+  /// also in NewTicketForm
+  /// also in RequestForm
+  label "Subject" => "Rubrik";
+
+  // ── Osysharp.Conversations.ConversationCopy.WidgetAttach ──
+  /// Osysharp.Conversations.ConversationCopy.WidgetAttach · a button's label · at most ~18 characters
+  /// shown through WidgetAttach()
+  /// also in ConversationComposer
+  /// also in Composer
+  /// also in MyRequestPage /my/{number}
+  button "Attach files" => "Bifoga filer";
+
+  // ── Osysharp.Conversations.ConversationCopy.WidgetEmailLabel ──
+  /// Osysharp.Conversations.ConversationCopy.WidgetEmailLabel · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through WidgetEmailLabel()
+  /// also in ConversationProveAddress
+  /// also in RequestForm
+  label "Your email" => "Din e-post";
+
+  // ── Osysharp.Conversations.ConversationCopy.WidgetTitle ──
+  /// Osysharp.Conversations.ConversationCopy.WidgetTitle · a title
+  /// shown through WidgetTitle()
+  /// also in PortalChrome
+  /// also in PortalChatPage /chat
+  title "Chat with us" => "Chatta med oss";
+
+  // ── Osysharp.Conversations.Participant ──
+  /// Osysharp.Conversations.Participant · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Conversations.Participant.Conversation
+  /// beside: "Party", "Member", "Agent name", "Role", "Joined at", "Left at"
+  /// also in Osysharp.Conversations.ConversationEntry
+  /// also in Ticket
+  label "Conversation" => "Konversation";
+
+  // ── Osysharp.Conversations.ParticipantRole ──
+  /// Osysharp.Conversations.ParticipantRole · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Conversations.ParticipantRole.Customer
+  /// beside: "Copied", "Staff", "AI agent", "Observer"
+  /// also in Osysharp.Conversations.EntryVisibility
+  /// also in CustomerFieldValue
+  /// also in Ticket
+  label "Customer" => "Kund";
+
+  // ── Osysharp.Conversations.Party ──
+  /// Osysharp.Conversations.Party · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Conversations.Party.Language
+  /// beside: "Display name", "Account", "Created by visit", "Merged into", "Erased at", "Points"
+  /// also in Osysharp.Inbox.WorkItem
+  /// also in Osysharp.Inbox.RoutingRule
+  /// also in Osysharp.Inbox.SkillKind
+  label "Language" => "Språk";
+  /// Osysharp.Conversations.Party · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Conversations.Party.MergedInto
+  /// beside: "Display name", "Language", "Account", "Created by visit", "Erased at", "Points"
+  /// also in Ticket
+  label "Merged into" => "Sammanslagen med";
+
+  // ── Osysharp.Feedback.FeedbackAnswered.Sentence ──
+  /// Osysharp.Feedback.FeedbackAnswered.Sentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through Sentence()
+  /// also in DeskCopy.EventSentence
+  text "{who} said it did not go well." => "{who} svarade att det inte gick bra.";
+  /// Osysharp.Feedback.FeedbackAnswered.Sentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through Sentence()
+  /// also in DeskCopy.EventSentence
+  text "{who} said it went well." => "{who} svarade att det gick bra.";
+
+  // ── Osysharp.Feedback.FeedbackStage ──
+  /// Osysharp.Feedback.FeedbackStage · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Feedback.FeedbackStage.Open
+  /// beside: "Answered", "Settled", "Closed", "No longer asked"
+  /// also in WorkSourceOf
+  /// also in StatusCategory
+  /// also in Stage
+  label "Open" => "Öppen";
+
+  // ── Osysharp.Feedback.__Settings_FeedbackSettings_Section.Sections ──
+  /// Osysharp.Feedback.__Settings_FeedbackSettings_Section.Sections · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through SettingsLink.Label
+  /// also in DeskNav
+  label "Feedback" => "Återkoppling";
+
+  // ── Osysharp.Fields.CustomField ──
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Fields.CustomField.Active
+  /// beside: "Name", "Kind", "Options", "Hint", "Public", "Required"
+  /// also in Osysharp.Fields.FieldForm
+  /// also in PersonPanel
+  /// also in Osysharp.Inbox.Queue
+  label "Active" => "Aktiv";
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Fields.CustomField.Position
+  /// beside: "Name", "Kind", "Options", "Hint", "Public", "Required"
+  /// also in Osysharp.Fields.FieldForm
+  /// also in Osysharp.Inbox.Queue
+  /// also in Osysharp.Inbox.RoutingRule
+  label "Position" => "Position";
+
+  // ── Osysharp.Fields.FieldForm ──
+  /// Osysharp.Fields.FieldForm · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Fields.FieldForm.Description
+  /// beside: "Name", "Key", "Is default", "Position", "Active"
+  /// also in Osysharp.Organizations.Accounts.OrganizationTier
+  /// also in Osysharp.Inbox.Queue
+  /// also in TicketStatus
+  label "Description" => "Beskrivning";
+  /// Osysharp.Fields.FieldForm · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Fields.FieldForm.IsDefault
+  /// beside: "Name", "Description", "Key", "Position", "Active"
+  /// also in Osysharp.Organizations.Accounts.OrganizationTier
+  /// also in TicketStatus
+  label "Is default" => "Standard";
+
+  // ── Osysharp.Inbox.AssignReason ──
+  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.Inbox.AssignReason.AccountOwner
+  /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
+  /// also in CompaniesPage /companies
+  label "Account owner" => "Kontoansvarig";
+
+  // ── Osysharp.Inbox.Handling ──
+  /// Osysharp.Inbox.Handling · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Inbox.Handling.Closed
+  /// beside: "New", "Owed a response", "Answered", "Waiting on the requester", "Waiting on others", "Paused"
+  /// also in Osysharp.Feedback.FeedbackStage
+  /// also in CustomerStatus
+  /// also in StatusCategory
+  label "Closed" => "Stängd";
+  /// Osysharp.Inbox.Handling · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.Inbox.Handling.New
+  /// beside: "Owed a response", "Answered", "Waiting on the requester", "Waiting on others", "Paused", "Done"
+  /// also in StatusCategory
+  /// also in Stage
+  label "New" => "Ny";
+
+  // ── Osysharp.Inbox.InboxWords.Metric ──
+  /// Osysharp.Inbox.InboxWords.Metric · text on the page
+  /// shown through Metric()
+  /// also in DeskWords.Metric
+  text "resolution" => "lösning";
+
+  // ── Osysharp.Inbox.RoutingRule ──
+  /// Osysharp.Inbox.RoutingRule · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Inbox.RoutingRule.AssignTo
+  /// beside: "Name", "Position", "Active", "Continue after", "Channel", "Title contains"
+  /// also in AssignTicket
+  label "Assign to" => "Tilldela till";
+  /// Osysharp.Inbox.RoutingRule · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Inbox.RoutingRule.SetPriority
+  /// beside: "Name", "Position", "Active", "Continue after", "Channel", "Title contains"
+  /// also in SetTicketPriority
+  /// also in TicketView
+  label "Set priority" => "Ändra prioritet";
+
+  // ── Osysharp.Inbox.SlaAction ──
+  /// Osysharp.Inbox.SlaAction · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.Inbox.SlaAction.TellLeads
+  /// beside: "Tell the holder", "Raise the priority", "Escalate", "Move to a queue"
+  /// also in TellLeads
+  label "Tell the leads" => "Meddela teamledarna";
+
+  // ── Osysharp.Inbox.SlaMetric ──
+  /// Osysharp.Inbox.SlaMetric · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Inbox.SlaMetric.Resolution
+  /// beside: "First response", "Next response"
+  /// also in SlaPolicySettings
+  /// also in Ticket
+  label "Resolution" => "Lösning";
+
+  // ── Osysharp.Inbox.WaitFor ──
+  /// Osysharp.Inbox.WaitFor · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Inbox.WaitFor.Pause
+  /// beside: "The requester", "Somebody else"
+  /// also in StatusCategory
+  /// also in Stage
+  label "On hold" => "Vilande";
+
+  // ── Osysharp.Inbox.WorkItem ──
+  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Inbox.WorkItem.Priority
+  /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Handling"
+  /// also in Osysharp.Inbox.SlaPolicy
+  /// also in WorkItemHead
+  /// also in Osysharp.Inbox.WorkSort
+  label "Priority" => "Prioritet";
+  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Inbox.WorkItem.Queue
+  /// beside: "Title", "Reference", "Assignee", "Offered to", "Priority", "Handling"
+  /// also in Osysharp.Inbox.QueueMember
+  /// also in Osysharp.Inbox.SlaPolicy
+  /// also in WorkItemHead
+  label "Queue" => "Kö";
+  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Inbox.WorkItem.Title
+  /// beside: "Reference", "Queue", "Assignee", "Offered to", "Priority", "Handling"
+  /// also in SavedReplySettings
+  /// also in MacroSettings
+  /// also in KnowledgeStartDialog
+  label "Title" => "Rubrik";
+
+  // ── Osysharp.Knowledge.__Settings_KnowledgeSettings_Section.Sections ──
+  /// Osysharp.Knowledge.__Settings_KnowledgeSettings_Section.Sections · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through SettingsLink.Label
+  /// also in DeskNav
+  label "Knowledge base" => "Kunskapsbas";
+
+  // ── Osysharp.Mail.Receiving.MailboxSettingsSections.Sections ──
+  /// Osysharp.Mail.Receiving.MailboxSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  /// also in __Settings_DeskAddress_Section.Sections
+  heading "Channels" => "Kanaler";
+
+  // ── Osysharp.Mail.Receiving.ReceivedMailStatus ──
+  /// Osysharp.Mail.Receiving.ReceivedMailStatus · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Mail.Receiving.ReceivedMailStatus.Accepted
+  /// beside: "Handled", "Failed"
+  /// also in Osysharp.Conversations.MessageDirection
+  /// also in Osysharp.Privacy.RequestState
+  /// also in CustomerStatus
+  label "Received" => "Mottagen";
+
+  // ── Osysharp.Organizations.Accounts.CustomerAccount ──
+  /// Osysharp.Organizations.Accounts.CustomerAccount · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Organizations.Accounts.CustomerAccount.Tier
+  /// also in Osysharp.Inbox.RoutingRule
+  /// also in Osysharp.Inbox.SlaPolicy
+  /// also in SlaPolicySettings
+  label "Tier" => "Nivå";
+
+  // ── Osysharp.Organizations.MembershipSource ──
+  /// Osysharp.Organizations.MembershipSource · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Organizations.MembershipSource.Domain
+  /// beside: "Added here", "Invitation", "Single sign-on", "Directory (SCIM)"
+  /// also in CompaniesPage /companies
+  label "Mail domain" => "E-postdomän";
+
+  // ── Osysharp.People.PeopleSettingsSections.Sections ──
+  /// Osysharp.People.PeopleSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  /// also in DeskSettingsSections.Sections
+  heading "Team" => "Team";
+  /// Osysharp.People.PeopleSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through SettingsLink.Label
+  /// also in Company
+  /// also in CompaniesPage /companies
+  /// also in DeskFrame
+  label "People" => "Personer";
+
+  // ── Osysharp.Privacy.RequestKind ──
+  /// Osysharp.Privacy.RequestKind · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Privacy.RequestKind.Access
+  /// beside: "Portability", "Erasure", "Restriction"
+  /// also in AuditArea
+  label "Access" => "Tillgång";
+
+  // ── Osysharp.Reports.PeriodPreset ──
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Reports.PeriodPreset.Last30Days
+  /// beside: "Today", "Last 7 days", "Last 90 days", "This week", "This month", "Last month"
+  /// also in AuditPeriod
+  label "Last 30 days" => "Senaste 30 dagarna";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Reports.PeriodPreset.Last7Days
+  /// beside: "Today", "Last 30 days", "Last 90 days", "This week", "This month", "Last month"
+  /// also in AuditPeriod
+  label "Last 7 days" => "Senaste 7 dagarna";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Reports.PeriodPreset.Last90Days
+  /// beside: "Today", "Last 7 days", "Last 30 days", "This week", "This month", "Last month"
+  /// also in AuditPeriod
+  label "Last 90 days" => "Senaste 90 dagarna";
+
+  // ── Osysharp.ServiceHours.ServiceHours ──
+  /// Osysharp.ServiceHours.ServiceHours · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.ServiceHours.ServiceHours.Name
+  /// beside: "Zone", "Windows", "Exceptions"
+  /// also in Osysharp.Fields.CustomField
+  /// also in Osysharp.Fields.FieldForm
+  /// also in FieldListSection
+  label "Name" => "Namn";
+
+  // ── PartyCard ──
+  /// PartyCard · text on the page
+  /// also in CustomerRecord
+  text "Probably the same person" => "Troligen samma person";
+
+  // ── PartyFields ──
+  /// PartyFields · text on the page
+  /// shown through RecordFields.whereMade
+  text "Settings › Fields and forms" => "Inställningar › Fält och formulär";
+  /// PartyFields · a title
+  /// shown through RecordFields.title
+  title "About the company" => "Om företaget";
+  /// PartyFields · a title
+  /// shown through RecordFields.title
+  title "About them" => "Om personen";
+
+  // ── PeopleManager ──
+  /// PeopleManager · a title
+  /// shown through PageHead.title
+  /// beside: "Search people", "Waiting invitations"
+  /// also in PeopleSettings /settings/people
+  title "People" => "Personer";
+
+  // ── PortalChatHelp ──
+  /// PortalChatHelp · text on the page
+  /// shown through KnowledgeQuickSearch.fallback
+  text "Nothing found — write to us below and a person answers." => "Inget hittades — skriv till oss nedan så svarar en person.";
+
+  // ── PortalChrome ──
+  /// PortalChrome · a control's name for screen readers
+  /// shown through AppChrome.Product
+  accessibleName "Harbour Support" => "Harbour Support";
+  /// PortalChrome · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through MenuAction.Label
+  /// also in PortalNav
+  label "Your privacy" => "Din integritet";
+  /// PortalChrome · text on the page
+  /// shown through ConversationLauncher.intro
+  /// also in PortalChatPage /chat
+  text "Ask us anything — a person on the team reads every message." => "Fråga oss vad som helst — en person i teamet läser varje meddelande.";
+
+  // ── PortalNav ──
+  /// PortalNav · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through NavItem.Label
+  label "Chat" => "Chatt";
+  /// PortalNav · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through NavItem.Label
+  label "Get help" => "Få hjälp";
+  /// PortalNav · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through NavItem.Label
+  label "Help centre" => "Hjälpcenter";
+  /// PortalNav · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through NavItem.Label
+  label "Your requests" => "Dina förfrågningar";
+
+  // ── PrivacyLine ──
+  /// PrivacyLine · a label (a field, a list item, a menu entry) · at most ~45 characters
+  /// shown through PrivacyLine.Erased
+  /// beside: "Kept for legal claims, then erased", "Kept for legal claims", "Restricted at the customer's request", "Held", "Hold lifted"
+  label "Erased at the customer's request" => "Raderat på kundens begäran";
+  /// PrivacyLine · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through PrivacyLine.HoldPlaced
+  /// beside: "Erased at the customer's request", "Kept for legal claims, then erased", "Kept for legal claims", "Restricted at the customer's request", "Hold lifted"
+  label "Held" => "Bevaras";
+  /// PrivacyLine · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through PrivacyLine.HoldLifted
+  /// beside: "Erased at the customer's request", "Kept for legal claims, then erased", "Kept for legal claims", "Restricted at the customer's request", "Held"
+  label "Hold lifted" => "Bevarande hävt";
+  /// PrivacyLine · a label (a field, a list item, a menu entry) · at most ~30 characters
+  /// shown through PrivacyLine.KeptForClaims
+  /// beside: "Erased at the customer's request", "Kept for legal claims, then erased", "Restricted at the customer's request", "Held", "Hold lifted"
+  label "Kept for legal claims" => "Sparat för rättsliga anspråk";
+  /// PrivacyLine · a label (a field, a list item, a menu entry) · at most ~48 characters
+  /// shown through PrivacyLine.KeptPeriodEnded
+  /// beside: "Erased at the customer's request", "Kept for legal claims", "Restricted at the customer's request", "Held", "Hold lifted"
+  label "Kept for legal claims, then erased" => "Sparat för rättsliga anspråk, sedan raderat";
+  /// PrivacyLine · a label (a field, a list item, a menu entry) · at most ~51 characters
+  /// shown through PrivacyLine.Restricted
+  /// beside: "Erased at the customer's request", "Kept for legal claims, then erased", "Kept for legal claims", "Held", "Hold lifted"
+  label "Restricted at the customer's request" => "Begränsat på kundens begäran";
+
+  // ── PrivacyRequestPage (/v/{view}/p/{id}) ──
+  /// PrivacyRequestPage · /v/{view}/p/{id} · text on the page
+  text "This request is not one you may open, or it was purged at the end of its period." => "Det här är inte en förfrågan som du får öppna, eller så rensades den när lagringstiden tog slut.";
+  /// PrivacyRequestPage · /v/{view}/p/{id} · a title
+  /// shown through [Title]
+  title "Privacy request" => "Integritetsförfrågan";
+
+  // ── PrivacyRequestPane ──
+  /// PrivacyRequestPane · a control's name for screen readers
+  /// beside: "Who, and how we know"
+  /// also in StartPrivacyRequest
+  accessibleName "The plan" => "Planen";
+
+  // ── PrivacyWords ──
+  /// PrivacyWords · text on the page
+  /// shown through PrivacyWords()
+  text "A legal hold now keeps it, until the hold is lifted." => "Ett rättsligt bevarande behåller den nu, tills bevarandet hävs.";
+  /// PrivacyWords · text on the page
+  /// shown through PrivacyWords()
+  text "Closed: the conversation was kept for legal claims, and was erased when its period ended." => "Stängt: konversationen sparades för rättsliga anspråk och raderades när lagringstiden tog slut.";
+  /// PrivacyWords · text on the page
+  /// shown through PrivacyWords()
+  text "Closed: the customer asked to be erased, and this conversation concerns a claim, so it is kept for legal claims, out of use." => "Stängt: kunden bad om att bli raderad, och den här konversationen gäller ett anspråk, så den sparas för rättsliga anspråk men används inte.";
+  /// PrivacyWords · text on the page
+  /// shown through PrivacyWords()
+  text "Closed: the customer asked us to stop using their data, so this conversation is out of use until they say otherwise." => "Stängt: kunden bad oss sluta använda sina uppgifter, så konversationen används inte förrän kunden säger något annat.";
+  /// PrivacyWords · text on the page
+  /// shown through PrivacyWords()
+  text "Closed: the customer's data in this conversation was erased at their request." => "Stängt: kundens uppgifter i den här konversationen raderades på kundens begäran.";
+  /// PrivacyWords · text on the page
+  /// shown through PrivacyWords()
+  text "The legal hold was lifted." => "Det rättsliga bevarandet hävdes.";
+  /// PrivacyWords · text on the page
+  /// placeholders: {until.Value} = until.Value (DateTime)
+  /// shown through PrivacyWords()
+  text "The legal hold was lifted: it is kept until {until.Value}, then erased." => "Det rättsliga bevarandet hävdes: den sparas till och med {until.Value} och raderas sedan.";
+
+  // ── Question ──
+  /// Question · placeholder text inside an empty field · at most ~14 characters
+  /// shown through Field.placeholder
+  /// also in Osysharp.Conversations.ConversationCopy.WidgetOptional
+  /// also in NewTicketForm
+  placeholder "Optional" => "Valfritt";
+
+  // ── QueuesSettings (/settings/queues) ──
+  /// QueuesSettings · /settings/queues · a title
+  /// shown through [Title]
+  /// also in QueueSettings
+  /// also in QueuesSettings /settings/queues
+  title "Queues" => "Köer";
+
+  // ── ReadableTicket ──
+  /// ReadableTicket · an error message
+  /// placeholders: {number} = number (int)
+  /// shown through NotFoundException
+  error "There is no ticket #{number} — or not one you may read." => "Det finns inget ärende #{number}, eller inget som du får läsa.";
+
+  // ── ReplyToTicket ──
+  /// ReplyToTicket · an error message
+  /// placeholders: {first.ByName} = first.ByName (string), {first.At} = first.At (DateTime)
+  /// shown through ValidationException
+  error "{first.ByName} replied at {first.At} while you were writing. Read their reply. Yours is still here if it needs sending." => "{first.ByName} svarade {first.At} medan du skrev. Läs svaret. Ditt finns kvar här om det behöver skickas.";
+
+  // ── ReportBuilder ──
+  /// ReportBuilder · a control's name for screen readers
+  /// also in FieldList
+  /// also in TicketFields
+  accessibleName "Fields" => "Fält";
+
+  // ── ReportBuilderPage (/reports/build) ──
+  /// ReportBuilderPage · /reports/build · a title
+  /// shown through [Title]
+  title "Build a report" => "Skapa en rapport";
+
+  // ── ReportsPage (/reports) ──
+  /// ReportsPage · /reports · a title
+  /// shown through ReportOverview.title
+  title "Overview" => "Översikt";
+  /// ReportsPage · /reports · a title
+  /// shown through [Title]
+  title "Reports" => "Rapporter";
+
+  // ── RequestForm ──
+  /// RequestForm · a control's name for screen readers
+  /// beside: "Your data:"
+  accessibleName "Your request" => "Din förfrågan";
+  /// RequestForm · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Send request" => "Skicka förfrågan";
+  /// RequestForm · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through TextAreaField.label
+  /// beside: "Subject", "Send request"
+  label "What happened" => "Vad som hände";
+  /// RequestForm · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Dropdown.label
+  label "What is it about?" => "Vad gäller det?";
+  /// RequestForm · placeholder text inside an empty field · at most ~26 characters
+  /// shown through Dropdown.placeholder
+  placeholder "Choose the closest" => "Välj närmaste";
+  /// RequestForm · placeholder text inside an empty field · at most ~93 characters
+  /// shown through TextAreaField.placeholder
+  /// beside: "Subject", "Send request"
+  placeholder "What you were doing, what you expected, and what happened instead." => "Vad du gjorde, vad du förväntade dig och vad som hände i stället.";
+  /// RequestForm · text on the page
+  /// beside: "Sign in to follow your requests"
+  text "Have an account?" => "Har du ett konto?";
+  /// RequestForm · text on the page
+  text "Sign in to follow your requests" => "Logga in för att följa dina förfrågningar";
+  /// RequestForm · text on the page
+  /// beside: "see what we keep, ask for a copy or have it erased"
+  text "Your data:" => "Dina uppgifter:";
+  /// RequestForm · text on the page
+  text "see what we keep, ask for a copy or have it erased" => "se vad vi sparar, be om en kopia eller få det raderat";
+
+  // ── RoleWord ──
+  /// RoleWord · text on the page
+  /// shown through RoleWord()
+  text "Admin" => "Admin";
+  /// RoleWord · text on the page
+  /// shown through RoleWord()
+  text "Lead" => "Teamledare";
+
+  // ── RootCauseRow ──
+  /// RootCauseRow · a control's name for screen readers
+  accessibleName "Edit the root cause" => "Redigera grundorsaken";
+  /// RootCauseRow · a control's name for screen readers
+  accessibleName "Editing the root cause" => "Redigerar grundorsaken";
+  /// RootCauseRow · a button's label · at most ~27 characters
+  /// shown through Button.announceAs
+  /// beside: "Cancel"
+  button "Save the root cause" => "Spara grundorsaken";
+  /// RootCauseRow · a hint under a field
+  /// shown through TextAreaField.hint
+  /// beside: "Cancel"
+  hint "What made it happen — solving this type of request needs it on record." => "Vad som orsakade det. För att lösa den här typen av förfrågan måste det registreras.";
+  /// RootCauseRow · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through TextAreaField.label
+  /// beside: "Cancel"
+  /// also in Ticket
+  label "Root cause" => "Grundorsak";
+  /// RootCauseRow · text on the page
+  text "Not recorded yet — solving needs it" => "Inte registrerad än, krävs för att lösa";
+
+  // ── RoutingRuleSettings ──
+  /// RoutingRuleSettings · a button's label · at most ~13 characters
+  /// shown through Button.label
+  /// also in RuleRow
+  /// also in KnowledgeCategoryCard
+  /// also in StatusSettings /settings/statuses
+  button "Move up" => "Flytta upp";
+
+  // ── RoutingSettings (/settings/routing) ──
+  /// RoutingSettings · /settings/routing · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through RoutingRuleSettings.appAction
+  label "Tag it" => "Tagga det";
+  /// RoutingSettings · /settings/routing · placeholder text inside an empty field · at most ~13 characters
+  /// shown through RoutingRuleSettings.appActionHint
+  placeholder "billing" => "fakturering";
+  /// RoutingSettings · /settings/routing · a title
+  /// shown through [Title]
+  /// also in RoutingSettings /settings/routing
+  title "Routing" => "Routning";
+
+  // ── SavedReplySettings ──
+  /// SavedReplySettings · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Field.label
+  /// beside: "Title", "Reply", "Cancel"
+  /// also in MacroSettings
+  /// also in TicketStatus
+  /// also in Ticket
+  label "Category" => "Kategori";
+
+  // ── SavedReportPage (/reports/saved/{id}) ──
+  /// SavedReportPage · /reports/saved/{id} · a title
+  /// shown through [Title]
+  title "Report" => "Rapport";
+
+  // ── SeenBeforeOf ──
+  /// SeenBeforeOf · message
+  /// shown through MeaningOff
+  message "Tickets like this one are found by meaning — that is off until the embedding key is set." => "Liknande ärenden hittas på innebörd, och det är avstängt tills inbäddningsnyckeln är inställd.";
+
+  // ── SeenBeforePanel ──
+  /// SeenBeforePanel · a control's name for screen readers
+  accessibleName "Seen before" => "Sett förut";
+  /// SeenBeforePanel · a button's label · at most ~28 characters
+  /// shown through Button.label
+  button "Find tickets like it" => "Hitta liknande ärenden";
+  /// SeenBeforePanel · a button's label · at most ~48 characters
+  /// placeholders: {f.Number} = f.Number (int)
+  /// shown through Button.label
+  button "Link as an incident of #{f.Number}" => "Länka som incident av #{f.Number}";
+  /// SeenBeforePanel · text on the page
+  /// placeholders: {problemOf} = problemOf (int)
+  text "An incident of #{problemOf}" => "En incident av #{problemOf}";
+  /// SeenBeforePanel · text on the page
+  text "Nothing like it yet." => "Inget liknande ännu.";
+  /// SeenBeforePanel · text on the page
+  /// shown through SectionLabel.text
+  text "Seen before" => "Sett förut";
+
+  // ── SetPriority ──
+  /// SetPriority · an error message
+  /// shown through ValidationException
+  error "A closed ticket keeps the priority it closed with." => "Ett stängt ärende behåller den prioritet det stängdes med.";
+
+  // ── SetStatus ──
+  /// SetStatus · an error message
+  /// placeholders: {NameOfLastChange} = NameOfLastChange(…) (string), {StatusName} = StatusName(…) (string)
+  /// shown through ValidationException
+  error "{NameOfLastChange} changed its status to {StatusName}. Have another look." => "{NameOfLastChange} ändrade dess status till {StatusName}. Titta en gång till.";
+
+  // ── SetStatusOfMany ──
+  /// SetStatusOfMany · message
+  /// placeholders: {left} = left (int) — {left} is a count: give one text per plural form
+  /// shown through SetStatusOfMany()
+  message " {left} could not make that move and were left as they were." => { one: " Ett kunde inte ändras så och lämnades som det var.", other: " {left} kunde inte ändras så och lämnades som de var." };
+  /// SetStatusOfMany · message
+  /// placeholders: {moved} = moved (int), {status.Name} = status.Name (string), {value} = … (string) — {moved} is a count: give one text per plural form
+  /// shown through SetStatusOfMany()
+  message "{moved} set to {status.Name}.{value}" => { one: "Ett ärende satt till {status.Name}.{value}", other: "{moved} ärenden satta till {status.Name}.{value}" };
+
+  // ── SetTicketForm ──
+  /// SetTicketForm · an error message
+  /// placeholders: {form.Name} = form.Name (string)
+  /// shown through ValidationException
+  error "“{form.Name}” is no longer in use." => "”{form.Name}” används inte längre.";
+
+  // ── SetTicketStatus ──
+  /// SetTicketStatus · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through [Action] SetTicketStatus
+  /// beside: "Status"
+  /// also in TicketView
+  label "Set status" => "Ändra status";
+  /// SetTicketStatus · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through [Action] SetTicketStatus
+  /// beside: "Set status"
+  /// also in DeskFrame
+  /// also in TicketView
+  /// also in Ticket
+  label "Status" => "Status";
+
+  // ── SetTicketType ──
+  /// SetTicketType · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through [Action] SetTicketType
+  /// beside: "Type"
+  label "Set type" => "Ange typ";
+  /// SetTicketType · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through [Action] SetTicketType
+  /// beside: "Set type"
+  /// also in NewTicketForm
+  /// also in DeskTickets
+  label "Type" => "Typ";
+
+  // ── SettingsArea ──
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Business hours" => "Kontorstider";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Data retention" => "Lagringstid";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Fields and forms" => "Fält och formulär";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Macros" => "Makron";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Mailboxes" => "Brevlådor";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Queues" => "Köer";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Routing" => "Routning";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "SLA policies" => "SLA-policyer";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Saved replies" => "Sparade svar";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Skills" => "Kompetenser";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Statuses" => "Statusar";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Tiers" => "Nivåer";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Views" => "Vyer";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Who is responsible" => "Vem som är ansvarig";
+
+  // ── SettingsLine ──
+  /// SettingsLine · text on the page
+  /// placeholders: {Spaced} = Spaced(…) (string)
+  /// shown through AuditLine.Detail
+  text "{Spaced} changed" => "{Spaced} ändrades";
+
+  // ── SideAnsweredWords ──
+  /// SideAnsweredWords · text on the page
+  /// shown through SideAnsweredWords()
+  text "Somebody answered in a side conversation." => "Någon svarade i en sidokonversation.";
+  /// SideAnsweredWords · text on the page
+  /// placeholders: {line.Subject} = line.Subject (string)
+  /// shown through SideAnsweredWords()
+  text "There is news in the thread “{line.Subject}”." => "Det finns nytt i tråden ”{line.Subject}”.";
+  /// SideAnsweredWords · text on the page
+  /// placeholders: {line.With} = line.With (string), {line.Subject} = line.Subject (string)
+  /// shown through SideAnsweredWords()
+  text "{line.With} answered in the side conversation “{line.Subject}”." => "{line.With} svarade i sidokonversationen ”{line.Subject}”.";
+
+  // ── SideConversationStarter ──
+  /// SideConversationStarter · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Field.label
+  /// beside: "Their name"
+  /// also in CopiedOnTicket
+  label "Their address" => "Deras adress";
+  /// SideConversationStarter · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Field.label
+  /// beside: "Their address"
+  /// also in NewTicketForm
+  label "Their name" => "Deras namn";
+
+  // ── SignUpForm ──
+  /// SignUpForm · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Field.label
+  /// beside: "Email", "Password", "Create account", "I already have an account"
+  /// also in InvitationAnswer
+  /// also in Osysharp.Conversations.ConversationCopy.WidgetNameLabel
+  /// also in RequestForm
+  label "Your name" => "Ditt namn";
+
+  // ── SkillsSettings (/settings/skills) ──
+  /// SkillsSettings · /settings/skills · a title
+  /// shown through [Title]
+  /// also in SkillsSettings /settings/skills
+  title "Skills" => "Kompetenser";
+
+  // ── SlaSettings (/settings/sla) ──
+  /// SlaSettings · /settings/sla · a title
+  /// shown through [Title]
+  /// also in SlaPolicySettings
+  /// also in SlaSettings /settings/sla
+  title "SLA policies" => "SLA-policyer";
+
+  // ── SolveProblem ──
+  /// SolveProblem · an error message
+  /// shown through ValidationException
+  error "Choose a Solved status to solve it with." => "Välj en status för löst att lösa det med.";
+
+  // ── SolvedNotice ──
+  /// SolvedNotice · text on the page
+  text "If anything is still not right, write below — it opens your request again." => "Om något fortfarande inte stämmer, skriv nedan så öppnas ärendet igen.";
+  /// SolvedNotice · text on the page
+  text "This request is closed" => "Ärendet är stängt";
+  /// SolvedNotice · text on the page
+  text "We have solved this request" => "Vi har löst det här ärendet";
+  /// SolvedNotice · text on the page
+  text "What we did" => "Vad vi gjorde";
+
+  // ── SplitTicket ──
+  /// SplitTicket · an error message
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ValidationException
+  error "#{t.Number} is closed. Its messages stay with it — if the customer asks again, that opens a new ticket." => "#{t.Number} är stängt. Dess meddelanden stannar kvar. Om kunden frågar igen blir det ett nytt ärende.";
+  /// SplitTicket · an error message
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ValidationException
+  error "#{t.Number} is kept out of use at the customer's request — nothing on it is moved." => "#{t.Number} är spärrat från användning på kundens begäran, inget i det flyttas.";
+  /// SplitTicket · an error message
+  /// shown through ValidationException
+  error "Only something a customer wrote can be split into a ticket of its own." => "Bara något en kund skrivit kan delas av till ett eget ärende.";
+  /// SplitTicket · an error message
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ValidationException
+  error "That message is not on #{t.Number} any more — have another look." => "Det meddelandet finns inte längre i #{t.Number}. Titta en gång till.";
+
+  // ── Stage ──
+  /// Stage · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Stage.Answered
+  /// beside: "New", "Open", "Pending", "On hold", "Solved", "Closed"
+  label "Open, answered" => "Öppet, besvarat";
+
+  // ── StartPrivacyRequest ──
+  /// StartPrivacyRequest · a control's name for screen readers
+  accessibleName "Their data" => "Deras uppgifter";
+  /// StartPrivacyRequest · a button's label · at most ~28 characters
+  /// shown through Button.label
+  /// beside: "Close"
+  button "Open it on the Inbox" => "Öppna den i Inkorgen";
+  /// StartPrivacyRequest · a button's label · at most ~23 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Plan the request" => "Planera förfrågan";
+  /// StartPrivacyRequest · a button's label · at most ~34 characters
+  /// shown through Button.label
+  button "Start a privacy request…" => "Starta en integritetsförfrågan…";
+  /// StartPrivacyRequest · a hint under a field
+  /// shown through Field.hint
+  /// beside: "What they ask for", "How you checked it is them", "Cancel"
+  hint "Required — a request in somebody else's name is a known way to steal their data." => "Krävs. En förfrågan i någon annans namn är ett känt sätt att stjäla personens uppgifter.";
+  /// StartPrivacyRequest · a label (a field, a list item, a menu entry) · at most ~37 characters
+  /// shown through Dropdown.label
+  /// beside: "What they ask for", "In your words", "Cancel"
+  label "How you checked it is them" => "Hur du kontrollerade att det är hen";
+  /// StartPrivacyRequest · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Field.label
+  /// beside: "What they ask for", "How you checked it is them", "Cancel"
+  label "In your words" => "Med dina ord";
+  /// StartPrivacyRequest · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Dropdown.label
+  /// beside: "How you checked it is them", "In your words", "Cancel"
+  label "What they ask for" => "Vad personen ber om";
+  /// StartPrivacyRequest · placeholder text inside an empty field · at most ~80 characters
+  /// shown through Field.placeholder
+  /// beside: "What they ask for", "How you checked it is them", "Cancel"
+  placeholder "A code to the address they write from came back on 3 Oct." => "En kod till adressen som personen skriver från kom tillbaka den 3 okt.";
+  /// StartPrivacyRequest · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Filed on their behalf. You will see what it would do before anything happens — a complaint is kept for legal claims, the rest erased — and it runs only once an admin approves it on the Inbox, within a month of today." => "Registreras för personens räkning. Du ser vad den skulle göra innan något händer: ett klagomål sparas för rättsliga anspråk, resten raderas. Den körs först när en administratör godkänner den i Inkorgen, inom en månad från i dag.";
+  /// StartPrivacyRequest · a subtitle
+  /// placeholders: {value} = … (string)
+  /// shown through Dialog.subtitle
+  subtitle "The request is on the Inbox, due {value}. An admin approves the plan there; until then nothing is erased." => "Förfrågan finns i Inkorgen och ska vara klar {value}. En administratör godkänner planen där; till dess raderas inget.";
+  /// StartPrivacyRequest · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "within a month" => "inom en månad";
+  /// StartPrivacyRequest · text on the page
+  text "The desk holds nothing about them — the request will say so." => "Supportcentret har inget om personen, och förfrågan kommer att säga det.";
+  /// StartPrivacyRequest · a title
+  /// placeholders: {name} = name (string)
+  /// shown through Dialog.title
+  title "A privacy request for {name}" => "En integritetsförfrågan för {name}";
+  /// StartPrivacyRequest · a title
+  /// shown through Dialog.title
+  title "Planned — nothing has happened yet" => "Planerad, inget har hänt än";
+
+  // ── StartPrivacyRequestFor ──
+  /// StartPrivacyRequestFor · an error message
+  /// shown through ValidationException
+  error "This customer has no address, number or account the request could be about — it would reach nothing." => "Kunden har ingen adress, inget nummer eller konto som förfrågan kan gälla, så den skulle inte nå något.";
+
+  // ── StartSideConversationOn ──
+  /// StartSideConversationOn · an error message
+  /// shown through ValidationException
+  error "This ticket is closed by its customer's privacy request — nothing more is written on it." => "Ärendet är stängt efter kundens begäran om integritet. Inget mer skrivs i det.";
+  /// StartSideConversationOn · an error message
+  /// placeholders: {t.MergedInto.Number} = t.MergedInto.Number (int)
+  /// shown through ValidationException
+  error "This ticket was merged into #{t.MergedInto.Number} — start it there." => "Ärendet har slagits ihop med #{t.MergedInto.Number}. Starta den där.";
+
+  // ── StatusCategory ──
+  /// StatusCategory · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through StatusCategory.Pending
+  /// beside: "New", "Open", "On hold", "Solved", "Closed"
+  /// also in Stage
+  label "Pending" => "Väntande";
+
+  // ── StatusSettings (/settings/statuses) ──
+  /// StatusSettings · /settings/statuses · a control's name for screen readers
+  /// placeholders: {ToLower} = c.Label.ToLower(…) (string)
+  /// beside: "Add a status"
+  accessibleName "Each {ToLower} status" => "Varje status för {ToLower}";
+  /// StatusSettings · /settings/statuses · a control's name for screen readers
+  accessibleName "Name" => "Namn";
+  /// StatusSettings · /settings/statuses · a control's name for screen readers
+  /// placeholders: {c.Label} = c.Label (string)
+  accessibleName "{c.Label} statuses" => "Statusar för {c.Label}";
+  /// StatusSettings · /settings/statuses · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Add a status" => "Lägg till status";
+  /// StatusSettings · /settings/statuses · a button's label · at most ~35 characters
+  /// placeholders: {c.Label} = c.Label (string)
+  /// shown through Button.announceAs
+  button "Add a status to {c.Label}" => "Lägg till status i {c.Label}";
+  /// StatusSettings · /settings/statuses · a description
+  /// shown through SettingsPage.description
+  description "Every ticket is in one of six fixed categories — the SLA clocks and the views reason about those. Inside each, a status is your team's own name for where it is." => "Varje ärende tillhör en av sex fasta kategorier, och SLA-klockorna och vyerna utgår från dem. Inom varje kategori är en status ditt teams eget namn för var ärendet befinner sig.";
+  /// StatusSettings · /settings/statuses · a description
+  /// shown through SettingsSection.description
+  description "Waiting on somebody else — resolution time still runs." => "Väntar på någon annan, tiden för lösning löper fortfarande.";
+  /// StatusSettings · /settings/statuses · a description
+  /// shown through SettingsSection.description
+  description "Waiting on the customer — every clock is paused." => "Väntar på kunden, alla klockor är pausade.";
+  /// StatusSettings · /settings/statuses · placeholder text inside an empty field · at most ~23 characters
+  placeholder "Name this status" => "Namnge statusen";
+  /// StatusSettings · /settings/statuses · text on the page
+  text "Default — given on arrival" => "Standard, ges vid ankomst";
+  /// StatusSettings · /settings/statuses · text on the page
+  /// shown through SaveBar.saved
+  text "Statuses saved." => "Statusarna är sparade.";
+  /// StatusSettings · /settings/statuses · a title
+  /// shown through SettingsPage.title
+  /// also in StatusSettings /settings/statuses
+  title "Statuses" => "Statusar";
+
+  // ── SubmitRequest ──
+  /// SubmitRequest · an error message
+  /// shown through ValidationException
+  error "Give us an address to answer you at." => "Ge oss en adress att svara dig på.";
+  /// SubmitRequest · an error message
+  /// shown through ValidationException
+  error "Give your request a subject: one line saying what is wrong." => "Ge din förfrågan en rubrik: en rad som säger vad som är fel.";
+  /// SubmitRequest · an error message
+  /// shown through ValidationException
+  error "Tell us what happened, so we can help." => "Berätta vad som hände, så att vi kan hjälpa till.";
+
+  // ── Tag ──
+  /// Tag · validation
+  /// shown through Tag.Name [Unique]
+  validation "That tag already exists." => "Den taggen finns redan.";
+
+  // ── TagTicket ──
+  /// TagTicket · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through [Action] TagTicket
+  /// beside: "Tag"
+  label "Add a tag" => "Lägg till tagg";
+  /// TagTicket · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through [Action] TagTicket
+  /// beside: "Add a tag"
+  /// also in TicketTag
+  label "Tag" => "Tagg";
+
+  // ── TakeTicket ──
+  /// TakeTicket · an error message
+  /// shown through ValidationException
+  error "You are not in this ticket's queue, so you cannot take it." => "Du är inte med i ärendets kö, så du kan inte ta det.";
+  /// TakeTicket · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through [Action] TakeTicket
+  label "Take it" => "Ta ärendet";
+
+  // ── TellHolder ──
+  /// TellHolder · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through [Action] TellHolder
+  /// beside: "Tell whoever holds it"
+  /// also in TellLeads
+  label "Saying" => "Meddelande";
+  /// TellHolder · a label (a field, a list item, a menu entry) · at most ~30 characters
+  /// shown through [Action] TellHolder
+  /// beside: "Saying"
+  label "Tell whoever holds it" => "Meddela den som har ärendet";
+
+  // ── Ticket ──
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Ticket.ChasesSent
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Chases sent" => "Påminnelser skickade";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Ticket.ClosedFor
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Closed for" => "Stängd i";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Ticket.FollowUpOf
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Follow up of" => "Uppföljning av";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Ticket.Followers
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Followers" => "Följare";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Ticket.Form
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Form" => "Formulär";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Ticket.HoldChasesSent
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Hold chases sent" => "Vilopåminnelser skickade";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Ticket.KeptFor
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Kept for" => "Sparas i";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Ticket.KeptUntil
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Kept until" => "Sparas till";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Ticket.Rating
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Rating" => "Betyg";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Ticket.ReopenCount
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Reopen count" => "Antal återöppningar";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Ticket.Stage
+  /// beside: "Number", "Conversation", "Customer", "Category", "Status", "Status since"
+  label "Stage" => "Fas";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Ticket.StatusSince
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Status since" => "Status sedan";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Ticket.Tags
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Tags" => "Taggar";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Ticket.WaitingOn
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Waiting on" => "Väntar på";
+  /// Ticket · validation
+  /// shown through Ticket.Customer [Required]
+  validation "Every ticket is somebody's request." => "Varje ärende är någons förfrågan.";
+
+  // ── TicketAnswers ──
+  /// TicketAnswers · a label (a field, a list item, a menu entry) · at most ~100 characters
+  /// shown through DataCategory.Label
+  label "Your answers on our forms, and the details we filled in on your tickets" => "Dina svar i våra formulär, och uppgifterna vi fyllde i på dina ärenden";
+  /// TicketAnswers · text on the page
+  text "Answering you" => "Att svara dig";
+
+  // ── TicketComposer ──
+  /// TicketComposer · a control's name for screen readers
+  /// placeholders: {customer} = customer (string)
+  /// shown through Composer.replyLabel
+  accessibleName "Reply to {customer}" => "Svara {customer}";
+  /// TicketComposer · text on the page
+  /// placeholders: {customer} = customer (string), {channel} = channel (string)
+  /// shown through Composer.audience
+  text "To {customer} · {channel}" => "Till {customer} · {channel}";
+
+  // ── TicketDocument.Sample ──
+  /// TicketDocument.Sample · an email's subject line
+  /// shown through TicketData.Subject
+  mailSubject "A sample ticket" => "Ett exempelärende";
+
+  // ── TicketFieldValue ──
+  /// TicketFieldValue · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through TicketFieldValue.Ticket
+  /// also in TicketTag
+  /// also in Follower
+  label "Ticket" => "Ärende";
+
+  // ── TicketFields ──
+  /// TicketFields · a control's name for screen readers
+  /// placeholders: {formName} = formName (string)
+  accessibleName "Type: {formName}" => "Typ: {formName}";
+  /// TicketFields · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Menu.label
+  label "Change the type" => "Ändra typen";
+  /// TicketFields · text on the page
+  /// shown through SectionLabel.text
+  text "Fields" => "Fält";
+  /// TicketFields · text on the page
+  text "No fields yet — an admin adds them on Settings › Fields and forms." => "Inga fält än. En administratör lägger till dem under Inställningar › Fält och formulär.";
+  /// TicketFields · text on the page
+  /// shown through formName
+  text "No type" => "Ingen typ";
+  /// TicketFields · text on the page
+  text "Type" => "Typ";
+  /// TicketFields · text on the page
+  /// placeholders: {formName} = formName (string)
+  text "{formName} asks nothing more." => "{formName} frågar inget mer.";
+
+  // ── TicketForm ──
+  /// TicketForm · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through TicketForm.AsksRootCause
+  label "Asks root cause" => "Frågar efter grundorsak";
+
+  // ── TicketLinks ──
+  /// TicketLinks · emptyState
+  /// shown through ItemLinks.empty
+  emptyState "Not linked to another ticket." => "Inte länkat till något annat ärende.";
+
+  // ── TicketNotes ──
+  /// TicketNotes · a label (a field, a list item, a menu entry) · at most ~105 characters
+  /// shown through DataCategory.Label
+  label "What our team wrote on your tickets: what went wrong, and how it was solved" => "Vad vårt team skrev på dina ärenden: vad som gick fel och hur det löstes";
+  /// TicketNotes · text on the page
+  text "Answering you, and fixing what went wrong" => "Att svara dig, och rätta till det som gick fel";
+  /// TicketNotes · text on the page
+  text "answering you, and fixing what went wrong for everyone" => "att svara dig, och rätta till det som gick fel för alla";
+
+  // ── TicketPage (/v/{view}/t/{number}) ──
+  /// TicketPage · /v/{view}/t/{number} · text on the page
+  /// shown through EmptyState.body
+  text "It may have been merged, or the number is not one of ours." => "Det kan ha slagits ihop, eller så är numret inte ett av våra.";
+  /// TicketPage · /v/{view}/t/{number} · a title
+  /// placeholders: {number} = number (int)
+  /// shown through EmptyState.title
+  title "No ticket #{number}" => "Inget ärende #{number}";
+  /// TicketPage · /v/{view}/t/{number} · a title
+  /// shown through where
+  title "Saved view" => "Sparad vy";
+  /// TicketPage · /v/{view}/t/{number} · a title
+  /// shown through [Title]
+  title "Ticket" => "Ärende";
+
+  // ── TicketRules.Defaults ──
+  /// TicketRules.Defaults · text on the page
+  text "A promise at risk is told to whoever holds it" => "Ett löfte i fara meddelas den som har ärendet";
+  /// TicketRules.Defaults · text on the page
+  text "Urgent words are tagged and the leads told" => "Brådskande ord taggas och teamledarna meddelas";
+  /// TicketRules.Defaults · text on the page
+  text "Waiting on the customer for three days" => "Väntar på kunden i tre dagar";
+
+  // ── TicketRules.Held ──
+  /// TicketRules.Held · text on the page
+  text "Somebody holds it" => "Någon har ärendet";
+
+  // ── TicketRules.InStatus ──
+  /// TicketRules.InStatus · text on the page
+  text "Hours in its status" => "Timmar i sin status";
+
+  // ── TicketRules.SinceCustomer ──
+  /// TicketRules.SinceCustomer · text on the page
+  text "Hours since the customer wrote" => "Timmar sedan kunden skrev";
+
+  // ── TicketRules.Tags ──
+  /// TicketRules.Tags · text on the page
+  /// also in CustomerPanel
+  text "Tags" => "Taggar";
+
+  // ── TicketSolvedMail ──
+  /// TicketSolvedMail · an image's description for screen readers
+  /// shown through EmailLayout.brand
+  alt "Harbour Support" => "Harbour Support";
+  /// TicketSolvedMail · the preview line an inbox shows beside an email's subject
+  /// shown through EmailLayout.preview
+  mailPreview "We have solved your request. Reply if anything is still wrong." => "Vi har löst ditt ärende. Svara om något fortfarande är fel.";
+  /// TicketSolvedMail · an email's subject line
+  /// placeholders: {t.Number} = t.Number (int), {t.Title} = t.Title (string)
+  mailSubject "Your request #{t.Number} is solved — {t.Title}" => "Ditt ärende #{t.Number} är löst: {t.Title}";
+  /// TicketSolvedMail · text in an email
+  mailText "What we did" => "Vad vi gjorde";
+  /// TicketSolvedMail · text in an email
+  /// shown through EmailLayout.footer
+  mailText "You get this because you asked us for help. Reply to this mail to write to the team." => "Du får det här eftersom du bad oss om hjälp. Svara på mejlet för att skriva till teamet.";
+  /// TicketSolvedMail · text on the page
+  /// shown through EmailNote.text
+  /// beside: "Your request is solved"
+  text "If anything is still not right, reply to this mail — it opens your request again." => "Om något fortfarande inte stämmer, svara på det här mejlet så öppnas ärendet igen.";
+  /// TicketSolvedMail · text on the page
+  /// shown through EmailText.text
+  text "It was part of a wider problem, which we have now fixed for everyone it affected." => "Det var en del av ett större problem, som vi nu har åtgärdat för alla som berördes.";
+  /// TicketSolvedMail · text on the page
+  /// shown through EmailHeading.text
+  /// beside: "If anything is still not right, reply to this mail — it opens your request again."
+  text "Your request is solved" => "Ditt ärende är löst";
+
+  // ── TicketStatus ──
+  /// TicketStatus · validation
+  /// shown through TicketStatus.Name [Required]
+  validation "A status needs a name." => "En status behöver ett namn.";
+
+  // ── TicketView ──
+  /// TicketView · a control's name for screen readers
+  accessibleName "Back to the list" => "Tillbaka till listan";
+  /// TicketView · a control's name for screen readers
+  /// shown through HeadChip.value
+  /// beside: "Queue", "Links", "Seen before"
+  accessibleName "None yet" => "Inga än";
+  /// TicketView · a control's name for screen readers
+  accessibleName "The message" => "Meddelandet";
+  /// TicketView · a control's name for screen readers
+  accessibleName "Ticket" => "Ärende";
+  /// TicketView · a control's name for screen readers
+  /// shown through HeadChip.value
+  /// beside: "Fields", "Queue", "Links"
+  accessibleName "Tickets like it" => "Liknande ärenden";
+  /// TicketView · a control's name for screen readers
+  accessibleName "Why it is closed" => "Varför det är stängt";
+  /// TicketView · a control's name for screen readers
+  /// placeholders: {answered} = answered (int) — {answered} is a count: give one text per plural form
+  /// shown through HeadChip.value
+  /// beside: "Queue", "Links", "Seen before"
+  accessibleName "{answered} answered" => { one: "ett besvarat", other: "{answered} besvarade" };
+  /// TicketView · a button's label · at most ~24 characters
+  /// shown through Button.label
+  button "Side conversation" => "Sidokonversation";
+  /// TicketView · a button's label · at most ~24 characters
+  /// placeholders: {value} = … (int) — {value} is a count: give one text per plural form
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Solve all {value}" => { one: "Lös {value}", other: "Lös alla {value}" };
+  /// TicketView · a button's label · at most ~33 characters
+  /// shown through ConversationThread.splitLabel
+  button "Split into a new ticket" => "Dela av till ett nytt ärende";
+  /// TicketView · a button's label · at most ~18 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Split it off" => "Dela av";
+  /// TicketView · an error message
+  /// shown through Field.error
+  /// beside: "Cancel"
+  /// also in SplitTicket
+  error "Give the new ticket a subject: one line saying what this part is about." => "Ge det nya ärendet ett ämne: en rad om vad den här delen handlar om.";
+  /// TicketView · a hint under a field
+  /// shown through TextAreaField.hint
+  /// beside: "Cancel"
+  hint "Each incident's customer is mailed that their request is solved, with this, and asked how we did. Leave it empty to say only that it is solved." => "Varje incidents kund får ett mejl om att ärendet är löst, med den här texten, och tillfrågas hur det gick. Lämna tomt för att bara säga att det är löst.";
+  /// TicketView · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through TextAreaField.label
+  /// beside: "Cancel"
+  label "How it was solved" => "Hur det löstes";
+  /// TicketView · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through HeadChip.label
+  /// beside: "Fields", "Queue", "Seen before"
+  label "Links" => "Länkar";
+  /// TicketView · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through HeadChip.label
+  /// beside: "Fields", "Queue", "Links"
+  label "Seen before" => "Sett förut";
+  /// TicketView · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// shown through Field.label
+  /// beside: "Cancel"
+  label "Subject of the new ticket" => "Ämne för det nya ärendet";
+  /// TicketView · placeholder text inside an empty field · at most ~55 characters
+  /// shown through Field.placeholder
+  /// beside: "Cancel"
+  placeholder "One line saying what this part is about" => "En rad om vad den här delen handlar om";
+  /// TicketView · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Each incident still open is solved with it, and its timeline says which problem solved it." => "Varje incident som fortfarande är öppen löses tillsammans med det, och dess tidslinje säger vilket problem som löste den.";
+  /// TicketView · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Mail somebody outside about this ticket — they read only what you write them, never the ticket — or start a thread inside the team. It sits on the ticket's timeline, and their answer lands there." => "Mejla någon utanför om det här ärendet. De läser bara det du skriver till dem, aldrig ärendet. Eller starta en tråd inom teamet. Den ligger på ärendets tidslinje, och svaret hamnar där.";
+  /// TicketView · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "The message moves to a ticket of its own for the same customer, with its files. Their reply to it lands there, and both tickets stay linked." => "Meddelandet flyttas till ett eget ärende för samma kund, med sina filer. Kundens svar på det hamnar där, och båda ärendena förblir länkade.";
+  /// TicketView · text on the page
+  /// placeholders: {t.FollowUpOf.Number} = t.FollowUpOf.Number (int)
+  text "Follows #{t.FollowUpOf.Number}, which was closed." => "Följer #{t.FollowUpOf.Number}, som stängdes.";
+  /// TicketView · text on the page
+  /// shown through queueName
+  text "None" => "Inga";
+  /// TicketView · text on the page
+  text "Nothing more is sent on this ticket. If the customer writes to us again, that opens a new one." => "Inget mer skickas i det här ärendet. Om kunden skriver till oss igen öppnas ett nytt.";
+  /// TicketView · a title
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ShellSheet.title
+  title "Fields of #{t.Number}" => "Fält i #{t.Number}";
+  /// TicketView · a title
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ShellSheet.title
+  title "How #{t.Number} got here" => "Så hamnade #{t.Number} här";
+  /// TicketView · a title
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ShellSheet.title
+  title "Links of #{t.Number}" => "Länkar för #{t.Number}";
+  /// TicketView · a title
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ShellSheet.title
+  title "Seen before #{t.Number}" => "Sett förut #{t.Number}";
+  /// TicketView · a title
+  /// placeholders: {t.Number} = t.Number (int), {incidents} = incidents (int) — {incidents} is a count: give one text per plural form
+  /// shown through Dialog.title
+  title "Solve #{t.Number} and its {incidents} incidents" => { one: "Lös #{t.Number} och dess incident", other: "Lös #{t.Number} och dess {incidents} incidenter" };
+  /// TicketView · a title
+  /// shown through Dialog.title
+  title "Split into a new ticket" => "Dela av till ett nytt ärende";
+  /// TicketView · a title
+  /// shown through Dialog.title
+  title "Start a side conversation" => "Starta en sidokonversation";
+
+  // ── TierEditor ──
+  /// TierEditor · a title
+  /// shown through SettingsPage.title
+  /// also in TierSettings /settings/tiers
+  title "Tiers" => "Nivåer";
+
+  // ── TierSettings (/settings/tiers) ──
+  /// TierSettings · /settings/tiers · a description
+  /// shown through TierEditor.description
+  description "The levels of service a company can be on. A company's tier chooses its SLA policy and what it is entitled to; a company's own contract can add more (on the company)." => "De servicenivåer ett företag kan ha. Ett företags nivå väljer dess SLA-policy och vad det har rätt till; företagets eget avtal kan lägga till mer (på företaget).";
+
+  // ── Told ──
+  /// Told · text on the page
+  /// shown through Told()
+  text "Note added — they are told." => "Anteckningen lades till, och de har fått veta det.";
+  /// Told · text on the page
+  /// placeholders: {count} = count (int) — {count} is a count: give one text per plural form
+  /// shown through Told()
+  text "Note added — {count} people are told." => { one: "Anteckningen lades till, och {count} person har fått veta det.", other: "Anteckningen lades till, och {count} personer har fått veta det." };
+
+  // ── ToldUs ──
+  /// ToldUs · a control's name for screen readers
+  accessibleName "What you told us" => "Vad du berättade för oss";
+
+  // ── UncopySeat ──
+  /// UncopySeat · an error message
+  /// shown through ValidationException
+  /// also in RemoveCc
+  error "They were already taken off." => "De var redan borttagna.";
+
+  // ── ViewPage (/v/{view}) ──
+  /// ViewPage · /v/{view} · a control's name for screen readers
+  /// shown through InboxOverview.noun
+  accessibleName "ticket" => "ärende";
+  /// ViewPage · /v/{view} · message
+  /// shown through Alert.message
+  message "You are not in any queue yet, so you cannot take tickets and the inbox hands you none. An admin adds you on Settings › Queues." => "Du är inte med i någon kö än, så du kan inte ta ärenden och inkorgen ger dig inga. En administratör lägger till dig under Inställningar › Köer.";
+  /// ViewPage · /v/{view} · text on the page
+  /// shown through KeyLine.what
+  /// beside: "set a status, go to a ticket"
+  text "send the reply" => "skicka svaret";
+  /// ViewPage · /v/{view} · text on the page
+  /// shown through KeyLine.what
+  /// beside: "send the reply"
+  text "set a status, go to a ticket" => "ändra status, gå till ett ärende";
+  /// ViewPage · /v/{view} · a title
+  /// shown through [Title]
+  title "Helpdesk" => "Helpdesk";
+
+  // ── ViewSettings (/settings/views) ──
+  /// ViewSettings · /settings/views · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// shown through SharedViewSettings.appFilter
+  label "Tagged, status: or field:" => "Taggad, status: eller field:";
+  /// ViewSettings · /settings/views · placeholder text inside an empty field · at most ~38 characters
+  /// shown through SharedViewSettings.appFilterHint
+  placeholder "refund · field:product=mail" => "retur · field:product=mail";
+  /// ViewSettings · /settings/views · a title
+  /// shown through [Title]
+  /// also in SharedViewSettings
+  /// also in ViewSettings /settings/views
+  title "Shared views" => "Delade vyer";
+
+  // ── WorkListView ──
+  /// WorkListView · a button's label · at most ~21 characters
+  /// placeholders: {Min} = Math.Min(…) (int) — {Min} is a count: give one text per plural form
+  /// shown through Button.label
+  /// also in MyRequestsPage /my
+  button "Show {Min} more" => { one: "Visa en till", other: "Visa {Min} till" };
+  /// WorkListView · a title
+  /// shown through EmptyState.title
+  /// also in AuditList
+  title "Nothing matches" => "Inget matchar";
+
+  // ── __AppSettingValue_Osysharp_Identity_RolesSetup ──
+  /// __AppSettingValue_Osysharp_Identity_RolesSetup · a description
+  /// shown through RoleChoice.Description
+  description "An agent who also rebalances the team's work." => "En handläggare som också fördelar om teamets arbete.";
+  /// __AppSettingValue_Osysharp_Identity_RolesSetup · a description
+  /// shown through RoleChoice.Description
+  description "Runs the desk: the team, statuses, SLA policies, settings." => "Driver supportcentret: teamet, statusar, SLA-policyer och inställningar.";
+  /// __AppSettingValue_Osysharp_Identity_RolesSetup · a description
+  /// shown through RoleChoice.Description
+  description "Works tickets: replies, notes, assigns, changes status." => "Arbetar med ärenden: svarar, skriver anteckningar, tilldelar, ändrar status.";
+  /// __AppSettingValue_Osysharp_Identity_RolesSetup · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through RoleChoice.Label
+  label "Admin" => "Admin";
+  /// __AppSettingValue_Osysharp_Identity_RolesSetup · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through RoleChoice.Label
+  /// also in Follower
+  label "Agent" => "Handläggare";
+  /// __AppSettingValue_Osysharp_Identity_RolesSetup · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through RoleChoice.Label
+  label "Lead" => "Teamledare";
+
+  // ── __AppSettingValue_Osysharp_Knowledge_KnowledgeSetup ──
+  /// __AppSettingValue_Osysharp_Knowledge_KnowledgeSetup · a control's name for screen readers
+  /// shown through KnowledgeSetup.ContactLabel
+  accessibleName "Ask the team" => "Fråga teamet";
+
+  // ── __AppSettingValue_Osysharp_Privacy_PrivacySetup ──
+  /// __AppSettingValue_Osysharp_Privacy_PrivacySetup · text on the page
+  /// shown through PrivacySetup.SupervisoryAuthority
+  text "IMY (Integritetsskyddsmyndigheten), imy.se" => "IMY (Integritetsskyddsmyndigheten), imy.se";
+
+  // ── __PersonalDataExport0 ──
+  /// __PersonalDataExport0 · text on the page
+  text "Ticket field value" => "Värde i ett ärendefält";
+  /// __PersonalDataExport0 · text on the page
+  /// also in __PersonalDataExport1
+  text "Value" => "Värde";
+
+  // ── __PersonalDataExport1 ──
+  /// __PersonalDataExport1 · text on the page
+  text "Customer field value" => "Värde i kundfält";
+
+  // ── __PersonalDataExport2 ──
+  /// __PersonalDataExport2 · text on the page
+  text "Chases sent" => "Påminnelser skickade";
+  /// __PersonalDataExport2 · text on the page
+  text "Closed for" => "Stängd för";
+  /// __PersonalDataExport2 · text on the page
+  text "Hold chases sent" => "Väntepåminnelser skickade";
+  /// __PersonalDataExport2 · text on the page
+  text "Kept for" => "Sparas för";
+  /// __PersonalDataExport2 · text on the page
+  text "Kept until" => "Sparas till";
+  /// __PersonalDataExport2 · text on the page
+  text "Number" => "Nummer";
+  /// __PersonalDataExport2 · text on the page
+  text "Rating" => "Betyg";
+  /// __PersonalDataExport2 · text on the page
+  text "Reopen count" => "Antal återöppningar";
+  /// __PersonalDataExport2 · text on the page
+  text "Resolution" => "Lösning";
+  /// __PersonalDataExport2 · text on the page
+  /// also in RootCauseRow
+  text "Root cause" => "Grundorsak";
+  /// __PersonalDataExport2 · text on the page
+  text "Stage" => "Steg";
+  /// __PersonalDataExport2 · text on the page
+  text "Status since" => "Status sedan";
+  /// __PersonalDataExport2 · text on the page
+  text "Ticket" => "Ärende";
+  /// __PersonalDataExport2 · text on the page
+  text "Title" => "Rubrik";
+  /// __PersonalDataExport2 · text on the page
+  text "Waiting on" => "Väntar på";
+
+  // ── __Settings_DeskAddress_Section.Sections ──
+  /// __Settings_DeskAddress_Section.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "The address customers write to, and the one the desk's mail comes from." => "Adressen kunderna skriver till, och den som supportens e-post skickas från.";
+}

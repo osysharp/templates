@@ -1,0 +1,35 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Orbs, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Orbs · Osysharp.Orbs.OrbProfile.Label ──
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Composing…" => "Skriver…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Connecting…" => "Ansluter…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Listening…" => "Lyssnar…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Searching…" => "Söker…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Shaping…" => "Formar…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Solving…" => "Löser…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Thinking…" => "Tänker…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Weaving…" => "Väver…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Working…" => "Arbetar…";
+}

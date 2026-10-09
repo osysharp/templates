@@ -1,0 +1,185 @@
+// FIELDS ON SCREEN — a ticket's type and fields as the team reads and edits them, a customer's and their company's in the
+// ticket's customer panel, and what a customer told us as they read it back. The question controls, the in-place editor
+// (`FieldRow`, `RecordFields`) and the rules are Osysharp.Fields'; these put them where the desk needs them.
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Fields;
+
+// ── on the ticket ────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// A TICKET'S TYPE AND FIELDS, as the team reads and edits them: its type — the form it was asked on — as a menu, then
+/// the questions of that form (by their conditions, on what it holds), then any other answer it holds — from another
+/// form, hidden by a condition since, or to a field now retired — so nothing a ticket was told ever drops out of sight.
+/// Changing the type changes its questions and keeps every answer. A type that asks for a root cause shows it last.
+/// `titled`: false where the container already says "Fields" (the phone's sheet) — the type's menu then sits on a line
+/// of its own, named "Type".
+[Composable]
+component TicketFields(Guid ticketId, Guid? formId, bool titled = true) {
+  live var forms = TicketForm.Where(f => f.Active).OrderByDescending(f => f.IsDefault).ThenBy(f => f.Position).ThenBy(f => f.Name).ToList();
+  live var specs = FormField.OrderBy(x => x.Position).ThenBy(x => x.Field.Position)
+    .Select(x => new FieldSpec { Id = x.Field.Id, Name = x.Field.Name, Kind = x.Field.Kind, Options = x.Field.Options,
+                                 Hint = x.Field.Hint, Public = x.Field.Public, Required = x.Field.Required,
+                                 Active = x.Field.Active, Form = x.Form.Id, Position = x.Position,
+                                 ShowWhen = x.ShowWhen.Id, ShowValue = x.ShowValue }).ToList();
+  live var fields = TicketField.OrderBy(f => f.Position).ThenBy(f => f.Name)
+    .Select(f => new FieldSpec { Id = f.Id, Name = f.Name, Kind = f.Kind, Options = f.Options, Hint = f.Hint,
+                                 Public = f.Public, Required = f.Required, Active = f.Active, Position = f.Position }).ToList();
+  live var held = TicketFieldValue.Where(v => v.Ticket.Id == ticketId)
+    .Select(v => new FieldAnswer { Field = v.Field.Id, Value = v.Value }).ToList();
+  live var formNow = formId ?? forms.Select(f => f.Id).FirstOrDefault();
+  live var formName = forms.Where(f => f.Id == formNow).Select(f => f.Name).FirstOrDefault() ?? "No type";
+  live var asksRootCause = forms.Any(f => f.Id == formNow && f.AsksRootCause);
+  live var onForm = specs.Where(x => x.Form == formNow).ToList();
+  live var shown = ShownFields(onForm, held, false);
+  live var others = fields.Where(f => !shown.Contains(f.Id) && AnswerTo(held, f.Id) != "").ToList();
+  live var admin = IsAdmin;
+  bool choosing = false;
+  string problem = "";
+
+  action Choose() { choosing = !choosing; }
+  action Close() { choosing = false; }
+  action FormTo(Guid id) {
+    choosing = false; problem = "";
+    try { SetTicketForm(ticketId, id); } catch (Exception ex) { problem = ex.Message; }
+  }
+
+  render {
+    // A desk with no fields shows nothing here — except to an admin, who is told where they are made.
+    if (fields.Count > 0 || admin) {
+    Stack(gap: 2, role: UiRole.Region, label: "Fields") {
+      Row(gap: 2, align: Align.Center) {
+        if (titled) { SectionLabel("Fields"); } else { Text("Type", fontSize: FontSize.Caption, color: Colors.TextMuted); }
+        Spacer();
+        if (forms.Count > 0) {
+          // Named where the section is titled "Fields" — the menu is the ticket's TYPE, not one more field.
+          if (titled) { Text("Type", fontSize: FontSize.Caption, color: Colors.TextMuted); }
+          Box(position: Position.Relative) {
+            // The type is a menu, and says so: its name and a chevron, the shape of the head's chips.
+            Pressable(onClick: Choose, label: "Type: " + formName, px: 2, py: 1, rounded: Radius.Md, transition: Motion.Fast,
+                      expanded: choosing) {
+              Row(gap: 1, align: Align.Center) {
+                Text(formName, fontSize: FontSize.Label, fontWeight: FontWeight.Medium, color: Colors.Primary);
+                Icon(Icons.ChevronDown, size: 12, color: Colors.Primary);
+              }
+            }
+            if (choosing) {
+              Backdrop(Close);
+              Menu(from: MenuFrom.BelowEnd, label: "Change the type") {
+                foreach (var f in forms) { MenuItem(f.Name, () => FormTo(f.Id), checked: f.Id == formNow); }
+              }
+            }
+          }
+        }
+      }
+      if (fields.Count == 0) {
+        Text("No fields yet — an admin adds them on Settings › Fields and forms.", fontSize: FontSize.Caption, color: Colors.TextMuted);
+      } else if (shown.Count == 0 && others.Count == 0) {
+        Text(formName + " asks nothing more.", fontSize: FontSize.Caption, color: Colors.TextMuted);
+      }
+      foreach (var x in onForm) {
+        if (shown.Contains(x.Id)) { FieldRow(ticketId, x, AnswerTo(held, x.Id)); }
+      }
+      foreach (var f in others) { FieldRow(ticketId, f, AnswerTo(held, f.Id)); }
+      if (asksRootCause) { RootCauseRow(ticketId); }
+      if (problem != "") { Alert(problem, tone: Tone.Warning); }
+    }
+    }
+  }
+}
+
+/// THE ROOT CAUSE, on a ticket whose type asks for one (`TicketForm.AsksRootCause`): what solving it needs on record —
+/// "Not recorded yet" until somebody writes it. Edited in place, like a field; empty clears it.
+[Composable]
+component RootCauseRow(Guid ticketId) {
+  live var causes = Ticket.Where(x => x.Id == ticketId).Select(x => x.RootCause).ToList();
+  live var recorded = causes.Count > 0 && causes[0] != null ? causes[0]! : "";
+  bool editing = false;
+  string draft = "";
+  string problem = "";
+  action Edit() { editing = true; draft = recorded; problem = ""; }
+  action Cancel() { editing = false; problem = ""; }
+  action Save() {
+    try { SetRootCause(ticketId, draft); editing = false; } catch (Exception ex) { problem = ex.Message; }
+  }
+  render {
+    if (editing) {
+      Stack(gap: 2, p: 2, mx: "-8px", rounded: Radius.Md, bg: Colors.Sunken, animation: KitArrive, label: "Editing the root cause") {
+        TextAreaField("Root cause", value: draft, rows: 3, hint: "What made it happen — solving this type of request needs it on record.",
+                      error: problem);
+        Row(gap: 1, justify: Justify.End) {
+          Button("Cancel", onPress: Cancel, tone: Tone.Ghost, size: Size.Sm);
+          Button("Save", onPress: Save, tone: Tone.Primary, size: Size.Sm, announceAs: "Save the root cause");
+        }
+      }
+    } else {
+      Pressable(onClick: Edit, label: "Edit the root cause", px: 2, py: 1, mx: "-8px", rounded: Radius.Md, transition: Motion.Fast) {
+        Stack(gap: 0, minW: "0", align: Align.Start) {
+          Text("Root cause", fontSize: FontSize.Caption, color: Colors.TextMuted);
+          if (recorded == "") { Text("Not recorded yet — solving needs it", fontSize: FontSize.Label, color: Colors.Warning); }
+          else { Text(recorded, fontSize: FontSize.Label); }
+        }
+      }
+    }
+  }
+}
+
+// ── in the customer panel ────────────────────────────────────────────────────────────────────────────────────────────
+
+/// WHAT THE DESK KEEPS ABOUT THE CUSTOMER AND THEIR COMPANY — the admin's customer and company fields (Settings › Fields and
+/// forms), each edited in place in the ticket's customer panel. The team's alone: a customer never sees them. A desk with
+/// no such fields shows nothing here — except to an admin, who is told where they are made.
+[Composable]
+component PartyFields(Guid customerId, Guid companyId) {
+  live var customerFields = CustomerField.OrderBy(f => f.Position).ThenBy(f => f.Name)
+    .Select(f => new FieldSpec { Id = f.Id, Name = f.Name, Kind = f.Kind, Options = f.Options, Hint = f.Hint,
+                                 Public = f.Public, Required = f.Required, Active = f.Active, Position = f.Position }).ToList();
+  live var companyFields = CompanyField.OrderBy(f => f.Position).ThenBy(f => f.Name)
+    .Select(f => new FieldSpec { Id = f.Id, Name = f.Name, Kind = f.Kind, Options = f.Options, Hint = f.Hint,
+                                 Public = f.Public, Required = f.Required, Active = f.Active, Position = f.Position }).ToList();
+  live var customerHeld = CustomerFieldValue.Where(v => v.Customer.Id == customerId)
+    .Select(v => new FieldAnswer { Field = v.Field.Id, Value = v.Value }).ToList();
+  live var companyHeld = CompanyFieldValue.Where(v => v.Company.Id == companyId)
+    .Select(v => new FieldAnswer { Field = v.Field.Id, Value = v.Value }).ToList();
+  live var admin = IsAdmin;
+  render {
+    if (customerFields.Count > 0 || companyFields.Count > 0 || admin) {
+      Stack(gap: 5) {
+        RecordFields(customerId, customerFields, customerHeld, title: "About them", definer: admin, whereMade: "Settings › Fields and forms");
+        if (companyId != Guid.Empty) {
+          RecordFields(companyId, companyFields, companyHeld, title: "About the company", definer: admin,
+                       whereMade: "Settings › Fields and forms");
+        }
+      }
+    }
+  }
+}
+
+// ── on the portal ────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// One answer as the customer reads it back.
+class ToldRow {
+  public string Name = "";
+  public FieldKind Kind;
+  public string Value = "";
+  public int Position;
+}
+
+/// What the customer told us on the form, as they read their request back — only what they were asked (the rows' own
+/// rule), in the form's words.
+[Composable]
+component ToldUs(Guid ticketId) {
+  live var told = TicketFieldValue.Where(v => v.Ticket.Id == ticketId && v.Value != "").OrderBy(v => v.Field.Position)
+    .Select(v => new ToldRow { Name = v.Field.Name, Kind = v.Field.Kind, Value = v.Value, Position = v.Field.Position }).ToList();
+  render {
+    if (told.Count > 0) {
+      Row(gap: 5, wrap: Wrapping.Wrap, label: "What you told us") {
+        foreach (var r in told) {
+          Stack(gap: 0, minW: "0") {
+            Text(r.Name, fontSize: FontSize.Caption, color: Colors.TextMuted);
+            Text(ShownAnswer(r.Kind, r.Value), fontSize: FontSize.Label);
+          }
+        }
+      }
+    }
+  }
+}

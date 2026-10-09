@@ -3,7 +3,7 @@ using Osysharp.Shop;
 // Finding things and the small print: the kit's search, sale shelf and policy pages in this store's frame.
 
 [Title("Search — Rust & Chrome")]
-[Page("/search")]
+[Route("/search")]
 [Layout(Shop)]
 [AllowAnonymous]
 component SearchPage() {
@@ -11,7 +11,7 @@ component SearchPage() {
 }
 
 [Title("Sale — Rust & Chrome")]
-[Page("/sale")]
+[Route("/sale")]
 [Layout(Shop)]
 [AllowAnonymous]
 component SalePage() {
@@ -19,19 +19,19 @@ component SalePage() {
 }
 
 [Title("Terms of sale — Rust & Chrome")]
-[Page("/terms")]
+[Route("/terms")]
 [Layout(Shop)]
 [AllowAnonymous]
 component TermsPage() { render { AccountRoom() { ShopPolicy("terms"); } } }
 
 [Title("Privacy — Rust & Chrome")]
-[Page("/privacy")]
+[Route("/privacy")]
 [Layout(Shop)]
 [AllowAnonymous]
 component PrivacyPage() { render { AccountRoom() { ShopPolicy("privacy"); } } }
 
 [Title("Returns — Rust & Chrome")]
-[Page("/returns-policy")]
+[Route("/returns-policy")]
 [Layout(Shop)]
 [AllowAnonymous]
 component ReturnsPolicyPage() { render { AccountRoom() { ShopPolicy("returns"); } } }

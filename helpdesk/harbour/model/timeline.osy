@@ -1,0 +1,155 @@
+// A TICKET'S TIMELINE SAYS WHAT HAPPENED IN THE READER'S LANGUAGE (D-RTL2 Q2).
+//
+// Every line on a ticket's timeline is a row of FACTS — what kind of thing happened, and who, which status, which field
+// and its answers, which queue — as they were at the time. Nothing on it is a sentence. The words are said when the
+// timeline is READ, by `DeskCopy.EventSentence` on the server, in the language of whoever is reading: an agent in Riyadh
+// reads Harbour's history in Arabic and one in Malmö in Swedish, from the same rows.
+//
+// Two kinds of line are the desk's: what the DESK did ("helpdesk.…" — a status, a field, a type, a tag, a merge,
+// privacy), whose facts are `TicketFacts`; and what the INBOX did ("inbox.…" — who has it, where it waits, what a
+// promise did), kept as the inbox's own event and said by its own `Sentence()`. Both are
+// written through the conversations kit's `Record`: a customer writing back, or a timer, drives the bodies that write
+// them, and only the kit's own code writes the timeline past its floor.
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Automations;
+using Osysharp.Fields;
+
+/// Why the desk's privacy rules closed a ticket, or what now keeps it. ⚠ Appended, never inserted.
+public enum PrivacyLine {
+  /// The customer's data in its conversation was erased at their request.
+  [Label("Erased at the customer's request")] Erased,
+  /// Its conversation was kept for legal claims, and erased when that period ended.
+  [Label("Kept for legal claims, then erased")] KeptPeriodEnded,
+  /// The customer asked to be erased and it concerns a claim: kept for legal claims, out of use.
+  [Label("Kept for legal claims")] KeptForClaims,
+  /// The customer asked us to stop using their data: out of use until they say otherwise.
+  [Label("Restricted at the customer's request")] Restricted,
+  /// A legal hold now keeps it, until the hold is lifted.
+  [Label("Held")] HoldPlaced,
+  /// The legal hold was lifted: kept until `Until`, then erased.
+  [Label("Hold lifted")] HoldLifted,
+}
+
+/// What the desk did to a ticket — the facts of a "helpdesk.…" line. The line's `Kind` says which it uses:
+/// "helpdesk.status" and "helpdesk.form" (`Name`), "helpdesk.routed" (`Name` the tag, `Rule`), "helpdesk.field" (`Name`,
+/// `FieldKind`, `Was`, `Now`), "helpdesk.merged" and "helpdesk.follow-up" (`Number`), "helpdesk.merged-here" (`Number`,
+/// `Was` the duplicate's subject, `Now` the customer's last message — and the customer in the line's own `Person`),
+/// "helpdesk.auto-solved" (`Number` days), "helpdesk.privacy-closed" / "-kept" (`Privacy`, `Until`), "helpdesk.split-out"
+/// and "helpdesk.split-in" (`Number` the other ticket, `Name` its subject), "helpdesk.solved-with" (`Number` the problem), "helpdesk.solved-incidents" (`Number` how many),
+/// "helpdesk.feedback" (`Name` "good" or "bad", `Now` the customer's comment, `Number` 1 when they changed their answer),
+/// "helpdesk.automation" (`Name` the rule, `Fire` its run).
+public class TicketFacts {
+  /// What it named — a status, a type, a tag, a field: the team's own name for it, shown as the team wrote it.
+  public string Name = "";
+  /// The routing rule that did it.
+  public string Rule = "";
+  /// A field's kind, so its answers are said as a person reads them (a yes or a no, a date).
+  public FieldKind? FieldKind;
+  /// A value before and after — a field's answers; often the customer's own words.
+  public string Was = "";
+  public string Now = "";
+  /// A ticket number it names, or a number of days.
+  public int? Number;
+  /// Why privacy closed or keeps it, and until when.
+  public PrivacyLine? Privacy;
+  public DateTime? Until;
+  /// The automation's run — "helpdesk.automation" (`Name` the rule), said from the run's own record while it is kept.
+  public Guid? Fire;
+}
+
+/// A line of the desk's own on `t`'s timeline — written by the conversations kit, with these facts (and, when it names
+/// a customer, who: `person`, `party`).
+ConversationEvent TicketLine(Ticket t, string kind, TicketFacts facts, string person = "", Party? party = null) {
+  return Record(t.Conversation, kind, "Helpdesk", facts: JsonSerializer.Serialize(facts), person: person, personParty: party);
+}
+
+/// What the inbox did, as a line on `conversation`'s timeline — its own event, kept as it was, at the minute it HAPPENED
+/// (an imported ticket's breach reads "16 Sep, 10:38", not the night it was found).
+void InboxLine(Conversation conversation, Event happened) {
+  Record(conversation, Events.Name(happened), "Helpdesk", at: InboxTime(happened), facts: Events.Write(happened));
+}
+
+/// What a change to a field says — "Order number set to 88213.", "Product changed from Mail to API.", "Version cleared
+/// (was 3.2)." — its answers as a person reads them.
+string FieldChangeWords(string field, FieldKind kind, string before, string after) {
+  if (before == "" && after == "") { return $"{field} changed."; }
+  if (before == "") { return $"{field} set to {Quoted(kind, after)}."; }
+  if (after == "") { return $"{field} cleared (was {Quoted(kind, before)})."; }
+  return $"{field} changed from {Quoted(kind, before)} to {Quoted(kind, after)}.";
+}
+
+/// What a privacy line says.
+string PrivacyWords(PrivacyLine why, DateTime? until) {
+  if (why == PrivacyLine.Erased) { return "Closed: the customer's data in this conversation was erased at their request."; }
+  if (why == PrivacyLine.KeptPeriodEnded) {
+    return "Closed: the conversation was kept for legal claims, and was erased when its period ended.";
+  }
+  if (why == PrivacyLine.KeptForClaims) {
+    return "Closed: the customer asked to be erased, and this conversation concerns a claim, so it is kept for legal claims, out of use.";
+  }
+  if (why == PrivacyLine.Restricted) {
+    return "Closed: the customer asked us to stop using their data, so this conversation is out of use until they say otherwise.";
+  }
+  if (why == PrivacyLine.HoldPlaced) { return "A legal hold now keeps it, until the hold is lifted."; }
+  return until == null ? "The legal hold was lifted."
+                       : $"The legal hold was lifted: it is kept until {until.Value:d MMMM yyyy}, then erased.";
+}
+
+/// The desk's words for its timeline — what each of its own lines says, and the inbox's said by the inbox. A line whose
+/// facts were erased with the customer's words says what it was without them.
+public class DeskCopy : ConversationCopy {
+  public override string EventSentence(ConversationEvent happened) {
+    var k = happened.Kind;
+    if (k.StartsWith("inbox.") && happened.Facts != null) {
+      var told = Events.Read(happened.Facts!);
+      return told != null ? told!.Sentence() : base.EventSentence(happened);
+    }
+    if (k.StartsWith("helpdesk.")) {
+      // A line with no facts at all — written before the desk kept them — says only that something happened.
+      if (happened.Facts == null && k != "helpdesk.reopened" && k != "helpdesk.chased") { return base.EventSentence(happened); }
+      var t = happened.Facts != null ? JsonSerializer.Deserialize<TicketFacts>(happened.Facts!) : new TicketFacts();
+      if (k == "helpdesk.status") { return $"Status set to {t.Name}."; }
+      if (k == "helpdesk.form") { return $"Type set to {t.Name}."; }
+      if (k == "helpdesk.routed") { return $"Tagged {t.Name} — rule “{t.Rule}”."; }
+      if (k == "helpdesk.field") {
+        return t.Name == "" ? "A field was changed." : FieldChangeWords(t.Name, t.FieldKind ?? FieldKind.Text, t.Was, t.Now);
+      }
+      if (k == "helpdesk.merged") { return $"Merged into #{t.Number ?? 0}."; }
+      if (k == "helpdesk.merged-here") {
+        var who = happened.Person != "" ? happened.Person : "a customer";
+        var last = t.Now.Length > 280 ? t.Now.Substring(0, 277) + "…" : t.Now;
+        if (t.Was == "") { return $"#{t.Number ?? 0} from {who} was merged into this ticket."; }
+        return last == "" ? $"#{t.Number ?? 0} ({t.Was}) from {who} was merged into this ticket."
+                          : $"#{t.Number ?? 0} ({t.Was}) from {who} was merged into this ticket. Their last message: “{last}”";
+      }
+      if (k == "helpdesk.split-out") { return $"A message was split into #{t.Number ?? 0}: {t.Name}."; }
+      if (k == "helpdesk.split-in") { return $"Split from #{t.Number ?? 0} ({t.Name}) — the customer's message moved here."; }
+      if (k == "helpdesk.solved-incidents") { return $"Solved its {t.Number ?? 0} incidents with it."; }
+      if (k == "helpdesk.solved-with") { return $"Solved with its problem, #{t.Number ?? 0}."; }
+      if (k == "helpdesk.follow-up") { return $"The customer wrote after #{t.Number ?? 0} was closed — this follows it."; }
+      if (k == "helpdesk.reopened") { return "Reopened: the customer wrote back."; }
+      if (k == "helpdesk.feedback") {
+        var who = happened.Person != "" ? happened.Person : "The customer";
+        var said = t.Now.Length > 280 ? t.Now.Substring(0, 277) + "…" : t.Now;
+        if (t.Name == "bad") {
+          if (t.Number == 1) { return said == "" ? $"{who} changed their answer: it did not go well." : $"{who} changed their answer: it did not go well — “{said}”"; }
+          return said == "" ? $"{who} said it did not go well." : $"{who} said it did not go well — “{said}”";
+        }
+        if (t.Number == 1) { return said == "" ? $"{who} changed their answer: it went well." : $"{who} changed their answer: it went well — “{said}”"; }
+        return said == "" ? $"{who} said it went well." : $"{who} said it went well — “{said}”";
+      }
+      if (k == "helpdesk.automation") {
+        var fire = t.Fire == null ? null : AutomationFire.FirstOrDefault(f => f.Id == t.Fire);
+        return fire != null ? FireSentence(fire!) : $"The automation “{t.Name}” ran.";
+      }
+      if (k == "helpdesk.chased") { return "Reminded the customer we are waiting on them."; }
+      if (k == "helpdesk.auto-solved") { return $"Solved after {t.Number ?? 7} days with no word from the customer."; }
+      if ((k == "helpdesk.privacy-closed" || k == "helpdesk.privacy-kept") && t.Privacy != null) {
+        return PrivacyWords(t.Privacy.Value, t.Until);
+      }
+    }
+    return base.EventSentence(happened);
+  }
+}

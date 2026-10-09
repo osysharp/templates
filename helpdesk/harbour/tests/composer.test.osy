@@ -1,0 +1,152 @@
+// THE COMPOSER ON A TICKET (Osysharp.Composer) — what the desk told it, driven as an agent drives it: a saved reply
+// greets the customer by name and goes out under the agent's signature; a macro's steps are the desk's own verbs and
+// run with the send; the keys are on the `?` sheet; a draft survives a reload. `osy test --pixels` photographs each.
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Composer;
+using Osysharp.Inbox;
+
+// Rahul KAPOOR — the workspace's teammate (workspace.test.osy), not the desk's Rahul (rahul@, desk.test.osy). Each person
+// is declared once across the tests; this is his one declaration.
+principal Kapoor => Agent.Single(a => a.Email == "rahul.kapoor@helpdesk.test");
+
+/// Ines's ticket from Hanna, on a desk set up with its statuses and queues.
+int HannasTicket() {
+  var number = 0;
+  runas (Ines) {
+    SetUpTestDesk();
+    var me = Agent.Single(a => a.Email == "ines@helpdesk.test");
+    me.Signature = "Ines Moreau\nHarbour support";
+    UnitOfWork.Commit();
+    var opened = OpenTicket("hanna@kestrel.test", "Hanna Lindqvist", "Refund for a double charge",
+      "I was charged twice for the March invoice. Can you refund one?", WorkPriority.Normal);
+    number = Ticket.Single(t => t.Id == opened).Number;
+  }
+  return number;
+}
+
+[Test(Floor)]
+void a_saved_reply_greets_the_customer_by_name_and_goes_out_signed() {
+  var number = HannasTicket();
+  runas (Ines) {
+    SaveSavedReply(null, "", "Refund — on its way",
+      "Hi {{customer.first_name}},\n\nThe refund for **{{ticket.subject}}** is on its way — it shows in 3–5 working days.", "Billing", true);
+  }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + number);
+  Assert.Visible("To Hanna Lindqvist", within: "Composer");
+  Assert.Visible("Ines Moreau · Harbour support", within: "Signature");
+  Ui.Shot("ticket-composer-empty");
+  Ui.Click("Saved replies");
+  Ui.Fill("Search saved replies", "refund");
+  Ui.Click("Refund — on its way");
+  Assert.Value("Reply to Hanna Lindqvist",
+    "Hi Hanna,\n\nThe refund for **Refund for a double charge** is on its way — it shows in 3–5 working days.");
+  Ui.Shot("ticket-composer-saved-reply");
+  Ui.Click("Send");
+  Assert.Visible("is on its way", within: "Conversation");
+  runas (Ines) {
+    var t = Numbered(number);
+    var reply = Message.Single(m => m.Conversation == t.Conversation && m.Direction == MessageDirection.Outbound);
+    Assert.Equal("Hi Hanna,\n\nThe refund for **Refund for a double charge** is on its way — it shows in 3–5 working days.\n\nInes Moreau  \nHarbour support",
+                 reply.Text);
+    // Written in the composer, so the thread shows it formatted — and a customer's own words never are.
+    Assert.Equal(TextFormat.Markdown, reply.Format);
+    // Answering a ticket nobody held took it.
+    Assert.Equal("Ines Moreau", t.Assignee!.DisplayName);
+  }
+}
+
+[Test(Floor)]
+void a_macro_runs_the_desks_own_actions_with_the_send() {
+  var number = HannasTicket();
+  runas (Ines) {
+    AddTag(Numbered(number).Id, "refund");
+    var pending = TicketStatus.First(s => s.Category == StatusCategory.Pending && s.Active);
+    SaveMacro(null, "", "Refund issued — wait for them", "Billing",
+      "Hi {{customer.first_name}}, the refund is issued. Tell us when it arrives.", false, true,
+      [new StagedStep { Action = Actions.Of(TagTicket).Name, Parameter = "tag", Choice = "refund" },
+       new StagedStep { Action = Actions.Of(SetTicketPriority).Name, Parameter = "priority", Choice = WorkPriority.High.Name },
+       new StagedStep { Action = Actions.Of(SetTicketStatus).Name, Parameter = "status", Choice = pending.Id.ToString() }]);
+  }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + number);
+  Ui.Press("Shift+M");
+  Ui.Click("Refund issued — wait for them");
+  Assert.Visible("When you send:", within: "Composer");
+  Assert.Visible("Set priority: High", within: "Steps when you send");
+  Ui.Shot("ticket-composer-macro");
+  Ui.Click("Send");
+  Assert.Visible("the refund is issued", within: "Conversation");
+  runas (Ines) {
+    var t = Numbered(number);
+    Assert.Equal(StatusCategory.Pending, t.Category);
+    Assert.Equal(WorkPriority.High, t.Priority);
+    // Each step is on the timeline, said by the action that did it — the desk's, not the macro's.
+    Assert.True(TimelineOf(t).Any(s => s.Contains("Status set to")));
+  }
+}
+
+[Test(Floor)]
+void the_composers_keys_and_the_tag_key_are_on_the_sheet() {
+  var number = HannasTicket();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + number);
+  // L puts the cursor in the tag box. (A bare key is ignored while the agent types in a field — so each key below is
+  // pressed from a page with nothing focused, as an agent reaching for it would.)
+  Ui.Press("N");
+  Assert.Visible("Only the team sees this.", within: "Composer");
+  Assert.Focused("Internal note");
+  Ui.Visit("/v/open/t/" + number);
+  Ui.Press("R");
+  Assert.Hidden("Only the team sees this.");
+  Assert.Focused("Reply to Hanna Lindqvist");
+  Ui.Visit("/v/open/t/" + number);
+  Ui.Press("L");
+  Assert.Focused("New tag");
+  Ui.Visit("/v/open/t/" + number);
+  Ui.Press("?");
+  foreach (var key in new List<string> { "Reply", "Internal note", "Macros", "Add a tag", "Bold" }) {
+    Assert.Visible(key, within: "Keyboard shortcuts");
+  }
+  Ui.Shot("ticket-keys-sheet");
+}
+
+/// D-SHORTCUTS1 — where the Inbox and the Composer meet, every key presses exactly ONE control. With the list's rows
+/// selected the Inbox's "Move to…" holds M, the Composer's macros hold Shift+M (the desk's choice), and the `?` sheet
+/// lists both, each under its own key; M opens the move, never the macros, whichever mounted last.
+[Test(Floor)]
+void where_the_inbox_and_the_composer_meet_each_key_presses_one_control() {
+  var number = HannasTicket();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + number);
+  Ui.Click("Select all");
+  Assert.Visible("Move to…", within: "Selected");
+  Ui.Press("?");
+  Assert.Visible("Move to…", within: "Keyboard shortcuts");
+  Assert.Visible("Macros", within: "Keyboard shortcuts");
+  Ui.Press("Escape");
+  Ui.Press("M");
+  Assert.Visible("Engineering", within: "Move the selected to");   // the move menu, never the macros
+  Assert.Hidden("Search macros");
+}
+
+[Test(Floor)]
+void a_reply_half_written_on_a_ticket_is_there_after_a_reload() {
+  var number = HannasTicket();
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + number);
+  Ui.Fill("Reply to Hanna Lindqvist", "Checking with billing — back within the hour.");
+  Ui.AwaitChange(Osysharp.Composer.ComposerDraft);
+  Ui.Visit("/v/open/t/" + number);
+  Assert.Value("Reply to Hanna Lindqvist", "Checking with billing — back within the hour.");
+  Assert.Visible("Draft saved", within: "Composer");
+  // Another agent on the same ticket starts from an empty box — a draft is its writer's alone.
+  Ui.SignInAs(Kapoor);
+  Ui.Visit("/v/open/t/" + number);
+  Assert.Value("Reply to Hanna Lindqvist", "");
+}

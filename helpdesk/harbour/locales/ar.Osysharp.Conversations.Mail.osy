@@ -1,0 +1,20 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Conversations.Mail, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Conversations.Mail · Osysharp.Conversations.Mail.MailConversationChannel.NotReadyReason ──
+  /// Osysharp.Conversations.Mail.MailConversationChannel.NotReadyReason · note
+  /// shown through NotReadyReason()
+  note "No mail sender is set up — name one in app.Mail (`Sender = new ResendSender { … }`)." => "لم يُعدّ مُرسِل للبريد. حدّد واحدًا في app.Mail (`Sender = new ResendSender { … }`).";
+
+  // ── Osysharp.Conversations.Mail · Osysharp.Conversations.Mail.MailConversationChannel.Send ──
+  /// Osysharp.Conversations.Mail.MailConversationChannel.Send · an email's subject line
+  /// placeholders: {message.Subject} = message.Subject (string)
+  /// shown through MailMessage.Subject
+  mailSubject "Re: {message.Subject}" => "Re: {message.Subject}";
+  /// Osysharp.Conversations.Mail.MailConversationChannel.Send · an email's subject line
+  /// shown through MailMessage.Subject
+  mailSubject "Your conversation with us" => "محادثتك معنا";
+}

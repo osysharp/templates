@@ -1,0 +1,94 @@
+// THE AUDIT LOG (H13) — an admin reads who changed the desk's settings and somebody's access, with the values; nobody
+// else reads it; and the trail it reads is opened for the settings alone, never a customer's or an account's rows.
+// `osy test --pixels` photographs it (Ui.Shot); Docs/OsySharp/design/helpdesk/hardening/ keeps the shots.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.People;
+using Osysharp.Observability;
+
+/// Mira renames a status and a tier, and makes Theo a lead — three changes, two kinds.
+void ThreeChanges() {
+  runas (Mira) {
+    TicketStatus.Single(s => s.Name == "Waiting on a refund").Name = "Waiting on the bank";
+    TierNamed("Standard").Name = "Business";
+    UnitOfWork.Commit();
+    GrantRole(Theo, AppRole.Lead, "Covers the night shift");
+    UnitOfWork.Commit();
+  }
+}
+
+[Test(Office)]
+void an_admin_reads_who_changed_the_settings_and_somebodys_access_with_the_values() {
+  ThreeChanges();
+  runas (Mira) {
+    var log = AuditLog(AuditArea.Everything, DateTime.UtcNow.AddDays(-1), "");
+    var status = log.Single(l => l.What == "Statuses · “Waiting on the bank” changed");
+    Assert.Equal(AuditArea.Settings, status.Area);
+    Assert.Contains("Name: Waiting on a refund → Waiting on the bank", status.Detail);
+    Assert.Equal("Mira Okafor", status.By);
+    var tier = log.Single(l => l.What == "Tiers · “Business” changed");
+    Assert.Contains("Name: Standard → Business", tier.Detail);
+    var access = log.Single(l => l.Area == AuditArea.Access);
+    Assert.Equal("Granted Lead — Theo Brandt", access.What);
+    Assert.Equal("Covers the night shift", access.Reason);
+    // Narrowed by kind and by person.
+    Assert.Equal(2, AuditLog(AuditArea.Settings, DateTime.UtcNow.AddDays(-1), "").Count);
+    Assert.Equal(1, AuditLog(AuditArea.Access, DateTime.UtcNow.AddDays(-1), "").Count);
+    Assert.Equal(0, AuditLog(AuditArea.Everything, DateTime.UtcNow.AddDays(-1), "Theo Brandt").Count);
+  }
+}
+
+[Test(Office)]
+void the_trail_opens_to_admins_and_for_the_settings_alone() {
+  ThreeChanges();
+  // An agent is not an admin: the log is not theirs, nor the trail under it.
+  runas (Theo) {
+    Assert.Throws(() => AuditLog(AuditArea.Everything, DateTime.UtcNow.AddDays(-1), ""));
+    Assert.Equal(0, EntityAuditRecord.Count());
+  }
+  // An admin reads the settings' trail — and never an account's or a customer's, though the trail holds them.
+  runas (Mira) {
+    Assert.True(EntityAuditRecord.Any(e => e.EntityType == "TicketStatus"));
+    // (The fixture made every one of these, and `ThreeChanges` a role grant and an access change: they are in the trail.)
+    Assert.Equal(0, EntityAuditRecord.Count(e => e.EntityType == "Agent" || e.EntityType == "Customer"
+                                              || e.EntityType == "Osysharp.Accounts.User" || e.EntityType == "Osysharp.Identity.RoleGrant"
+                                              || e.EntityType == "Osysharp.People.AccessChange"
+                                              || e.EntityType == "Osysharp.Conversations.ContactPoint"));
+  }
+}
+
+[Test(Office)]
+void the_audit_log_page_lists_the_changes_narrows_them_and_says_when_there_are_none() {
+  ThreeChanges();
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/audit");
+  Assert.Visible("Audit log", within: "Settings sections");
+  Assert.Visible("Statuses · “Waiting on the bank” changed");
+  Assert.Visible("Name: Waiting on a refund → Waiting on the bank");
+  Assert.Visible("Granted Lead — Theo Brandt");
+  Assert.Visible("by Mira Okafor — “Covers the night shift”");
+  Ui.Shot("audit-log-wide");
+  Ui.Click("Access");
+  Assert.Visible("Granted Lead — Theo Brandt");
+  Assert.Hidden("Statuses · “Waiting on the bank” changed");
+  Ui.Click("Desk settings");
+  Assert.Visible("Tiers · “Business” changed");
+  Assert.Hidden("Granted Lead — Theo Brandt");
+  Ui.Viewport(390, 844);
+  Ui.Click("All changes");
+  Assert.Visible("3 changes");
+  Ui.Shot("audit-log-phone");
+}
+
+[Test(Office)]
+void a_desk_nobody_has_changed_has_an_empty_audit_log_that_says_what_will_be_there() {
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/audit");
+  Assert.Visible("No changes yet");
+  Assert.Hidden("0 changes");
+  Ui.Shot("audit-log-empty");
+}

@@ -1,0 +1,449 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Fields, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Fields · AnswerProblem ──
+  /// AnswerProblem · an error message
+  /// placeholders: {f.Name} = f.Name (string), {Join} = string.Join(…) (string)
+  /// shown through AnswerProblem()
+  error "{f.Name} is one of: {Join}." => "{f.Name} är något av: {Join}.";
+  /// AnswerProblem · an error message
+  /// placeholders: {f.Name} = f.Name (string)
+  /// shown through AnswerProblem()
+  error "{f.Name} is too long — keep it under 1,000 characters." => "{f.Name} är för långt. Håll det under 1 000 tecken.";
+  /// AnswerProblem · an error message
+  /// placeholders: {f.Name} = f.Name (string)
+  /// shown through AnswerProblem()
+  error "{f.Name} is yes or no." => "{f.Name} är ja eller nej.";
+  /// AnswerProblem · an error message
+  /// placeholders: {f.Name} = f.Name (string)
+  /// shown through AnswerProblem()
+  error "{f.Name} takes a date, like 2026-10-02." => "{f.Name} tar ett datum, till exempel 2026-10-02.";
+  /// AnswerProblem · an error message
+  /// placeholders: {f.Name} = f.Name (string)
+  /// shown through AnswerProblem()
+  error "{f.Name} takes a number, like 42 or 3.5." => "{f.Name} tar ett tal, till exempel 42 eller 3,5.";
+
+  // ── Osysharp.Fields · Checked ──
+  /// Checked · an error message
+  /// placeholders: {form.Name} = form.Name (string)
+  /// shown through ValidationException
+  error "The form “{form.Name}” does not ask that any more. Reload the page and send it again." => "Formuläret ”{form.Name}” frågar inte efter det längre. Ladda om sidan och skicka den igen.";
+  /// Checked · an error message
+  /// shown through ValidationException
+  error "This form asks nothing more. Reload the page and send it again." => "Det här formuläret frågar inget mer. Ladda om sidan och skicka igen.";
+
+  // ── Osysharp.Fields · CheckedChange ──
+  /// CheckedChange · an error message
+  /// shown through ValidationException
+  error "Someone" => "Någon";
+  /// CheckedChange · an error message
+  /// shown through ValidationException
+  error "nothing" => "ingenting";
+  /// CheckedChange · an error message
+  /// placeholders: {f.Name} = f.Name (string)
+  /// shown through ValidationException
+  error "{f.Name} is retired: records keep their answers to it, and it takes no new ones." => "{f.Name} är pensionerat: poster behåller sina svar, men det tar inga nya.";
+  /// CheckedChange · an error message
+  /// placeholders: {value} = … (string), {f.Name} = f.Name (string), {value2} = … (string)
+  /// shown through ValidationException
+  error "{value} changed {f.Name} to {value2} just now. Have another look." => "{value} ändrade {f.Name} till {value2} nyss. Titta en gång till.";
+
+  // ── Osysharp.Fields · Choices ──
+  /// Choices · text on the page
+  text "Optional" => "Valfritt";
+
+  // ── Osysharp.Fields · ConditionEditor ──
+  /// ConditionEditor · a control's name for screen readers
+  /// placeholders: {x.Field.Name} = x.Field.Name
+  accessibleName "Condition of {x.Field.Name}" => "Villkor för {x.Field.Name}";
+  /// ConditionEditor · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Always ask it" => "Fråga alltid";
+  /// ConditionEditor · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Dropdown.label
+  label "Show it only when" => "Visa det bara när";
+  /// ConditionEditor · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Question.label
+  label "…and its answer is" => "…och svaret är";
+  /// ConditionEditor · placeholder text inside an empty field · at most ~18 characters
+  /// shown through Dropdown.placeholder
+  placeholder "Always asked" => "Frågas alltid";
+  /// ConditionEditor · text on the page
+  text "Only a question above it on this form can show it. Move it below the question that should." => "Bara en fråga ovanför i det här formuläret kan visa det. Flytta det under den fråga som ska visa det.";
+
+  // ── Osysharp.Fields · ConditionLine ──
+  /// ConditionLine · text on the page
+  /// shown through ConditionLine()
+  text "Always asked" => "Frågas alltid";
+  /// ConditionLine · text on the page
+  /// placeholders: {x.ShowWhen.Name} = x.ShowWhen.Name (string), {value} = … (string)
+  /// shown through ConditionLine()
+  text "Shown when {x.ShowWhen.Name} is {value}" => "Visas när {x.ShowWhen.Name} är {value}";
+
+  // ── Osysharp.Fields · ConditionProblem ──
+  /// ConditionProblem · text on the page
+  /// placeholders: {x.ShowWhen.Name} = x.ShowWhen.Name (string)
+  /// shown through ConditionProblem()
+  text "Never shown: say which answer to {x.ShowWhen.Name} shows it." => "Visas aldrig: ange vilket svar på {x.ShowWhen.Name} som visar det.";
+  /// ConditionProblem · text on the page
+  /// placeholders: {x.ShowWhen.Name} = x.ShowWhen.Name (string)
+  /// shown through ConditionProblem()
+  text "Never shown: {x.ShowWhen.Name} comes after it — move it above." => "Visas aldrig: {x.ShowWhen.Name} kommer efter det. Flytta upp det.";
+  /// ConditionProblem · text on the page
+  /// placeholders: {x.ShowWhen.Name} = x.ShowWhen.Name (string)
+  /// shown through ConditionProblem()
+  text "Never shown: {x.ShowWhen.Name} is not on this form." => "Visas aldrig: {x.ShowWhen.Name} finns inte i formuläret.";
+  /// ConditionProblem · text on the page
+  /// placeholders: {x.ShowWhen.Name} = x.ShowWhen.Name (string)
+  /// shown through ConditionProblem()
+  text "Never shown: {x.ShowWhen.Name} is retired." => "Visas aldrig: {x.ShowWhen.Name} är pensionerat.";
+  /// ConditionProblem · text on the page
+  /// placeholders: {x.ShowValue} = x.ShowValue (string), {x.ShowWhen.Name} = x.ShowWhen.Name (string)
+  /// shown through ConditionProblem()
+  text "Never shown: “{x.ShowValue}” is not an answer {x.ShowWhen.Name} takes." => "Visas aldrig: ”{x.ShowValue}” är inte ett svar som {x.ShowWhen.Name} tar.";
+
+  // ── Osysharp.Fields · FieldAnswerLines ──
+  /// FieldAnswerLines · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Badge.label
+  /// also in FieldListSection
+  /// also in FormSection
+  label "Retired" => "Pensionerat";
+
+  // ── Osysharp.Fields · FieldListSection ──
+  /// FieldListSection · a button's label · at most ~17 characters
+  /// shown through Button.label
+  /// also in ReportBuilder
+  button "Add a field" => "Lägg till fält";
+  /// FieldListSection · a button's label · at most ~31 characters
+  /// placeholders: {title} = title
+  /// shown through Button.announceAs
+  button "Add a field to {title}" => "Lägg till ett fält i {title}";
+  /// FieldListSection · a button's label · at most ~19 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Add the field" => "Lägg till fältet";
+  /// FieldListSection · a button's label · at most ~16 characters
+  /// shown through Button.label
+  button "Bring back" => "Ta tillbaka";
+  /// FieldListSection · a button's label · at most ~27 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through Button.announceAs
+  button "Bring back {f.Name}" => "Ta tillbaka {f.Name}";
+  /// FieldListSection · a button's label · at most ~10 characters
+  /// shown through Button.label
+  /// beside: "104px"
+  /// also in SavedReplySettings
+  /// also in MacroSettings
+  /// also in RuleRow
+  button "Edit" => "Redigera";
+  /// FieldListSection · a button's label · at most ~19 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through Button.announceAs
+  /// beside: "104px"
+  button "Edit {f.Name}" => "Redigera {f.Name}";
+  /// FieldListSection · a button's label · at most ~26 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through IconButton.label
+  /// beside: "Edit", "104px"
+  button "Move {f.Name} down" => "Flytta ned {f.Name}";
+  /// FieldListSection · a button's label · at most ~23 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through IconButton.label
+  /// beside: "Edit", "104px"
+  button "Move {f.Name} up" => "Flytta upp {f.Name}";
+  /// FieldListSection · a button's label · at most ~12 characters
+  /// shown through Button.label
+  button "Retire" => "Pensionera";
+  /// FieldListSection · a button's label · at most ~21 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through Button.announceAs
+  button "Retire {f.Name}" => "Pensionera {f.Name}";
+  /// FieldListSection · a description
+  /// placeholders: {record} = record, {records} = records
+  /// shown through SettingsSection.description
+  description "Every question asked about a {record}, in the order it shows them. A field is retired, never deleted: {records} keep their answers." => "Varje fråga som ställs ({record}), i den ordning den visas. Ett fält pensioneras, det raderas aldrig: {records} behåller sina svar.";
+  /// FieldListSection · a description
+  /// shown through FieldListSection.record
+  description "record" => "post";
+  /// FieldListSection · a description
+  /// shown through FieldListSection.records
+  description "records" => "poster";
+  /// FieldListSection · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Badge.label
+  label "Added" => "Tillagt";
+  /// FieldListSection · a label (a field, a list item, a menu entry) · at most ~30 characters
+  /// shown through TextAreaField.label
+  label "Options, one per line" => "Alternativ, ett per rad";
+  /// FieldListSection · a label (a field, a list item, a menu entry) · at most ~27 characters
+  /// shown through Checkbox.label
+  label "They must answer it" => "De måste svara";
+  /// FieldListSection · placeholder text inside an empty field · at most ~61 characters
+  /// shown through Field.placeholder
+  /// beside: "Name", "Kind", "Cancel"
+  placeholder "Where to find it — shown under the question" => "Var man hittar det, visas under frågan";
+  /// FieldListSection · a subtitle
+  /// shown through FieldListSection.about
+  subtitle "Something the app asks about a record." => "Något appen frågar om en post.";
+  /// FieldListSection · text on the page
+  /// placeholders: {records} = records
+  /// beside: "Kind"
+  text "Fixed once saved: {records} keep their answers in it." => "Kan inte ändras när det sparats: {records} behåller sina svar i det.";
+  /// FieldListSection · text on the page
+  /// placeholders: {records} = records
+  /// beside: "Kind"
+  text "Fixed once saved: {records} keep their answers in it. For another kind, retire this field and add a new one." => "Kan inte ändras när det sparats: {records} behåller sina svar i det. För en annan sort, pensionera fältet och lägg till ett nytt.";
+  /// FieldListSection · text on the page
+  /// shown through FieldLabel.text
+  text "Kind" => "Typ";
+  /// FieldListSection · text on the page
+  /// placeholders: {record} = record
+  text "No fields yet. Add the first thing you want to know about a {record}." => "Inga fält än. Lägg till det första du vill veta ({record}).";
+  /// FieldListSection · a title
+  /// shown through Dialog.title
+  title "A field" => "Ett fält";
+  /// FieldListSection · a title
+  /// shown through Dialog.title
+  title "A new field" => "Ett nytt fält";
+
+  // ── Osysharp.Fields · FieldNameProblem ──
+  /// FieldNameProblem · an error message
+  /// shown through FieldNameProblem()
+  error "Another field already has that name." => "Ett annat fält har redan det namnet.";
+  /// FieldNameProblem · an error message
+  /// shown through FieldNameProblem()
+  error "Name the field." => "Ge fältet ett namn.";
+
+  // ── Osysharp.Fields · FieldRow ──
+  /// FieldRow · a control's name for screen readers
+  /// placeholders: {f.Name} = f.Name
+  accessibleName "Edit {f.Name}" => "Redigera {f.Name}";
+  /// FieldRow · a control's name for screen readers
+  /// placeholders: {f.Name} = f.Name
+  accessibleName "Editing {f.Name}" => "Redigerar {f.Name}";
+  /// FieldRow · a button's label · at most ~19 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through Button.announceAs
+  /// beside: "Cancel"
+  button "Save {f.Name}" => "Spara {f.Name}";
+
+  // ── Osysharp.Fields · FormSection ──
+  /// FormSection · a control's name for screen readers
+  /// placeholders: {form.Name} = form.Name
+  /// beside: "180px", "What it is for"
+  accessibleName "Fields on {form.Name}" => "Fält i {form.Name}";
+  /// FormSection · a control's name for screen readers
+  /// placeholders: {x.Field.Name} = x.Field.Name, {form.Name} = form.Name
+  accessibleName "{x.Field.Name} on {form.Name}" => "{x.Field.Name} i {form.Name}";
+  /// FormSection · a button's label · at most ~37 characters
+  /// placeholders: {form.Name} = form.Name
+  /// shown through Button.label
+  button "Add a field to {form.Name}" => "Lägg till fält i {form.Name}";
+  /// FormSection · a button's label · at most ~15 characters
+  /// shown through Button.label
+  /// beside: "Take off"
+  button "Condition" => "Villkor";
+  /// FormSection · a button's label · at most ~59 characters
+  /// placeholders: {x.Field.Name} = x.Field.Name, {form.Name} = form.Name
+  /// shown through Button.announceAs
+  /// beside: "Take off"
+  button "Condition of {x.Field.Name} on {form.Name}" => "Villkor för {x.Field.Name} i {form.Name}";
+  /// FormSection · a button's label · at most ~40 characters
+  /// placeholders: {form.Name} = form.Name
+  /// shown through Button.announceAs
+  button "Make {form.Name} the default" => "Gör {form.Name} till standard";
+  /// FormSection · a button's label · at most ~55 characters
+  /// placeholders: {x.Field.Name} = x.Field.Name, {form.Name} = form.Name
+  /// shown through IconButton.label
+  /// beside: "Condition", "Take off"
+  button "Move {x.Field.Name} down on {form.Name}" => "Flytta ned {x.Field.Name} i {form.Name}";
+  /// FormSection · a button's label · at most ~52 characters
+  /// placeholders: {x.Field.Name} = x.Field.Name, {form.Name} = form.Name
+  /// shown through IconButton.label
+  /// beside: "Condition", "Take off"
+  button "Move {x.Field.Name} up on {form.Name}" => "Flytta upp {x.Field.Name} i {form.Name}";
+  /// FormSection · a button's label · at most ~14 characters
+  /// shown through Button.label
+  /// beside: "Condition"
+  button "Take off" => "Ta bort";
+  /// FormSection · a button's label · at most ~49 characters
+  /// placeholders: {x.Field.Name} = x.Field.Name, {form.Name} = form.Name
+  /// shown through Button.announceAs
+  /// beside: "Condition"
+  button "Take {x.Field.Name} off {form.Name}" => "Ta bort {x.Field.Name} från {form.Name}";
+  /// FormSection · an error message
+  /// shown through Field.error
+  error "A key is lower-case words joined by hyphens, like bug-report." => "En nyckel består av ord med små bokstäver och bindestreck, som bug-report.";
+  /// FormSection · a hint under a field
+  /// shown through FormSection.keyHint
+  hint "What rules name it by — lower-case words and hyphens. Fixed once saved." => "Det regler kallar den, med små bokstäver och bindestreck. Kan inte ändras när den sparats.";
+  /// FormSection · a label (a field, a list item, a menu entry) · at most ~38 characters
+  /// shown through MenuItem.label
+  label "Every field in use is on it" => "Alla fält som används finns med";
+  /// FormSection · a label (a field, a list item, a menu entry) · at most ~40 characters
+  /// placeholders: {form.Name} = form.Name
+  /// shown through Menu.label
+  label "Fields to put on {form.Name}" => "Fält att lägga till i {form.Name}";
+  /// FormSection · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Field.label
+  /// beside: "180px"
+  /// also in ApiKeyManager
+  label "What it is for" => "Vad den är till för";
+  /// FormSection · placeholder text inside an empty field · at most ~48 characters
+  /// shown through Field.placeholder
+  /// beside: "180px"
+  placeholder "Shown under the choice on the form" => "Visas under valet i formuläret";
+  /// FormSection · text on the page
+  text "Default — taken when nobody chooses" => "Standard, används när ingen väljer";
+  /// FormSection · text on the page
+  text "It asks nothing more yet." => "Det frågar inget mer än.";
+  /// FormSection · text on the page
+  /// placeholders: {form.Key} = form.Key
+  text "Rules name it “{form.Key}”." => "Regler kallar det ”{form.Key}”.";
+
+  // ── Osysharp.Fields · KindLine ──
+  /// KindLine · text on the page
+  /// placeholders: {kind} = kind (string)
+  /// shown through KindLine()
+  text "{kind} · asked on the form" => "{kind} · frågas i formuläret";
+  /// KindLine · text on the page
+  /// placeholders: {kind} = kind (string)
+  /// shown through KindLine()
+  text "{kind} · asked on the form, required" => "{kind} · frågas i formuläret, obligatoriskt";
+  /// KindLine · text on the page
+  /// placeholders: {kind} = kind (string)
+  /// shown through KindLine()
+  text "{kind} · the team's" => "{kind} · teamets";
+
+  // ── Osysharp.Fields · Osysharp.Fields.CustomField ──
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Fields.CustomField.Hint
+  /// beside: "Name", "Kind", "Options", "Public", "Required", "Position"
+  /// also in FieldListSection
+  label "Hint" => "Tips";
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Fields.CustomField.Kind
+  /// beside: "Name", "Options", "Hint", "Public", "Required", "Position"
+  /// also in FieldListSection
+  /// also in Osysharp.Conversations.ContactPoint
+  /// also in Osysharp.Inbox.WorkItem
+  label "Kind" => "Typ";
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Fields.CustomField.Options
+  /// beside: "Name", "Kind", "Hint", "Public", "Required", "Position"
+  label "Options" => "Alternativ";
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Fields.CustomField.Public
+  /// beside: "Name", "Kind", "Options", "Hint", "Required", "Position"
+  label "Public" => "Offentlig";
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Fields.CustomField.Required
+  /// beside: "Name", "Kind", "Options", "Hint", "Public", "Position"
+  /// also in RoutingRuleSettings
+  label "Required" => "Krävs";
+  /// Osysharp.Fields.CustomField · validation
+  /// shown through Osysharp.Fields.CustomField.Name [Required]
+  validation "Name the field." => "Namnge fältet.";
+
+  // ── Osysharp.Fields · Osysharp.Fields.FieldForm ──
+  /// Osysharp.Fields.FieldForm · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.Fields.FieldForm.Key
+  /// beside: "Name", "Description", "Is default", "Position", "Active"
+  /// also in FormSection
+  label "Key" => "Nyckel";
+  /// Osysharp.Fields.FieldForm · validation
+  /// shown through Osysharp.Fields.FieldForm.Key [Unique]
+  validation "Another form already has that key." => "Ett annat formulär har redan den nyckeln.";
+  /// Osysharp.Fields.FieldForm · validation
+  /// shown through Osysharp.Fields.FieldForm.Key [Required]
+  validation "Give the form a key." => "Ge formuläret en nyckel.";
+  /// Osysharp.Fields.FieldForm · validation
+  /// shown through Osysharp.Fields.FieldForm.Name [Required]
+  validation "Name the form." => "Namnge formuläret.";
+
+  // ── Osysharp.Fields · Osysharp.Fields.FieldKind ──
+  /// Osysharp.Fields.FieldKind · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.Fields.FieldKind.Choice
+  /// beside: "Text", "Number", "Yes or no", "Date"
+  label "One of a list" => "Ett ur en lista";
+
+  // ── Osysharp.Fields · Osysharp.Fields.FieldValue ──
+  /// Osysharp.Fields.FieldValue · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Fields.FieldValue.Field
+  /// beside: "Value"
+  label "Field" => "Fält";
+  /// Osysharp.Fields.FieldValue · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Fields.FieldValue.Value
+  /// beside: "Field"
+  /// also in Osysharp.Conversations.ContactPoint
+  /// also in AutomationRules
+  /// also in HavingEditor
+  label "Value" => "Värde";
+
+  // ── Osysharp.Fields · Osysharp.Fields.FieldsInReports.Pivots ──
+  /// Osysharp.Fields.FieldsInReports.Pivots · text on the page
+  /// also in AutomationRules
+  /// also in ParamInput
+  text "No" => "Nej";
+  /// Osysharp.Fields.FieldsInReports.Pivots · text on the page
+  /// also in AutomationRules
+  /// also in ParamInput
+  text "Yes" => "Ja";
+
+  // ── Osysharp.Fields · Question ──
+  /// Question · placeholder text inside an empty field · at most ~14 characters
+  /// shown through Field.placeholder
+  placeholder "A number" => "Ett tal";
+  /// Question · placeholder text inside an empty field · at most ~16 characters
+  /// shown through Dropdown.placeholder
+  placeholder "Choose one" => "Välj ett";
+  /// Question · placeholder text inside an empty field · at most ~27 characters
+  /// shown through Field.placeholder
+  placeholder "Optional — a number" => "Valfritt, ett tal";
+  /// Question · placeholder text inside an empty field · at most ~30 characters
+  /// shown through Dropdown.placeholder
+  placeholder "Optional — choose one" => "Valfritt, välj ett";
+
+  // ── Osysharp.Fields · RecordFields ──
+  /// RecordFields · text on the page
+  /// placeholders: {whereMade} = whereMade
+  text "No fields yet — they are added on {whereMade}." => "Inga fält än. De läggs till under {whereMade}.";
+  /// RecordFields · text on the page
+  text "No fields yet." => "Inga fält än.";
+  /// RecordFields · a title
+  /// shown through RecordFields.title
+  /// also in FieldListSection
+  title "Fields" => "Fält";
+
+  // ── Osysharp.Fields · SetField ──
+  /// SetField · an error message
+  /// shown through ValidationException
+  error "That field is gone. Reload the page." => "Det fältet finns inte längre. Ladda om sidan.";
+  /// SetField · an error message
+  /// placeholders: {field.Name} = field.Name (string)
+  /// shown through ValidationException
+  error "{field.Name} is on no kind of record this app keeps answers for — it needs an IFieldRecords class." => "{field.Name} hör inte till någon typ av post som appen sparar svar för. Den behöver en IFieldRecords-klass.";
+
+  // ── Osysharp.Fields · ShownAnswer ──
+  /// ShownAnswer · a control's name for screen readers
+  /// shown through ShownAnswer()
+  /// also in CellText
+  accessibleName "No" => "Nej";
+  /// ShownAnswer · a control's name for screen readers
+  /// shown through ShownAnswer()
+  /// also in CellText
+  accessibleName "Yes" => "Ja";
+
+  // ── Osysharp.Fields · SlotProblem ──
+  /// SlotProblem · an error message
+  /// shown through SlotProblem()
+  error "Needs an answer." => "Behöver ett svar.";
+
+  // ── Osysharp.Fields · UseLine ──
+  /// UseLine · text on the page
+  /// placeholders: {n} = n (int), {value} = … (string) — {n} is a count: give one text per plural form
+  /// shown through UseLine()
+  text " · answered on {n} {value}" => { one: " · besvarat på {n} {value}", other: " · besvarat på {n} {value}" };
+}

@@ -1,0 +1,320 @@
+// THE BELL ON THE DESK (Osysharp.Notifications, model/notifications.osy) — who is told what: a colleague's @mention in a
+// note seats them and tells them; the customer writing again tells whoever holds or follows the ticket; the inbox's
+// offers, hand-overs and promises reach the teammate it names. Never about a ticket somebody may not open, and said in
+// the language each teammate reads the desk in. `osy test --pixels` photographs the bell, the mention menu and the
+// digest mail (Docs/OsySharp/design/notifications/).
+using Osysharp.Identity;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Accounts;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Composer;
+using Osysharp.Inbox;
+using Osysharp.Notifications;
+
+/// Ines (an agent who runs the desk), Rahul (an agent) and Lena (a lead); a restricted "Legal" queue only Lena works;
+/// Olivia, a Larkspur customer with a portal account.
+[TestFixture]
+void Bells() {
+  SetUpTestDesk();
+  var ines  = new Agent { Email = "ines@helpdesk.test",  DisplayName = "Ines Moreau" };
+  var rahul = new Agent { Email = "rahul@helpdesk.test", DisplayName = "Rahul Kapoor" };
+  var lena  = new Agent { Email = "lena@helpdesk.test",  DisplayName = "Lena Fischer" };
+  new RoleGrant { Member = ines,  Role = AppRole.Agent };
+  new RoleGrant { Member = ines,  Role = AppRole.Admin };
+  new RoleGrant { Member = rahul, Role = AppRole.Agent };
+  new RoleGrant { Member = lena,  Role = AppRole.Lead };
+  JoinTheDesk(ines);
+  JoinTheDesk(rahul);
+  JoinTheDesk(lena);
+  var legal = new Queue { Name = "Legal", Position = 5, Restricted = true, Description = "Disputes and lawyers' letters." };
+  new QueueMember { Queue = legal, Member = lena };
+  var larkspur = new Company { Name = "Larkspur Freight", Tier = TierNamed("Standard"), SharesTickets = true };
+  new OrganizationDomain { Organization = larkspur, Domain = "larkspur.test" };
+  var login = new User { Email = "olivia@larkspur.test", DisplayName = "Olivia Brandt", EmailVerifiedAt = DateTime.UtcNow };
+  new RoleGrant { Member = login, Role = AppRole.Customer };
+  var party = new Customer { DisplayName = "Olivia Brandt", Company = larkspur, Account = login, CreatedByVisit = null };
+  new ContactPoint { Party = party, Kind = ContactPointKind.Email, Value = "olivia@larkspur.test", IsPreferred = true,
+                     VerifiedKey = "Email:olivia@larkspur.test", VerifiedAt = DateTime.UtcNow, VerifiedBy = VerificationMethod.SignIn };
+}
+
+
+/// Olivia's ticket, opened by Ines — and its id.
+Guid OliviasTicket(string subject = "Invoice 2214 charged twice") {
+  var id = Guid.Empty;
+  runas (Ines) { id = OpenTicket("olivia@larkspur.test", "Olivia Brandt", subject, "We were charged twice for March."); }
+  Background.Settle();
+  return id;
+}
+
+/// The ticket moved to the restricted Legal queue — only Lena (and an admin) may open it there.
+void ToLegal(Guid ticket) {
+  runas (Lena) { MoveWork(Ticket.Single(t => t.Id == ticket), Queue.Single(q => q.Name == "Legal")); }
+  Background.Settle();
+}
+
+/// The first line of a teammate's bell.
+NotificationLine TopOfMyBell() { return MyNotificationLines().First(); }
+
+[Test(Bells)]
+void a_note_that_names_a_teammate_seats_them_on_the_ticket_and_tells_them() {
+  var ticket = OliviasTicket();
+  runas (Ines) {
+    var sent = SendFromComposer("", ticket, "@Rahul Kapoor can you check whether the refund went out?", true, [], "", -1, true, []);
+    Assert.Equal("Note added — they are told.", sent.Said);
+  }
+  Background.Settle();
+  runas (Rahul) {
+    var t = Ticket.Single(x => x.Id == ticket);
+    Assert.True(Participant.Any(p => p.Conversation == t.Conversation && p.Member != null && p.Member.Email == "rahul@helpdesk.test"));
+    Assert.True(Follower.Any(f => f.Ticket == t && f.Agent.Email == "rahul@helpdesk.test"));
+    var line = TopOfMyBell();
+    Assert.Equal("Ines Moreau mentioned you in a note.", line.Sentence);
+    Assert.Equal($"#{t.Number} · Invoice 2214 charged twice", line.Title);
+    Assert.Equal($"/v/mine/t/{t.Number}", line.Link);
+  }
+}
+
+// SECURITY-INVARIANT(notifications-only-about-what-the-recipient-may-read) — on the desk: a ticket in a restricted queue.
+[Test(Bells)]
+void a_note_cannot_name_a_teammate_who_cannot_open_the_ticket_and_nobody_is_told_about_it() {
+  var ticket = OliviasTicket();
+  ToLegal(ticket);
+  runas (Ines) {
+    // Offered with why, before the note is written…
+    var rahul = ComposerMentionable("", ticket).Single(c => c.Name == "Rahul Kapoor");
+    Assert.Equal("Rahul Kapoor cannot open this ticket, so a note cannot name them. Ask a lead to add them to its queue, or write it without their name.", rahul.Refusal);
+    Assert.Equal("", ComposerMentionable("", ticket).Single(c => c.Name == "Lena Fischer").Refusal);
+    // …and refused with the same words when it names them anyway; the note is not added.
+    var ex = Assert.Throws<ValidationException>(() =>
+      SendFromComposer("", ticket, "@Rahul Kapoor the lawyer called again.", true, [], "", -1, true, []));
+    Assert.Equal(rahul.Refusal, ex.Message);
+    // A notification about it asked for directly is withheld for Rahul and delivered to Lena.
+    Notify(Agent.Single(a => a.Email == "rahul@helpdesk.test"), new CustomerWroteAgain { Ticket = Ticket.Single(t => t.Id == ticket) });
+    Notify(Agent.Single(a => a.Email == "lena@helpdesk.test"), new CustomerWroteAgain { Ticket = Ticket.Single(t => t.Id == ticket) });
+    UnitOfWork.Commit();
+  }
+  Background.Settle();
+  runas (Rahul) {
+    Assert.Equal(0, UnreadNotifications());
+    Assert.Empty(MyNotificationLines());
+  }
+  runas (Lena) { Assert.Equal(1, UnreadNotifications()); }
+}
+
+[Test(Bells)]
+void the_customer_writing_again_tells_whoever_holds_the_ticket_and_whoever_follows_it() {
+  var ticket = OliviasTicket();
+  runas (Ines) {
+    TakeWork(Ticket.Single(t => t.Id == ticket));
+    SendFromComposer("", ticket, "@Rahul Kapoor FYI — she may write again.", true, [], "", -1, true, []);
+  }
+  Background.Settle();
+  runas (Rahul) { MarkAllNotificationsRead(); }
+  runas (Olivia) { CustomerReply(ticket, "Any news on the refund?"); }
+  Background.Settle();
+  runas (Ines) {
+    var line = TopOfMyBell();
+    Assert.Equal("Olivia Brandt wrote again.", line.Sentence);
+  }
+  runas (Rahul) { Assert.Equal("Olivia Brandt wrote again.", TopOfMyBell().Sentence); }
+}
+
+[Test(Bells)]
+void a_teammate_away_hands_their_tickets_over_and_the_cover_is_told() {
+  var ticket = OliviasTicket();
+  runas (Rahul) {
+    TakeWork(Ticket.Single(t => t.Id == ticket));
+    GoAway(until: DateTime.UtcNow.AddDays(2), cover: Agent.Single(a => a.Email == "ines@helpdesk.test"));
+  }
+  Background.Settle();
+  runas (Ines) {
+    var line = TopOfMyBell();
+    Assert.True(line.Sentence.StartsWith("Handed to you — Rahul Kapoor is away until "), line.Sentence);
+  }
+}
+
+/// Ines mentions Rahul in a note; Rahul takes the ticket and goes away, handing his work to Lena — so each has a
+/// notification at the top of their bell.
+void MentionedThenHandedOver() {
+  var ticket = OliviasTicket();
+  runas (Ines) { SendFromComposer("", ticket, "@Rahul Kapoor can you look?", true, [], "", -1, true, []); }
+  runas (Rahul) {
+    TakeWork(Ticket.Single(t => t.Id == ticket));
+    GoAway(until: new DateTime(2030, 6, 4, 7, 0, 0), cover: Agent.Single(a => a.Email == "lena@helpdesk.test"));
+  }
+  Background.Settle();
+}
+
+// D-RTL2 Q2 (e) — a notification is facts, said in the language of whoever reads it (in Swedish and Arabic in
+// tests/languages/).
+[Test(Bells)]
+void a_notification_is_said_in_the_language_its_teammate_reads_the_desk_in() {
+  MentionedThenHandedOver();
+  runas (Rahul) { Assert.Equal("Ines Moreau mentioned you in a note.", TopOfMyBell().Sentence); }
+  runas (Lena) {
+    Assert.True(TopOfMyBell().Sentence.StartsWith("Handed to you — Rahul Kapoor is away until "), TopOfMyBell().Sentence);
+  }
+}
+
+// ── on screen ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Bells)]
+void the_bell_in_the_bar_and_its_list_wide_and_on_a_phone() {
+  var ticket = OliviasTicket();
+  var second = OliviasTicket("Delivery note missing from shipment 88");
+  runas (Ines) {
+    SendFromComposer("", ticket, "@Rahul Kapoor can you check whether the refund went out?", true, [], "", -1, true, []);
+    SendFromComposer("", second, "@Rahul Kapoor this one is yours if you have a minute.", true, [], "", -1, true, []);
+    TakeWork(Ticket.Single(t => t.Id == second));
+  }
+  Background.Settle();
+  runas (Olivia) { CustomerReply(second, "Still waiting for the delivery note."); }
+  Background.Settle();
+  runas (Rahul) { TakeWork(Ticket.Single(t => t.Id == ticket)); }
+  Background.Settle();
+  runas (Rahul) { Assert.Equal(3, UnreadNotifications()); }   // two mentions, and Olivia writing on the one he follows
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Rahul);
+  Ui.Visit("/v/mine");
+  Ui.Click("Notifications, 3 new");
+  Assert.Visible("Ines Moreau mentioned you in a note.", within: "Notification list");
+  Assert.Visible("Olivia Brandt wrote again.", within: "Notification list");
+  Ui.Shot("notifications-bell-wide-light");
+  Ui.Theme("dark");
+  Ui.Shot("notifications-bell-wide-dark");
+  Ui.Theme("light");
+  Ui.Click("Mark all read");
+  Ui.Click("Unread");
+  Assert.Visible("You are all caught up");
+  Ui.Shot("notifications-bell-caught-up-wide-light");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/v/mine");
+  Ui.Click("Notifications");
+  Assert.Visible("Ines Moreau mentioned you in a note.", within: "Notification list");
+  Ui.Shot("notifications-bell-phone-light");
+}
+
+[Test(Bells)]
+void typing_at_in_a_note_offers_the_team_and_says_who_cannot_open_the_ticket() {
+  var ticket = OliviasTicket();
+  ToLegal(ticket);
+  var number = 0;
+  runas (Ines) { number = Ticket.Single(t => t.Id == ticket).Number; }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + number);
+  // A working desk has named who is responsible for its customers' data (SetUpTestDesk), so an admin's bar is the
+  // product's, not the first-run prompt to name one.
+  Assert.Hidden("Name who is responsible for customer data");
+  Ui.Click("Internal note");
+  Ui.Fill("Internal note", "Can @");
+  Assert.Visible("Lena Fischer", within: "People to mention");
+  Assert.Visible("Rahul Kapoor cannot open this ticket, so a note cannot name them. Ask a lead to add them to its queue, or write it without their name.", within: "People to mention");
+  Assert.Disabled("Rahul Kapoor");   // offered, with why — but a row that cannot be picked, and says so
+  Assert.Enabled("Lena Fischer");
+  Ui.Shot("notifications-mention-menu-wide-light");
+  Ui.Click("Lena Fischer");
+  Assert.Value("Internal note", "Can @Lena Fischer ");
+  Ui.Fill("Internal note", "Can @Lena Fischer take this one? The lawyer wants an answer by Friday.");
+  Ui.Click("Add note");
+  Assert.Visible("Note added — they are told.");
+  Background.Settle();
+  runas (Lena) { Assert.Equal(1, UnreadNotifications()); }
+}
+
+/// Two mentions of Rahul and a customer writing again on the ticket he took: three things waiting for him.
+void ThreeThingsWaitingForRahul() {
+  var ticket = OliviasTicket();
+  var second = OliviasTicket("Delivery note missing from shipment 88");
+  runas (Ines) {
+    SendFromComposer("", ticket, "@Rahul Kapoor can you check whether the refund went out?", true, [], "", -1, true, []);
+    SendFromComposer("", second, "@Rahul Kapoor this one is yours if you have a minute.", true, [], "", -1, true, []);
+    TakeWork(Ticket.Single(t => t.Id == second));
+  }
+  Background.Settle();
+  runas (Olivia) { CustomerReply(second, "Still waiting for the delivery note."); }
+  Background.Settle();
+}
+
+[Test(Bells)]
+void the_daily_digest_mail_names_what_was_not_read() {
+  ThreeThingsWaitingForRahul();
+  RenderedEmail? mail = null;
+  runas (Rahul) {
+    var me = Agent.Single(a => a.Email == "rahul@helpdesk.test");
+    var unread = Notification.Where(n => n.ReadAt == null).OrderByDescending(n => n.At).ToList();
+    Assert.Equal(3, unread.Count);
+    mail = NotificationDigestMail(me, unread);
+  }
+  Assert.Equal("3 things waiting for you in Harbour", mail!.Subject);
+  Assert.Contains("Ines Moreau mentioned you in a note.", mail!.Text);
+  Assert.Contains("Olivia Brandt wrote again.", mail!.Text);
+  Ui.Shot("notifications-digest-mail", mail!);
+}
+
+// ── what it costs (D-COMPOSE1 S1) ─────────────────────────────────────────────────────────────────────────────────────
+//
+// The bell asks three things about every record a notification names — may this teammate read it, what is its line,
+// where does it open. They are the record's own facts now (D-COMPOSE1 S1): the tickets are read as their reader, all of
+// them together, and the line and the link come off the rows in hand. These hold what that costs, so asking per
+// notification instead of once per kind of record turns them red, with both numbers in the message.
+
+/// Four teammates' notes each name Rahul on a ticket of its own: four unread notifications about four tickets.
+void FourMentionsOfRahul() {
+  List<Guid> tickets = [];
+  foreach (var subject in new List<string> { "Invoice 2214 charged twice", "Delivery note missing from shipment 88",
+                                             "Refund for order 5521", "Pallet 7 arrived crushed" }) {
+    tickets.Add(OliviasTicket(subject));
+  }
+  runas (Ines) {
+    foreach (var id in tickets) {
+      SendFromComposer("", id, "@Rahul Kapoor can you look at this one?", true, [], "", -1, true, []);
+    }
+  }
+  Background.Settle();
+}
+
+[Test(Bells)]
+void reading_the_bell_stays_within_its_budget() {
+  FourMentionsOfRahul();
+  runas (Rahul) {
+    MyNotificationLines();
+    var mark = Cost.Mark();
+    var lines = MyNotificationLines();
+    Assert.Equal(4, lines.Count);
+    // Measured 4 after D-COMPOSE1 S1 — 20 before, when the desk's topic asked MayRead, Title and Link of each ticket,
+    // one by one.
+    Assert.AtMost(4, Cost.StatementsSince(mark));
+  }
+}
+
+[Test(Bells)]
+void delivering_one_notification_stays_within_its_budget() {
+  var ticket = OliviasTicket();
+  runas (Ines) {
+    Notify(Agent.Single(a => a.Email == "rahul@helpdesk.test"), new CustomerWroteAgain { Ticket = Ticket.Single(t => t.Id == ticket) });
+    UnitOfWork.Commit();
+  }
+  var mark = Cost.Mark();
+  Background.Settle();
+  runas (Rahul) { Assert.Equal(1, UnreadNotifications()); }
+  // Measured 76 before D-COMPOSE1 S1 and after it: the delivery asks the record's security as the topic did.
+  Assert.AtMost(76, Cost.StatementsSince(mark));
+}
+
+[Test(Bells)]
+void opening_the_bell_on_the_desk_stays_within_its_request_budget() {
+  FourMentionsOfRahul();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Rahul);
+  Ui.Visit("/v/mine");
+  var mark = Cost.Mark();
+  Ui.Click("Notifications, 4 new");
+  Assert.Visible("Ines Moreau mentioned you in a note.", within: "Notification list");
+  // Measured after D-COMPOSE1 S1: 2 requests, 1 server call, 49 statements (62 before).
+  Assert.AtMost(2, Cost.RequestsSince(mark));
+  Assert.AtMost(1, Cost.ServerCallsSince(mark));
+  Assert.AtMost(49, Cost.StatementsSince(mark));
+}

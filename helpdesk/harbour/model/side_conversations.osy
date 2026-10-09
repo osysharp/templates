@@ -1,0 +1,56 @@
+// SIDE CONVERSATIONS — the desk asks somebody else about a ticket without leaving it: a supplier, a carrier, the
+// customer's accountant by mail, or a colleague in a thread inside the team (Osysharp.Conversations' side conversations).
+// It is started from the ticket's head, sits on the ticket's timeline as a card that opens into its own thread, and the
+// other side's answer by mail lands in it — never in the ticket, and never as a ticket of its own — and is told to
+// whoever holds the ticket.
+//
+// ⚑ THE OTHER SIDE NEVER SEES THE TICKET. They are written to in a conversation of their own: its subject, its words,
+//   its mail thread. Nothing of the ticket — its number, its customer, its messages — goes to them unless an agent
+//   writes it, and they cannot reach the ticket from what they were sent (the kit's
+//   SECURITY-INVARIANT a-side-conversation-never-shows-its-parent; tests/side-conversations.test.osy).
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Notifications;
+
+/// Start a side conversation on a ticket — to `address` (somebody outside, mailed) or, with no address, a thread inside
+/// the team. Refused on a ticket nothing more is written on. Answers the side conversation's id. Committed.
+public Guid StartSideConversationOn(Guid ticketId, string address, string subject, string text, string name = "") {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  if (t.ClosedFor != null || t.KeptFor != "") {
+    throw new ValidationException("This ticket is closed by its customer's privacy request — nothing more is written on it.");
+  }
+  if (t.MergedInto != null) {
+    throw new ValidationException($"This ticket was merged into #{t.MergedInto!.Number} — start it there.");
+  }
+  return StartSideConversationTo(t.Conversation.Id, address, subject, text, name);
+}
+
+/// The other side answered in a side conversation (the kit filed it there, and wrote it on the ticket's timeline):
+/// whoever holds the ticket, and whoever follows it, are told. Runs as the kit's run (an answer on the web) or the
+/// mailbox's receiver (a mailed one) — never as whoever answered (`DeskChat.SideAnswered`).
+void TellOfASideAnswer(Conversation side) {
+  if (side.SideOf == null) { return; }
+  var t = side.SideOf!.Tickets.OrderByDescending(x => x.Number).FirstOrDefault();
+  if (t == null) { return; }
+  List<Principal> told = [];
+  if (t.Assignee != null) { told.Add(t.Assignee!); }
+  foreach (var f in Follower.Where(f => f.Ticket == t).Include(f => f.Agent).ToList()) {
+    if (!told.Any(p => p.Id == f.Agent.Id)) { told.Add(f.Agent); }
+  }
+  // The side conversation, not its words: who answered and about what are read when the bell is. One unread line per
+  // side conversation, however often they write.
+  foreach (var p in told) {
+    Notify(p, new SideConversationAnswered { Ticket = t, Side = side },
+           key: "tickets:" + t.Id.ToString() + ":side:" + side.Id.ToString());
+  }
+}
+
+/// What a "somebody answered in a side conversation" notification says — read now, from the side conversation itself.
+string SideAnsweredWords(string facts) {
+  if (facts == "") { return "Somebody answered in a side conversation."; }
+  var line = SideConversationLineOf(Guid.Parse(facts));
+  if (line.Subject == "") { return "Somebody answered in a side conversation."; }
+  return line.With != "" ? $"{line.With} answered in the side conversation “{line.Subject}”."
+                         : $"There is news in the thread “{line.Subject}”.";
+}

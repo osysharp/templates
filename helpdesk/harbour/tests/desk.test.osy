@@ -1,0 +1,297 @@
+// THE DESK — the fixture every test file shares, and the verbs a team uses all day: taking a ticket, two people on
+// one ticket, merging, tagging, bulk changes, and what a customer may and may not see. (Who holds a ticket is the
+// inbox's — Osysharp.Inbox's own tests prove taking, handing on and collisions in general; these prove the desk on it.)
+using Osysharp.Identity;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Accounts;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+
+/// Ines and Rahul work tickets; Lena leads; Olivia (Larkspur, Standard) and Dev (Orbit Labs, Premium) are customers
+/// with portal accounts; Sam is another Larkspur customer.
+[TestFixture]
+void Desk() {
+  SetUpTestDesk();
+  var ines  = new Agent { Email = "ines@helpdesk.test",  DisplayName = "Ines Moreau" };
+  var rahul = new Agent { Email = "rahul@helpdesk.test", DisplayName = "Rahul Kapoor" };
+  var lena  = new Agent { Email = "lena@helpdesk.test",  DisplayName = "Lena Fischer" };
+  new RoleGrant { Member = ines,  Role = AppRole.Agent };
+  new RoleGrant { Member = rahul, Role = AppRole.Agent };
+  new RoleGrant { Member = lena,  Role = AppRole.Lead };
+  JoinTheDesk(ines);
+  JoinTheDesk(rahul);
+  JoinTheDesk(lena);
+
+  var larkspur = new Company { Name = "Larkspur Freight", Tier = TierNamed("Standard"), SharesTickets = true };
+  var orbit     = new Company { Name = "Orbit Labs", Tier = TierNamed("Premium") };
+  new OrganizationDomain { Organization = larkspur, Domain = "larkspur.test" };
+  new OrganizationDomain { Organization = orbit, Domain = "orbit.test" };
+  Account("olivia@larkspur.test", "Olivia Brandt", larkspur);
+  Account("sam@larkspur.test", "Sam Okafor", larkspur);
+  Account("dev@orbit.test", "Dev Patel", orbit);
+}
+
+/// A customer with a portal account — their party linked to it, as the sign-in flow links a proven address.
+void Account(string email, string name, Company company) {
+  var login = new User { Email = email, DisplayName = name, EmailVerifiedAt = DateTime.UtcNow };
+  new RoleGrant { Member = login, Role = AppRole.Customer };
+  var party = new Customer { DisplayName = name, Company = company, Account = login, CreatedByVisit = null };
+  new ContactPoint { Party = party, Kind = ContactPointKind.Email, Value = email, IsPreferred = true,
+                     VerifiedKey = "Email:" + email, VerifiedAt = DateTime.UtcNow, VerifiedBy = VerificationMethod.SignIn };
+}
+
+principal Ines   => Agent.Single(a => a.Email == "ines@helpdesk.test");
+principal Rahul  => Agent.Single(a => a.Email == "rahul@helpdesk.test");
+principal Lena   => Agent.Single(a => a.Email == "lena@helpdesk.test");
+principal Olivia => User.Single(u => u.Email == "olivia@larkspur.test");
+principal Sam    => User.Single(u => u.Email == "sam@larkspur.test");
+principal Dev    => User.Single(u => u.Email == "dev@orbit.test");
+
+Ticket TicketOf(Guid id) => Ticket.Single(t => t.Id == id);
+TicketStatus StatusNamed(string name) => TicketStatus.Single(s => s.Name == name);
+
+// ── two people, one ticket ────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Desk)]
+void two_agents_taking_one_ticket_the_second_is_told_who_was_first() {
+  Guid id = Guid.Empty;
+  runas (Ines) { id = OpenTicket("olivia@larkspur.test", "", "Card payments failing", ""); }
+  // Both pages showed it unassigned. Rahul takes it first…
+  runas (Rahul) { TakeWork(TicketOf(id), null); }
+  // …and Ines's take, made from the same stale picture, is refused with his name rather than taking it from him.
+  runas (Ines) {
+    var refused = Assert.Throws<ValidationException>(() => TakeWork(TicketOf(id), null));
+    Assert.Contains("Rahul Kapoor took this", refused.Message);
+    Assert.Equal("Rahul Kapoor", TicketOf(id).Assignee!.DisplayName);
+  }
+}
+
+[Test(Desk)]
+void two_agents_replying_the_second_reads_the_first_reply_before_theirs_goes_out() {
+  Guid id = Guid.Empty;
+  var seen = 0;
+  runas (Ines) {
+    id = OpenTicket("olivia@larkspur.test", "", "Export stuck at 99%", "The export has been at 99% since 09:10.");
+    var opened = TicketOf(id).Conversation;
+    seen = ConversationEntry.Where(e => e.Conversation == opened).Max(e => e.Sequence) ?? -1;
+  }
+  // Both opened the ticket at `seen`. Rahul sends first.
+  runas (Rahul) { ReplyToTicket(id, "Restarting the export worker now.", false, null, seen); }
+  runas (Ines) {
+    var refused = Assert.Throws<ValidationException>(() => ReplyToTicket(id, "Looking into it.", false, null, seen));
+    Assert.Contains("Rahul Kapoor replied at", refused.Message);
+    // A note is never refused — it answers nobody — and once she has read his reply, hers goes out.
+    ReplyToTicket(id, "Rahul has this one.", true, null, seen);
+    var conversation = TicketOf(id).Conversation;
+    var now = ConversationEntry.Where(e => e.Conversation == conversation).Max(e => e.Sequence) ?? -1;
+    ReplyToTicket(id, "It should finish in a few minutes.", false, null, now);
+    Assert.Equal(2, Message.Count(m => m.Conversation == conversation && m.Direction == MessageDirection.Outbound));
+  }
+}
+
+/// Answering a ticket nobody holds takes it — for whoever may hold it (a member of its queue).
+[Test(Desk)]
+[runas(Ines)]
+void answering_a_ticket_nobody_holds_takes_it() {
+  var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Seats", ""));
+  Assert.Null(t.Assignee);
+  ReplyToTicket(t.Id, "Added two seats.");
+  Assert.Equal("Ines Moreau", TicketOf(t.Id).Assignee!.DisplayName);
+}
+
+// ── the timeline says what happened ───────────────────────────────────────────────────────────────────────────────
+
+/// `t`'s timeline as its reader reads it, oldest first — every line said by the server from its facts (`EventWords`),
+/// in the reader's language.
+List<string> TimelineOf(Ticket t) {
+  var said = new List<string>();
+  foreach (var e in ConversationEvent.Where(x => x.Conversation == t.Conversation).OrderBy(x => x.Sequence).ToList()) {
+    said.Add(EventWords(e));
+  }
+  return said;
+}
+
+[Test(Desk)]
+[runas(Ines)]
+void every_change_is_on_the_timeline_with_who_made_it() {
+  var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Order arrived broken", ""));
+  HandWorkTo(t, Agent.Single(a => a.DisplayName == "Rahul Kapoor"));
+  SetPriority(t.Id, WorkPriority.High);
+  ReplyToTicket(t.Id, "We'll send a new one today.", false, StatusNamed("Waiting on a refund").Id);
+  var said = TimelineOf(t);
+  // The inbox's events land on the same timeline as the desk's own, each saying who did what.
+  Assert.Contains("Ines Moreau handed it to Rahul Kapoor.", said);
+  Assert.Contains("Priority Normal → High.", said);
+  Assert.Contains("Status set to Waiting on a refund.", said);
+  Assert.Equal("Waiting on a refund", t.Status!.Name);
+  Assert.Equal(StatusCategory.Pending, t.Category);
+}
+
+// ── merging, tagging, following, many at once ─────────────────────────────────────────────────────────────────────
+
+[Test(Desk)]
+[runas(Ines)]
+void merging_a_duplicate_closes_it_and_copies_its_requester_on_the_survivor() {
+  var keep = TicketOf(OpenTicket("olivia@larkspur.test", "", "Checkout broken", "Card payments fail."));
+  var dup  = TicketOf(OpenTicket("sam@larkspur.test", "", "Can't pay", "Our card keeps getting declined."));
+  MergeInto(dup.Id, keep.Id);
+  Workflow.Settle(dup);
+  Assert.Equal(StatusCategory.Closed, dup.Category);
+  Assert.Equal(keep.Id, dup.MergedInto!.Id);
+  Assert.True(Participant.Any(p => p.Conversation == keep.Conversation && p.Party!.DisplayName == "Sam Okafor"));
+  // The survivor's timeline says what came in, and the customer's last words on it — a line of facts, said for its reader.
+  var merged = ConversationEvent.Single(e => e.Conversation == keep.Conversation && e.Kind == "helpdesk.merged-here");
+  Assert.Equal("Sam Okafor", merged.Person);
+  Assert.Equal($"#{dup.Number} (Can't pay) from Sam Okafor was merged into this ticket. Their last message: “Our card keeps getting declined.”",
+               EventWords(merged));
+  Assert.Throws<ValidationException>(() => MergeInto(keep.Id, keep.Id));
+}
+
+[Test(Desk)]
+[runas(Ines)]
+void tags_are_made_on_first_use_and_a_ticket_carries_each_once() {
+  var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "VAT", ""));
+  AddTag(t.Id, "Billing");
+  AddTag(t.Id, "billing");
+  AddTag(t.Id, "vat line");
+  Assert.Equal(2, TicketTag.Count(x => x.Ticket == t));
+  Assert.True(Tag.Any(g => g.Name == "vat-line"));
+  RemoveTag(t.Id, "billing");
+  Assert.Equal(1, TicketTag.Count(x => x.Ticket == t));
+}
+
+[Test(Desk)]
+[runas(Rahul)]
+void following_a_ticket_and_stopping() {
+  var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Watch this", ""));
+  Follow(t.Id, true);
+  Follow(t.Id, true);
+  Assert.Equal(1, Follower.Count(f => f.Ticket == t));
+  Follow(t.Id, false);
+  Assert.Equal(0, Follower.Count(f => f.Ticket == t));
+}
+
+[Test(Desk)]
+[runas(Lena)]
+void bulk_assign_and_bulk_status_move_every_ticket_they_can() {
+  var a = OpenTicket("olivia@larkspur.test", "", "One", "");
+  var b = OpenTicket("olivia@larkspur.test", "", "Two", "");
+  var c = OpenTicket("dev@orbit.test", "", "Three", "");
+  Assert.Equal(3, HandAllTo([a, b, c], Agent.Single(x => x.DisplayName == "Rahul Kapoor").Id).Moved);
+  Assert.Equal(3, Ticket.Count(t => t.Assignee!.DisplayName == "Rahul Kapoor"));
+  // Closing needs a solved ticket — so the bulk close moves the one that is, and leaves the rest.
+  SetStatus(a, StatusNamed("Solved").Id);
+  Assert.Equal(1, SetStatusOf([a, b, c], StatusNamed("Closed").Id));
+  Assert.Equal(2, SetStatusOf([b, c], StatusNamed("Pending").Id));
+  Assert.Equal(2, Ticket.Count(t => t.Category == StatusCategory.Pending));
+}
+
+// ── what a customer sees ─────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Desk)]
+void a_customer_never_sees_an_internal_note_on_their_ticket() {
+  Guid id = Guid.Empty;
+  runas (Ines) {
+    id = OpenTicket("olivia@larkspur.test", "", "Refund", "Charged twice.");
+    ReplyToTicket(id, "We have refunded the second charge.");
+    ReplyToTicket(id, "Finance says this is the third time this month.", true);
+  }
+  runas (Olivia) {
+    var t = TicketOf(id);
+    Assert.Equal(2, Message.Count(m => m.Conversation == t.Conversation));   // hers, and our reply
+    Assert.Equal(0, Message.Count(m => m.Text.Contains("third time")));
+    Assert.Equal(0, ConversationEntry.Count(e => e.Conversation == t.Conversation && e.Visibility != EntryVisibility.Customer));
+    Assert.Null(t.RootCause);
+  }
+  // The control: the team reads the note.
+  runas (Ines) { Assert.Equal(1, Message.Count(m => m.Text.Contains("third time"))); }
+}
+
+[Test(Desk)]
+void a_customer_reads_their_companys_tickets_only_when_it_shares_them() {
+  runas (Ines) {
+    OpenTicket("olivia@larkspur.test", "", "Olivia's ticket", "");
+    OpenTicket("dev@orbit.test", "", "Dev's ticket", "");
+  }
+  runas (Sam)    { Assert.Equal(1, Ticket.Count(t => t.Title == "Olivia's ticket")); }   // Larkspur shares
+  runas (Sam)    { Assert.Equal(0, Ticket.Count(t => t.Title == "Dev's ticket")); }
+  runas (Dev)    { Assert.Equal(0, Ticket.Count(t => t.Title == "Olivia's ticket")); }
+  runas (Olivia) { Assert.Equal(1, Ticket.Count()); }
+}
+
+[Test(Desk)]
+void a_customer_raises_a_ticket_from_the_portal_and_cannot_decide_how_it_is_worked() {
+  Guid id = Guid.Empty;
+  runas (Olivia) {
+    var n = SubmitRequest("Dark mode chart labels", "The labels are unreadable in dark mode.");
+    id = Ticket.Single(t => t.Number == n).Id;
+    Assert.Equal("Olivia Brandt", TicketOf(id).Customer.DisplayName);
+    Assert.Denied(() => {
+      new Ticket { Title = "Me first", Conversation = TicketOf(id).Conversation, Customer = TicketOf(id).Customer,
+                   Priority = WorkPriority.Urgent };
+      UnitOfWork.Commit();
+    });
+    CustomerReply(id, "Screenshot attached later.");
+  }
+  runas (Ines) {
+    var t = TicketOf(id);
+    Assert.Equal(StatusCategory.New, t.Category);
+    Assert.Equal(2, Message.Count(m => m.Conversation == t.Conversation && m.Direction == MessageDirection.Inbound));
+  }
+}
+
+[Test(Desk)]
+void a_signed_out_visitor_raises_a_ticket_from_the_web_form() {
+  var number = 0;
+  runas (new Visitor { Id = "visit-form" }) {
+    number = SubmitRequest("Password reset mail never arrives", "I asked three times.", "Pierre Laurent", "pierre@example.test");
+  }
+  runas (Ines) {
+    var t = Ticket.Single(x => x.Number == number);
+    Assert.True(number > 1000);
+    Assert.Equal("Pierre Laurent", t.Customer.DisplayName);
+    Assert.Equal("pierre@example.test", AddressOf(t.Customer));
+    Assert.Equal(StatusCategory.New, t.Category);
+  }
+  runas (new Visitor { Id = "visit-other" }) { Assert.Equal(0, Ticket.Count()); }
+}
+
+[Test(Desk)]
+void an_anonymous_caller_reads_none_of_the_desk() {
+  runas (Ines) { OpenTicket("olivia@larkspur.test", "", "Private", "secret details"); }
+  Assert.Equal(0, Ticket.Count());
+  Assert.Equal(0, Company.Count());
+  Assert.Equal(0, Customer.Count());
+  Assert.Equal(0, Message.Count());
+  Assert.Equal(0, SlaPolicy.Count());
+  runas (Ines) { Assert.Equal(1, Ticket.Count()); Assert.Equal(2, Company.Count()); Assert.True(SlaPolicy.Count() > 0); }
+}
+
+[Test(Desk)]
+void a_customer_reads_neither_company_notes_nor_the_desks_configuration() {
+  runas (Ines) {
+    var nw = Company.Single(c => c.Name == "Larkspur Freight");
+    nw.Notes = "Renewal in March — handle with care.";
+    UnitOfWork.Commit();
+  }
+  runas (Olivia) {
+    Assert.Null(Company.Single(c => c.Name == "Larkspur Freight").Notes);
+    Assert.Equal(0, SlaPolicy.Count());
+    Assert.Equal(0, TicketStatus.Count());
+  }
+}
+
+[Test(Desk)]
+void nobody_but_an_admin_hands_out_roles() {
+  runas (Lena) {
+    var me = Agent.Single(a => a.DisplayName == "Lena Fischer");
+    Assert.Denied(() => { new RoleGrant { Member = me, Role = AppRole.Admin }; UnitOfWork.Commit(); });
+  }
+  runas (Olivia) {
+    var me = User.Single(u => u.Email == "olivia@larkspur.test");
+    Assert.Denied(() => { new RoleGrant { Member = me, Role = AppRole.Agent }; UnitOfWork.Commit(); });
+  }
+}
+

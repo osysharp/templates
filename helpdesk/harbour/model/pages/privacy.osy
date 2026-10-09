@@ -1,0 +1,194 @@
+// A PRIVACY REQUEST ON THE DESK — opened from the Inbox list like a ticket, worked with the privacy kit's own pane
+// (the deadline, how the person was checked, the plan line by line, approve, extend, what they are told). Only the
+// admins who manage privacy see one at all: the Inbox lists a request to the people who may read it.
+using Osysharp.Identity;
+using Osysharp.Inbox;
+using Osysharp.Privacy;
+using Osysharp.Privacy.Conversations;
+
+[Route("/v/{view}/p/{id}")]
+[Layout(DeskFrame)]
+[Authorize(ManagesPrivacy)]
+[Render(CSR)]
+[Title("Privacy request")]
+component PrivacyRequestPage(string view, Guid id) {
+  live var items = WorkItem.Where(w => w.Id == id).Include(w => w.Queue).Include(w => w.Assignee).ToList();
+  render {
+    Stack(gap: 0, grow: 1, minW: "0", h: "100%", minH: "0", overflowY: Overflow.Auto, bg: Colors.Bg) {
+      foreach (var item in items) {
+        WorkItemHead(item);
+        PrivacyRequestPane(item.Id);
+      }
+      if (items.Count == 0) {
+        Stack(p: 6) { Text("This request is not one you may open, or it was purged at the end of its period.", color: Colors.TextMuted); }
+      }
+    }
+  }
+}
+
+/// A LEGAL HOLD DUE FOR REVIEW, opened from the Inbox like a ticket — the privacy kit's own pane: what is held and why, and
+/// keeping it (with the next date) or lifting it. Only the people who place holds see one at all.
+[Route("/v/{view}/h/{id}")]
+[Layout(DeskFrame)]
+[Authorize(PlacesLegalHolds)]
+[Render(CSR)]
+[Title("Legal hold review")]
+component HoldReviewPage(string view, Guid id) {
+  live var items = WorkItem.Where(w => w.Id == id).Include(w => w.Queue).Include(w => w.Assignee).ToList();
+  render {
+    Stack(gap: 0, grow: 1, minW: "0", h: "100%", minH: "0", overflowY: Overflow.Auto, bg: Colors.Bg) {
+      foreach (var item in items) {
+        WorkItemHead(item);
+        HoldReviewPane(item.Id);
+      }
+      if (items.Count == 0) {
+        Stack(p: 6) { Text("This review is not one you may open.", color: Colors.TextMuted); }
+      }
+    }
+  }
+}
+
+/// Starting a privacy request for the customer behind a ticket — an admin's, on the person's behalf. It shows the PLAN
+/// for this person before anything happens (what would be erased, what is kept for legal claims and until when), and
+/// the request then waits on the Inbox for an admin to approve it. Not offered to agents.
+[Composable]
+component StartPrivacyRequest(Guid partyId, string name) {
+  bool asking = false;
+  RequestKind right = RequestKind.Erasure;
+  IdentityCheck check = IdentityCheck.CodeToKnownAddress;
+  string how = "";
+  string problem = "";
+  Guid? filed = null;
+  RequestFacts facts = new RequestFacts();
+
+  action Ask() { asking = true; right = RequestKind.Erasure; check = IdentityCheck.CodeToKnownAddress; how = ""; problem = ""; filed = null; }
+  action Stop() { asking = false; }
+  action File() {
+    problem = "";
+    try {
+      var r = StartPrivacyRequestFor(partyId, right, check, how);
+      filed = r.Id;
+      facts = FactsOf(r.Id);
+    } catch (Exception ex) { problem = ex.Message; }
+  }
+  action Open() { asking = false; Navigation.Go("/v/open/p/" + filed!.Value); }
+
+  render {
+    Stack(canSee: ManagesPrivacy, gap: 1, align: Align.Start, pt: 3, borderTW: 1, border: Colors.Border, label: "Their data") {
+      Button("Start a privacy request…", onPress: Ask, size: Size.Sm, tone: Tone.Ghost);
+    }
+    if (asking && filed == null) {
+      Dialog("A privacy request for " + name, onDismiss: Stop,
+             subtitle: "Filed on their behalf. You will see what it would do before anything happens — a complaint is kept for legal claims, the rest erased — and it runs only once an admin approves it on the Inbox, within a month of today.") {
+        Stack(gap: 4) {
+          Dropdown("What they ask for", value: right);
+          Dropdown("How you checked it is them", value: check);
+          Field("In your words", value: how, placeholder: "A code to the address they write from came back on 3 Oct.",
+                hint: "Required — a request in somebody else's name is a known way to steal their data.");
+          if (problem != "") { Alert(problem, tone: Tone.Danger); }
+          Row(gap: 2, justify: Justify.End) {
+            Button("Cancel", onPress: Stop, tone: Tone.Ghost);
+            Button("Plan the request", onPress: File, tone: Tone.Primary);
+          }
+        }
+      }
+    }
+    if (asking && filed != null) {
+      Dialog("Planned — nothing has happened yet", onDismiss: Stop,
+             subtitle: "The request is on the Inbox, due " + (facts.DueAt == null ? "within a month" : facts.DueAt!.Value.ToString("d MMMM yyyy")) + ". An admin approves the plan there; until then nothing is erased.") {
+        Stack(gap: 3, label: "The plan") {
+          foreach (var l in facts.Plan.Where(x => x.Outcome != PlanOutcome.NotHeld).ToList()) {
+            Row(gap: 3, align: Align.Start, py: 2, borderBW: 1, border: Colors.Border) {
+              Stack(gap: 0, grow: 1, minW: "0") {
+                Text(l.Label, fontSize: FontSize.Label);
+                if (l.Detail != "") { Text(l.Detail, fontSize: FontSize.Caption, color: Colors.TextMuted); }
+              }
+              Badge(l.Outcome.Label, tone: l.Outcome == PlanOutcome.Erase ? Tone.Danger : l.Outcome == PlanOutcome.Blocked ? Tone.Warning : Tone.Default);
+            }
+          }
+          if (!facts.Plan.Any(x => x.Outcome != PlanOutcome.NotHeld)) {
+            Text("The desk holds nothing about them — the request will say so.", color: Colors.TextMuted);
+          }
+          Row(gap: 2, justify: Justify.End) {
+            Button("Close", onPress: Stop, tone: Tone.Ghost);
+            Button("Open it on the Inbox", onPress: Open, tone: Tone.Primary);
+          }
+        }
+      }
+    }
+  }
+}
+
+/// A ticket whose conversation is KEPT RESTRICTED (Osysharp.Privacy) — what stands in its place on the ticket: why it is
+/// kept and until when, and, for whoever handles claims, the one way to read it, every read recorded (Privacy Q11: a
+/// stub where the record is opened, never its words). The ticket itself stays the desk's — its number, where it stands.
+[Composable]
+component KeptConversation(Ticket t) {
+  ClaimTranscript? transcript = null;
+  string problem = "";
+  action Read() {
+    problem = "";
+    try { transcript = ClaimOfTicket(t.Id); } catch (Exception ex) { problem = ex.Message; }
+  }
+  action Close() { transcript = null; }
+  render {
+    Stack(gap: 3, px: 5, pt: 5, pb: 5, maxW: "640px", label: "Kept conversation") {
+      Row(gap: 2, align: Align.Center) {
+        Icon(Icons.Lock, size: 16, color: Colors.TextMuted);
+        Text(KeptHeadline(t), fontWeight: FontWeight.Semibold);
+      }
+      Text(KeptBody(t), color: Colors.TextMuted);
+      if (HandlesClaims && t.KeptFor == ClaimsCategory()) {
+        Row(gap: 2) { Button("Read it for the claim", onPress: Read, tone: Tone.Ghost, size: Size.Sm); }
+      }
+      if (problem != "") { Alert(problem, tone: Tone.Warning); }
+    }
+    if (transcript != null) {
+      ShellSheet("Kept conversation · #" + t.Number, onDismiss: Close) {
+        Stack(gap: 4, px: 4, pb: 4) {
+          Stack(gap: 1) {
+            Text(transcript!.Subject, fontWeight: FontWeight.Semibold);
+            foreach (var p in transcript!.People) { Text(p, fontSize: FontSize.Label, color: Colors.TextMuted); }
+            Text("This read is recorded, with your name.", fontSize: FontSize.Caption, color: Colors.TextMuted);
+          }
+          foreach (var e in transcript!.Entries) {
+            Stack(gap: 1) {
+              Text((e.By == "" ? "—" : e.By) + " · " + e.At.ToString("d MMM yyyy, HH:mm") + " · " + e.Visibility,
+                   fontSize: FontSize.Caption, color: Colors.TextMuted);
+              Text(e.Text);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/// What a kept ticket says it is.
+string KeptHeadline(Ticket t) {
+  if (t.KeptFor != ClaimsCategory()) { return "Restricted at the customer's request"; }
+  return t.KeptUntil == null ? "Kept for legal claims while a legal hold stands"
+    : "Kept for legal claims until " + KeptThrough(t.KeptUntil!.Value).ToString("d MMMM yyyy");
+}
+
+/// …and why nothing of it is on screen, and what happens next.
+string KeptBody(Ticket t) {
+  if (t.KeptFor != ClaimsCategory()) {
+    return "The customer asked us to stop using their data until they say otherwise. Nothing is erased, and nothing is read. The ticket is closed; if they write to us again, that opens a new one.";
+  }
+  var next = t.KeptUntil == null
+    ? "A legal hold keeps it as long as the hold stands. When the hold is lifted it is kept for the rest of its period, then erased."
+    : "It is erased when its period ends.";
+  return "The customer asked to be erased, and this conversation concerns a claim, so it is kept — out of use. The ticket is closed and its promises stopped. Nobody reads it on the desk; it is read only for the claim, and every read is recorded. " + next;
+}
+
+/// Beside a ticket whose customer is kept with a claim — who they are is out of use too, so there is no record to show.
+[Composable]
+component KeptCustomer() {
+  render {
+    Stack(gap: 2, w: "320px", shrink: 0, px: 4, pt: 5, borderLW: 1, border: Colors.Border, bg: Colors.Surface, label: "Customer") {
+      Text("Customer kept for legal claims", fontWeight: FontWeight.Medium);
+      Text("Who they are is out of use with the conversation it belongs to.", fontSize: FontSize.Label, color: Colors.TextMuted);
+    }
+  }
+}

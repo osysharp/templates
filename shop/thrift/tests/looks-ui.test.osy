@@ -1,0 +1,134 @@
+// Second Round in each of its five LOOKS, and what a switch does. `osy test --pixels` photographs every page of every
+// look at a phone's width and a wide screen's into osy-shots/ — the front, a shelf, a piece, the bag and the checkout —
+// so the five designs are compared over the same pieces (the Window fixture: the shop's whole rail).
+
+using Osysharp.Shop;
+using Osysharp.Blocks;
+
+/// The shop as `look` draws it: every page a customer walks through, at a phone's width and then a wide screen's.
+void WalkThrough(string look, string front) {
+  runas (Staff) { Assert.Equal("", SetLook(MainVersion().Id, look)); }
+  Visit(look, front, 390, 844, "phone");
+  Visit(look, front, 1440, 900, "wide");
+}
+
+void Visit(string look, string front, int width, int height, string called) {
+  Ui.Viewport(width, height);
+  Ui.Visit("/");
+  Assert.Visible(front);
+  Assert.NoOverflow();                                           // no look pushes the page wider than the window
+  Ui.Shot($"{look} — the front, {called}");
+  Ui.Visit("/shop/jackets-coats");
+  Assert.Visible("Rust twill jacket");
+  Assert.NoOverflow();
+  Ui.Shot($"{look} — a shelf, {called}");
+  Ui.Visit("/p/shearling-collar-leather-jacket");
+  Assert.Visible("Shearling-collar leather jacket");
+  Ui.Click("Add to bag");
+  Ui.Shot($"{look} — a piece, {called}");
+  Ui.Visit("/bag");
+  Assert.Visible("Your bag");
+  Ui.Shot($"{look} — the bag, {called}");
+  Ui.Visit("/checkout");
+  Assert.Visible("Checkout");
+  Ui.Shot($"{look} — the checkout, {called}");
+}
+
+[Test(Window)]
+void the_shop_in_the_rail() { WalkThrough("rail", "Worn once."); }
+
+[Test(Window)]
+void the_shop_in_the_kiosk() { WalkThrough("kiosk", "Found, not made."); }
+
+[Test(Window)]
+void the_shop_in_the_fitting_room() { WalkThrough("fitting", "Second hand, first choice."); }
+
+[Test(Window)]
+void the_shop_in_the_swap_sheet() { WalkThrough("swap", "16 lots"); }
+
+[Test(Window)]
+void the_shop_in_loud() { WalkThrough("loud", "One of each"); }
+
+[Test(Window)]
+void switching_a_versions_look_redraws_the_same_arranged_content() {
+  // Staff arrange the front in the Rail: their own headline over the hero.
+  runas (Staff) {
+    var main = MainVersion().Id;
+    var draft = EditRegion(main, "front", "");
+    var hero = PlacedBlock.Where(b => b.Arrangement.Id == draft).OrderBy(b => b.Position).First();
+    Assert.Equal("Osysharp.Site.Looks.Hero", hero.Block);
+    SaveBlockValue(hero.Id, "en", new BlockValue { Name = "title", Text = "Coats are back on the rail." });
+    Assert.Equal("", PublishRegion(draft));
+  }
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/");
+  Assert.Visible("Coats are back on the rail.");
+  Assert.Visible("See what's just in");
+  Ui.Shot("the arranged front in the Rail");
+  // The same version switched to the Kiosk: the same words and photograph, in the Kiosk's full-bleed hero and its menu.
+  runas (Staff) { Assert.Equal("", SetLook(MainVersion().Id, "kiosk")); }
+  Ui.Visit("/");
+  Assert.Visible("Coats are back on the rail.");
+  Assert.Visible("See what's just in");
+  Assert.Hidden("Found, not made.");
+  Assert.Visible("Accessories");                                 // the Kiosk's own menu, which has the accessories
+  Ui.Shot("the same arrangement in the Kiosk");
+  // …and the shop behind it did not move: the same pieces, the same bag.
+  Ui.Visit("/p/rose-print-tea-dress");
+  Ui.Click("Add to bag");
+  Ui.Visit("/bag");
+  Assert.Visible("Rose print tea dress");
+}
+
+[Test(Window)]
+void a_hero_without_a_photograph_is_a_hero_of_words_in_every_look() {
+  // The Swap sheet's hero is words only. Arranged there, then worn by each look whose hero is built round photographs:
+  // each must draw the words, never an empty frame waiting for a picture.
+  runas (Staff) {
+    var main = MainVersion().Id;
+    SetLook(main, "swap");
+    var draft = EditRegion(main, "front", "");
+    Assert.Equal("", PublishRegion(draft));
+  }
+  foreach (var look in new[] { "rail", "kiosk", "fitting", "loud" }) {
+    runas (Staff) { Assert.Equal("", SetLook(MainVersion().Id, look)); }
+    Ui.Viewport(390, 844);
+    Ui.Visit("/");
+    Assert.Visible("16 lots");
+    Assert.Visible("Every piece in the shop, one of each.");
+    Ui.Shot($"{look} — a hero of words, phone");
+    Ui.Viewport(1440, 900);
+    Ui.Visit("/");
+    Assert.Visible("16 lots");
+    Ui.Shot($"{look} — a hero of words, wide");
+  }
+}
+
+[Test(Window)]
+void a_block_only_one_look_draws_is_listed_before_the_switch() {
+  runas (Staff) {
+    var main = MainVersion().Id;
+    // The Rail's front places "How a piece gets here" — the Rail's own block — under the rail.
+    var draft = EditRegion(main, "front", "");
+    Assert.Equal("", PublishRegion(draft));
+    var behind = LookLeavesBehind(main, "kiosk");
+    Assert.Equal(1, behind.Count);
+    Assert.Equal("How a piece gets here in front — this look has no design for it.", behind[0]);
+  }
+  // At the desk: choosing the Kiosk lists it first, and nothing moves until staff say so.
+  Ui.Viewport(1440, 900);
+  SignIn("/staff/pages");
+  Assert.Visible("Versions of the site");
+  Ui.Click("Kiosk", within: "Look");
+  Assert.Visible("How a piece gets here in front — this look has no design for it.");
+  Assert.Visible("Keep Rail");
+  Ui.Shot("the desk: what will not come along to the Kiosk");
+  runas (Staff) { Assert.Equal("rail", SiteLook().Look); }
+  Ui.Click("Switch to Kiosk");
+  Assert.Visible("Everyday wears Kiosk — the same words and photographs, drawn in its design.");
+  runas (Staff) { Assert.Equal("kiosk", SiteLook().Look); }
+  Ui.SignOut();
+  Ui.Visit("/");
+  Assert.Visible("Worn once.");                                  // the hero came along, in the Kiosk's design
+  Assert.Hidden("Picked one by one");                            // the Rail's own steps did not
+}

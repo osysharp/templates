@@ -1,0 +1,95 @@
+// Second Round's back office, through its pages — what staff see on an ordinary day. `osy test --pixels` photographs each.
+
+using Osysharp.Shop;
+using Osysharp.Workflow;
+
+[TestFixture]
+void Day() {
+  new ShopSettings { Name = "Second Round", Currency = "SEK", CurrencySymbol = "kr", SymbolAfter = true, OrderPrefix = "AV-",
+                     HoldDays = 3, DeliveryFee = 49m, VatPercent = 25m };
+  var jackets = new Category { Name = "Jackets & coats", Slug = "jackets-coats", Rank = 0 };
+  var denim = new Category { Name = "Denim", Slug = "denim", Rank = 1 };
+  var dresses = new Category { Name = "Dresses & tops", Slug = "dresses-tops", Rank = 2 };
+  // One of each, as a second-hand shop has them.
+  Piece("Shearling-collar leather jacket", "shearling-collar-leather-jacket", jackets, 1450m, "M");
+  Piece("Rust twill jacket", "rust-twill-jacket", jackets, 450m, "L");
+  Piece("Faded denim trucker jacket", "faded-denim-trucker-jacket", denim, 550m, "M");
+  Piece("Light-wash straight jeans", "light-wash-straight-jeans", denim, 390m, "W27 L30");
+  Piece("Terracotta canvas overshirt", "terracotta-canvas-overshirt", jackets, 420m, "S");
+  Piece("Rose print tea dress", "rose-print-tea-dress", dresses, 520m, "S");
+  var linn = new ShopAccount { Email = "linn@secondround.test", PasswordHash = Security.HashPassword("desk-pass-1") };
+  new ShopRoleGrant { Member = linn, Role = ShopRole.Staff };
+}
+
+void Piece(string name, string slug, Category category, decimal price, string size) {
+  var p = new Product { Name = name, Slug = slug, Category = category, Price = price };
+  new Variant { Product = p, Sku = slug.ToUpper(), Size = size, Stock = 1 };
+}
+
+principal Staff => ShopAccount.Single(s => s.Email == "linn@secondround.test");
+
+/// One piece, delivered home and paid by transfer — answers its reference.
+string Ordered(string visit, string product, string name, string email) {
+  runas (new Visitor { Id = visit }) {
+    AddToBag(Variant.Single(v => v.Product.Name == product), 1);
+    return PlaceOrder(name, email, "", "flat", "banktransfer", "Storgatan 1", "11122", "Stockholm", "SE").Reference;
+  }
+}
+
+/// A working day's orders: waiting, paid, being picked, sent, delivered — placed by customers; `Advance` moves them.
+List<string> AWorkingDay() {
+  return new List<string> {
+    Ordered("v-1", "Shearling-collar leather jacket", "Maja Berg", "maja@example.test"),
+    Ordered("v-2", "Faded denim trucker jacket", "Elin Holm", "elin@example.test"),
+    Ordered("v-3", "Light-wash straight jeans", "Sara Lind", "sara@example.test"),
+    Ordered("v-4", "Terracotta canvas overshirt", "Nora Ek", "nora@example.test"),
+    Ordered("v-5", "Rose print tea dress", "Alva Berg", "alva@example.test"),
+  };
+}
+
+/// As staff: the four paid, one picking, one sent, one delivered.
+void Advance(List<string> day) {
+  for (var i = 1; i < day.Count; i = i + 1) {
+    var reference = day[i];
+    var o = Order.Single(x => x.Reference == reference);
+    MarkPaid(o, ""); Workflow.Settle(o);
+  }
+  var picking = day[2];
+  var sent = day[3];
+  var delivered = day[4];
+  var p = Order.Single(x => x.Reference == picking); StartPicking(p); Workflow.Settle(p);
+  var s = Order.Single(x => x.Reference == sent); MarkSent(s, "00373501093057988987"); Workflow.Settle(s);
+  var d = Order.Single(x => x.Reference == delivered); MarkSent(d, "00373501093057988994"); Workflow.Settle(d);
+  MarkDelivered(d); Workflow.Settle(d);
+}
+
+void SignIn(string page) {
+  Ui.Visit(page);
+  Ui.Fill("Email", "linn@secondround.test");
+  Ui.Fill("Password", "desk-pass-1");
+  Ui.Click("Sign in", within: "Page");
+}
+
+[Test(Day)]
+void the_desk_on_a_working_day() {
+  var day = AWorkingDay();
+  runas (Staff) { Advance(day); }
+  SignIn("/staff/desk");
+  Assert.Hidden("Payment received");      // "All" shows each order's Details only
+  Ui.Click("Waiting for payment");
+  Assert.Visible("Payment received");
+  Ui.Click("To pick");
+  Assert.Visible("Start picking");
+  Assert.Visible("Being picked");
+  Assert.Visible("Delivered");
+}
+
+[Test(Day)]
+void the_orders_page_on_a_working_day() {
+  var day = AWorkingDay();
+  runas (Staff) { Advance(day); }
+  SignIn("/staff/orders");
+  Assert.Visible("Elin Holm");
+  Ui.Click("To pick");
+  Assert.Visible("Send…");
+}

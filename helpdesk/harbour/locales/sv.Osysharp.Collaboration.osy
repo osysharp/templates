@@ -1,0 +1,48 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Collaboration, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Collaboration · Ago ──
+  /// Ago · text on the page
+  /// shown through Ago()
+  text "a minute ago" => "för en minut sedan";
+  /// Ago · text on the page
+  /// shown through Ago()
+  text "an hour ago" => "för en timme sedan";
+  /// Ago · text on the page
+  /// placeholders: {at} = at (DateTime), {at2} = at (DateTime)
+  /// shown through Ago()
+  text "on {at} at {at2}" => "den {at} kl. {at2}";
+  /// Ago · text on the page
+  /// placeholders: {value} = … (int) — {value} is a count: give one text per plural form
+  /// shown through Ago()
+  text "{value} hours ago" => { one: "för en timme sedan", other: "för {value} timmar sedan" };
+  /// Ago · text on the page
+  /// placeholders: {value} = … (int) — {value} is a count: give one text per plural form
+  /// shown through Ago()
+  text "{value} minutes ago" => { one: "för en minut sedan", other: "för {value} minuter sedan" };
+
+  // ── Osysharp.Collaboration · RecordSeats ──
+  /// RecordSeats · a control's name for screen readers
+  accessibleName "Who else is here" => "Vilka mer som är här";
+
+  // ── Osysharp.Collaboration · WhoIsHere ──
+  /// WhoIsHere · text on the page
+  /// placeholders: {DisplayName} = ….DisplayName (string), {DisplayName2} = ….DisplayName (string)
+  /// shown through WhoIsHere()
+  text "{DisplayName} and {DisplayName2} are here" => "{DisplayName} och {DisplayName2} är här";
+  /// WhoIsHere · text on the page
+  /// placeholders: {colleagues.Count} = colleagues.Count (int) — {colleagues.Count} is a count: give one text per plural form
+  /// shown through WhoIsHere()
+  text "{colleagues.Count} colleagues are here" => { one: "En kollega är här", other: "{colleagues.Count} kollegor är här" };
+  /// WhoIsHere · text on the page
+  /// placeholders: {name} = name (string)
+  /// shown through WhoIsHere()
+  text "{name} is here" => "{name} är här";
+  /// WhoIsHere · text on the page
+  /// placeholders: {name} = name (string), {one.Activity} = one.Activity (string)
+  /// shown through WhoIsHere()
+  text "{name} is {one.Activity}" => "{name} {one.Activity}";
+}

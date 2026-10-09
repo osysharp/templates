@@ -4,9 +4,25 @@ Complete, working apps to start from. Each one is a real project — pages, data
 published Osy# packages, so what you get compiles and runs on day one, and every line of it is yours to change.
 
 ```console
-osy init shop --style atelier     # a new project from the Atelier shop
+osy init --template helpdesk      # a support desk — asks for its name, its languages and its model provider
+osy init shop --style fashion     # a new project from the Vall fashion store, in its five looks
 osy launch                        # build it and open it in your browser
 ```
+
+Every template is downloaded from a release here and checked against the SHA-256 the release states before a file
+is written; the new project's `osyrin.lock` records which release and which hash it started from.
+
+## Helpdesk
+
+A support desk a team leaving Zendesk or Help Scout would recognise: every ticket is one conversation, whichever way
+the customer wrote; queues, assignment and promises kept in business hours; a help centre and its knowledge base;
+reports; and the whole desk in English, Swedish and Arabic. `osy init --template helpdesk` asks for the app's name,
+which languages it speaks (leave Swedish or Arabic out, or add your own), and which model translates messages and
+searches by meaning — Anthropic, OpenAI, Gemini, or none.
+
+| style | | |
+|---|---|---|
+| **harbour** — Harbour, rail | A support desk: tickets as conversations, queues and promises, a help centre, reports — in English, Swedish and Arabic. | <img src="docs/harbour-desk.jpg" width="320"> |
 
 ## Shops
 
@@ -15,16 +31,8 @@ and Klarna payments, receipts, returns, mail and a staff desk — so the styles 
 
 | style | | |
 |---|---|---|
-| **atelier** — Vall, editorial | A fashion label in a quiet editorial layout — large photographs, a thin header, room to breathe. | <img src="docs/fashion-store-atelier.jpg" width="320"> |
-| **studio** — Vall, split | A fashion label with a split layout — the picture on one side, the words on the other. | <img src="docs/fashion-store-studio.jpg" width="320"> |
-| **index** — Vall, catalogue | A fashion label as a dense catalogue — many products at a glance, sorted and filtered. | <img src="docs/fashion-store-index.jpg" width="320"> |
-| **drop** — Vall, marquee | A fashion label for drops — a loud marquee, dark pages, sold in US dollars. | <img src="docs/fashion-store-drop.jpg" width="320"> |
-| **boutique** — Vall, storefront | A fashion boutique with a classic storefront — a hero, featured pieces, the shop's story. | <img src="docs/fashion-store-boutique.jpg" width="320"> |
-| **rail** — Andra Varvet, storefront | A second-hand shop where every piece is one of one, shown like a rail in the shop. | <img src="docs/thrift-store-rail.jpg" width="320"> |
-| **kiosk** — Andra Varvet, editorial | A second-hand shop as a zine — hand-picked finds with their stories. | <img src="docs/thrift-store-kiosk.jpg" width="320"> |
-| **fitting** — Andra Varvet, split | A second-hand shop laid out like a fitting room — one piece at a time, up close. | <img src="docs/thrift-store-fitting.jpg" width="320"> |
-| **swap** — Andra Varvet, catalogue | A second-hand shop as a swap sheet — everything in one long list with its measurements. | <img src="docs/thrift-store-swap.jpg" width="320"> |
-| **loud** — Andra Varvet, marquee | A second-hand shop with bright colour and big type, sold in US dollars. | <img src="docs/thrift-store-loud.jpg" width="320"> |
+| **fashion** — Vall, five looks | A fashion label in five looks — Atelier, Boutique, Drop, Index and Studio — picked per version of the site. | <img src="docs/fashion-store-atelier.jpg" width="320"> |
+| **thrift** — Second Round, five looks | A second-hand shop in five looks — the Rail, the Kiosk, the Fitting room, the Swap sheet and Loud — picked per version of the site. | <img src="docs/thrift-store-rail.jpg" width="320"> |
 | **workshop** — Rust & Chrome, storefront | A workshop selling restored vintage bicycles — each one unique, with its spec sheet. | <img src="docs/rust-and-chrome.jpg" width="320"> |
 
 ## After `osy init`

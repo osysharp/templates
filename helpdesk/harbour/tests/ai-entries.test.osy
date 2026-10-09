@@ -1,0 +1,65 @@
+// WHAT AN AI WROTE, ON A TICKET — the Conversations kit marks it in its own colour (`ConversationAi`): a draft waiting for
+// the team, a reply an AI sent itself, and a reply a teammate sent from its draft. The customer is told plainly in the
+// portal. Photographed by `osy test --pixels`, wide and on a phone, light and dark (Arabic in tests/languages/).
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+
+/// Olivia's ticket, answered with an AI's help: Ines sends its draft edited, the AI answers a second question itself, and
+/// a second draft waits. Answers the ticket's number.
+int OliviasTicketAnsweredWithAi() {
+  var number = 0;
+  runas (Desk) {
+    var id = OpenTicket("olivia@larkspur.test", "Olivia Brandt", "Refund for order 88213",
+                        "I sent the broken lamp back last week. When does the refund arrive?");
+    var t = Ticket.Single(x => x.Id == id);
+    number = t.Number;
+    var draft = Post(t.Conversation, "The refund for order 88213 is on its way and reaches your card within five working days.",
+                     EntryVisibility.AiInternal, "Harbour assistant");
+    UnitOfWork.Commit();
+    ApproveDraft(draft, "Your refund for order 88213 left us today and reaches your card within five working days.");
+    UnitOfWork.Commit();
+    Post(t.Conversation, "Our returns address is printed on every packing slip.", EntryVisibility.Customer, "Harbour assistant");
+    Post(t.Conversation, "Draft: offer free return shipping on her next order.", EntryVisibility.AiInternal, "Harbour assistant");
+    UnitOfWork.Commit();
+  }
+  Background.Settle();
+  return number;
+}
+
+[Test(Portal)]
+void the_team_sees_what_an_ai_wrote_on_a_ticket_in_its_own_colour() {
+  var n = OliviasTicketAnsweredWithAi();
+  Ui.SignInAs(Desk);
+  Ui.Viewport(1600, 1000);
+  Ui.Visit("/v/open/t/" + n);
+  Assert.Visible("AI draft — not sent");
+  Assert.Visible("Sent by AI");
+  Assert.Visible("Drafted by AI, sent by Ines Moreau");
+  Ui.Shot("ai-entries-ticket-wide-light");
+  Ui.Theme("dark");
+  Ui.Shot("ai-entries-ticket-wide-dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/v/open/t/" + n);
+  Assert.NoOverflow();
+  Ui.Shot("ai-entries-ticket-phone-light");
+}
+
+[Test(Portal)]
+void the_customer_is_told_plainly_in_the_portal_what_an_ai_wrote() {
+  var n = OliviasTicketAnsweredWithAi();
+  Ui.SignInAs(Olivia);
+  Ui.Viewport(1280, 900);
+  Ui.Visit("/my/" + n);
+  Assert.Visible("AI assistant");
+  Assert.Visible("Written with AI, checked and sent by Ines Moreau");
+  Assert.Hidden("Draft: offer free return shipping on her next order.");
+  Ui.Shot("ai-entries-portal-wide-light");
+  Ui.Theme("dark");
+  Ui.Shot("ai-entries-portal-wide-dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Assert.NoOverflow();
+  Ui.Shot("ai-entries-portal-phone-light");
+}

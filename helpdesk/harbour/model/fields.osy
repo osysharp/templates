@@ -1,0 +1,114 @@
+// FIELDS IN USE — what an admin's fields and forms (config.osy) do once they exist: the help page and the portal ask a
+// form's fields, by its conditions; the server checks every answer again before anything is kept; the ticket and its
+// customer panel show and edit them, each ticket change on its timeline with who made it; and a saved view names a
+// field to filter by.
+//
+// ⚑ THE RULES ARE Osysharp.Fields' — `ShownFields`, `AnswerProblem`, `Normalised`, `Checked`, `CheckedChange` — asked by the
+//   page as the customer types and by the server again, where nothing the browser said is trusted. What is the DESK's is
+//   here: which form a request is on, keeping a new ticket's answers, how a ticket's, a customer's and a company's
+//   answers are written (`IFieldRecords`, found by the kit's editor without being listed), and the saved view's filter.
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Automations;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Fields;
+
+// ── asking: a request's answers, checked on the server ───────────────────────────────────────────────────────────────
+
+/// The form a request is raised on: the one chosen, when it is still in use; else the default; none when no form is in
+/// use (a desk that asks nothing beyond the subject).
+TicketForm? FormFor(Guid? formId) {
+  if (formId == null) { return DefaultForm(); }
+  var chosen = TicketForm.FirstOrDefault(f => f.Id == formId.Value);
+  if (chosen == null || !chosen.Active) {
+    throw new ValidationException("That kind of request is no longer offered. Reload the page and choose again.");
+  }
+  return chosen;
+}
+
+/// Keep a new ticket's checked answers — one read of the fields they answer. (Its form is its type, set by `NewTicket`.)
+void KeepAnswers(Ticket t, List<FieldAnswer> kept) {
+  if (kept.Count == 0) { return; }
+  var ids = kept.Select(a => a.Field).ToList();
+  foreach (var f in TicketField.Where(x => ids.Contains(x.Id)).ToList()) {
+    new TicketFieldValue { Ticket = t, Field = f, Value = AnswerTo(kept, f.Id) };
+  }
+}
+
+// ── writing an answer: a ticket's, a customer's, a company's ─────────────────────────────────────────────────────────
+
+/// Who made the latest change to a field on a ticket — what a refusal names.
+string NameOfLastFieldChange(Ticket t) {
+  var last = ConversationEvent.Where(e => e.Conversation == t.Conversation && e.Kind == "helpdesk.field")
+    .OrderByDescending(e => e.Sequence).FirstOrDefault();
+  return last == null || last.ByName == "" ? "Someone" : last.ByName;
+}
+
+/// A TICKET'S ANSWERS — every change on its timeline (what it was, what it is, who), and an automation told the ticket
+/// changed.
+public class TicketFields : IFieldRecords {
+  public bool Holds(CustomField field) => field is TicketField;
+  public FieldValue? AnswerOf(Guid record, CustomField field) =>
+    TicketFieldValue.FirstOrDefault(v => v.Ticket.Id == record && v.Field == field);
+  public FieldValue NewAnswer(Guid record, CustomField field) =>
+    new TicketFieldValue { Ticket = Ticket.Single(t => t.Id == record), Field = field };
+  public string LastChangedBy(Guid record) => NameOfLastFieldChange(Ticket.Single(t => t.Id == record));
+  public void Changed(Guid record, CustomField field, string before, string after) {
+    var t = Ticket.Single(x => x.Id == record);
+    TicketLine(t, "helpdesk.field", new TicketFacts { Name = field.Name, FieldKind = field.Kind, Was = before, Now = after });
+    Raise(new TicketChanged { Ticket = t });
+  }
+}
+
+/// A CUSTOMER'S ANSWERS — what the team keeps about a person.
+public class CustomerFields : RecordFields<CustomerField, CustomerFieldValue, Customer> {
+  public CustomerFields() : base(v => v.Customer, c => new CustomerFieldValue { Customer = c }) { }
+}
+
+/// A COMPANY'S ANSWERS — what the team keeps about a customer company.
+public class CompanyFields : RecordFields<CompanyField, CompanyFieldValue, Company> {
+  public CompanyFields() : base(v => v.Company, c => new CompanyFieldValue { Company = c }) { }
+}
+
+/// Answer, change or clear one field on a ticket — the timeline says what it was and what it is, and who. `expected` is
+/// the answer the page showed ("" for none): somebody else's change since is refused with their name, so two people
+/// never overwrite each other without knowing. A retired field keeps its answer and takes no new one.
+public void SetTicketField(Guid ticketId, Guid fieldId, string value, string? expected = null) {
+  SetField(ticketId, fieldId, value, expected);
+}
+
+/// Change a ticket's TYPE — put it on another form: its fields change (the answers it holds are kept, whatever form they
+/// came from), and so does the kind the inbox's rules and promises name it by.
+public void SetTicketForm(Guid ticketId, Guid formId) {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  var form = TicketForm.Single(x => x.Id == formId);
+  if (t.Form != null && t.Form.Id == form.Id) { return; }
+  if (!form.Active) { throw new ValidationException("“" + form.Name + "” is no longer in use."); }
+  t.Form = form;
+  t.Kind = form.Key;
+  TicketLine(t, "helpdesk.form", new TicketFacts { Name = form.Name });
+  Raise(new TicketChanged { Ticket = t });
+  UnitOfWork.Commit();
+}
+
+// ── filtering: a saved view names a field ────────────────────────────────────────────────────────────────────────────
+
+/// The tickets a saved view's field filter keeps: "product=mail" — the tickets whose Product is Mail — or
+/// "order-number" — every ticket with any answer to it. ONE read of the fields and ONE of the matching answers,
+/// whatever the desk holds. A field the filter does not name, or an answer its kind cannot hold, keeps nothing (an
+/// app filter the desk does not understand shows nothing rather than everything — the inbox's rule).
+List<Guid> TicketsByField(string filter) {
+  var at = filter.IndexOf("=");
+  var word = FieldWord(at < 0 ? filter : filter.Substring(0, at));
+  var wanted = at < 0 ? "" : filter.Substring(at + 1).Trim();
+  var field = TicketField.ToList().FirstOrDefault(f => FieldWord(f.Name) == word);
+  if (field == null) { return new List<Guid>(); }
+  if (at < 0) {
+    return TicketFieldValue.Where(v => v.Field == field && v.Value != "").Select(v => v.Ticket.Id).ToList();
+  }
+  var spec = SpecOf(field);
+  if (wanted == "" || AnswerProblem(spec, wanted) != "") { return new List<Guid>(); }
+  var kept = Normalised(spec, wanted);
+  return TicketFieldValue.Where(v => v.Field == field && v.Value == kept).Select(v => v.Ticket.Id).ToList();
+}

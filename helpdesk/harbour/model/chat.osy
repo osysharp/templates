@@ -1,0 +1,45 @@
+// THE CHAT — `ConversationLauncher` in the corner of every portal and help-centre page (pages/portal.osy). A chat is a
+// ticket like any other: the first message opens one, in the customer's own request exactly as the help form does, and
+// every message after it tells whoever holds the ticket. A reply the customer leaves unread is mailed to them after ten
+// minutes, and their answer to that mail continues the same ticket (customers.osy: `ContinueOn`).
+using Osysharp.Conversations;
+
+/// What the desk does when a customer writes in the chat.
+public class DeskChat : ConversationEvents {
+  public override void CustomerWrote(Conversation conversation, string text, bool started) { ChatArrived(conversation, text); }
+  /// Their language became known (from their first message, after it was written): the tickets on this conversation
+  /// that did not know it yet take it — what language routing reads, and what the mails they are sent are written in.
+  public override void LanguageKnown(Conversation conversation, Osysharp.Conversations.Party party, string language) {
+    foreach (var t in conversation.Tickets.Where(x => x.Language == "").ToList()) { t.Language = language; }
+  }
+  /// The other side answered in a side conversation — by mail, or signed in on the web. The kit already said so on the
+  /// ticket's timeline, as its own run; whoever holds the ticket is told.
+  public override void SideAnswered(Conversation side) { TellOfASideAnswer(side); }
+}
+
+/// A customer wrote in the chat: a conversation with no ticket yet opens one, titled with the first words they wrote;
+/// otherwise it is what a mail on the ticket's conversation is (`MailArrived`) — the holder is told, and a closed
+/// ticket gets a follow-up.
+public void ChatArrived(Conversation conversation, string text) {
+  // An answer in a side conversation is the kit's to tell on the ticket it is beside — never a ticket of its own.
+  if (conversation.IsSide) { return; }
+  if (conversation.Tickets.Any()) {
+    MailArrived(conversation);
+    return;
+  }
+  var requester = Participant.Where(p => p.Conversation == conversation && p.Role == ParticipantRole.Customer)
+    .Select(p => p.Party).FirstOrDefault() as Customer;
+  if (requester == null) { return; }
+  NewTicket(ChatTitle(text), conversation, requester);
+  UnitOfWork.Commit();
+}
+
+/// A chat's ticket is titled with its first words — up to 80 characters, cut at a word.
+string ChatTitle(string text) {
+  var flat = text.Replace("\n", " ").Trim();
+  if (flat == "") { return "Chat"; }
+  if (flat.Length <= 80) { return flat; }
+  var cut = flat.Substring(0, 80);
+  var space = cut.LastIndexOf(" ");
+  return (space > 40 ? cut.Substring(0, space) : cut) + "…";
+}

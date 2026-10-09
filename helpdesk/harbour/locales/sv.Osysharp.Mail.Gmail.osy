@@ -1,0 +1,40 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Mail.Gmail, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Mail.Gmail · Osysharp.Mail.Gmail.GmailMailbox.Bearer ──
+  /// Osysharp.Mail.Gmail.GmailMailbox.Bearer · an error message
+  /// placeholders: {Address} = Address (string), {answered.StatusCode} = answered.StatusCode (int) — {answered.StatusCode} is a count: give one text per plural form
+  /// shown through ExternalServiceException
+  error "Google refused the credentials for '{Address}' ({answered.StatusCode}) — the refresh token was revoked or the client secret changed. Grant the mailbox again." => { one: "Google avvisade inloggningsuppgifterna för '{Address}' ({answered.StatusCode}). Uppdateringstoken har återkallats eller klienthemligheten har ändrats. Ge brevlådan åtkomst igen.", other: "Google avvisade inloggningsuppgifterna för '{Address}' ({answered.StatusCode}). Uppdateringstoken har återkallats eller klienthemligheten har ändrats. Ge brevlådan åtkomst igen." };
+  /// Osysharp.Mail.Gmail.GmailMailbox.Bearer · an error message
+  /// placeholders: {answered.StatusCode} = answered.StatusCode (int), {Address} = Address (string) — {answered.StatusCode} is a count: give one text per plural form
+  /// shown through ExternalServiceException
+  error "Google's token endpoint answered {answered.StatusCode} for '{Address}'." => { one: "Googles token-endpoint svarade {answered.StatusCode} för '{Address}'.", other: "Googles token-endpoint svarade {answered.StatusCode} för '{Address}'." };
+
+  // ── Osysharp.Mail.Gmail · Osysharp.Mail.Gmail.GmailMailbox.BodyOf ──
+  /// Osysharp.Mail.Gmail.GmailMailbox.BodyOf · an error message
+  /// placeholders: {doing} = doing (string), {Address} = Address (string), {r.StatusCode} = r.StatusCode (int) — {r.StatusCode} is a count: give one text per plural form
+  /// shown through ExternalServiceException
+  error "Gmail could not {doing} for '{Address}': it answered {r.StatusCode}." => { one: "Gmail kunde inte {doing} för '{Address}': svaret var {r.StatusCode}.", other: "Gmail kunde inte {doing} för '{Address}': svaret var {r.StatusCode}." };
+
+  // ── Osysharp.Mail.Gmail · Osysharp.Mail.Gmail.GmailMailbox.NotReadyReason ──
+  /// Osysharp.Mail.Gmail.GmailMailbox.NotReadyReason · note
+  /// placeholders: {Address} = Address (string)
+  /// shown through NotReadyReason()
+  note "The Gmail mailbox '{Address}' has no OAuth client yet — set ClientId and ClientSecret from your Google Cloud project." => "Gmail-brevlådan '{Address}' har ingen OAuth-klient än. Ange ClientId och ClientSecret från ditt Google Cloud-projekt.";
+  /// Osysharp.Mail.Gmail.GmailMailbox.NotReadyReason · note
+  /// placeholders: {Address} = Address (string)
+  /// shown through NotReadyReason()
+  note "The Gmail mailbox '{Address}' has no refresh token yet — grant it once (gmail.readonly and gmail.send) and set RefreshToken." => "Gmail-brevlådan '{Address}' har ingen uppdateringstoken än. Ge åtkomst en gång (gmail.readonly och gmail.send) och ange RefreshToken.";
+  /// Osysharp.Mail.Gmail.GmailMailbox.NotReadyReason · note
+  /// shown through NotReadyReason()
+  note "This Gmail mailbox has no Address." => "Den här Gmail-brevlådan har ingen adress.";
+
+  // ── Osysharp.Mail.Gmail · Osysharp.Mail.Gmail.GmailMailbox.ReadPush ──
+  /// Osysharp.Mail.Gmail.GmailMailbox.ReadPush · an error message
+  /// shown through ValidationException
+  error "This push is not signed by the mailbox's Pub/Sub service account." => "Den här pushen är inte signerad av brevlådans Pub/Sub-tjänstkonto.";
+}

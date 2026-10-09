@@ -1,20 +1,22 @@
 using Osysharp.Shop;
 
-// Where Stripe sends the visitor back — `/paid/{reference}/{session}` after paying, `/paid/{reference}/cancelled` if
-// they turned back. What it says is asked of STRIPE on the server; the address alone proves nothing, since anyone can
-// type it. The order itself is moved on by Stripe's signed webhook (payments.osy), not by this page.
+// Where Stripe sends the visitor back — `/paid/{link}/{session}` after paying, `/paid/{link}/cancelled` if they turned
+// back. `{link}` is the order's signed link (`OrderLink`), never its reference: a reference opens nothing, and a link
+// that was altered or has run out never reaches this page (the shop's `LinkGone` answers it). What the page says is
+// asked of STRIPE on the server; the order itself is moved on by Stripe's signed webhook (payments.osy), not by this page.
 
 [Title("Payment — Rust & Chrome")]
-[Page("/paid/{reference}/{session}")]
+[Route("/paid/{link}/{session}")]
 [Layout(Shop)]
 [Render(CSR)]
 [AllowAnonymous]
-component Paid(string reference, string session) {
+component Paid(OrderLink link, string session) {
+  string reference = "";
   PaymentOutcome outcome = null;
   string problem = "";
 
   on mount {
-    try { outcome = CheckCardPayment(reference, session); }
+    try { reference = ReceiptFor(link).Reference; outcome = CheckPayment(link, session); }
     catch (Exception ex) { problem = "We could not reach Stripe to confirm the payment. Your bike is still reserved — we will write once it is through."; }
   }
 
@@ -37,7 +39,10 @@ component Paid(string reference, string session) {
           Text($"{outcome.Message} The bike stays reserved for three days, then goes back in the window. (A demo: nothing was charged.)",
                fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary);
         }
-        Row { Link(href: "/bikes", label: "Back to the bikes") { Text("Back to the bikes →", color: Colors.Primary); } }
+        Row(gap: 6) {
+          Link(href: $"/order/{link}", label: "See your order") { Text("See your order →", color: Colors.Primary); }
+          Link(href: "/bikes", label: "Back to the bikes") { Text("Back to the bikes →", color: Colors.Primary); }
+        }
       }
     }
   }

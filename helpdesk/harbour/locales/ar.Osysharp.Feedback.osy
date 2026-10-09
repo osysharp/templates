@@ -1,0 +1,283 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Feedback, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Feedback · AnswerMyFeedback ──
+  /// AnswerMyFeedback · an error message
+  /// shown through ValidationException
+  error "That is not a question we asked you." => "هذا ليس سؤالاً طرحناه عليك.";
+
+  // ── Osysharp.Feedback · AskAbout ──
+  /// AskAbout · an error message
+  /// shown through ValidationException
+  error "Whom should we ask? Give their account, or the address to mail the question to." => "من نسأل؟ أدخل الحساب، أو العنوان الذي يُرسل إليه السؤال.";
+  /// AskAbout · an error message
+  /// placeholders: {address} = address (string)
+  /// shown through ValidationException
+  error "“{address}” is not an address a question can be mailed to." => "«{address}» ليس عنواناً يمكن إرسال السؤال إليه.";
+
+  // ── Osysharp.Feedback · FeedbackAppName ──
+  /// FeedbackAppName · an image's description for screen readers
+  /// shown through FeedbackAppName()
+  alt "us" => "نحن";
+
+  // ── Osysharp.Feedback · FeedbackCard ──
+  /// FeedbackCard · a control's name for screen readers
+  accessibleName "How did we do?" => "كيف كانت تجربتك؟";
+  /// FeedbackCard · a button's label · at most ~9 characters
+  /// shown through Button.label
+  /// beside: "Good"
+  button "Bad" => "سيئ";
+  /// FeedbackCard · a button's label · at most ~34 characters
+  /// shown through Button.announceAs
+  /// beside: "Good"
+  button "Bad — it did not go well" => "سيئ، لم يسر الأمر على ما يرام";
+  /// FeedbackCard · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Change to bad" => "التغيير إلى سيئ";
+  /// FeedbackCard · a button's label · at most ~20 characters
+  /// shown through Button.label
+  button "Change to good" => "التغيير إلى جيد";
+  /// FeedbackCard · a button's label · at most ~10 characters
+  /// shown through Button.label
+  /// beside: "Bad"
+  button "Good" => "جيد";
+  /// FeedbackCard · a button's label · at most ~27 characters
+  /// shown through Button.announceAs
+  /// beside: "Bad"
+  button "Good — it went well" => "جيد، سار الأمر على ما يرام";
+  /// FeedbackCard · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Save comment" => "حفظ التعليق";
+  /// FeedbackCard · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Send comment" => "إرسال التعليق";
+  /// FeedbackCard · a label (a field, a list item, a menu entry) · at most ~38 characters
+  /// shown through TextAreaField.label
+  label "Anything to add? (optional)" => "هل تود إضافة شيء؟ (اختياري)";
+  /// FeedbackCard · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Done.label
+  label "Comment saved" => "تم حفظ التعليق";
+  /// FeedbackCard · a label (a field, a list item, a menu entry) · at most ~38 characters
+  /// shown through TextAreaField.label
+  label "What went wrong? (optional)" => "ما الذي حدث بشكل خاطئ؟ (اختياري)";
+  /// FeedbackCard · text on the page
+  /// placeholders: {view.ClosesAt} = view.ClosesAt
+  text "It was open until {view.ClosesAt}. Thank you all the same." => "كان مفتوحاً حتى {view.ClosesAt}. شكراً على أي حال.";
+  /// FeedbackCard · text on the page
+  /// beside: "Good"
+  text "One click is your answer. You can add a comment after." => "نقرة واحدة هي إجابتك. يمكنك إضافة تعليق بعد ذلك.";
+  /// FeedbackCard · text on the page
+  text "Thank you for telling us" => "شكراً لإخبارنا";
+  /// FeedbackCard · text on the page
+  text "The work was opened again. We will ask when it is done." => "أُعيد فتح العمل. سنسأل عندما ينتهي.";
+  /// FeedbackCard · text on the page
+  text "This question has closed" => "أُغلق هذا السؤال";
+  /// FeedbackCard · text on the page
+  text "We are not asking about this now" => "لا نسأل عن هذا الآن";
+  /// FeedbackCard · text on the page
+  /// placeholders: {view.ChangeUntil.Value} = view.ChangeUntil.Value
+  text "You can change your answer until {view.ChangeUntil.Value}." => "يمكنك تغيير إجابتك حتى {view.ChangeUntil.Value}.";
+  /// FeedbackCard · text on the page
+  text "You said" => "إجابتك";
+  /// FeedbackCard · text on the page
+  text "Your answer can no longer be changed." => "لم يعد بالإمكان تغيير إجابتك.";
+
+  // ── Osysharp.Feedback · FeedbackMailQuestion ──
+  /// FeedbackMailQuestion · a link or button in an email · at most ~9 characters
+  /// beside: "Good"
+  mailLink "Bad" => "سيئ";
+  /// FeedbackMailQuestion · a link or button in an email · at most ~10 characters
+  /// beside: "Bad"
+  mailLink "Good" => "جيد";
+  /// FeedbackMailQuestion · text in an email
+  /// beside: "Good", "One click is your answer. You can add a comment on the page it opens, and change your mind for a while after."
+  mailText "How did we do?" => "كيف كانت تجربتك؟";
+  /// FeedbackMailQuestion · text in an email
+  /// beside: "How did we do?", "Good"
+  mailText "One click is your answer. You can add a comment on the page it opens, and change your mind for a while after." => "نقرة واحدة هي إجابتك. يمكنك إضافة تعليق في الصفحة التي تُفتح، وتغيير رأيك لفترة بعد ذلك.";
+
+  // ── Osysharp.Feedback · FeedbackQuestionMail ──
+  /// FeedbackQuestionMail · the preview line an inbox shows beside an email's subject
+  /// shown through EmailLayout.preview
+  mailPreview "One click tells us — good or bad." => "نقرة واحدة تكفي: جيد أو سيئ.";
+  /// FeedbackQuestionMail · an email's subject line
+  /// placeholders: {ask.Title} = ask.Title (string)
+  mailSubject "How did we do? {ask.Title}" => "كيف كانت تجربتك؟ {ask.Title}";
+  /// FeedbackQuestionMail · text in an email
+  /// shown through EmailLayout.footer
+  mailText "We ask once about each piece of work. Answer or not, nothing else follows from this mail." => "نسأل مرة واحدة عن كل عمل. سواء أجبت أم لا، لن يتبع هذه الرسالة شيء آخر.";
+  /// FeedbackQuestionMail · text on the page
+  /// shown through EmailHeading.text
+  /// also in FeedbackCard
+  /// also in Osysharp.Privacy.Feedback.FeedbackPersonalData.Export
+  text "How did we do?" => "كيف كانت تجربتك؟";
+
+  // ── Osysharp.Feedback · FeedbackResults ──
+  /// FeedbackResults · a control's name for screen readers
+  accessibleName "Comments" => "التعليقات";
+  /// FeedbackResults · a control's name for screen readers
+  accessibleName "Feedback results" => "نتائج الآراء";
+  /// FeedbackResults · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Metric.label
+  /// beside: "Said good", "Answered", "Good", "Bad"
+  label "Asked" => "سُئلوا";
+  /// FeedbackResults · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Metric.label
+  /// beside: "Answered", "Good", "Bad", "Asked"
+  label "Said good" => "قالوا جيد";
+  /// FeedbackResults · a subtitle
+  /// shown through Card.subtitle
+  /// beside: "Said good", "What people wrote"
+  subtitle "Answers given in each seven days, good above and bad below." => "الإجابات المقدّمة في كل سبعة أيام، الجيدة في الأعلى والسيئة في الأسفل.";
+  /// FeedbackResults · text on the page
+  text "Nobody has written a comment yet." => "لم يكتب أحد تعليقاً بعد.";
+  /// FeedbackResults · text on the page
+  /// placeholders: {weeks} = weeks
+  /// shown through EmptyState.body
+  text "When work is done and people are asked how it went, their answers appear here — the last {weeks} weeks." => "عندما ينتهي العمل ويُسأل الناس عن تجربتهم، تظهر إجاباتهم هنا، لآخر {weeks} أسابيع.";
+  /// FeedbackResults · a title
+  /// shown through EmptyState.title
+  title "Nobody has been asked yet" => "لم يُسأل أحد بعد";
+  /// FeedbackResults · a title
+  /// shown through Card.title
+  /// beside: "Said good", "What people wrote"
+  title "Week by week" => "أسبوعاً بأسبوع";
+  /// FeedbackResults · a title
+  /// shown through Card.title
+  /// beside: "Said good", "Week by week"
+  title "What people wrote" => "ما كتبه الناس";
+
+  // ── Osysharp.Feedback · FeedbackSettingsEditor ──
+  /// FeedbackSettingsEditor · a description
+  /// shown through SettingsPage.description
+  description "When a piece of work is done, the person it was for is asked one question — how did we do? — with good or bad and room for a comment. They answer from the mail, with no account, or signed in." => "عندما ينتهي عمل ما، يُطرح على صاحبه سؤال واحد: كيف كانت تجربتك؟ مع جيد أو سيئ ومساحة للتعليق. يجيب من البريد دون حساب، أو بعد تسجيل الدخول.";
+  /// FeedbackSettingsEditor · text on the page
+  /// shown through SaveBar.saved
+  text "Feedback settings saved." => "تم حفظ إعدادات الآراء.";
+
+  // ── Osysharp.Feedback · FeedbackSettingsFields ──
+  /// FeedbackSettingsFields · a description
+  /// shown through SettingsSection.description
+  /// beside: "Asking"
+  description "How long a person can change their answer, and how long answers are kept before they are deleted." => "المدة التي يمكن فيها تغيير الإجابة، والمدة التي تُحفظ فيها الإجابات قبل حذفها.";
+  /// FeedbackSettingsFields · a description
+  /// shown through SettingsSection.description
+  /// beside: "Answers"
+  description "Whether people are asked, how long after the work is done, and how long the question stays open." => "هل يُسأل الناس، وبعد كم من الوقت من انتهاء العمل، وكم يبقى السؤال مفتوحاً.";
+  /// FeedbackSettingsFields · a hint under a field
+  /// shown through DurationField.hint
+  hint "After this, the question can no longer be answered. At most 180 days." => "بعد ذلك لا يمكن الإجابة عن السؤال. 180 يوماً على الأكثر.";
+  /// FeedbackSettingsFields · a hint under a field
+  /// shown through DurationField.hint
+  hint "How long after answering a person can change their mind. At most 90 days." => "المدة بعد الإجابة التي يمكن فيها تغيير الرأي. 90 يوماً على الأكثر.";
+  /// FeedbackSettingsFields · a hint under a field
+  /// shown through DurationField.hint
+  hint "How long after the work is done the question is mailed. Zero sends it with the app's own mail, if it sends one." => "المدة بعد انتهاء العمل التي يُرسل فيها السؤال. صفر يرسله مع بريد التطبيق نفسه إن كان يرسل بريداً.";
+  /// FeedbackSettingsFields · a hint under a field
+  /// shown through SettingRow.hint
+  /// beside: "Ask after"
+  hint "Off, nobody is asked. Answers already given are kept." => "عند الإيقاف لا يُسأل أحد. تُحفظ الإجابات المقدّمة سابقاً.";
+  /// FeedbackSettingsFields · a hint under a field
+  /// shown through DurationField.hint
+  hint "Questions and answers older than this are deleted. Between 30 days and 10 years." => "تُحذف الأسئلة والإجابات الأقدم من ذلك. بين 30 يوماً و10 سنوات.";
+  /// FeedbackSettingsFields · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through DurationField.label
+  label "Ask after" => "اسأل بعد";
+  /// FeedbackSettingsFields · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Switch.label
+  label "Ask how it went" => "اسأل عن التجربة";
+  /// FeedbackSettingsFields · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through DurationField.label
+  label "Can be changed for" => "يمكن تغييرها لمدة";
+  /// FeedbackSettingsFields · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through DurationField.label
+  label "Keep answers for" => "احتفظ بالإجابات لمدة";
+  /// FeedbackSettingsFields · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through DurationField.label
+  label "Open for" => "مفتوح لمدة";
+  /// FeedbackSettingsFields · a title
+  /// shown through SettingsSection.title
+  /// beside: "Asking"
+  title "Answers" => "الإجابات";
+  /// FeedbackSettingsFields · a title
+  /// shown through SettingsSection.title
+  /// beside: "Answers"
+  title "Asking" => "السؤال";
+
+  // ── Osysharp.Feedback · FeedbackWeeks ──
+  /// FeedbackWeeks · a control's name for screen readers
+  /// beside: "now"
+  accessibleName "Good each week" => "الجيد كل أسبوع";
+  /// FeedbackWeeks · a control's name for screen readers
+  /// placeholders: {w.Starts} = w.Starts, {w.Good} = w.Good, {w.Bad} = w.Bad
+  accessibleName "Week of {w.Starts}: {w.Good} good, {w.Bad} bad" => "أسبوع {w.Starts}: {w.Good} جيد، {w.Bad} سيئ";
+
+  // ── Osysharp.Feedback · GiveFeedbackReply ──
+  /// GiveFeedbackReply · an error message
+  /// shown through ValidationException
+  error "Keep your comment under 2,000 characters." => "اجعل تعليقك أقل من 2000 حرف.";
+  /// GiveFeedbackReply · an error message
+  /// placeholders: {ask.ClosesAt} = ask.ClosesAt (DateTime)
+  /// shown through ValidationException
+  error "This question closed on {ask.ClosesAt}. Thank you all the same." => "أُغلق هذا السؤال في {ask.ClosesAt}. شكراً على أي حال.";
+  /// GiveFeedbackReply · an error message
+  /// shown through ValidationException
+  error "We are not asking about this any more — the work was opened again. We will ask when it is done." => "لم نعد نسأل عن هذا، فقد أُعيد فتح العمل. سنسأل عندما ينتهي.";
+  /// GiveFeedbackReply · an error message
+  /// shown through ValidationException
+  error "Your answer can no longer be changed. Thank you for it." => "لم يعد بالإمكان تغيير إجابتك. شكراً لك عليها.";
+
+  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackChange ──
+  /// Osysharp.Feedback.FeedbackChange · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Feedback.FeedbackChange.Changed
+  /// beside: "Answered"
+  label "Changed" => "تم التغيير";
+
+  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackMailState ──
+  /// Osysharp.Feedback.FeedbackMailState · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Feedback.FeedbackMailState.NotMailed
+  /// beside: "Waiting to be mailed", "Mailed"
+  label "Not mailed" => "لم يُرسل";
+  /// Osysharp.Feedback.FeedbackMailState · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Osysharp.Feedback.FeedbackMailState.Waiting
+  /// beside: "Mailed", "Not mailed"
+  label "Waiting to be mailed" => "بانتظار الإرسال";
+
+  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackRating ──
+  /// Osysharp.Feedback.FeedbackRating · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.Feedback.FeedbackRating.Bad
+  /// beside: "Good"
+  /// also in FeedbackCard
+  /// also in FeedbackResults
+  label "Bad" => "سيئ";
+  /// Osysharp.Feedback.FeedbackRating · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Feedback.FeedbackRating.Good
+  /// beside: "Bad"
+  /// also in FeedbackCard
+  /// also in FeedbackResults
+  label "Good" => "جيد";
+
+  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackReplyState ──
+  /// Osysharp.Feedback.FeedbackReplyState · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Feedback.FeedbackReplyState.Applied
+  /// beside: "Waiting", "Refused"
+  label "Applied" => "مُطبّق";
+
+  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackStage ──
+  /// Osysharp.Feedback.FeedbackStage · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.Feedback.FeedbackStage.Withdrawn
+  /// beside: "Open", "Answered", "Settled", "Closed"
+  label "No longer asked" => "لم يعد مطروحاً";
+  /// Osysharp.Feedback.FeedbackStage · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Feedback.FeedbackStage.Settled
+  /// beside: "Open", "Answered", "Closed", "No longer asked"
+  label "Settled" => "نهائي";
+
+  // ── Osysharp.Feedback · Osysharp.Feedback.__Settings_FeedbackSettings_Section.Sections ──
+  /// Osysharp.Feedback.__Settings_FeedbackSettings_Section.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Whether people are asked how it went, when, and how long answers are kept." => "هل يُسأل الناس عن تجربتهم، ومتى، وكم تُحفظ الإجابات.";
+}

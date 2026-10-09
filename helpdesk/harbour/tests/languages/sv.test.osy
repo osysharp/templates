@@ -1,0 +1,236 @@
+// HARBOUR IN SWEDISH — every page and sentence the desk says in Swedish, from locales/sv.osy (its own words and its kits'),
+// read the way a Swedish team and its customers read them. One place for the language: `osy init --template helpdesk`
+// leaves this file out with locales/sv*.osy when Swedish is not wanted, so the rest of the suite never reads a page in
+// it. The worlds these tests stand in (`Office`, `Desk`, `Bells`, …) and their helpers live beside the English tests.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.People;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Mail;
+using Osysharp.Mail.Receiving;
+using Osysharp.Inbox;
+using Osysharp.Knowledge;
+using Osysharp.Feedback;
+using Osysharp.Notifications;
+using Osysharp.Privacy;
+using Osysharp.Reports;
+using Osysharp.Clock;
+using Osysharp.Fields;
+using Osysharp.Webhooks;
+using Osysharp.Http;
+
+// ── settings ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Office)]
+void a_category_shown_by_its_name_reads_in_swedish() {
+  runas (Mira) {
+    Session.SetLanguage("sv");
+    Assert.Equal("Väntande", StatusCategory.Pending.Label);
+    Assert.Equal("Vilande", StatusCategory.OnHold.Label);
+    Session.SetLanguage("en");
+  }
+  Ui.SignInAs(Mira);
+  Ui.Visit("/sv/settings/statuses");
+  Assert.Visible("Väntande");
+}
+
+[Test(Office)]
+void the_desks_clock_in_swedish() {
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/sv/settings/clock");
+  Assert.Visible("Tid och datum");
+  Ui.Shot("settings-clock-sv");
+}
+
+// ── a ticket's history ───────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Desk)]
+void a_tickets_history_reads_in_swedish() {
+  var number = TicketWithAHistory();
+  Ui.SignInAs(Lena);
+  Ui.Viewport(1600, 1000);
+  Ui.Visit("/sv/v/open/t/" + number);
+  Assert.Visible("Ines Moreau lämnade över det till Rahul Kapoor.");
+  Assert.Visible("Prioritet Normal → Hög.");
+  Assert.Visible("Status satt till Waiting on a refund.");
+  Assert.Visible("Så hamnade det här");
+  Assert.Visible("Kom in i Billing, regeln ”Money questions”.");
+  Ui.Shot("history: a ticket's timeline and how it got here in Swedish, wide");
+
+  Ui.Viewport(390, 844);
+  Ui.Visit("/sv/v/open/t/" + number);
+  Assert.NoOverflow();
+  Assert.Visible("Ines Moreau lämnade över det till Rahul Kapoor.");
+  Ui.Shot("history: a ticket's timeline in Swedish, phone");
+  Ui.Hover("Ines Moreau lämnade över det till Rahul Kapoor.");
+  Ui.Shot("history: a ticket's earlier timeline in Swedish, phone");
+  Ui.Click("Engineering · L2");
+  Assert.Visible("Så hamnade #" + number + " här");
+  Assert.Visible("Kom in i Billing, regeln ”Money questions”.");
+  Assert.NoOverflow();
+  Ui.Shot("history: how a ticket got here in Swedish, phone");
+}
+
+/// On a phone English is one press from Swedish. With more than one other language the top bar has no room for every
+/// name beside the page's title, so the language it is read in, by its own name, opens the rest.
+[Test(Desk)]
+void on_a_phone_english_is_one_press_from_swedish() {
+  Ui.SignInAs(Lena);
+  Ui.Viewport(390, 844);
+  Ui.Visit("/sv/v/open");
+  if (App.Languages.Count > 2) {
+    Assert.Hidden("English");                                            // folded away, out of the title's room
+    Ui.Click("Svenska");                                                  // the language it is read in, by its own name
+  }
+  Ui.Click("English");
+  Assert.Visible("All open");
+  Assert.NoOverflow();
+}
+
+// ── what the desk tells people ───────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Solving)]
+void the_customers_answer_lands_on_the_timeline_said_in_swedish() {
+  var id = SolvedForOlivia("Export to CSV drops the last row");
+  AnswerFeedbackByLink(QuestionLinkOf(id), FeedbackRating.Good, "Fixed within the hour — thank you.");
+  Background.Settle();
+  Assert.Contains("Olivia Brandt svarade att det gick bra: ”Fixed within the hour — thank you.”", TimelineIn(id, "sv"));
+}
+
+[Test(Bells)]
+void a_notification_is_said_in_swedish_to_a_teammate_who_reads_the_desk_in_it() {
+  MentionedThenHandedOver();
+  runas (Rahul) {
+    Session.SetLanguage("sv");
+    Assert.Equal("Ines Moreau nämnde dig i en anteckning.", TopOfMyBell().Sentence);
+    Session.SetLanguage("en");
+  }
+  runas (Lena) {
+    Session.SetLanguage("sv");
+    Assert.True(TopOfMyBell().Sentence.StartsWith("Lämnat till dig. Rahul Kapoor är borta till "), TopOfMyBell().Sentence);
+    Session.SetLanguage("en");
+  }
+}
+
+[Test(Bells)]
+void the_daily_digest_mail_in_swedish() {
+  ThreeThingsWaitingForRahul();
+  RenderedEmail? swedish = null;
+  runas (Rahul) {
+    var me = Agent.Single(a => a.Email == "rahul@helpdesk.test");
+    var unread = Notification.Where(n => n.ReadAt == null).OrderByDescending(n => n.At).ToList();
+    swedish = NotificationDigestMail(me, unread, language: "sv");
+  }
+  Assert.Equal("3 saker väntar på dig i Harbour", swedish!.Subject);
+  Ui.Shot("notifications-digest-mail-swedish", swedish!);
+}
+
+// ── a Swedish customer ───────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Bilingual)]
+void the_mail_that_says_her_request_is_solved_is_in_swedish() {
+  var t = AnasInvoice();
+  runas (Nadia) {
+    Assert.Equal($"Ditt ärende #{t.Number} är löst: {t.Title}", TicketSolvedMail(Ticket.Single(x => x.Id == t.Id), null, null).Subject);
+  }
+}
+
+[Test(Bilingual)]
+void the_solved_mail_in_swedish_says_what_the_team_did_in_her_language() {
+  var ana = AnasInvoice();
+  Solves(ana.Id, "We resent the September invoice and fixed the download link.");
+  RenderedEmail? sv = null;
+  runas (Nadia) {
+    var anas = Ticket.Single(x => x.Id == ana.Id);
+    sv = TicketSolvedMail(anas, null, null, resolution: ResolutionIn(anas));
+  }
+  Assert.Contains("Ditt ärende", sv!.Subject);
+  // What the team did, in her language — the team wrote it in English.
+  Assert.Contains("Vi skickade septemberfakturan igen och lagade nedladdningslänken.", sv!.Text);
+  Ui.Shot("mail: request solved, Swedish", sv!);
+}
+
+[Test(Bilingual)]
+void the_customer_reads_the_answer_in_swedish_in_the_portal() {
+  // Clara writes from her portal in Swedish, and reads the answer in Swedish there.
+  var number = 0;
+  runas (Clara) {
+    number = SubmitRequest("Fakturan går inte att ladda ner",
+      "Hej! Jag försöker ladda ner fakturan för september men PDF:en öppnas aldrig. Kan ni skicka den igen?");
+  }
+  Background.Settle();
+  Ticket? t = null;
+  runas (Nadia) { t = Ticket.Single(x => x.Number == number); }
+  Answers(t!.Id, "Sorry about that — the September invoice is attached again, and the download link works now.");
+  Ui.Viewport(1280, 900);
+  Ui.SignInAs(Clara);
+  Ui.Visit("/sv/my/" + number);
+  Assert.Visible("Förlåt för det — septemberfakturan finns som bilaga igen, och nedladdningslänken fungerar nu.");
+  Assert.Visible("Översatt från engelska");
+  // Her own message is signed with her name — never her browser's id.
+  Assert.Visible("Clara Diaz");
+  Ui.Shot("portal: the answer in Swedish, wide");
+  Ui.Viewport(390, 844);
+  Assert.NoOverflow();
+  Ui.Shot("portal: the answer in Swedish, phone");
+}
+
+[Test(Bilingual)]
+void the_help_centre_and_the_chat_in_swedish() {
+  HarbourArticle("invoices", "Download an invoice", "Every invoice, as a PDF.",
+                 "Open Billing, pick the invoice and press Download — it opens as a PDF.");
+  Ui.Viewport(1280, 900);
+  Ui.Visit("/sv/help-centre");
+  Ui.Click("Chatta med oss");
+  Ui.Shot("help centre and chat: Swedish, wide");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/sv/");
+  Ui.Shot("portal: Swedish, phone");
+}
+
+// ── the help centre ──────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(HelpCentre)]
+void an_article_reads_in_swedish() {
+  Written();
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/sv/help-centre/a/reset-your-password");
+  Assert.Visible("Återställ ditt lösenord");
+  Ui.Shot("article-sv-wide-light");
+  Ui.Viewport(390, 844);
+  Ui.Shot("article-sv-phone-light");
+}
+
+[Test(HelpArticles)]
+void a_swedish_reader_gets_the_swedish_version() {
+  LoadHelpArticles();
+  Session.SetLanguage("sv");
+  var view = KnowledgeArticleView("deploy-your-app-to-osyrin-cloud");
+  Assert.Equal("sv", view.Language);
+  Assert.Equal("Driftsätt din app på Osyrin Cloud", view.Title);
+  Assert.False(view.InAnotherLanguage);
+  Assert.Equal("Använd en egen domän", SearchKnowledge("egen domän").Hits.Select(h => h.Title).First());
+  Session.SetLanguage("en");
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/sv/help-centre/a/deploy-your-app-to-osyrin-cloud");
+  Assert.Visible("Driftsätt din app på Osyrin Cloud");
+  Ui.Shot("help-articles-deploy-sv-wide-light");
+  Ui.Visit("/sv/help-centre");
+  Assert.Visible("Kom igång");
+  Ui.Shot("help-articles-home-sv-wide-light");
+}
+
+// ── reports ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(MonthOfWork)]
+void the_report_builder_in_swedish() {
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/sv/reports/build");
+  Assert.Visible("Referens");
+  Ui.Shot("reports-builder-swedish-wide-light");
+}

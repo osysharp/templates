@@ -3,6 +3,11 @@
 // There is NO signup — a staff account is made by someone who already runs the shop (`osy user add … --role Staff`),
 // never by a stranger with the URL.
 
+using Osysharp.Shop.Vies;
+using Osysharp.Delivery;
+using Osysharp.Payments.Klarna;
+using Osysharp.Payments;
+using Osysharp.Payments.Stripe;
 using Osysharp.Shop;
 
 app.Auth = new PasswordAuth { LoginField = Email, PasswordField = PasswordHash };
@@ -11,6 +16,7 @@ app.AuthBootstrap = new AuthBootstrap {
   Login = ShopLogin, Signup = ShopSignup,
   PasswordResetRequest = ShopRequestPasswordReset, PasswordReset = ShopResetPassword,
   PasswordChange = ShopChangePassword, EmailChange = ShopChangeEmail,
+  EmailVerify = ShopConfirmEmail, EmailVerifyCode = ShopConfirmEmailCode,
 };
 
 app.Audit = new AuditConfig {
@@ -18,20 +24,49 @@ app.Audit = new AuditConfig {
 };
 
 // Stripe posts here. Open, because Stripe has no account to sign in with — the kit's signature check is the lock.
+// How this shop takes money and hands goods over — the providers it lists, which the shop kit calls through its
+// payment and delivery contracts. Adding or removing one is a line here.
+app.Shop = new ShopSetup {
+  // The workshop shows a bike by its id, and has no category pages of its own.
+  ProductPath = "/bike/{id}",
+  // A company elsewhere in the EU, its VAT number confirmed by the EU's register, buys without VAT.
+  VatNumbers = new ViesCheck(),
+  Payments = [
+    // A card on Stripe's own page. Offered once both keys are set (`osy secret set StripeApiKey`, `StripeWebhookSecret`).
+    new StripePayments { ApiKey = Security.IsSecretSet("StripeApiKey") ? Secret.StripeApiKey : "",
+                         WebhookSecret = Security.IsSecretSet("StripeWebhookSecret") ? Secret.StripeWebhookSecret : "",
+                         Description = $"On Stripe's page, in TEST mode — {TestCardHint()}" },
+    // Klarna's own page — pay now, later or in parts, charged when the order is sent. Its playground while a demo.
+    new KlarnaPayments { Username = Security.IsSecretSet("KlarnaUsername") ? Secret.KlarnaUsername : "",
+                         Password = Security.IsSecretSet("KlarnaPassword") ? Secret.KlarnaPassword : "",
+                         Country = "DE", Locale = "en-DE", Playground = true },
+    new ManualPayment { Key = "banktransfer", Label = "Bank transfer",
+                        Description = "Demo — there is no account to pay. The order stays reserved while you would." },
+    new ManualPayment { Key = "oncollection", Label = "Pay on collection",
+                        Description = "Demo — there is nowhere to collect from. The order stays reserved.",
+                        Instructions = "Pay when you collect." },
+  ],
+  OnlyWhenCollecting = ["oncollection"],
+  Delivery = [
+    // Delivery at the fee the desk sets, free above its threshold, collected at the desk's address — the shop reads
+    // them where it uses them (data/00-shop.json), so a change applies to the next order.
+    // Collection first: it is how most bikes leave the workshop, fitted to the rider.
+    new CollectInStore { Label = "Collect from the workshop" },
+    new FlatRateDelivery { Label = "Insured delivery", Description = "Anywhere in Europe · boxed by us", DaysMin = 3, DaysMax = 7 },
+  ],
+};
+
+// The keys the payment providers above read. Set them with `osy secret set <NAME>`; until then they are not offered.
+app.Secrets = [ new Secret("StripeApiKey"), new Secret("StripeWebhookSecret"), new Secret("KlarnaUsername"), new Secret("KlarnaPassword") ];
+
+// Payment providers post their events here — Stripe to `/payments/stripe/events`, Klarna's callback to
+// `/payments/klarna/events`. Open, because a provider has no account to sign in with; each verifies its own events.
 app.Apis = [
-  new RestApi("Stripe") {
-    Route = "stripe",
+  new RestApi("Payments") {
+    Route = "payments",
     Auth  = new ApiAuth { Anonymous = true },
     Endpoints = [
-      new Endpoint(ShopStripeEvents) { Method = HttpMethod.Post, Path = "/events", Raw = true, Headers = ["Stripe-Signature"] },
-    ],
-  },
-  // Klarna reports a finished payment here. Unsigned, so the kit reads the order back from Klarna before it counts.
-  new RestApi("Klarna") {
-    Route = "klarna",
-    Auth  = new ApiAuth { Anonymous = true },
-    Endpoints = [
-      new Endpoint(ShopKlarnaEvents) { Method = HttpMethod.Post, Path = "/events", Raw = true },
+      new Endpoint(ShopPaymentEvents) { Method = HttpMethod.Post, Path = "/{provider}/events", Raw = true, Headers = ["Stripe-Signature"] },
     ],
   },
 ];
@@ -41,44 +76,13 @@ string PriceText(decimal price) {
   return $"€{price:N0}";
 }
 
-// ── read helpers a page can call while it renders ───────────────────────────────────────────────────────────────
+// ── what a page reads while it renders ─────────────────────────────────────────────────────────────────────────────
 //
-// ⚠ THE KIT HAS THESE TOO (`CoverPhoto`, `Spec`, `Sold`, `OnHold`), and they cannot yet run in a render: a PACKAGE's
-//   function is not sent to the browser, even a pure one, while the same body declared in the app is. So the
-//   store carries its own few lines of each.
-
-/// The cover photograph — the first by rank — of the photos handed in.
-string Cover(ProductImage[] images) {
-  return images.OrderBy(i => i.Rank).Select(i => i.Path).FirstOrDefault() ?? "";
-}
-
-/// One line of a spec sheet, or "".
-string SpecOf(ProductSpec[] specs, string name) {
-  return specs.Where(s => s.Name == name).Select(s => s.Value).FirstOrDefault() ?? "";
-}
-
-/// Paid for and gone: nothing left, nothing merely reserved.
-bool IsSold(Variant[] variants) {
-  return variants.All(v => v.Stock == 0 && v.Reserved == 0);
-}
-
-/// An unpaid order is holding it.
-bool IsHeld(Variant[] variants) {
-  return variants.Any(v => v.Reserved > 0);
-}
-
-/// A product's cover among covers read on their own — for the bag, whose lines reach their product through two
-/// references (a photo collection at the end of `Lines.Variant.Product` is not carried to the browser by the include).
-string CoverFor(List<ProductImage> covers, Guid product) {
-  return covers.Where(c => c.Product.Id == product).OrderBy(c => c.Rank).Select(c => c.Path).FirstOrDefault() ?? "";
-}
-
-/// One spec line of a product, among lines read on their own.
-string SpecFor(List<ProductSpec> specs, Guid product, string name) {
-  return specs.Where(s => s.Product.Id == product && s.Name == name).Select(s => s.Value).FirstOrDefault() ?? "";
-}
+// The cover, a spec line, sold and on hold are the shop kit's (`CoverPhoto`, `Spec`, `Sold`, `OnHold`, `CoverPhotoFor`,
+// `SpecFor`): pure functions over rows a page holds, so they run in the browser as it renders. Only this store's own
+// words are here.
 
 /// "Colnago · 1981 · 56 cm" — the line a collector reads under a name.
 string Specs(string brand, ProductSpec[] specs) {
-  return $"{brand} · {SpecOf(specs, "Year")} · {SpecOf(specs, "Frame size")}";
+  return $"{brand} · {Spec(specs, "Year")} · {Spec(specs, "Frame size")}";
 }

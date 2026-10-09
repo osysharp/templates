@@ -1,0 +1,449 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Fields, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Fields · AnswerProblem ──
+  /// AnswerProblem · an error message
+  /// placeholders: {f.Name} = f.Name (string), {Join} = string.Join(…) (string)
+  /// shown through AnswerProblem()
+  error "{f.Name} is one of: {Join}." => "قيمة {f.Name} واحدة من: {Join}.";
+  /// AnswerProblem · an error message
+  /// placeholders: {f.Name} = f.Name (string)
+  /// shown through AnswerProblem()
+  error "{f.Name} is too long — keep it under 1,000 characters." => "{f.Name} طويل جدًا، اجعله أقل من 1,000 حرف.";
+  /// AnswerProblem · an error message
+  /// placeholders: {f.Name} = f.Name (string)
+  /// shown through AnswerProblem()
+  error "{f.Name} is yes or no." => "قيمة {f.Name} نعم أو لا.";
+  /// AnswerProblem · an error message
+  /// placeholders: {f.Name} = f.Name (string)
+  /// shown through AnswerProblem()
+  error "{f.Name} takes a date, like 2026-10-02." => "يقبل {f.Name} تاريخًا، مثل 2026-10-02.";
+  /// AnswerProblem · an error message
+  /// placeholders: {f.Name} = f.Name (string)
+  /// shown through AnswerProblem()
+  error "{f.Name} takes a number, like 42 or 3.5." => "يقبل {f.Name} رقمًا، مثل 42 أو 3.5.";
+
+  // ── Osysharp.Fields · Checked ──
+  /// Checked · an error message
+  /// placeholders: {form.Name} = form.Name (string)
+  /// shown through ValidationException
+  error "The form “{form.Name}” does not ask that any more. Reload the page and send it again." => "لم يعد النموذج «{form.Name}» يطلب ذلك. أعد تحميل الصفحة وأرسله مرة أخرى.";
+  /// Checked · an error message
+  /// shown through ValidationException
+  error "This form asks nothing more. Reload the page and send it again." => "لا يسأل هذا النموذج عن شيء آخر. أعد تحميل الصفحة وأرسله مرة أخرى.";
+
+  // ── Osysharp.Fields · CheckedChange ──
+  /// CheckedChange · an error message
+  /// shown through ValidationException
+  error "Someone" => "شخص ما";
+  /// CheckedChange · an error message
+  /// shown through ValidationException
+  error "nothing" => "لا شيء";
+  /// CheckedChange · an error message
+  /// placeholders: {f.Name} = f.Name (string)
+  /// shown through ValidationException
+  error "{f.Name} is retired: records keep their answers to it, and it takes no new ones." => "تم إيقاف {f.Name}: تحتفظ السجلات بإجاباتها عنه، ولا يقبل إجابات جديدة.";
+  /// CheckedChange · an error message
+  /// placeholders: {value} = … (string), {f.Name} = f.Name (string), {value2} = … (string)
+  /// shown through ValidationException
+  error "{value} changed {f.Name} to {value2} just now. Have another look." => "غيّر {value} حقل {f.Name} إلى {value2} قبل لحظات. ألقِ نظرة أخرى.";
+
+  // ── Osysharp.Fields · Choices ──
+  /// Choices · text on the page
+  text "Optional" => "اختياري";
+
+  // ── Osysharp.Fields · ConditionEditor ──
+  /// ConditionEditor · a control's name for screen readers
+  /// placeholders: {x.Field.Name} = x.Field.Name
+  accessibleName "Condition of {x.Field.Name}" => "شرط {x.Field.Name}";
+  /// ConditionEditor · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Always ask it" => "اسأله دائمًا";
+  /// ConditionEditor · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Dropdown.label
+  label "Show it only when" => "أظهره فقط عندما";
+  /// ConditionEditor · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Question.label
+  label "…and its answer is" => "…وتكون إجابته";
+  /// ConditionEditor · placeholder text inside an empty field · at most ~18 characters
+  /// shown through Dropdown.placeholder
+  placeholder "Always asked" => "يُسأل دائمًا";
+  /// ConditionEditor · text on the page
+  text "Only a question above it on this form can show it. Move it below the question that should." => "لا يُظهره إلا سؤال يسبقه في هذا النموذج. انقله أسفل السؤال الذي يجب أن يُظهره.";
+
+  // ── Osysharp.Fields · ConditionLine ──
+  /// ConditionLine · text on the page
+  /// shown through ConditionLine()
+  text "Always asked" => "يُسأل دائمًا";
+  /// ConditionLine · text on the page
+  /// placeholders: {x.ShowWhen.Name} = x.ShowWhen.Name (string), {value} = … (string)
+  /// shown through ConditionLine()
+  text "Shown when {x.ShowWhen.Name} is {value}" => "يظهر عندما تكون قيمة {x.ShowWhen.Name} هي {value}";
+
+  // ── Osysharp.Fields · ConditionProblem ──
+  /// ConditionProblem · text on the page
+  /// placeholders: {x.ShowWhen.Name} = x.ShowWhen.Name (string)
+  /// shown through ConditionProblem()
+  text "Never shown: say which answer to {x.ShowWhen.Name} shows it." => "لا يظهر أبدًا: حدّد أي إجابة عن {x.ShowWhen.Name} تُظهره.";
+  /// ConditionProblem · text on the page
+  /// placeholders: {x.ShowWhen.Name} = x.ShowWhen.Name (string)
+  /// shown through ConditionProblem()
+  text "Never shown: {x.ShowWhen.Name} comes after it — move it above." => "لا يظهر أبدًا: {x.ShowWhen.Name} يأتي بعده، انقله إلى الأعلى.";
+  /// ConditionProblem · text on the page
+  /// placeholders: {x.ShowWhen.Name} = x.ShowWhen.Name (string)
+  /// shown through ConditionProblem()
+  text "Never shown: {x.ShowWhen.Name} is not on this form." => "لا يظهر أبدًا: {x.ShowWhen.Name} ليس في هذا النموذج.";
+  /// ConditionProblem · text on the page
+  /// placeholders: {x.ShowWhen.Name} = x.ShowWhen.Name (string)
+  /// shown through ConditionProblem()
+  text "Never shown: {x.ShowWhen.Name} is retired." => "لا يظهر أبدًا: {x.ShowWhen.Name} متوقف.";
+  /// ConditionProblem · text on the page
+  /// placeholders: {x.ShowValue} = x.ShowValue (string), {x.ShowWhen.Name} = x.ShowWhen.Name (string)
+  /// shown through ConditionProblem()
+  text "Never shown: “{x.ShowValue}” is not an answer {x.ShowWhen.Name} takes." => "لا يظهر أبدًا: «{x.ShowValue}» ليست إجابة يقبلها {x.ShowWhen.Name}.";
+
+  // ── Osysharp.Fields · FieldAnswerLines ──
+  /// FieldAnswerLines · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Badge.label
+  /// also in FieldListSection
+  /// also in FormSection
+  label "Retired" => "متوقف";
+
+  // ── Osysharp.Fields · FieldListSection ──
+  /// FieldListSection · a button's label · at most ~17 characters
+  /// shown through Button.label
+  /// also in ReportBuilder
+  button "Add a field" => "إضافة حقل";
+  /// FieldListSection · a button's label · at most ~31 characters
+  /// placeholders: {title} = title
+  /// shown through Button.announceAs
+  button "Add a field to {title}" => "إضافة حقل إلى {title}";
+  /// FieldListSection · a button's label · at most ~19 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Add the field" => "إضافة الحقل";
+  /// FieldListSection · a button's label · at most ~16 characters
+  /// shown through Button.label
+  button "Bring back" => "استعادة";
+  /// FieldListSection · a button's label · at most ~27 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through Button.announceAs
+  button "Bring back {f.Name}" => "استعادة {f.Name}";
+  /// FieldListSection · a button's label · at most ~10 characters
+  /// shown through Button.label
+  /// beside: "104px"
+  /// also in SavedReplySettings
+  /// also in MacroSettings
+  /// also in RuleRow
+  button "Edit" => "تعديل";
+  /// FieldListSection · a button's label · at most ~19 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through Button.announceAs
+  /// beside: "104px"
+  button "Edit {f.Name}" => "تعديل {f.Name}";
+  /// FieldListSection · a button's label · at most ~26 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through IconButton.label
+  /// beside: "Edit", "104px"
+  button "Move {f.Name} down" => "نقل {f.Name} لأسفل";
+  /// FieldListSection · a button's label · at most ~23 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through IconButton.label
+  /// beside: "Edit", "104px"
+  button "Move {f.Name} up" => "نقل {f.Name} لأعلى";
+  /// FieldListSection · a button's label · at most ~12 characters
+  /// shown through Button.label
+  button "Retire" => "إيقاف";
+  /// FieldListSection · a button's label · at most ~21 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through Button.announceAs
+  button "Retire {f.Name}" => "إيقاف {f.Name}";
+  /// FieldListSection · a description
+  /// placeholders: {record} = record, {records} = records
+  /// shown through SettingsSection.description
+  description "Every question asked about a {record}, in the order it shows them. A field is retired, never deleted: {records} keep their answers." => "كل سؤال يُطرح ({record})، بالترتيب الذي يُعرض به. الحقل يُوقف ولا يُحذف أبدًا: تحتفظ {records} بإجاباتها.";
+  /// FieldListSection · a description
+  /// shown through FieldListSection.record
+  description "record" => "سجل";
+  /// FieldListSection · a description
+  /// shown through FieldListSection.records
+  description "records" => "سجلات";
+  /// FieldListSection · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Badge.label
+  label "Added" => "مُضاف";
+  /// FieldListSection · a label (a field, a list item, a menu entry) · at most ~30 characters
+  /// shown through TextAreaField.label
+  label "Options, one per line" => "الخيارات، خيار في كل سطر";
+  /// FieldListSection · a label (a field, a list item, a menu entry) · at most ~27 characters
+  /// shown through Checkbox.label
+  label "They must answer it" => "يجب عليهم الإجابة";
+  /// FieldListSection · placeholder text inside an empty field · at most ~61 characters
+  /// shown through Field.placeholder
+  /// beside: "Name", "Kind", "Cancel"
+  placeholder "Where to find it — shown under the question" => "أين يجده العميل، ويظهر تحت السؤال";
+  /// FieldListSection · a subtitle
+  /// shown through FieldListSection.about
+  subtitle "Something the app asks about a record." => "شيء يسأل عنه التطبيق في السجل.";
+  /// FieldListSection · text on the page
+  /// placeholders: {records} = records
+  /// beside: "Kind"
+  text "Fixed once saved: {records} keep their answers in it." => "لا يتغيّر بعد الحفظ: تحتفظ {records} بإجاباتها فيه.";
+  /// FieldListSection · text on the page
+  /// placeholders: {records} = records
+  /// beside: "Kind"
+  text "Fixed once saved: {records} keep their answers in it. For another kind, retire this field and add a new one." => "لا يتغيّر بعد الحفظ: تحتفظ {records} بإجاباتها فيه. لنوع آخر، أوقف هذا الحقل وأضف حقلًا جديدًا.";
+  /// FieldListSection · text on the page
+  /// shown through FieldLabel.text
+  text "Kind" => "النوع";
+  /// FieldListSection · text on the page
+  /// placeholders: {record} = record
+  text "No fields yet. Add the first thing you want to know about a {record}." => "لا توجد حقول بعد. أضف أول ما تريد معرفته ({record}).";
+  /// FieldListSection · a title
+  /// shown through Dialog.title
+  title "A field" => "حقل";
+  /// FieldListSection · a title
+  /// shown through Dialog.title
+  title "A new field" => "حقل جديد";
+
+  // ── Osysharp.Fields · FieldNameProblem ──
+  /// FieldNameProblem · an error message
+  /// shown through FieldNameProblem()
+  error "Another field already has that name." => "يوجد حقل آخر بهذا الاسم.";
+  /// FieldNameProblem · an error message
+  /// shown through FieldNameProblem()
+  error "Name the field." => "سمِّ الحقل.";
+
+  // ── Osysharp.Fields · FieldRow ──
+  /// FieldRow · a control's name for screen readers
+  /// placeholders: {f.Name} = f.Name
+  accessibleName "Edit {f.Name}" => "تعديل {f.Name}";
+  /// FieldRow · a control's name for screen readers
+  /// placeholders: {f.Name} = f.Name
+  accessibleName "Editing {f.Name}" => "تعديل {f.Name}";
+  /// FieldRow · a button's label · at most ~19 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through Button.announceAs
+  /// beside: "Cancel"
+  button "Save {f.Name}" => "حفظ {f.Name}";
+
+  // ── Osysharp.Fields · FormSection ──
+  /// FormSection · a control's name for screen readers
+  /// placeholders: {form.Name} = form.Name
+  /// beside: "180px", "What it is for"
+  accessibleName "Fields on {form.Name}" => "الحقول في {form.Name}";
+  /// FormSection · a control's name for screen readers
+  /// placeholders: {x.Field.Name} = x.Field.Name, {form.Name} = form.Name
+  accessibleName "{x.Field.Name} on {form.Name}" => "{x.Field.Name} في {form.Name}";
+  /// FormSection · a button's label · at most ~37 characters
+  /// placeholders: {form.Name} = form.Name
+  /// shown through Button.label
+  button "Add a field to {form.Name}" => "إضافة حقل إلى {form.Name}";
+  /// FormSection · a button's label · at most ~15 characters
+  /// shown through Button.label
+  /// beside: "Take off"
+  button "Condition" => "الشرط";
+  /// FormSection · a button's label · at most ~59 characters
+  /// placeholders: {x.Field.Name} = x.Field.Name, {form.Name} = form.Name
+  /// shown through Button.announceAs
+  /// beside: "Take off"
+  button "Condition of {x.Field.Name} on {form.Name}" => "شرط {x.Field.Name} في {form.Name}";
+  /// FormSection · a button's label · at most ~40 characters
+  /// placeholders: {form.Name} = form.Name
+  /// shown through Button.announceAs
+  button "Make {form.Name} the default" => "جعل {form.Name} الافتراضي";
+  /// FormSection · a button's label · at most ~55 characters
+  /// placeholders: {x.Field.Name} = x.Field.Name, {form.Name} = form.Name
+  /// shown through IconButton.label
+  /// beside: "Condition", "Take off"
+  button "Move {x.Field.Name} down on {form.Name}" => "نقل {x.Field.Name} لأسفل في {form.Name}";
+  /// FormSection · a button's label · at most ~52 characters
+  /// placeholders: {x.Field.Name} = x.Field.Name, {form.Name} = form.Name
+  /// shown through IconButton.label
+  /// beside: "Condition", "Take off"
+  button "Move {x.Field.Name} up on {form.Name}" => "نقل {x.Field.Name} لأعلى في {form.Name}";
+  /// FormSection · a button's label · at most ~14 characters
+  /// shown through Button.label
+  /// beside: "Condition"
+  button "Take off" => "إزالة";
+  /// FormSection · a button's label · at most ~49 characters
+  /// placeholders: {x.Field.Name} = x.Field.Name, {form.Name} = form.Name
+  /// shown through Button.announceAs
+  /// beside: "Condition"
+  button "Take {x.Field.Name} off {form.Name}" => "إزالة {x.Field.Name} من {form.Name}";
+  /// FormSection · an error message
+  /// shown through Field.error
+  error "A key is lower-case words joined by hyphens, like bug-report." => "المفتاح كلمات بأحرف صغيرة تصل بينها شرطات، مثل bug-report.";
+  /// FormSection · a hint under a field
+  /// shown through FormSection.keyHint
+  hint "What rules name it by — lower-case words and hyphens. Fixed once saved." => "الاسم الذي تستخدمه القواعد، بحروف صغيرة وشرطات. لا يتغيّر بعد الحفظ.";
+  /// FormSection · a label (a field, a list item, a menu entry) · at most ~38 characters
+  /// shown through MenuItem.label
+  label "Every field in use is on it" => "كل الحقول المستخدمة موجودة فيه";
+  /// FormSection · a label (a field, a list item, a menu entry) · at most ~40 characters
+  /// placeholders: {form.Name} = form.Name
+  /// shown through Menu.label
+  label "Fields to put on {form.Name}" => "الحقول المراد إضافتها إلى {form.Name}";
+  /// FormSection · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Field.label
+  /// beside: "180px"
+  /// also in ApiKeyManager
+  label "What it is for" => "الغرض منه";
+  /// FormSection · placeholder text inside an empty field · at most ~48 characters
+  /// shown through Field.placeholder
+  /// beside: "180px"
+  placeholder "Shown under the choice on the form" => "يظهر تحت الاختيار في النموذج";
+  /// FormSection · text on the page
+  text "Default — taken when nobody chooses" => "الافتراضي، يُستخدم عندما لا يختار أحد";
+  /// FormSection · text on the page
+  text "It asks nothing more yet." => "لا يسأل عن شيء آخر بعد.";
+  /// FormSection · text on the page
+  /// placeholders: {form.Key} = form.Key
+  text "Rules name it “{form.Key}”." => "تسمّيه القواعد «{form.Key}».";
+
+  // ── Osysharp.Fields · KindLine ──
+  /// KindLine · text on the page
+  /// placeholders: {kind} = kind (string)
+  /// shown through KindLine()
+  text "{kind} · asked on the form" => "{kind} · يُسأل في النموذج";
+  /// KindLine · text on the page
+  /// placeholders: {kind} = kind (string)
+  /// shown through KindLine()
+  text "{kind} · asked on the form, required" => "{kind} · يُسأل في النموذج، إلزامي";
+  /// KindLine · text on the page
+  /// placeholders: {kind} = kind (string)
+  /// shown through KindLine()
+  text "{kind} · the team's" => "{kind} · للفريق";
+
+  // ── Osysharp.Fields · Osysharp.Fields.CustomField ──
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Fields.CustomField.Hint
+  /// beside: "Name", "Kind", "Options", "Public", "Required", "Position"
+  /// also in FieldListSection
+  label "Hint" => "تلميح";
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Fields.CustomField.Kind
+  /// beside: "Name", "Options", "Hint", "Public", "Required", "Position"
+  /// also in FieldListSection
+  /// also in Osysharp.Conversations.ContactPoint
+  /// also in Osysharp.Inbox.WorkItem
+  label "Kind" => "النوع";
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Fields.CustomField.Options
+  /// beside: "Name", "Kind", "Hint", "Public", "Required", "Position"
+  label "Options" => "الخيارات";
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Fields.CustomField.Public
+  /// beside: "Name", "Kind", "Options", "Hint", "Required", "Position"
+  label "Public" => "عام";
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Fields.CustomField.Required
+  /// beside: "Name", "Kind", "Options", "Hint", "Public", "Position"
+  /// also in RoutingRuleSettings
+  label "Required" => "مطلوبة";
+  /// Osysharp.Fields.CustomField · validation
+  /// shown through Osysharp.Fields.CustomField.Name [Required]
+  validation "Name the field." => "أدخل اسم الحقل.";
+
+  // ── Osysharp.Fields · Osysharp.Fields.FieldForm ──
+  /// Osysharp.Fields.FieldForm · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.Fields.FieldForm.Key
+  /// beside: "Name", "Description", "Is default", "Position", "Active"
+  /// also in FormSection
+  label "Key" => "المفتاح";
+  /// Osysharp.Fields.FieldForm · validation
+  /// shown through Osysharp.Fields.FieldForm.Key [Unique]
+  validation "Another form already has that key." => "لنموذج آخر هذا المفتاح بالفعل.";
+  /// Osysharp.Fields.FieldForm · validation
+  /// shown through Osysharp.Fields.FieldForm.Key [Required]
+  validation "Give the form a key." => "أعطِ النموذج مفتاحًا.";
+  /// Osysharp.Fields.FieldForm · validation
+  /// shown through Osysharp.Fields.FieldForm.Name [Required]
+  validation "Name the form." => "أدخل اسم النموذج.";
+
+  // ── Osysharp.Fields · Osysharp.Fields.FieldKind ──
+  /// Osysharp.Fields.FieldKind · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.Fields.FieldKind.Choice
+  /// beside: "Text", "Number", "Yes or no", "Date"
+  label "One of a list" => "خيار من قائمة";
+
+  // ── Osysharp.Fields · Osysharp.Fields.FieldValue ──
+  /// Osysharp.Fields.FieldValue · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Fields.FieldValue.Field
+  /// beside: "Value"
+  label "Field" => "الحقل";
+  /// Osysharp.Fields.FieldValue · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Fields.FieldValue.Value
+  /// beside: "Field"
+  /// also in Osysharp.Conversations.ContactPoint
+  /// also in AutomationRules
+  /// also in HavingEditor
+  label "Value" => "القيمة";
+
+  // ── Osysharp.Fields · Osysharp.Fields.FieldsInReports.Pivots ──
+  /// Osysharp.Fields.FieldsInReports.Pivots · text on the page
+  /// also in AutomationRules
+  /// also in ParamInput
+  text "No" => "لا";
+  /// Osysharp.Fields.FieldsInReports.Pivots · text on the page
+  /// also in AutomationRules
+  /// also in ParamInput
+  text "Yes" => "نعم";
+
+  // ── Osysharp.Fields · Question ──
+  /// Question · placeholder text inside an empty field · at most ~14 characters
+  /// shown through Field.placeholder
+  placeholder "A number" => "رقم";
+  /// Question · placeholder text inside an empty field · at most ~16 characters
+  /// shown through Dropdown.placeholder
+  placeholder "Choose one" => "اختر واحدًا";
+  /// Question · placeholder text inside an empty field · at most ~27 characters
+  /// shown through Field.placeholder
+  placeholder "Optional — a number" => "اختياري، رقم";
+  /// Question · placeholder text inside an empty field · at most ~30 characters
+  /// shown through Dropdown.placeholder
+  placeholder "Optional — choose one" => "اختياري، اختر واحدًا";
+
+  // ── Osysharp.Fields · RecordFields ──
+  /// RecordFields · text on the page
+  /// placeholders: {whereMade} = whereMade
+  text "No fields yet — they are added on {whereMade}." => "لا توجد حقول بعد، تُضاف من {whereMade}.";
+  /// RecordFields · text on the page
+  text "No fields yet." => "لا توجد حقول بعد.";
+  /// RecordFields · a title
+  /// shown through RecordFields.title
+  /// also in FieldListSection
+  title "Fields" => "الحقول";
+
+  // ── Osysharp.Fields · SetField ──
+  /// SetField · an error message
+  /// shown through ValidationException
+  error "That field is gone. Reload the page." => "لم يعد هذا الحقل موجودًا. أعد تحميل الصفحة.";
+  /// SetField · an error message
+  /// placeholders: {field.Name} = field.Name (string)
+  /// shown through ValidationException
+  error "{field.Name} is on no kind of record this app keeps answers for — it needs an IFieldRecords class." => "{field.Name} لا ينتمي إلى أي نوع من السجلات يحفظ التطبيق إجاباته، ويحتاج إلى فئة IFieldRecords.";
+
+  // ── Osysharp.Fields · ShownAnswer ──
+  /// ShownAnswer · a control's name for screen readers
+  /// shown through ShownAnswer()
+  /// also in CellText
+  accessibleName "No" => "لا";
+  /// ShownAnswer · a control's name for screen readers
+  /// shown through ShownAnswer()
+  /// also in CellText
+  accessibleName "Yes" => "نعم";
+
+  // ── Osysharp.Fields · SlotProblem ──
+  /// SlotProblem · an error message
+  /// shown through SlotProblem()
+  error "Needs an answer." => "يحتاج إلى إجابة.";
+
+  // ── Osysharp.Fields · UseLine ──
+  /// UseLine · text on the page
+  /// placeholders: {n} = n (int), {value} = … (string) — {n} is a count: give one text per plural form
+  /// shown through UseLine()
+  text " · answered on {n} {value}" => { zero: " · أُجيب عنه في {n} {value}", one: " · أُجيب عنه في {n} {value}", two: " · أُجيب عنه في {n} {value}", few: " · أُجيب عنه في {n} {value}", many: " · أُجيب عنه في {n} {value}", other: " · أُجيب عنه في {n} {value}" };
+}

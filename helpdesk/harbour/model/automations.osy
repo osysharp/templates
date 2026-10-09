@@ -1,0 +1,131 @@
+// THE DESK'S AUTOMATIONS — rules about tickets (Osysharp.Automations). What a rule may run on is what happens to a
+// ticket (the desk's events, events.osy, and the kits' — the inbox's `HolderChanged`, `PromiseAtRisk`, …), what it may
+// ask is the ticket's own fields, and what it may do is the desk's own verbs (actions.osy). Its own rules are typed
+// throughout — the field, the value (`Test(t => t.Category, Is, StatusCategory.Pending)`) and each step, the action
+// called (`Run(t => TagTicket(t, "urgent"))`) — so a misspelt one does not compile. The desk adds only what its model does not say: the rules it ships, what it
+// computes (tags, how long in a status, since the customer wrote, its own fields), the open tickets the hourly clock
+// looks at, and whose a ticket is. Each run is a line on the ticket's timeline.
+//
+// ⚑ HARBOUR SHIPS THREE OF ITS OWN, and the team copies one to change it: a ticket that says it is urgent is tagged and
+//   the leads told, a promise at risk is told to whoever holds it, and so is a ticket waiting on its customer for three
+//   days. They run as the app, so they tag and tell (actions.osy says why); a team copy that raises the priority runs as
+//   the admin who saved it. Admins keep the team's rules and lock the desk's; every agent keeps rules of their own for the
+//   tickets they hold.
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Automations;
+using Osysharp.Fields;
+
+/// Who works with automations: every agent (and keeps rules of their own). Who keeps the team's: admins.
+policy RunsAutomations => IsAgent;
+policy ManagesAutomations => IsAdmin;
+
+app.Automations = new AutomationsSetup { Subjects = [new TicketRules()] };
+
+public class TicketRules : AutomationSubject<Ticket> {
+  /// What the desk computes, beside the ticket's own fields.
+  public AutomationCondition Tags => new TagsAre { Key = "tags", Label = Translate("Tags"), Kind = ConditionKind.Text };
+  public AutomationCondition Held => new IsHeld { Key = "held", Label = Translate("Somebody holds it"), Kind = ConditionKind.Flag };
+  public AutomationCondition InStatus => new HoursInStatus { Key = "hours-in-status", Label = Translate("Hours in its status"), Kind = ConditionKind.Hours };
+  public AutomationCondition SinceCustomer => new HoursSinceCustomer { Key = "hours-since-customer", Label = Translate("Hours since the customer wrote"), Kind = ConditionKind.Hours };
+
+  public override List<AutomationCondition> Conditions() {
+    List<AutomationCondition> all = [Tags, Held, InStatus, SinceCustomer];
+    // The desk's own fields (Settings › Fields) — each one a rule may ask about.
+    foreach (var f in TicketField.Where(x => x.Active && x.Kind != FieldKind.Date).OrderBy(x => x.Position).ToList()) {
+      all.Add(new FieldAnswered {
+        Key = "field:" + f.Id.ToString(), Label = f.Name, Field = f.Id,
+        Kind = f.Kind == FieldKind.Number ? ConditionKind.Number
+             : f.Kind == FieldKind.YesNo ? ConditionKind.Flag
+             : f.Kind == FieldKind.Choice ? ConditionKind.Choice
+             : ConditionKind.Text,
+      });
+    }
+    return all;
+  }
+
+  public override List<AutomationDefault> Defaults() {
+    return [
+      new AutomationDefault {
+        Key = "urgent-words", Name = Translate("Urgent words are tagged and the leads told"), When = On<TicketArrived>(),
+        If = [Test(t => t.Title, Contains, "urgent"), Test(t => t.Priority, IsNot, WorkPriority.Urgent)],
+        Then = [Run(t => TagTicket(t, "urgent")), Run(t => TellLeads(t, "A new ticket says it is urgent."))],
+      },
+      new AutomationDefault {
+        Key = "at-risk-tell-holder", Name = Translate("A promise at risk is told to whoever holds it"), When = On<PromiseAtRisk>(),
+        If = [Test(Held, Is, true)],
+        Then = [Run(t => TellHolder(t, "A promise on this ticket is at risk."))],
+      },
+      new AutomationDefault {
+        Key = "waiting-three-days", Name = Translate("Waiting on the customer for three days"), Hourly = true,
+        If = [Test(t => t.Category, Is, StatusCategory.Pending), Test(InStatus, AtLeast, TimeSpan.FromHours(72))],
+        Then = [Run(t => TellHolder(t, "The customer has not answered for three days."))],
+      },
+    ];
+  }
+
+  /// The hourly rules look at every ticket still being worked.
+  public override List<Entity> Watching() {
+    List<Entity> open = [];
+    foreach (var t in Ticket.Where(t => t.Category != StatusCategory.Closed && t.Category != StatusCategory.Solved).ToList()) { open.Add(t); }
+    return open;
+  }
+  /// An agent's own rules run on the tickets they hold.
+  public override Principal? HolderOf(Entity record) {
+    if (record is Ticket t) { return t.Assignee; }
+    return null;
+  }
+  /// "Take it" takes it for whoever runs it — a rule says who instead ("Assign to").
+  public override bool Offers(ActionInfo action) { return action.Name != Actions.Of(TakeTicket).Name; }
+}
+
+/// Each run is a line on the ticket's timeline, for the team — said in the reader's language when it is read.
+[On]
+void LineForTheRun(AutomationRan e) {
+  if (e.Record is Ticket t) { TicketLine(t, "helpdesk.automation", new TicketFacts { Name = e.Fire.RuleName, Fire = e.Fire.Id }); }
+}
+
+// ── what the desk computes for a rule ─────────────────────────────────────────────────────────────────────────────────
+
+public class TagsAre : AutomationCondition {
+  public override string Value(Entity record) {
+    var id = record.Id;
+    return string.Join(" ", TicketTag.Where(x => x.Ticket.Id == id).Include(x => x.Tag).ToList().Select(x => x.Tag.Name));
+  }
+}
+public class IsHeld : AutomationCondition {
+  public override bool Is(Entity record) {
+    if (record is Ticket t) { return t.Assignee != null; }
+    return false;
+  }
+}
+public class HoursInStatus : AutomationCondition {
+  public override DateTime? Since(Entity record) {
+    if (record is Ticket t) { return t.StatusSince ?? t.ArrivedAt; }
+    return null;
+  }
+}
+public class HoursSinceCustomer : AutomationCondition {
+  public override DateTime? Since(Entity record) {
+    if (record is Ticket t) { return t.Conversation.LastCustomerEntryAt; }
+    return null;
+  }
+}
+/// One of the desk's own fields (H1) — its answer on the ticket, in the field's own kind.
+public class FieldAnswered : AutomationCondition {
+  public Guid Field;
+  public override List<ActionChoice> Choices() {
+    var id = Field;
+    var f = TicketField.Single(x => x.Id == id);
+    return OptionsIn(f.Options).Select(o => new ActionChoice { Key = o, Label = o }).ToList();
+  }
+  public override string Value(Entity record) {
+    var id = Field;
+    var ticket = record.Id;
+    var v = TicketFieldValue.FirstOrDefault(x => x.Ticket.Id == ticket && x.Field.Id == id);
+    return v == null ? "" : v.Value;
+  }
+  /// A yes-or-no field: answered yes.
+  public override bool Is(Entity record) { return Value(record) == "yes"; }
+}

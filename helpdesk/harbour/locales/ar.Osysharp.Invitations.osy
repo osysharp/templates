@@ -1,0 +1,224 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Invitations, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Invitations · InvitationAnswer ──
+  /// InvitationAnswer · a control's name for screen readers
+  accessibleName "How to answer" => "طريقة الرد";
+  /// InvitationAnswer · a control's name for screen readers
+  accessibleName "Your invitations" => "دعواتك";
+  /// InvitationAnswer · a button's label · at most ~12 characters
+  /// shown through Button.label
+  button "Accept" => "قبول";
+  /// InvitationAnswer · a button's label · at most ~24 characters
+  /// shown through Button.label
+  /// beside: "I'm new here"
+  button "I have an account" => "لدي حساب";
+  /// InvitationAnswer · a button's label · at most ~18 characters
+  /// shown through Button.label
+  /// beside: "I have an account"
+  button "I'm new here" => "أنا جديد هنا";
+  /// InvitationAnswer · a button's label · at most ~10 characters
+  /// shown through Button.label
+  /// beside: "Make your account — for the address this invitation was sent to.", "Your name", "Email", "Password"
+  button "Join" => "انضمام";
+  /// InvitationAnswer · a hint under a field
+  /// shown through Field.hint
+  /// beside: "Make your account — for the address this invitation was sent to.", "Your name", "Email", "Join"
+  hint "At least ten characters." => "عشرة أحرف على الأقل.";
+  /// InvitationAnswer · a link · at most ~26 characters
+  /// shown through TextLink.label
+  link "Go to your account" => "الانتقال إلى حسابك";
+  /// InvitationAnswer · message
+  /// placeholders: {me.Email} = me.Email
+  /// shown through Alert.message
+  /// beside: "Go to your account"
+  message "Confirm your address ({me.Email}) first — an invitation is accepted only by the address it was sent to, once it is proven." => "أكّد عنوانك ({me.Email}) أولًا، فالدعوة لا يقبلها إلا العنوان الذي أُرسلت إليه، بعد إثباته.";
+  /// InvitationAnswer · message
+  /// placeholders: {accepted} = accepted
+  /// shown through Alert.message
+  message "Welcome to {accepted}." => "مرحبًا بك في {accepted}.";
+  /// InvitationAnswer · message
+  /// shown through Alert.message
+  message "Your account is ready. Sign in — and you are in." => "حسابك جاهز. سجّل الدخول وستدخل مباشرة.";
+  /// InvitationAnswer · placeholder text inside an empty field · at most ~48 characters
+  /// shown through Field.placeholder
+  /// beside: "Make your account — for the address this invitation was sent to.", "Your name", "Password", "Join"
+  placeholder "The address the invitation came to" => "العنوان الذي وصلت إليه الدعوة";
+  /// InvitationAnswer · text on the page
+  /// placeholders: {i.RoleName} = i.RoleName
+  text " · as {i.RoleName}" => " · بدور {i.RoleName}";
+  /// InvitationAnswer · text on the page
+  /// placeholders: {i.From} = i.From, {value} = …
+  text "From {i.From}{value}" => "من {i.From}{value}";
+  /// InvitationAnswer · text on the page
+  /// beside: "Your name", "Email", "Password", "Join"
+  text "Make your account — for the address this invitation was sent to." => "أنشئ حسابك، للعنوان الذي أُرسلت إليه هذه الدعوة.";
+  /// InvitationAnswer · text on the page
+  text "Sign in, and accept the invitation here." => "سجّل الدخول، واقبل الدعوة هنا.";
+  /// InvitationAnswer · text on the page
+  /// placeholders: {me.Email} = me.Email
+  /// shown through EmptyState.body
+  text "There is no open invitation for {me.Email}. It may have been accepted, withdrawn, or sent to another address." => "لا توجد دعوة مفتوحة لـ {me.Email}. ربما قُبلت، أو سُحبت، أو أُرسلت إلى عنوان آخر.";
+  /// InvitationAnswer · a title
+  /// shown through EmptyState.title
+  title "Nothing waiting for you" => "لا يوجد شيء بانتظارك";
+
+  // ── Osysharp.Invitations · InvitationFlow ──
+  /// InvitationFlow · an error message
+  /// shown through ValidationException
+  error "Choose a password to make your account." => "اختر كلمة مرور لإنشاء حسابك.";
+  /// InvitationFlow · an error message
+  /// shown through ValidationException
+  error "That address already has an account. Sign in, and accept the invitation there." => "هذا العنوان لديه حساب بالفعل. سجّل الدخول واقبل الدعوة هناك.";
+  /// InvitationFlow · an error message
+  /// shown through ValidationException
+  error "This invitation was sent to another address. Type the address it came to." => "أُرسلت هذه الدعوة إلى عنوان آخر. اكتب العنوان الذي وصلت إليه.";
+
+  // ── Osysharp.Invitations · InvitationList ──
+  /// InvitationList · a control's name for screen readers
+  accessibleName "Waiting invitations" => "الدعوات المنتظرة";
+  /// InvitationList · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Revoke"
+  button "Resend" => "إعادة الإرسال";
+  /// InvitationList · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Resend"
+  /// also in ApiKeyRow
+  button "Revoke" => "إلغاء";
+  /// InvitationList · text on the page
+  /// placeholders: {ToString} = i.ExpiresAt.Value.ToString(…)
+  text " · lapses {ToString}" => " · تنتهي {ToString}";
+  /// InvitationList · text on the page
+  text "No invitations waiting." => "لا توجد دعوات منتظرة.";
+  /// InvitationList · text on the page
+  /// placeholders: {value} = …, {i.InvitedBy.DisplayName} = i.InvitedBy.DisplayName, {value2} = …
+  text "{value}invited by {i.InvitedBy.DisplayName}{value2}" => "{value}دعاه {i.InvitedBy.DisplayName}{value2}";
+
+  // ── Osysharp.Invitations · InvitationMail ──
+  /// InvitationMail · a button's label · at most ~30 characters
+  /// shown through EmailButton.label
+  /// beside: "The link works once, and only for this address. If you already have an account, sign in and accept it there. If you did not expect this, ignore it — nothing happens until you answer."
+  button "Accept the invitation" => "قبول الدعوة";
+  /// InvitationMail · the preview line an inbox shows beside an email's subject
+  /// placeholders: {invitation.InvitedBy.DisplayName} = invitation.InvitedBy.DisplayName (string), {InvitedInto} = InvitedInto(…) (string)
+  /// shown through EmailLayout.preview
+  mailPreview "{invitation.InvitedBy.DisplayName} invited you to {InvitedInto}." => "دعاك {invitation.InvitedBy.DisplayName} إلى {InvitedInto}.";
+  /// InvitationMail · an email's subject line
+  /// placeholders: {InvitedInto} = InvitedInto(…) (string)
+  mailSubject "Reminder: you are invited to {InvitedInto}" => "تذكير: أنت مدعو إلى {InvitedInto}";
+  /// InvitationMail · an email's subject line
+  /// placeholders: {InvitedInto} = InvitedInto(…) (string)
+  mailSubject "You are invited to {InvitedInto}" => "أنت مدعو إلى {InvitedInto}";
+  /// InvitationMail · text on the page
+  /// placeholders: {InvitedInto} = InvitedInto(…) (string)
+  /// shown through EmailHeading.text
+  /// beside: "Accept the invitation", "The link works once, and only for this address. If you already have an account, sign in and accept it there. If you did not expect this, ignore it — nothing happens until you answer."
+  text "Join {InvitedInto}" => "انضم إلى {InvitedInto}";
+  /// InvitationMail · text on the page
+  /// shown through EmailNote.text
+  /// beside: "Accept the invitation"
+  text "The link works once, and only for this address. If you already have an account, sign in and accept it there. If you did not expect this, ignore it — nothing happens until you answer." => "يعمل الرابط مرة واحدة، ولهذا العنوان فقط. إن كان لديك حساب بالفعل، فسجّل الدخول واقبل الدعوة هناك. إن لم تكن تتوقع هذه الدعوة، فتجاهلها، فلن يحدث شيء حتى ترد.";
+  /// InvitationMail · text on the page
+  /// shown through EmailHeading.text
+  /// beside: "Accept the invitation", "The link works once, and only for this address. If you already have an account, sign in and accept it there. If you did not expect this, ignore it — nothing happens until you answer."
+  text "Your invitation is still waiting" => "دعوتك ما زالت بانتظارك";
+  /// InvitationMail · text on the page
+  /// placeholders: {invitation.InvitedBy.DisplayName} = invitation.InvitedBy.DisplayName (string), {invitation.Email} = invitation.Email (string), {InvitedInto} = InvitedInto(…) (string)
+  /// shown through EmailText.text
+  /// beside: "Accept the invitation", "The link works once, and only for this address. If you already have an account, sign in and accept it there. If you did not expect this, ignore it — nothing happens until you answer."
+  text "{invitation.InvitedBy.DisplayName} invited {invitation.Email} to join {InvitedInto}." => "دعا {invitation.InvitedBy.DisplayName} {invitation.Email} للانضمام إلى {InvitedInto}.";
+
+  // ── Osysharp.Invitations · InvitationPage (/invite/{token}) ──
+  /// InvitationPage · /invite/{token} · a title
+  /// shown through [Title]
+  title "You are invited" => "أنت مدعو";
+
+  // ── Osysharp.Invitations · InvitationScreen ──
+  /// InvitationScreen · a heading
+  /// shown through AccountsFrame.heading
+  heading "You are invited" => "أنت مدعو";
+  /// InvitationScreen · text on the page
+  /// shown through AccountsFrame.sub
+  text "Answer it with the address it was sent to." => "رُدّ عليها بالعنوان الذي أُرسلت إليه.";
+
+  // ── Osysharp.Invitations · Invite ──
+  /// Invite · an error message
+  /// placeholders: {address} = address (string)
+  /// shown through ValidationException
+  error "{address} already has that — there is nothing to invite them to." => "{address} لديه ذلك بالفعل، فلا يوجد ما يُدعى إليه.";
+
+  // ── Osysharp.Invitations · InviteForm ──
+  /// InviteForm · a control's name for screen readers
+  accessibleName "Role" => "الدور";
+  /// InviteForm · a button's label · at most ~21 characters
+  /// shown through Button.label
+  /// beside: "Email", "A note (optional)"
+  button "Send invitation" => "إرسال الدعوة";
+  /// InviteForm · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Field.label
+  /// beside: "Email", "Send invitation"
+  label "A note (optional)" => "ملاحظة (اختيارية)";
+  /// InviteForm · placeholder text inside an empty field · at most ~41 characters
+  /// shown through Field.placeholder
+  /// beside: "Email", "Send invitation"
+  placeholder "Quoted in the invitation mail" => "تُقتبس في رسالة الدعوة";
+  /// InviteForm · text on the page
+  /// placeholders: {ToLower} = ….ToLower(…)
+  /// shown through sent
+  text "Invitation sent to {ToLower}." => "أُرسلت الدعوة إلى {ToLower}.";
+  /// InviteForm · text on the page
+  text "Role" => "الدور";
+
+  // ── Osysharp.Invitations · JoinByInvitation ──
+  /// JoinByInvitation · message
+  /// shown through JoinByInvitation()
+  /// also in SendAddressCode
+  message "That does not look like an email address." => "لا يبدو هذا عنوان بريد إلكتروني.";
+  /// JoinByInvitation · message
+  /// shown through JoinByInvitation()
+  message "This invitation is no longer open — it may have been withdrawn, or it expired." => "لم تعد هذه الدعوة متاحة، فربما سُحبت أو انتهت صلاحيتها.";
+  /// JoinByInvitation · message
+  /// shown through JoinByInvitation()
+  message "This invitation link is not valid, or it has already been used." => "رابط الدعوة هذا غير صالح، أو سبق استخدامه.";
+
+  // ── Osysharp.Invitations · NewInvitedAccount ──
+  /// NewInvitedAccount · an error message
+  /// shown through ValidationException
+  error "The app's InvitationAccounts.New made an account for another address — it must use the one it was given." => "أنشأ InvitationAccounts.New في التطبيق حسابًا لعنوان آخر، ويجب أن يستخدم العنوان الذي أُعطي له.";
+
+  // ── Osysharp.Invitations · Osysharp.Invitations.Invitation ──
+  /// Osysharp.Invitations.Invitation · validation
+  /// shown through Osysharp.Invitations.Invitation.Email [Required]
+  validation "Say who to invite — an address." => "حدّد من تريد دعوته، بعنوان بريد.";
+
+  // ── Osysharp.Invitations · Osysharp.Invitations.InvitationStatus ──
+  /// Osysharp.Invitations.InvitationStatus · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Invitations.InvitationStatus.Accepted
+  /// beside: "Waiting", "Revoked", "Expired"
+  /// also in Osysharp.Inbox.OfferState
+  label "Accepted" => "مقبولة";
+  /// Osysharp.Invitations.InvitationStatus · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Invitations.InvitationStatus.Expired
+  /// beside: "Waiting", "Accepted", "Revoked"
+  /// also in Osysharp.Privacy.HoldState
+  label "Expired" => "منتهية";
+  /// Osysharp.Invitations.InvitationStatus · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Invitations.InvitationStatus.Revoked
+  /// beside: "Waiting", "Accepted", "Expired"
+  /// also in ApiKeyRow
+  label "Revoked" => "ملغاة";
+
+  // ── Osysharp.Invitations · ResendInvitation ──
+  /// ResendInvitation · an error message
+  /// shown through ValidationException
+  error "Only a waiting invitation can be sent again — invite them afresh." => "لا يمكن إعادة إرسال إلا دعوة بانتظار القبول. ادعُه من جديد.";
+
+  // ── Osysharp.Invitations · RevokeInvitation ──
+  /// RevokeInvitation · an error message
+  /// shown through ValidationException
+  error "Only a waiting invitation can be revoked." => "لا يمكن إلغاء إلا دعوة بانتظار القبول.";
+}

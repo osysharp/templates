@@ -1,0 +1,340 @@
+// THE DESK'S AUTOMATIONS (Osysharp.Automations) — Harbour's three rules, the team's copy of one, an agent's own rule
+// on what they hold, the hourly clock, and every run written on the ticket's timeline. Then the page they are kept on,
+// wide and on a phone, light and dark, and in Arabic — `osy test --pixels` photographs each.
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Notifications;
+using Osysharp.Automations;
+using Osysharp.Composer;
+
+/// Ines and Rahul work tickets; Ada keeps the desk (an admin — the team's rules are hers).
+[TestFixture]
+void Automating() {
+  SetUpTestDesk();
+  var ines  = new Agent { Email = "ines@helpdesk.test",  DisplayName = "Ines Moreau" };
+  var rahul = new Agent { Email = "rahul@helpdesk.test", DisplayName = "Rahul Kapoor" };
+  var ada   = new Agent { Email = "ada@helpdesk.test",   DisplayName = "Ada Lindgren" };
+  new RoleGrant { Member = ines,  Role = AppRole.Agent };
+  new RoleGrant { Member = rahul, Role = AppRole.Agent };
+  new RoleGrant { Member = ada,   Role = AppRole.Admin };
+  JoinTheDesk(ines);
+  JoinTheDesk(rahul);
+  JoinTheDesk(ada);
+}
+
+
+/// A ticket from Olivia, opened by Ines — its rules run.
+Guid Asked(string subject) {
+  var id = Guid.Empty;
+  runas (Ines) { id = OpenTicket("olivia@larkspur.test", "Olivia Brandt", subject, "Please have a look."); }
+  Background.Settle();
+  return id;
+}
+
+/// The ticket as it now stands, read by Ada.
+WorkPriority PriorityOf(Guid id) {
+  var p = WorkPriority.Normal;
+  runas (Ada) { p = Ticket.Single(t => t.Id == id).Priority; }
+  return p;
+}
+
+/// What the ticket's timeline says an automation did, oldest first.
+List<string> AutomationLines(Guid id) {
+  List<string> said = [];
+  runas (Ada) {
+    var t = Ticket.Single(x => x.Id == id);
+    foreach (var e in ConversationEvent.Where(x => x.Conversation == t.Conversation && x.Kind == "helpdesk.automation")
+                        .OrderBy(x => x.Sequence).ToList()) {
+      said.Add(EventWords(e));
+    }
+  }
+  return said;
+}
+
+/// Tags on the ticket, read by Ada.
+List<string> TagsOf(Guid id) {
+  List<string> tags = [];
+  runas (Ada) { tags = TicketTag.Where(x => x.Ticket.Id == id).Include(x => x.Tag).ToList().Select(x => x.Tag.Name).ToList(); }
+  return tags;
+}
+
+Guid TagId(string name) {
+  var id = Guid.Empty;
+  runas (Ada) { id = (Tag.FirstOrDefault(g => g.Name == name) ?? new Tag { Name = name }).Id; UnitOfWork.Commit(); }
+  return id;
+}
+
+/// A condition as a PERSON picks it in the rule editor — by its stored key: a person's rule is data, refused on save if
+/// the ticket does not offer it. The desk's own rules name a field typed (automations.osy).
+AutomationTestSpec Picked(string condition, ConditionOp op, string value = "") {
+  return new AutomationTestSpec { Condition = condition, Op = op, Value = value };
+}
+
+/// A step as a PERSON picks it in the rule editor — the action and the values they chose, as text. Data, like their
+/// conditions: checked when the rule is SAVED. The desk's own rules call the action typed (automations.osy).
+AutomationStepSpec Step(ActionInfo action, params ActionValue[] values) {
+  return new AutomationStepSpec { Action = action.Name, Values = values.ToList() };
+}
+
+/// A value a person chose for one of an action's parameters.
+ActionValue Set(string parameter, string value) { return new ActionValue { Parameter = parameter, Value = value }; }
+
+/// A rule of the team's or the runner's own, on tickets.
+Guid DeskRule(string name, string when, List<AutomationTestSpec> tests, List<AutomationStepSpec> steps,
+              AutomationLayer layer = AutomationLayer.Team, bool hourly = false) {
+  return SaveRule(new RuleDraft { Subject = typeof(Ticket).FullName, Name = name, Layer = layer, When = when, Hourly = hourly,
+                                  Tests = tests, Steps = steps });
+}
+
+// ── the desk's own rules ──────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Automating)]
+void a_ticket_that_says_urgent_is_tagged_the_leads_told_and_the_timeline_says_which_rule_did_it() {
+  var down = Asked("Urgent: checkout is down");
+  Assert.Equal(["The app's rule “Urgent words are tagged and the leads told”: Add a tag: urgent · Tell the leads: “A new ticket says it is urgent.”."],
+               AutomationLines(down));
+  Assert.Equal(["urgent"], TagsOf(down));
+  // Ada is an admin, so a lead of every queue: she is told, in the rule's own words.
+  runas (Ada) { Assert.Contains("A new ticket says it is urgent.", MyNotificationLines().Select(l => l.Sentence).ToList()); }
+  // A ticket that does not say it is left as it came.
+  var quiet = Asked("Two more seats, please");
+  Assert.Equal(0, TagsOf(quiet).Count);
+  Assert.Equal(new List<string>(), AutomationLines(quiet));
+}
+
+[Test(Automating)]
+void a_promise_at_risk_is_told_to_whoever_holds_the_ticket() {
+  var slow = Asked("Export is slow");
+  runas (Ines) { TakeWork(Ticket.Single(t => t.Id == slow)); }
+  runas (Ines) {
+    Raise(new PromiseAtRisk { Item = Ticket.Single(t => t.Id == slow), Metric = SlaMetric.FirstResponse, At = DateTime.UtcNow });
+    UnitOfWork.Commit();
+  }
+  Background.Settle();
+  runas (Ines) { Assert.Contains("A promise on this ticket is at risk.", MyNotificationLines().Select(l => l.Sentence).ToList()); }
+}
+
+// ── the three layers ──────────────────────────────────────────────────────────────────────────────────────────────────
+
+// The team's copy replaces the desk's rule for everyone — and runs as the admin who saved it, so it may raise the
+// priority, which the app's rule may not. Taken back, the desk's rule (still in the code) runs again.
+[Test(Automating)]
+void the_teams_copy_replaces_the_desks_rule_runs_as_its_saver_and_restoring_it_brings_the_desks_back() {
+  Guid copy = Guid.Empty;
+  runas (Ada) {
+    copy = CopyRule(typeof(Ticket).FullName, "urgent-words", AutomationLayer.Team);
+    var d = DraftOf(typeof(Ticket).FullName, "rule:" + copy.ToString());
+    d.Steps = [Step(Actions.Of(SetTicketPriority), Set("priority", WorkPriority.Urgent.Name))];
+    SaveRule(d);
+  }
+  var down = Asked("Urgent: the portal will not load");
+  Assert.Equal(["Rule “Urgent words are tagged and the leads told” (as Ada Lindgren): Set priority: Urgent."], AutomationLines(down));
+  Assert.Equal(WorkPriority.Urgent, PriorityOf(down));
+  Assert.Equal(0, TagsOf(down).Count);
+  runas (Ada) { RemoveRule(copy); }
+  var again = Asked("Urgent: mail is bouncing");
+  Assert.Equal(["urgent"], TagsOf(again));
+  Assert.Equal(WorkPriority.Normal, PriorityOf(again));
+}
+
+// The team's rule mails the customer a saved reply, filled from the ticket, and gives the ticket to a teammate — both as
+// the admin who saved it, in that order.
+[Test(Automating)]
+void a_teams_rule_mails_the_customer_a_saved_reply_and_assigns_the_ticket() {
+  runas (Ada) {
+    var reply = SaveSavedReply(null, "", "Copy of an invoice", "Hi {{customer.first_name}}, a copy of your invoice is on its way.", "Billing", true);
+    var rahul = Agent.Single(a => a.Email == "rahul@helpdesk.test");
+    DeskRule("Invoice copies are answered", On<TicketArrived>(), [Picked("Title", ConditionOp.Contains, "invoice copy")],
+             [Step(Actions.Of(MailCustomer), Set("reply", reply.ToString())),
+              Step(Actions.Of(AssignTicket), Set("agent", rahul.Id.ToString()))]);
+  }
+  var asked = Asked("Invoice copy for March");
+  runas (Ada) {
+    var t = Ticket.Single(x => x.Id == asked);
+    var sent = Message.Where(m => m.Conversation == t.Conversation && m.Direction == MessageDirection.Outbound).ToList();
+    Assert.Equal(1, sent.Count);
+    Assert.Equal("Rahul Kapoor", t.Assignee!.DisplayName);
+  }
+  Assert.Equal(["Rule “Invoice copies are answered” (as Ada Lindgren): Mail the customer: Copy of an invoice · Assign to: Rahul Kapoor."],
+               AutomationLines(asked));
+}
+
+// A step the desk refuses — here a status a new ticket cannot jump to — stops the rule, and its run says so on the
+// ticket, in the desk's own words, rather than doing nothing in silence.
+[Test(Automating)]
+void a_refused_step_stops_the_rule_and_the_timeline_says_why() {
+  var closed = Guid.Empty;
+  runas (Ada) {
+    closed = TicketStatus.First(s => s.Category == StatusCategory.Closed && s.Active).Id;
+    DeskRule("Spam is closed", On<TicketArrived>(), [Picked("Title", ConditionOp.Contains, "winner")],
+             [Step(Actions.Of(SetTicketStatus), Set("status", closed.ToString())),
+              Step(Actions.Of(TagTicket), Set("tag", "spam"))]);
+  }
+  var spam = Asked("You are a winner");
+  Assert.Equal(0, TagsOf(spam).Count);
+  Assert.StartsWith("Rule “Spam is closed” (as Ada Lindgren) did nothing: “Set status: ", AutomationLines(spam)[0]);
+  Assert.Contains("Solve the ticket first", AutomationLines(spam)[0]);
+}
+
+// A locked rule of the desk's cannot be replaced — not by the team, not by an agent for what they hold.
+[Test(Automating)]
+void a_locked_rule_of_the_desks_is_copied_by_nobody() {
+  runas (Ada) { LockRule(typeof(Ticket).FullName, "urgent-words", true); }
+  runas (Ines) {
+    var refused = Assert.Throws<ValidationException>(() => CopyRule(typeof(Ticket).FullName, "urgent-words", AutomationLayer.Personal));
+    Assert.Contains("locked", refused.Message);
+  }
+  runas (Ada) {
+    Assert.Throws<ValidationException>(() => CopyRule(typeof(Ticket).FullName, "urgent-words", AutomationLayer.Team));
+    LockRule(typeof(Ticket).FullName, "urgent-words", false);
+    CopyRule(typeof(Ticket).FullName, "urgent-words", AutomationLayer.Team);
+  }
+}
+
+// An agent's own rule runs on the tickets they hold, as them — and on nobody else's.
+[Test(Automating)]
+void an_agents_own_rule_runs_on_what_they_hold_and_nowhere_else() {
+  var mine = Asked("Seats for the new team");
+  var his  = Asked("Seats for the old team");
+  TagId("vip");
+  runas (Ines) {
+    DeskRule("My Orbit tickets are VIP", On<HolderChanged>(), [Picked("Title", ConditionOp.Contains, "seats")],
+             [Step(Actions.Of(TagTicket), Set("tag", "vip"))], layer: AutomationLayer.Personal);
+    TakeWork(Ticket.Single(t => t.Id == mine));
+  }
+  runas (Rahul) { TakeWork(Ticket.Single(t => t.Id == his)); }
+  Background.Settle();
+  Assert.Equal(["vip"], TagsOf(mine));
+  Assert.Equal(0, TagsOf(his).Count);
+  Assert.Equal(["Rule “My Orbit tickets are VIP” (as Ines Moreau): Add a tag: vip."], AutomationLines(mine));
+}
+
+// An inbox event no line of the desk names — a ticket escalated — runs a team's rule with nothing written for it: the
+// trigger is the inbox's own `ItemEscalated`, offered by itself. (Before the inbox raised typed events an escalation
+// reached a rule only as one more "A ticket changes", indistinguishable from a tag or a field.)
+[Test(Automating)]
+void a_teams_rule_on_the_inboxs_own_escalation_tags_only_the_escalated_ticket() {
+  TagId("escalated");
+  runas (Ada) {
+    DeskRule("Escalations are tagged", On<ItemEscalated>(), [], [Step(Actions.Of(TagTicket), Set("tag", "escalated"))]);
+  }
+  var hot = Asked("Exports are corrupting files");
+  var calm = Asked("Two more seats, please");
+  runas (Ines) { EscalateWork(Ticket.Single(t => t.Id == hot), "Data loss — engineering must look"); }
+  Background.Settle();
+  Assert.Equal(["escalated"], TagsOf(hot));
+  Assert.Equal(0, TagsOf(calm).Count);
+  Assert.Equal(["Rule “Escalations are tagged” (as Ada Lindgren): Add a tag: escalated."], AutomationLines(hot));
+}
+
+// ── the clock ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+// Waiting on the customer for three days: whoever holds it is told, once for that wait.
+[Test(Automating)]
+void a_ticket_waiting_three_days_on_its_customer_is_told_to_whoever_holds_it_once() {
+  TestClock.Set(new DateTime(2030, 3, 4, 9, 0, 0));
+  var quiet = Asked("Which plan should we pick?");
+  runas (Ines) {
+    TakeWork(Ticket.Single(t => t.Id == quiet));
+    SetStatus(quiet, TicketStatus.First(s => s.Category == StatusCategory.Pending && s.Active).Id);
+  }
+  Background.Settle();
+  TestClock.Advance(TimeSpan.FromHours(71));
+  Background.Settle();
+  Assert.Equal(new List<string>(), AutomationLines(quiet));
+  TestClock.Advance(TimeSpan.FromHours(2));
+  Background.Settle();
+  Assert.Equal(["The app's rule “Waiting on the customer for three days”: Tell whoever holds it: “The customer has not answered for three days.”."],
+               AutomationLines(quiet));
+  runas (Ines) {
+    Assert.Contains("The customer has not answered for three days.", MyNotificationLines().Select(l => l.Sentence).ToList());
+  }
+  TestClock.Advance(TimeSpan.FromHours(5));
+  Background.Settle();
+  Assert.Equal(1, AutomationLines(quiet).Count);
+}
+
+// ── macros run the same actions ───────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Automating)]
+[runas(Ines)]
+void a_macro_offers_the_desks_actions_and_not_what_only_a_rule_does() {
+  AddTag(OpenTicket("olivia@larkspur.test", "Olivia Brandt", "Seats", "Two more."), "refund");
+  var offered = ActionsFor("").Select(a => a.Label).ToList();
+  Assert.Contains("Set status", offered);
+  Assert.Contains("Add a tag", offered);
+  Assert.DoesNotContain("Tell whoever holds it", offered);
+  Assert.DoesNotContain("Mail the customer", offered);
+}
+
+// ── the page ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Test(Automating)]
+void the_desks_rules_are_kept_on_the_settings_page_in_three_layers() {
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ada);
+  Ui.Visit("/settings/automations");
+  Assert.Visible("Urgent words are tagged and the leads told");
+  Assert.Visible("A promise at risk is told to whoever holds it");
+  Assert.Visible("Waiting on the customer for three days");
+  Ui.Shot("automations: the desk's rules, wide");
+  Ui.Click("Copy for the team", within: "Urgent words are tagged and the leads told — the app's");
+  Assert.Visible("The team's copy replaces it");
+  Ui.Click("Lock", within: "Waiting on the customer for three days — the app's");
+  Assert.Visible("Locked — nobody replaces it");
+  Ui.Shot("automations: a team copy and a locked rule, wide");
+  Ui.Theme("dark");
+  Ui.Shot("automations: a team copy and a locked rule, wide, dark");
+  Ui.Theme("light");
+  Ui.SignInAs(Ines);
+  Ui.Visit("/settings/automations");
+  Ui.Click("Copy for mine", within: "A promise at risk is told to whoever holds it — the app's");
+  Assert.Visible("Your copy replaces it on yours");
+  Ui.Shot("automations: an agent's own copy, wide");
+  Ui.Viewport(390, 844);
+  Assert.NoOverflow();
+  // Her copy is further down the page than a phone shows — brought into view.
+  Ui.Hover("Runs as Ines Moreau");
+  Ui.Shot("automations: an agent's own copy, phone");
+  Ui.Theme("dark");
+  Ui.Shot("automations: an agent's own copy, phone, dark");
+  Ui.Theme("light");
+  Ui.Viewport(1600, 1000);
+  Ui.Click("Restore", within: "A promise at risk is told to whoever holds it — yours");
+  Assert.Visible("Restored the app's rule.");
+}
+
+[Test(Automating)]
+void a_rule_written_in_the_editor_runs_and_its_run_is_on_the_ticket() {
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ada);
+  Ui.Visit("/settings/automations");
+  Ui.Click("Add a rule");
+  Ui.Fill("Name", "Refunds go high");
+  Ui.Select("When", On<TicketArrived>());
+  Ui.Click("Add a condition");
+  Ui.Select("Asks", "Title");
+  Ui.Select("Compared", ConditionOp.Contains);
+  Ui.Fill("Value", "refund");
+  Ui.Click("Add the condition");
+  Ui.Click("Add a step");
+  Ui.Select("Does", Actions.Of(SetTicketPriority).Name);
+  Ui.Click("Choose");
+  Ui.Select("Priority", WorkPriority.High.Name);
+  Ui.Click("Add the step");
+  Assert.Visible("Title contains “refund”");
+  Ui.Shot("automations: a rule in the editor, wide");
+  Ui.Click("Save");
+  Assert.Visible("“Refunds go high” saved.");
+  var refund = Asked("Refund for order 4471");
+  Assert.Equal(WorkPriority.High, PriorityOf(refund));
+  var number = 0;
+  runas (Ada) { number = Ticket.Single(t => t.Id == refund).Number; }
+  Ui.Visit("/v/all/t/" + number);
+  Assert.Visible("Rule “Refunds go high” (as Ada Lindgren): Set priority: High.");
+  Ui.Shot("automations: a run on the ticket's timeline, wide");
+  Ui.Visit("/settings/automations");
+  Assert.Visible("What ran lately");
+  Ui.Shot("automations: what ran lately, wide");
+}

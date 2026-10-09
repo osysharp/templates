@@ -1,0 +1,35 @@
+// The storefront, through its own pages: a visitor finds a dress, checks out, and the shop has the order.
+
+using Osysharp.Shop;
+
+[Test(Day)]
+void a_visitor_orders_a_dress_through_the_pages() {
+  Ui.Visit("/p/jersey-pencil-midi-dress");
+  Ui.Click("M");
+  Ui.Click("Add to bag");
+  Ui.Visit("/checkout");
+  Ui.Fill("Name", "Maja Berg");
+  Ui.Fill("Email", "maja@example.test");
+  Ui.Fill("Street", "Storgatan 1");
+  Ui.Fill("Postcode", "11122");
+  Ui.Fill("City", "Stockholm");
+  Ui.Fill("Country", "SE");
+  Ui.Click("Bank transfer");
+  Assert.Visible("free");                                      // delivery is free above 1 000 kr, and the summary says so
+  Ui.Click("Order and pay");
+  Assert.Visible("VL-1041");
+  runas (Staff) { Assert.Equal(1590m, Order.Single().Total); }
+}
+
+[Test(Day)]
+void a_product_page_tells_a_search_engine_what_it_is() {
+  var p = Product.Where(x => x.Status == ProductStatus.Listed).OrderBy(x => x.Slug).First();
+  Ui.Visit("/p/" + p.Slug);
+  Assert.Title(p.Name + " | " + TheShop().Name);
+  Assert.Head(HeadTag.Canonical, "/p/" + p.Slug);
+  var sitemap = Api.Get("/sitemap.xml");
+  Assert.Equal(200, sitemap.StatusCode);
+  Assert.Contains("/p/" + p.Slug + "</loc>", sitemap.Body);
+  Ui.Visit("/p/no-such-piece");
+  Assert.Head(HeadTag.Robots, "noindex");                      // a missing piece is not indexed
+}

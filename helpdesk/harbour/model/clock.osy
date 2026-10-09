@@ -1,0 +1,25 @@
+// THE DESK'S CLOCK (Osysharp.Clock) — the time zone a report's "today" and a week start in, and the morning the daily
+// digest goes out in. An admin picks it on Settings › Time and date (the kit's `ManagesClock` is the desk's `IsAdmin`).
+//
+// The zones on offer are the desk's own: the platform's default set, and the Gulf, where its Arabic-speaking teams work.
+// An app's `zones { }` replaces the default wholesale, so every zone is listed.
+zones {
+  "UTC",
+  "Europe/London",
+  "Europe/Dublin",
+  "Europe/Stockholm",
+  "Europe/Berlin",
+  "Europe/Paris",
+  "America/New_York",
+  "America/Chicago",
+  "America/Denver",
+  "America/Los_Angeles",
+  "America/Sao_Paulo",
+  "Asia/Dubai",
+  "Asia/Riyadh",
+  "Asia/Kolkata",
+  "Asia/Kathmandu",
+  "Asia/Shanghai",
+  "Asia/Tokyo",
+  "Australia/Sydney",
+}

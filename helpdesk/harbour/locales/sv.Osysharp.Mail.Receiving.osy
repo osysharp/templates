@@ -1,0 +1,154 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Mail.Receiving, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Mail.Receiving · MailboxConnectUrl ──
+  /// MailboxConnectUrl · an error message
+  /// placeholders: {address} = address (string)
+  /// shown through ValidationException
+  error "'{address}' is not connected from here — its credentials are set where it is configured." => "'{address}' ansluts inte härifrån. Dess inloggningsuppgifter anges där den är konfigurerad.";
+  /// MailboxConnectUrl · an error message
+  /// placeholders: {address} = address (string)
+  /// shown through ValidationException
+  error "'{address}' is not one of this app's mailboxes." => "'{address}' är inte en av appens brevlådor.";
+
+  // ── Osysharp.Mail.Receiving · MailboxSettings (/settings/mailboxes) ──
+  /// MailboxSettings · /settings/mailboxes · a control's name for screen readers
+  /// beside: "Refresh"
+  accessibleName "Inboxes" => "Inkorgar";
+  /// MailboxSettings · /settings/mailboxes · a control's name for screen readers
+  accessibleName "Mail the app could not take in" => "E-post som appen inte kunde ta emot";
+  /// MailboxSettings · /settings/mailboxes · a button's label · at most ~13 characters
+  /// shown through Button.label
+  button "Connect" => "Anslut";
+  /// MailboxSettings · /settings/mailboxes · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Connect again" => "Anslut igen";
+  /// MailboxSettings · /settings/mailboxes · a button's label · at most ~13 characters
+  /// shown through Button.label
+  button "Refresh" => "Uppdatera";
+  /// MailboxSettings · /settings/mailboxes · a button's label · at most ~26 characters
+  /// shown through Button.label
+  button "Send through again" => "Skicka igenom igen";
+  /// MailboxSettings · /settings/mailboxes · a button's label · at most ~20 characters
+  /// shown through Button.label
+  button "Start watching" => "Börja bevaka";
+  /// MailboxSettings · /settings/mailboxes · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Stop watching" => "Sluta bevaka";
+  /// MailboxSettings · /settings/mailboxes · a description
+  /// shown through SettingsSection.description
+  /// beside: "Inboxes"
+  description "Mail that was kept but could not be handed on — tried again, backing off, for a day. Fix what stopped it, then send it through again." => "E-post som sparades men inte kunde lämnas vidare. Den försöks igen, med allt längre mellanrum, under ett dygn. Åtgärda det som stoppade den och skicka sedan igenom den igen.";
+  /// MailboxSettings · /settings/mailboxes · a description
+  /// shown through SettingsPage.description
+  description "The inboxes people write to. Mail arriving in a watched inbox comes into the app — pushed the moment it lands where the provider can push, and the inbox is asked every half hour as well, so nothing is missed." => "Inkorgarna som folk skriver till. E-post som kommer till en bevakad inkorg hamnar i appen: pushad direkt när den landar om leverantören kan pusha, och inkorgen frågas dessutom var halvtimme, så att inget missas.";
+  /// MailboxSettings · /settings/mailboxes · message
+  /// shown through Alert.message
+  message "Connected. The inbox is read with that account from now on." => "Ansluten. Inkorgen läses med det kontot från och med nu.";
+  /// MailboxSettings · /settings/mailboxes · text on the page
+  /// placeholders: {m.LastPush} = m.LastPush
+  text " · last pushed {m.LastPush}" => " · senast pushad {m.LastPush}";
+  /// MailboxSettings · /settings/mailboxes · text on the page
+  /// placeholders: {m.LastAsked} = m.LastAsked, {value} = …, {ToString} = m.Received.ToString(…)
+  text "Last asked {m.LastAsked}{value} · {ToString} mails received" => "Senast frågad {m.LastAsked}{value} · {ToString} mejl mottagna";
+  /// MailboxSettings · /settings/mailboxes · text on the page
+  text "No mailboxes are configured." => "Inga brevlådor är konfigurerade.";
+  /// MailboxSettings · /settings/mailboxes · text on the page
+  /// placeholders: {m.Address} = m.Address
+  text "Not connected yet: press Connect and sign in as {m.Address}." => "Inte ansluten än: tryck på Anslut och logga in som {m.Address}.";
+  /// MailboxSettings · /settings/mailboxes · text on the page
+  text "Nothing is waiting." => "Inget väntar.";
+  /// MailboxSettings · /settings/mailboxes · a title
+  /// shown through SettingsSection.title
+  /// beside: "Mail the app could not take in"
+  title "Inboxes" => "Inkorgar";
+  /// MailboxSettings · /settings/mailboxes · a title
+  /// shown through SettingsSection.title
+  /// beside: "Inboxes"
+  title "Mail the app could not take in" => "E-post som appen inte kunde ta emot";
+  /// MailboxSettings · /settings/mailboxes · a title
+  /// shown through SettingsPage.title
+  /// also in MailboxSettings /settings/mailboxes
+  title "Mailboxes" => "Brevlådor";
+  /// MailboxSettings · /settings/mailboxes · a title
+  /// shown through Alert.title
+  title "Push" => "Push";
+  /// MailboxSettings · /settings/mailboxes · a title
+  /// shown through Alert.title
+  title "Reading this inbox" => "Läsning av inkorgen";
+  /// MailboxSettings · /settings/mailboxes · a title
+  /// shown through Alert.title
+  title "The inbox was not connected" => "Inkorgen anslöts inte";
+
+  // ── Osysharp.Mail.Receiving · MailboxViews ──
+  /// MailboxViews · text on the page
+  /// shown through Delivery
+  text "Polled" => "Avfrågas";
+  /// MailboxViews · text on the page
+  /// shown through Delivery
+  text "Polled once watched" => "Avfrågas när den bevakas";
+  /// MailboxViews · text on the page
+  /// shown through Delivery
+  text "Pushed once watched" => "Pushas när den bevakas";
+  /// MailboxViews · text on the page
+  /// placeholders: {ToString} = w.PushExpiresAt.Value.ToString(…) (DateTime)
+  /// shown through Delivery
+  text "Pushed — subscription renewed before {ToString} UTC; asked every half hour as a safety net" => "Pushas: prenumerationen förnyas före {ToString} UTC; frågas var halvtimme som skyddsnät";
+  /// MailboxViews · text on the page
+  /// shown through LastAsked
+  text "never" => "aldrig";
+  /// MailboxViews · text on the page
+  /// placeholders: {ToString} = w.LastPushAt.Value.ToString(…) (DateTime), {ToString2} = w.Pushes.ToString(…) (int) — {ToString2} is a count: give one text per plural form
+  /// shown through LastPush
+  text "{ToString} UTC ({ToString2} in all)" => { one: "{ToString} UTC ({ToString2} totalt)", other: "{ToString} UTC ({ToString2} totalt)" };
+
+  // ── Osysharp.Mail.Receiving · Osysharp.Mail.Receiving.MailboxSettingsSections.Sections ──
+  /// Osysharp.Mail.Receiving.MailboxSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "The inboxes people write to: connected, pushed or polled, and what is wrong." => "Inkorgarna som folk skriver till: anslutna, pushade eller avfrågade, och vad som är fel.";
+  /// Osysharp.Mail.Receiving.MailboxSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through SettingsLink.Label
+  label "Mailboxes" => "Brevlådor";
+
+  // ── Osysharp.Mail.Receiving · Osysharp.Mail.Receiving.MailboxWatchState ──
+  /// Osysharp.Mail.Receiving.MailboxWatchState · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Mail.Receiving.MailboxWatchState.Woken
+  /// beside: "Watching", "Stopped"
+  label "Fetching" => "Hämtar";
+  /// Osysharp.Mail.Receiving.MailboxWatchState · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Mail.Receiving.MailboxWatchState.Stopped
+  /// beside: "Watching", "Fetching"
+  /// also in Osysharp.Automations.FireOutcome
+  /// also in Osysharp.Automations.AutomationWatchState
+  /// also in Osysharp.Notifications.NotificationWatchState
+  label "Stopped" => "Stoppad";
+  /// Osysharp.Mail.Receiving.MailboxWatchState · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Mail.Receiving.MailboxWatchState.Watching
+  /// beside: "Stopped", "Fetching"
+  label "Watching" => "Bevakas";
+
+  // ── Osysharp.Mail.Receiving · Osysharp.Mail.Receiving.ReceivedMailStatus ──
+  /// Osysharp.Mail.Receiving.ReceivedMailStatus · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Mail.Receiving.ReceivedMailStatus.Handled
+  /// beside: "Received", "Failed"
+  label "Handled" => "Hanterad";
+
+  // ── Osysharp.Mail.Receiving · ProviderName ──
+  /// ProviderName · message
+  /// shown through ProviderName()
+  message "Google Workspace" => "Google Workspace";
+  /// ProviderName · message
+  /// shown through ProviderName()
+  message "IMAP" => "IMAP";
+  /// ProviderName · message
+  /// shown through ProviderName()
+  message "Microsoft 365" => "Microsoft 365";
+
+  // ── Osysharp.Mail.Receiving · RetryReceivedMail ──
+  /// RetryReceivedMail · an error message
+  /// shown through ValidationException
+  error "Only a mail that failed can be sent through again." => "Bara ett mejl som misslyckades kan skickas igenom igen.";
+}

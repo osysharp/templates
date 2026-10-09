@@ -1,0 +1,142 @@
+// WHAT CAN BE DONE TO A TICKET — the desk's own verbs, offered once (`[Action]`) to everything that runs them: a macro
+// in the composer runs them as the agent writing, an automation as whoever saved the rule (D-ACTIONS1). Each is the
+// same verb a person uses by hand, under the same rules, so neither can do anything an agent could not.
+//
+// ⚑ A ROW IS CHOSEN FROM WHAT ITS FUNCTION OFFERS (`[Choices(F)]`), read as the person choosing — the statuses in use,
+//   the forms, the teammates, the queues, the saved replies they may send — and stored by its id, so a rename does not
+//   orphan a rule or a macro. A tag is the exception: it is its name, made on first use, as the tag box makes it.
+//
+// ⚑ WHO IT RUNS AS DECIDES WHAT IT MAY DO. A macro runs as its writer and a person's or the team's rule as whoever saved
+//   it, so each can do what that person could by hand. The desk's own rules (automations.osy) run as the app: they tag,
+//   and they tell people — but what the inbox keeps for a person to do (prioritise, assign, move, a status the ticket's
+//   workflow moves) the app's rule cannot, and its run says so. A team copy of the rule does it, as its saver.
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Composer;
+using Osysharp.Notifications;
+using Osysharp.Fields;
+
+/// Move it to a status — inside its category a relabel; across categories the ticket's workflow moves it, as the status
+/// menu does.
+[Action("Set status")]
+public string SetTicketStatus(Ticket ticket, [Label("Status")] [Choices(StatusChoices)] TicketStatus status) {
+  if (ticket.Status != null && ticket.Status.Id == status.Id) { return ""; }
+  SetStatus(ticket.Id, status.Id);
+  return "Status set to " + status.Name + ".";
+}
+
+/// How urgent it is — its promise is read again and every running clock retargeted.
+[Action("Set priority")]
+public string SetTicketPriority(Ticket ticket, [Label("Priority")] WorkPriority priority) {
+  if (ticket.Priority == priority) { return ""; }
+  SetPriority(ticket.Id, priority);
+  return "Priority set to " + priority.Label + ".";
+}
+
+/// Label it — by the tag's name, made on first use (a rule the desk ships can name a tag no ticket has carried yet).
+[Action("Add a tag")]
+public string TagTicket(Ticket ticket, [Label("Tag")] [Choices(TagChoices)] string tag) {
+  var name = tag.Trim().ToLower().Replace(" ", "-");
+  if (TicketTag.Any(x => x.Ticket == ticket && x.Tag.Name == name)) { return ""; }
+  AddTag(ticket.Id, name);
+  return "Tagged " + name + ".";
+}
+
+/// Put it on another form — its type.
+[Action("Set type")]
+public string SetTicketType(Ticket ticket, [Label("Type")] [Choices(TypeChoices)] TicketForm type) {
+  if (ticket.Form != null && ticket.Form.Id == type.Id) { return ""; }
+  SetTicketForm(ticket.Id, type.Id);
+  return "Type set to " + type.Name + ".";
+}
+
+/// Take it — whoever runs this holds it, if they may.
+[Action("Take it")]
+public string TakeTicket(Ticket ticket) {
+  var me = Session.CurrentUser!;
+  if (ticket.Assignee != null && ticket.Assignee.Id == me.Id) { return ""; }
+  if (!MayHold(me, ticket)) { throw new ValidationException("You are not in this ticket's queue, so you cannot take it."); }
+  TakeWork(ticket, ticket.Assignee == null ? null : ticket.Assignee.Id);
+  UnitOfWork.Commit();
+  return "Taken.";
+}
+
+/// Give it to a teammate — refused, by sentence, when they may not hold it here.
+[Action("Assign to")]
+public string AssignTicket(Ticket ticket, [Label("Teammate")] [Choices(AgentChoices)] Agent agent) {
+  if (ticket.Assignee != null && ticket.Assignee.Id == agent.Id) { return ""; }
+  HandWorkTo(ticket, agent, ticket.Assignee == null ? null : ticket.Assignee.Id);
+  UnitOfWork.Commit();
+  return "Given to " + (agent.DisplayName != "" ? agent.DisplayName : agent.Email) + ".";
+}
+
+/// Move it to another queue.
+[Action("Move to queue")]
+public string MoveTicketTo(Ticket ticket, [Label("Queue")] [Choices(QueueChoices)] Queue queue) {
+  if (ticket.Queue != null && ticket.Queue.Id == queue.Id) { return ""; }
+  MoveWork(ticket, queue);
+  UnitOfWork.Commit();
+  return "Moved to " + queue.Name + ".";
+}
+
+/// Tell whoever holds it — in their bell, with these words. Nobody holds it: nobody is told.
+[Action("Tell whoever holds it")]
+public string TellHolder(Ticket ticket, [Label("Saying")] string message) {
+  if (ticket.Assignee == null) { return "Nobody holds it, so nobody was told."; }
+  Notify(ticket.Assignee!, new AutomationSaid { Ticket = ticket, Message = message.Trim() },
+         key: "tickets:" + ticket.Id.ToString() + ":automation");
+  UnitOfWork.Commit();
+  return "Told whoever holds it.";
+}
+
+/// Tell the queue's leads — in their bell, with these words.
+[Action("Tell the leads")]
+public string TellLeads(Ticket ticket, [Label("Saying")] string message) {
+  NotifyAll(InboxLeads(ticket), new AutomationSaid { Ticket = ticket, Message = message.Trim() });
+  UnitOfWork.Commit();
+  return "Told the leads.";
+}
+
+/// Write to the customer — a saved reply, filled from the ticket and sent on its channel, signed by whoever runs it.
+[Action("Mail the customer")]
+public string MailCustomer(Ticket ticket, [Label("Reply")] [Choices(ReplyChoices)] SavedReply reply) {
+  var filled = Fill(reply.Kind, reply.Body, ticket.Id);
+  if (filled.Unfilled.Count > 0) {
+    throw new ValidationException("“" + reply.Title + "” has a placeholder this ticket cannot fill: "
+      + string.Join(", ", filled.Unfilled.Select(u => u.Key)) + ".");
+  }
+  Post(ticket.Conversation, filled.Text, EntryVisibility.Customer, format: TextFormat.Markdown);
+  SupportTicket.RaiseReply(ticket);
+  UnitOfWork.Commit();
+  return "Wrote to the customer: “" + reply.Title + "”.";
+}
+
+// ── what each one offers ──────────────────────────────────────────────────────────────────────────────────────────────
+
+public List<ActionChoice> StatusChoices() {
+  return TicketStatus.Where(x => x.Active && x.Category != StatusCategory.New).OrderBy(x => x.Category).ThenBy(x => x.Position)
+    .ToList().Select(x => new ActionChoice { Key = x.Id.ToString(), Label = x.Name }).ToList();
+}
+
+public List<ActionChoice> TagChoices() {
+  return Tag.OrderBy(g => g.Name).ToList().Select(g => new ActionChoice { Key = g.Name, Label = g.Name }).ToList();
+}
+
+public List<ActionChoice> TypeChoices() {
+  return TicketForm.Where(f => f.Active).OrderBy(f => f.Position).ThenBy(f => f.Name).ToList()
+    .Select(f => new ActionChoice { Key = f.Id.ToString(), Label = f.Name }).ToList();
+}
+
+public List<ActionChoice> AgentChoices() {
+  return Agent.Where(a => a.IsActive).OrderBy(a => a.DisplayName).ToList()
+    .Select(a => new ActionChoice { Key = a.Id.ToString(), Label = a.DisplayName != "" ? a.DisplayName : a.Email }).ToList();
+}
+
+public List<ActionChoice> QueueChoices() {
+  return Queue.OrderBy(q => q.Name).ToList().Select(q => new ActionChoice { Key = q.Id.ToString(), Label = q.Name }).ToList();
+}
+
+public List<ActionChoice> ReplyChoices() {
+  return SavedReply.OrderBy(r => r.Title).ToList().Select(r => new ActionChoice { Key = r.Id.ToString(), Label = r.Title }).ToList();
+}

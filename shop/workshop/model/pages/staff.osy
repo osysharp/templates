@@ -1,11 +1,15 @@
 using Osysharp.Shop;
+using Osysharp.Pages;
+using Osysharp.Blocks;
 
-// The workshop's desk — bookmark /staff/orders; signed out, it sends you to sign in and back. Sign in, see every order, mark a transfer received, call a reservation off. A tool, so it
+// The workshop's desk — bookmark /staff/orders; signed out, it sends you to sign in and back. Sign in, see every order, mark a transfer received, send or hand over what is paid (booking it with the carrier), call a reservation off, refund. A tool, so it
 // gets a frame of its own — the storefront's bag and hero have no business here — in the same dark, same type.
 
-[Layout]
+/// The desk's frame — Osysharp.Ui's `WorkspaceShell`, designed once. Every staff page stands in it (`[Layout(WorkspaceFrame)]`):
+/// this store's own, and the kits' — the shop's desk, counter and returns, the codes, the books — which put themselves
+/// in its navigation (`[Nav]`); the bar lists them with `Nav.Pages()`, each only for someone its page admits.
 [AllowAnonymous]
-component StaffDesk() {
+component StaffShell() : WorkspaceShell {
   render {
     Stack(gap: 0, minH: Length.Screen, bg: Colors.Bg, color: Colors.OnBg) {
       Row(justify: Justify.Between, align: Align.Center, gap: 4, px: 6, py: 4, borderBW: 1, border: Colors.Border,
@@ -15,72 +19,28 @@ component StaffDesk() {
           Text("workshop desk", fontFamily: Font.Mono, fontSize: FontSize.Label, color: Colors.TextMuted);
         }
         Row(gap: 5) {
-          Link(href: "/staff/orders", label: "Orders") { Text("Orders", color: Colors.TextSecondary); }
-          Link(href: "/staff/desk", label: "Desk") { Text("Desk", color: Colors.TextSecondary); }
+          foreach (var n in Nav.Pages()) { Link(href: n.To, label: n.Label) { Text(n.Label, color: Colors.TextSecondary); } }
           Link(href: "/", label: "The shop") { Text("The shop →", color: Colors.Primary); }
         }
       }
-      Box(grow: 1, role: UiRole.Main, label: "Desk") { Outlet(); }
-    }
-  }
-}
-
-[Title("Workshop sign-in — Rust & Chrome")]
-[Page("/staff")]
-[Layout(StaffDesk)]
-[Render(CSR)]
-[AllowAnonymous]
-component StaffSignIn() {
-  string email = "";
-  string password = "";
-  string problem = "";
-
-  action Submit() {
-    problem = "";
-    var ticket = ShopLogin(email, password);
-    if (ticket == "") { problem = "That email and password do not match a staff account."; }
-    // SignIn goes on to where the person was headed — the desk they were sent here from.
-    else { Session.SignIn(ticket); }
-  }
-
-  render {
-    Row(justify: Justify.Center, px: 5, py: 20) {
-      Stack(gap: 5, w: "100%", maxW: "420px") {
-        Text("Sign in", fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Bold, lineHeight: "0.9",
-             textTransform: TextTransform.Uppercase);
-        Field("Email", value: email, type: "email", onEnter: Submit);
-        Field("Password", value: password, type: "password", onEnter: Submit);
-        if (problem != "") { Text(problem, role: UiRole.Alert, color: "#F2C4A6"); }
-        Button("Sign in", onPress: Submit, tone: Tone.Primary, size: Size.Lg);
-      }
+      Box(grow: 1, role: UiRole.Main, label: "Desk") { Slot; }
     }
   }
 }
 
 [Title("Orders — Rust & Chrome workshop")]
-[Page("/staff/orders")]
-[Layout(StaffDesk)]
+[Route("/staff/orders")]
+[Layout(WorkspaceFrame)]
+[Nav("Orders", Order = 15)]
 [Render(CSR)]
-[Authorize(IsShopStaff)]
+[Authorize(IsShopPacker)]   // a packer works the orders too; the row's buttons show them no money
 component StaffOrders() {
   live var orders = Order.Include(o => o.Lines).Include(o => o.Contact).OrderByDescending(o => o.PlacedAt).ToList();
-  Order cancelling = null;
-  Order refunding = null;
-  string reason = "";
-  string problem = "";
-
-  action Received(Order order) { MarkPaid(order, "Bank transfer"); }
-  action AskCancel(Order order) { cancelling = order; reason = ""; problem = ""; }
-  action KeepIt() { cancelling = null; refunding = null; }
-  action AskRefund(Order order) { refunding = order; reason = ""; problem = ""; }
-  action ConfirmRefund() {
-    try { RefundOrder(refunding, reason, true); refunding = null; }
-    catch (Exception ex) { problem = ex.Message; }
-  }
-  action ConfirmCancel() {
-    try { CancelOrder(cancelling, reason); cancelling = null; }
-    catch (Exception ex) { problem = ex.Message; }
-  }
+  string stage = "all";
+  // An order acted on stays in view — its buttons greyed now — until a tab is chosen again, so a row does not vanish
+  // under the hand that just moved it.
+  List<Guid> kept = [];
+  action Show(string which) { stage = which; kept = orders.Where(o => InOrderStage(o, which)).Select(o => o.Id).ToList(); }
 
   render {
     Stack(gap: 0, px: 6, py: 10, maxW: "1200px") {
@@ -93,39 +53,17 @@ component StaffOrders() {
       if (orders.Count == 0) {
         Text("No orders yet.", color: Colors.TextMuted, py: 8);
       }
+      // Where the orders stand — each tab counts what is in it.
+      Box(pb: 5) {
+        Tabs() {
+          foreach (var t in OrderStageTabs()) {
+            Tab($"{t.Label} · {orders.Count(o => InOrderStage(o, t.Key))}", selected: stage == t.Key, onPress: () => Show(t.Key));
+          }
+        }
+      }
       if (orders.Count > 0) { DeskHeader(); }
       foreach (var order in orders) {
-        OrderRow(order, () => Received(order), () => AskCancel(order), () => AskRefund(order));
-      }
-    }
-    if (cancelling != null) {
-      Dialog($"Cancel {cancelling.Reference}?", onDismiss: KeepIt,
-             subtitle: "The reservation ends and its bikes go back in the window. The customer is not told automatically.") {
-        Stack(gap: 4) {
-          Field("Reason", value: reason, placeholder: "Customer changed their mind",
-                hint: "Kept on the order, for whoever reads it next.");
-          if (problem != "") { Text(problem, role: UiRole.Alert, color: "#F2C4A6"); }
-          Row(gap: 3, justify: Justify.End) {
-            Button("Keep it", onPress: KeepIt);
-            Button("Cancel order", onPress: ConfirmCancel, tone: Tone.Danger);
-          }
-        }
-      }
-    }
-    if (refunding != null) {
-      Dialog($"Refund {refunding.Reference}?", onDismiss: KeepIt,
-             subtitle: refunding.PaidWith == "Card"
-               ? $"{PriceText(refunding.Total)} goes back to the card it came from, through Stripe, and the bikes go back in the window."
-               : $"Recorded as refunded and the bikes go back in the window. Return the {PriceText(refunding.Total)} transfer yourself.") {
-        Stack(gap: 4) {
-          Field("Reason", value: reason, placeholder: "Customer returned the bike",
-                hint: "Kept on the order, for whoever reads it next.");
-          if (problem != "") { Text(problem, role: UiRole.Alert, color: "#F2C4A6"); }
-          Row(gap: 3, justify: Justify.End) {
-            Button("Keep it", onPress: KeepIt);
-            Button($"Refund {PriceText(refunding.Total)}", onPress: ConfirmRefund, tone: Tone.Danger);
-          }
-        }
+        if (InOrderStage(order, stage) || kept.Contains(order.Id)) { OrderRow(order, stage); }
       }
     }
   }
@@ -136,7 +74,7 @@ component StaffOrders() {
 /// no column lined up (a row with "Refund…", one with "Cancel…" and one with no button at all each put "Total" in a
 /// different place).
 string DeskColumns() {
-  return "minmax(0, 1.1fr) minmax(0, 1.6fr) minmax(0, 1.6fr) minmax(0, 0.8fr) 300px";
+  return "minmax(0, 1.1fr) minmax(0, 1.6fr) minmax(0, 1.6fr) minmax(0, 0.8fr) 430px";
 }
 
 /// The column names, on the same template as the rows.
@@ -160,7 +98,7 @@ component DeskLabel(string text) {
 
 /// One order on the desk: reference and date, who, what, how much, where it stands — and what can be done to it.
 [Composable]
-component OrderRow(Order order, Action onReceived, Action onCancel, Action onRefund) {
+component OrderRow(Order order, string stage) {
   render {
     Box(display: Display.Grid, cols: DeskColumns(), gap: 5,
         align: Align.Center, py: 4, borderTW: 1, border: Colors.Border, label: order.Reference) {
@@ -176,7 +114,7 @@ component OrderRow(Order order, Action onReceived, Action onCancel, Action onRef
       }
       Stack(gap: 1, minW: "0") {
         foreach (var line in order.Lines) { Text(line.ProductName, fontFamily: Font.Display, fontSize: "20px", textTransform: TextTransform.Uppercase); }
-        Text($"{order.Payment.Label} · {order.Fulfilment.Label}", fontSize: FontSize.Label, color: Colors.TextMuted);
+        Text($"{order.PaymentLabel ?? order.PaymentMethod} · {order.DeliveryLabel ?? order.Fulfilment.Label}", fontSize: FontSize.Label, color: Colors.TextMuted);
         if (order.CancelReason != null) { Text(order.CancelReason, fontSize: FontSize.Label, color: Colors.TextMuted); }
         if (order.RefundReason != null) { Text(order.RefundReason, fontSize: FontSize.Label, color: Colors.TextMuted); }
         if (order.RefundProblem != null) { Text(order.RefundProblem, fontSize: FontSize.Label, color: "#F2C4A6"); }
@@ -185,14 +123,7 @@ component OrderRow(Order order, Action onReceived, Action onCancel, Action onRef
         Text(PriceText(order.Total), fontFamily: Font.Mono);
         StatusTag(order.Status);
       }
-      Row(gap: 2, justify: Justify.End) {
-        if (order.Status == OrderStatus.Reserved) {
-          if (order.Payment != Payment.Card) { Button("Transfer received", onPress: onReceived); }
-          Button("Cancel…", onPress: onCancel);
-        }
-        // A refund that was requested but never reached Stripe can be pressed again — it refunds once.
-        if (order.Status == OrderStatus.Paid || order.Status == OrderStatus.RefundRequested) { Button("Refund…", onPress: onRefund); }
-      }
+      DeskOrderActions(order, stage: stage);
     }
   }
 }
@@ -209,13 +140,17 @@ component StatusTag(OrderStatus status) {
   }
 }
 
-[Title("Desk — Rust & Chrome")]
-[Page("/staff/desk")]
-[Layout(StaffDesk)]
+// The pages — the menu, the strip across the top, the footer and every region, in which version of the site, and when.
+// Staff arrange them beside the live page; nobody else sees a draft.
+[Title("Pages — the desk")]
+[Route("/staff/pages")]
+[Layout(WorkspaceFrame)]
+[Nav("Pages", Order = 90)]
 [Render(CSR)]
 [Authorize(IsShopStaff)]
-component StaffDeskHome() {
-  render {
-    Stack(gap: 0, px: 6, py: 10, maxW: "1200px") { ShopDesk(); }
-  }
+component StaffPages() {
+  render { Box(px: 6, py: 6) { PagesDesk(); } }
 }
+
+// Who may arrange the pages: staff. A customer reads the live site and nothing else (Osysharp.Blocks' own rules).
+policy ArrangesPages => IsShopStaff;

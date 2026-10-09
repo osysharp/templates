@@ -1,0 +1,48 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Collaboration, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Collaboration · Ago ──
+  /// Ago · text on the page
+  /// shown through Ago()
+  text "a minute ago" => "قبل دقيقة";
+  /// Ago · text on the page
+  /// shown through Ago()
+  text "an hour ago" => "قبل ساعة";
+  /// Ago · text on the page
+  /// placeholders: {at} = at (DateTime), {at2} = at (DateTime)
+  /// shown through Ago()
+  text "on {at} at {at2}" => "في {at} الساعة {at2}";
+  /// Ago · text on the page
+  /// placeholders: {value} = … (int) — {value} is a count: give one text per plural form
+  /// shown through Ago()
+  text "{value} hours ago" => { zero: "قبل {value} ساعة", one: "قبل {value} ساعة", two: "قبل {value} ساعة", few: "قبل {value} ساعات", many: "قبل {value} ساعةً", other: "قبل {value} ساعة" };
+  /// Ago · text on the page
+  /// placeholders: {value} = … (int) — {value} is a count: give one text per plural form
+  /// shown through Ago()
+  text "{value} minutes ago" => { zero: "قبل {value} دقيقة", one: "قبل {value} دقيقة", two: "قبل {value} دقيقة", few: "قبل {value} دقائق", many: "قبل {value} دقيقةً", other: "قبل {value} دقيقة" };
+
+  // ── Osysharp.Collaboration · RecordSeats ──
+  /// RecordSeats · a control's name for screen readers
+  accessibleName "Who else is here" => "من الموجود هنا أيضًا";
+
+  // ── Osysharp.Collaboration · WhoIsHere ──
+  /// WhoIsHere · text on the page
+  /// placeholders: {DisplayName} = ….DisplayName (string), {DisplayName2} = ….DisplayName (string)
+  /// shown through WhoIsHere()
+  text "{DisplayName} and {DisplayName2} are here" => "{DisplayName} و{DisplayName2} هنا";
+  /// WhoIsHere · text on the page
+  /// placeholders: {colleagues.Count} = colleagues.Count (int) — {colleagues.Count} is a count: give one text per plural form
+  /// shown through WhoIsHere()
+  text "{colleagues.Count} colleagues are here" => { zero: "{colleagues.Count} زميل هنا", one: "{colleagues.Count} زميل هنا", two: "{colleagues.Count} زميل هنا", few: "{colleagues.Count} زملاء هنا", many: "{colleagues.Count} زميلًا هنا", other: "{colleagues.Count} زميل هنا" };
+  /// WhoIsHere · text on the page
+  /// placeholders: {name} = name (string)
+  /// shown through WhoIsHere()
+  text "{name} is here" => "{name} هنا";
+  /// WhoIsHere · text on the page
+  /// placeholders: {name} = name (string), {one.Activity} = one.Activity (string)
+  /// shown through WhoIsHere()
+  text "{name} is {one.Activity}" => "{name} {one.Activity}";
+}

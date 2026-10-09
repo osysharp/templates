@@ -1,0 +1,85 @@
+// SIGNING IN — who the first account is, who everyone after is, and what an unproven address may not reach.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Conversations;
+using Osysharp.Mail;
+
+principal Owner    => Agent.Single(a => a.Email == "owner@helpdesk.test");
+principal Buyer    => User.Single(u => u.Email == "buyer@example.test");
+principal Stranger => User.Single(u => u.Email == "hanna@kestrel.test");
+
+[Test]
+void the_first_account_runs_the_desk_and_everyone_after_is_a_customer() {
+  // The owner is an admin, and admins use two-step sign-in — so sign-up takes them to setting it up, not in.
+  var owner = SignUp("owner@helpdesk.test", "owner-password-1", "Ada Owner");
+  Assert.Equal("", owner.Ticket);
+  Assert.True(owner.MustEnrol);
+  // A customer proves their address before their first sign-in: sign-up answers the step that proves it, not a ticket.
+  var buyer = SignUp("buyer@example.test", "buyer-password-1", "Bea Buyer");
+  Assert.Equal("", buyer.Ticket);
+  Assert.True(buyer.MustVerify);
+  Assert.Equal("", SignIn("buyer@example.test", "wrong-guess").Ticket);
+  Assert.Equal("", SignIn("nobody@example.test", "buyer-password-1").Ticket);
+
+  runas (Owner) {
+    Assert.True(RoleGrant.Any(g => g.Member.Email == "owner@helpdesk.test" && g.Role == AppRole.Admin));
+    Assert.False(Agent.Any(a => a.Email == "buyer@example.test"));
+    Assert.True(RoleGrant.Any(g => g.Member.Email == "buyer@example.test" && g.Role == AppRole.Customer));
+    // …and an address nobody has proven links no party: the portal opens to their requests once it is proven.
+    Assert.False(Customer.Any(c => c.Account!.Email == "buyer@example.test"));
+  }
+  // A customer is not staff: the desk's configuration is not theirs to read.
+  runas (Buyer) { Assert.Equal(0, TicketStatus.Count()); }
+}
+
+/// The six-digit code the last proof mail to `to` carried.
+string MailedCode(string to) {
+  var marker = "Type this code where you were asked for it: ";
+  var text = "";
+  runas (AuthBootstrap) {
+    text = OutgoingMail.Where(m => m.To == to && m.Text != null && m.Text.Contains(marker))
+      .OrderByDescending(m => m.CreatedAt).First().Text ?? "";
+  }
+  return text.Substring(text.IndexOf(marker) + marker.Length, 6);
+}
+
+[Test]
+void a_customer_proves_their_address_before_their_first_sign_in_and_is_then_linked_to_their_requests() {
+  SignUp("owner@helpdesk.test", "owner-password-1", "Owner");
+  Assert.True(SignUp("buyer@example.test", "buyer-password-1", "Bea Buyer").MustVerify);
+  // The right password alone does not open the portal — the mail is on its way, and a sign-in asks for its code.
+  var again = SignIn("buyer@example.test", "buyer-password-1");
+  Assert.Equal("", again.Ticket);
+  Assert.True(again.MustVerify);
+  // A wrong code is a sentence and nothing else.
+  var wrong = Assert.Throws<ValidationException>(() => VerifyEmailCode("buyer@example.test", "000000", "buyer-password-1"));
+  Assert.Contains("That code is not right, or it has expired", wrong.Message);
+  runas (Owner) { Assert.Equal(0, Customer.Count(c => c.Account!.Email == "buyer@example.test")); }
+  // The code from the mail proves the address and signs them in — linked to a customer of their own.
+  var proven = VerifyEmailCode("buyer@example.test", MailedCode("buyer@example.test"), "buyer-password-1");
+  Assert.NotEqual("", proven.Ticket);
+  runas (Owner) {
+    Assert.NotNull(User.Single(u => u.Email == "buyer@example.test").EmailVerifiedAt);
+    Assert.Equal(1, Customer.Count(c => c.Account!.Email == "buyer@example.test"));
+  }
+  // From then on a sign-in is a sign-in.
+  Assert.NotEqual("", SignIn("buyer@example.test", "buyer-password-1").Ticket);
+}
+
+[Test]
+void an_unproven_address_never_reaches_the_conversations_someone_started_by_mail() {
+  // Somebody wrote in from the web form as hanna@kestrel.test, signed out…
+  runas (new Visitor { Id = "visit-hanna" }) {
+    SubmitRequest("Statement in Japanese", "Can we get it in Japanese?", "Hanna", "hanna@kestrel.test");
+  }
+  // …and a stranger signs up with that address. It is not proven, so it links nothing — least of all Hanna's.
+  SignUp("owner@helpdesk.test", "owner-password-1", "Owner");
+  SignUp("hanna@kestrel.test", "stranger-pass-1", "Not Hanna");
+  runas (Owner) {
+    var stranger = User.Single(u => u.Email == "hanna@kestrel.test");
+    Assert.Null(stranger.EmailVerifiedAt);
+    Assert.Equal(0, Customer.Count(c => c.Account == stranger));
+    Assert.Null(Customer.Single(c => c.DisplayName == "Hanna").Account);
+  }
+  runas (Stranger) { Assert.Equal(0, Ticket.Count()); }
+}

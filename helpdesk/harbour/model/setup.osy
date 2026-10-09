@@ -1,0 +1,140 @@
+// THE DESK'S CONFIGURATION — the rows an admin owns: statuses inside the six categories, and the starting inbox — its
+// queues, the SLA policies by priority and tier (Osysharp.Inbox), and the business hours their clocks run in.
+// `SetUpDesk` writes a sensible starting set once; after that they are an admin's to change, on the settings pages.
+using Osysharp.Identity;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Workflow;
+using Osysharp.ServiceHours;
+using Osysharp.Inbox;
+using Osysharp.Accounts;
+using Osysharp.People;
+
+/// The desk's starting configuration, once. Answers false when it was already set up.
+public bool SetUpDesk() {
+  if (TicketStatus.Any()) { return false; }
+
+  // One default per category, and the two "waiting on" statuses every desk ends up wanting.
+  new TicketStatus { Name = "New",                    Category = StatusCategory.New,     Position = 0, IsDefault = true };
+  new TicketStatus { Name = "Open",                   Category = StatusCategory.Open,    Position = 0, IsDefault = true };
+  new TicketStatus { Name = "Pending",                Category = StatusCategory.Pending, Position = 0, IsDefault = true,
+                     Description = "Waiting on the customer's answer." };
+  new TicketStatus { Name = "Waiting on a refund",    Category = StatusCategory.Pending, Position = 1 };
+  new TicketStatus { Name = "On hold",                Category = StatusCategory.OnHold,  Position = 0, IsDefault = true };
+  new TicketStatus { Name = "Waiting on engineering", Category = StatusCategory.OnHold,  Position = 1,
+                     Description = "A bug is with the product team." };
+  new TicketStatus { Name = "Solved",                 Category = StatusCategory.Solved,  Position = 0, IsDefault = true };
+  new TicketStatus { Name = "Closed",                 Category = StatusCategory.Closed,  Position = 0, IsDefault = true };
+
+  // The types of request a desk starts with — forms (config.osy), so an admin renames them, adds the questions each
+  // asks, and adds more. An outage needs its root cause on record before it is solved. None asks the customer anything
+  // yet, so the help page offers no choice until one does; the team sets the type on the ticket.
+  new TicketForm { Name = "A question", Key = "question", Description = "How do I…, where is…, can it…", IsDefault = true,
+                   Position = 0 };
+  new TicketForm { Name = "Something is broken", Key = "problem", Description = "It did something it should not.", Position = 1 };
+  new TicketForm { Name = "An outage", Key = "incident", Description = "Something is down for many people at once.",
+                   AsksRootCause = true, Position = 2 };
+  new TicketForm { Name = "A task", Key = "task", Description = "Work the team does for a customer: a change, a setup, an export.",
+                   Position = 3 };
+
+  var allDay = new ServiceHours { Name = "Around the clock", Zone = "UTC" };   // no windows: accrues 24/7
+  var office = new ServiceHours { Name = "Business hours", Zone = "Europe/Stockholm" };
+  foreach (var d in [DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday]) {
+    new ServiceWindow { ServiceHours = office, Day = d, Start = TimeSpan.FromHours(8), End = TimeSpan.FromHours(18) };
+  }
+
+  // The tiers a company can be on (Osysharp.Organizations): what its SLA policies and entitlements are chosen by.
+  var standard = new OrganizationTier { Name = "Standard", Rank = 1, IsDefault = true, Description = "Email and portal, business hours." };
+  var premium = new OrganizationTier { Name = "Premium", Rank = 2, Description = "Around the clock for urgent and high." };
+  var enterprise = new OrganizationTier { Name = "Enterprise", Rank = 3, Description = "Around the clock, a named account owner." };
+  new Entitlement { Tier = standard, Name = "Email and portal" };
+  new Entitlement { Tier = premium, Name = "Email and portal" };
+  new Entitlement { Tier = premium, Name = "24/7 for urgent and high" };
+  new Entitlement { Tier = enterprise, Name = "Email, portal and phone" };
+  new Entitlement { Tier = enterprise, Name = "24/7 for everything but low" };
+  new Entitlement { Tier = enterprise, Name = "A named account owner" };
+
+  // Standard runs in business hours; Premium and Enterprise around the clock, and tighter. The most specific policy
+  // wins (the inbox's rule): Enterprise + Urgent beats Urgent.
+  Promise("Urgent", WorkPriority.Urgent, null, 1, 2, 8, office);
+  Promise("High", WorkPriority.High, null, 4, 8, 24, office);
+  Promise("Normal", WorkPriority.Normal, null, 8, 16, 72, office);
+  Promise("Low", WorkPriority.Low, null, 24, 48, 160, office);
+  Promise("Premium urgent", WorkPriority.Urgent, premium, 0.5, 1, 4, allDay);
+  Promise("Premium high", WorkPriority.High, premium, 2, 4, 12, allDay);
+  Promise("Enterprise urgent", WorkPriority.Urgent, enterprise, 0.25, 0.5, 4, allDay);
+  Promise("Enterprise high", WorkPriority.High, enterprise, 1, 2, 8, allDay);
+  Promise("Enterprise normal", WorkPriority.Normal, enterprise, 4, 8, 48, allDay);
+
+  // Where tickets wait: Support takes everything no rule names; Billing the money questions; Engineering is the second
+  // level a ticket is escalated to. People pick from the pool — nobody is handed work they did not take.
+  var engineering = new Queue { Name = "Engineering", Level = 2, Position = 2, Hours = office,
+                                Description = "Bugs and incidents the first line could not close." };
+  new Queue { Name = "Support", Position = 0, EscalatesTo = engineering, Description = "Every question no rule sends elsewhere." };
+  var billing = new Queue { Name = "Billing", Position = 1, EscalatesTo = engineering, Description = "Invoices, refunds and payments." };
+  new RoutingRule { Name = "Money questions", TitleContains = "invoice|refund|charged|payment|billing|vat", ToQueue = billing,
+                    AppAction = "billing" };
+  // Everybody on the team so far works the first-line queues; leads and admins the second line too.
+  foreach (var a in User.Where(u => u.IsActive).ToList()) { JoinTheDesk(a); }
+  UnitOfWork.Commit();
+  StatusesInArabic();
+  return true;
+}
+
+/// The starting statuses in Arabic (D-RTL1): a status's name is the desk's own data — `[Translatable]`, so an admin
+/// renames it per language on the settings page — and the desk starts with Arabic beside the English. Written in
+/// Arabic AFTER the rows are saved: a write lands in the language it is made in.
+void StatusesInArabic() {
+  if (!App.Languages.Contains("ar")) { return; }
+  var was = Session.Language;
+  Session.SetLanguage("ar");
+  foreach (var s in TicketStatus.ToList()) {
+    if (s.Name == "New") { s.Name = "جديدة"; }
+    if (s.Name == "Open") { s.Name = "مفتوحة"; }
+    if (s.Name == "Pending") { s.Name = "قيد الانتظار"; s.Description = "بانتظار رد العميل."; }
+    if (s.Name == "Waiting on a refund") { s.Name = "بانتظار استرداد"; }
+    if (s.Name == "On hold") { s.Name = "معلّقة"; }
+    if (s.Name == "Waiting on engineering") { s.Name = "بانتظار الفريق الهندسي"; s.Description = "خلل لدى فريق المنتج."; }
+    if (s.Name == "Solved") { s.Name = "محلولة"; }
+    if (s.Name == "Closed") { s.Name = "مغلقة"; }
+  }
+  UnitOfWork.Commit();
+  Session.SetLanguage(was);
+}
+
+/// A policy and its three promises, in hours of `hours`.
+void Promise(string name, WorkPriority priority, OrganizationTier? tier, double firstHours, double nextHours, double resolveHours,
+             Osysharp.ServiceHours.ServiceHours hours) {
+  var p = new SlaPolicy { Name = name, Priority = priority, Tier = tier, Hours = hours };
+  new SlaTarget { Policy = p, Metric = SlaMetric.FirstResponse, Within = TimeSpan.FromMinutes(firstHours * 60) };
+  new SlaTarget { Policy = p, Metric = SlaMetric.NextResponse, Within = TimeSpan.FromMinutes(nextHours * 60) };
+  new SlaTarget { Policy = p, Metric = SlaMetric.Resolution, Within = TimeSpan.FromMinutes(resolveHours * 60) };
+}
+
+/// Put a teammate on the desk's queues — Support and Billing for everybody with a desk role, Engineering for leads and
+/// admins as well. Only a queue's members may hold its tickets. (An admin does the same on Settings › Queues.) Run when a
+/// desk role is given (`DeskRoles`, model/team.osy) and when the desk is set up.
+void JoinTheDesk(Principal a) {
+  // A program working the desk through the API (an integration) acts with a desk role, but is never routed a ticket:
+  // nobody would ever answer it.
+  if (a is Integration) { return; }
+  var lead = IsDeskLead(a);
+  var agent = lead || RoleGrant.Any(g => g.Member == a && g.Role == AppRole.Agent);
+  if (!agent) { return; }
+  foreach (var q in Queue.Where(q => q.Active).ToList()) {
+    if (q.Level > 1 && !lead) { continue; }
+    if (!QueueMember.Any(m => m.Queue == q && m.Member == a)) { new QueueMember { Queue = q, Member = a }; }
+  }
+}
+
+/// Take a teammate off the queues their desk roles no longer cover — every queue when they hold none, the second line
+/// when they are no longer a lead. Run when a desk role is taken away.
+void LeaveWhatNoLongerFits(Principal a) {
+  var lead = IsDeskLead(a);
+  var agent = lead || RoleGrant.Any(g => g.Member == a && g.Role == AppRole.Agent);
+  foreach (var m in QueueMember.Where(m => m.Member == a).Include(m => m.Queue).ToList()) {
+    if (!agent || (m.Queue.Level > 1 && !lead)) { m.Delete(); }
+  }
+}
+
+bool IsDeskLead(Principal a) => RoleGrant.Any(g => g.Member == a && (g.Role == AppRole.Lead || g.Role == AppRole.Admin));

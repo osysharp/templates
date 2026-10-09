@@ -1,0 +1,72 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Identity, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Identity · Osysharp.Identity.IdentitySource ──
+  /// Osysharp.Identity.IdentitySource · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Osysharp.Identity.IdentitySource.Idp
+  /// beside: "This app"
+  label "Identity provider" => "Identitetsleverantör";
+  /// Osysharp.Identity.IdentitySource · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Identity.IdentitySource.Local
+  /// beside: "Identity provider"
+  label "This app" => "Den här appen";
+
+  // ── Osysharp.Identity · Osysharp.Identity.Principal ──
+  /// Osysharp.Identity.Principal · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Identity.Principal.ApiKeyHash
+  /// beside: "Email", "Display name", "Is active", "External id", "Source", "Email verified at"
+  label "Api key hash" => "API-nyckelhash";
+  /// Osysharp.Identity.Principal · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.Identity.Principal.ApiKeyHash2
+  /// beside: "Email", "Display name", "Is active", "External id", "Source", "Email verified at"
+  label "Api key hash2" => "API-nyckelhash 2";
+  /// Osysharp.Identity.Principal · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.Identity.Principal.ApiKeyUsedAt
+  /// beside: "Email", "Display name", "Is active", "External id", "Source", "Email verified at"
+  label "Api key used at" => "API-nyckel använd";
+  /// Osysharp.Identity.Principal · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.Identity.Principal.ApiKey2UsedAt
+  /// beside: "Email", "Display name", "Is active", "External id", "Source", "Email verified at"
+  label "Api key2 used at" => "API-nyckel 2 använd";
+  /// Osysharp.Identity.Principal · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Identity.Principal.DisplayName
+  /// beside: "Email", "Is active", "External id", "Source", "Email verified at", "Last login at"
+  /// also in Osysharp.Conversations.Party
+  label "Display name" => "Visningsnamn";
+  /// Osysharp.Identity.Principal · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Identity.Principal.Email
+  /// beside: "Display name", "Is active", "External id", "Source", "Email verified at", "Last login at"
+  /// also in SignInForm
+  /// also in SignUpForm
+  /// also in ForgotPasswordForm
+  label "Email" => "E-post";
+  /// Osysharp.Identity.Principal · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Osysharp.Identity.Principal.EmailVerifiedAt
+  /// beside: "Email", "Display name", "Is active", "External id", "Source", "Last login at"
+  label "Email verified at" => "E-post verifierad";
+  /// Osysharp.Identity.Principal · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Identity.Principal.ExternalId
+  /// beside: "Email", "Display name", "Is active", "Source", "Email verified at", "Last login at"
+  /// also in Osysharp.Organizations.Organization
+  label "External id" => "Externt id";
+  /// Osysharp.Identity.Principal · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Identity.Principal.IsActive
+  /// beside: "Email", "Display name", "External id", "Source", "Email verified at", "Last login at"
+  /// also in Osysharp.Organizations.Organization
+  label "Is active" => "Aktiv";
+  /// Osysharp.Identity.Principal · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.Identity.Principal.LastLoginAt
+  /// beside: "Email", "Display name", "Is active", "External id", "Source", "Email verified at"
+  label "Last login at" => "Senaste inloggning";
+  /// Osysharp.Identity.Principal · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Identity.Principal.Source
+  /// beside: "Email", "Display name", "Is active", "External id", "Email verified at", "Last login at"
+  /// also in Osysharp.Organizations.Organization
+  label "Source" => "Källa";
+  /// Osysharp.Identity.Principal · validation
+  /// shown through Osysharp.Identity.Principal.Email [Unique]
+  validation "That address already has an account." => "Den adressen har redan ett konto.";
+}

@@ -1,0 +1,188 @@
+// WHAT THE DESK KEEPS ABOUT A PERSON, AND WHAT THEIR REQUEST DOES TO IT (D-PRIVACY1). Harbour holds real people's
+// support questions, so a request to see, take or erase their data goes through Osysharp.Privacy: a plan per category,
+// approved by an admin on the Inbox, answered within a calendar month. The conversations are
+// Osysharp.Privacy.Conversations' holder; what the desk says here is which conversations concern a claim (a complaint,
+// a dispute — tagged so), what it keeps beside a conversation (reply drafts, the answers a customer gave on a form), and
+// who manages privacy.
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Composer;
+using Osysharp.Inbox;
+using Osysharp.Privacy;
+using Osysharp.Privacy.Conversations;
+using Osysharp.Observability;
+using Osysharp.Mail;
+using Osysharp.Mail.Receiving;
+using Osysharp.Fields;
+
+/// The admins file and approve privacy requests, set how long things are kept, and place legal holds.
+policy ManagesPrivacy => IsAdmin;
+policy PlacesLegalHolds => IsAdmin;
+
+// ── what the desk itself keeps about a customer (D-DATASUBJECT1) ─────────────────────────────────────────────────────
+//
+// The conversations, the mail and the requests are the kits' to answer for. What the DESK writes is its own: what the
+// team found went wrong on a ticket and how it was solved, and the answers on its forms. Each entity says whose data a
+// row is (`[DataSubject]` — a ticket's customer, an answer's ticket) and which of these it is held under
+// (`[PersonalData(…)]`), and the platform writes the holder: these appear by name in every plan and in the records of
+// processing, are counted, exported, restricted and erased with the rest.
+
+/// What the team wrote on a customer's tickets — the root cause, the resolution, who it waited on. An erasure blanks it;
+/// the ticket itself (its number, where it stood, who had it) is the desk's record and stays.
+public DataCategory TicketNotes() {
+  return new DataCategory {
+    Key = "harbour.tickets", Label = "What our team wrote on your tickets: what went wrong, and how it was solved",
+    Purpose = Translate("Answering you, and fixing what went wrong"), SubjectKind = "customers",
+    Basis = RetentionBasis.LegitimateInterest, BasisDetail = Translate("answering you, and fixing what went wrong for everyone") };
+}
+
+/// The answers on a ticket's form — the ones the customer gave, and the details the team filled in.
+public DataCategory TicketAnswers() {
+  return new DataCategory {
+    Key = "harbour.answers", Label = "Your answers on our forms, and the details we filled in on your tickets",
+    Purpose = Translate("Answering you"), SubjectKind = "customers", Basis = RetentionBasis.Contract, Portable = true };
+}
+
+/// What the team keeps about a customer in the desk's own fields (Settings › Fields) — their answers, deleted with them.
+public DataCategory CustomerDetails() {
+  return new DataCategory {
+    Key = "harbour.customer-details", Label = "What our team noted about you in our own fields",
+    Purpose = Translate("Answering you, knowing who we are talking to"), SubjectKind = "customers",
+    Basis = RetentionBasis.LegitimateInterest, BasisDetail = Translate("knowing who we are talking to when you write"), Portable = true };
+}
+
+/// The tags that make a ticket's conversation one that concerns a claim — kept for legal claims when the person asks to
+/// be erased (Osysharp.Privacy.Conversations' `conversations.claims`), rather than erased. Lower case.
+List<string> ClaimTags() { return ["complaint", "dispute", "legal"]; }
+
+/// What the desk knows that the conversations kit cannot.
+public class HarbourPrivacy : ConversationPrivacyRules {
+  /// A ticket on it is tagged as a complaint, a dispute or a legal matter.
+  public override bool ConcernsAClaim(Conversation conversation) {
+    var tags = ClaimTags();
+    return TicketTag.Any(x => x.Ticket.Conversation == conversation && tags.Contains(x.Tag.Name.ToLower()));
+  }
+  /// Its words were erased, or its period ended: the reply drafts on its tickets go (they quote and answer the
+  /// customer), the answers the customer gave on a form are blanked, and the ticket's title — the customer's own
+  /// subject, copied (measured: `Assert.NoTraceOf` found it there) — says only that it was erased.
+  ///
+  /// A conversation kept for legal claims had its drafts and answers kept with it (`Kept`); its period ended, so this
+  /// runs inside the purge's purpose read, where they are in reach again — lifted, and erased with it.
+  public override void Erased(Conversation conversation) {
+    foreach (var t in conversation.Tickets.ToList()) {
+      if (t.Stage != Stage.Closed) {
+        var why = t.KeptFor != "" ? PrivacyLine.KeptPeriodEnded : PrivacyLine.Erased;
+        TicketLine(t, "helpdesk.privacy-closed", new TicketFacts { Privacy = why });
+        SupportTicket.RaisePrivacyClose(t, why);
+      }
+      // Its timeline keeps its shape; the desk's own lines that carry the customer's words — a field's answers, what a
+      // merged duplicate said — lose them with theirs and keep the rest ("Version changed.", "#1042 from … was merged").
+      foreach (var e in ConversationEvent.Where(x => x.Conversation == conversation
+          && (x.Kind == "helpdesk.field" || x.Kind == "helpdesk.merged-here")).ToList()) {
+        var kept = e.Facts == null ? new TicketFacts() : JsonSerializer.Deserialize<TicketFacts>(e.Facts!);
+        e.Facts = JsonSerializer.Serialize(new TicketFacts { Name = kept.Name, FieldKind = kept.FieldKind, Number = kept.Number });
+      }
+      t.Title = "Erased conversation";
+      t.KeptFor = "";
+      t.KeptUntil = null;
+      foreach (var d in ComposerDraft.Where(x => x.Item == t.Id).ToList()) {
+        foreach (var f in ComposerDraftFile.Where(x => x.Draft == d).ToList()) { f.Delete(); }
+        foreach (var s in ComposerDraftStep.Where(x => x.Draft == d).ToList()) { s.Delete(); }
+        Restriction.Lift(d);
+        d.Delete();
+      }
+      foreach (var v in TicketFieldValue.Where(x => x.Ticket == t && x.Field.Public).ToList()) {
+        Restriction.Lift(v);
+        v.Value = "";
+      }
+    }
+  }
+  /// Its conversation is kept restricted (for legal claims, or at the customer's request): what the desk keeps beside it
+  /// — the reply drafts that quote her, the answers she gave on a form — is kept the same way, under the same category,
+  /// so the one purpose read that reads the conversation reads them too. The ticket stays the desk's — its number,
+  /// where it stands, who has it — and says it is kept instead of showing her words: its title was her subject.
+  public override void Kept(Conversation conversation, string category, DateTime? until) {
+    foreach (var t in conversation.Tickets.ToList()) {
+      // Kept for the first time: nothing on it can be worked any more, so it is closed — with an event on the kept
+      // record saying why (kept with the conversation, so it is read with it, for the claim). Its period moved since: a
+      // legal hold was placed, or lifted, and the record says what now happens.
+      PrivacyLine? said = null;
+      DateTime? keptUntil = null;
+      if (t.KeptFor != category) { said = KeptLine(category); }
+      else if (t.KeptUntil != null && until == null) { said = PrivacyLine.HoldPlaced; }
+      else if (t.KeptUntil == null && until != null) { said = PrivacyLine.HoldLifted; keptUntil = KeptThrough(until!.Value); }
+      // Written only where the run reads the kept conversation — a claim's (a restriction at the customer's own request
+      // stamps the conversation out of this run's sight; its ticket says why on its own).
+      if (said != null && category == ClaimsCategory()) {
+        var ev = TicketLine(t, "helpdesk.privacy-kept", new TicketFacts { Privacy = said, Until = keptUntil });
+        Restriction.Restrict(ev, category, until);
+      }
+      if (t.KeptFor != category && t.Stage != Stage.Closed) { SupportTicket.RaisePrivacyClose(t, KeptLine(category)); }
+      t.Title = category == ClaimsCategory() ? "Kept for legal claims" : "Restricted at the customer's request";
+      t.KeptFor = category;
+      t.KeptUntil = until;
+      foreach (var d in ComposerDraft.Where(x => x.Item == t.Id).ToList()) { Restriction.Restrict(d, category, until); }
+      foreach (var v in TicketFieldValue.Where(x => x.Ticket == t && x.Field.Public).ToList()) {
+        Restriction.Restrict(v, category, until);
+      }
+    }
+  }
+}
+
+/// Why a ticket was closed, in the words it shows: its conversation is kept out of use.
+PrivacyLine KeptLine(string category) {
+  return category == ClaimsCategory() ? PrivacyLine.KeptForClaims : PrivacyLine.Restricted;
+}
+
+
+
+/// A ticket's kept conversation, read for a claim — by whoever handles claims, every read written to the access trail.
+/// By the TICKET: the conversation itself is kept, so the desk's own reference to it reads as an empty row.
+[PurposeRead("conversations.claims")]
+[Authorize(HandlesClaims)]
+public ClaimTranscript ClaimOfTicket(Guid ticketId) {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  return ConversationForAClaim(t.Conversation.Id);
+}
+
+// A conversation that concerns no claim is kept 24 months after its last message, then erased for everyone — the
+// default; whoever manages privacy changes it on the retention page ("Your other conversations with us").
+app.ConversationsPrivacy = new ConversationsPrivacySetup { Rules = new HarbourPrivacy(), KeepForMonths = 24 };
+// Osyrin is Swedish: a person who disagrees complains to IMY. WHO is responsible — the legal entity running this desk —
+// is named by an admin on the settings area ("Who is responsible"); the desk says it is missing until it is.
+app.Privacy = new PrivacySetup { SupervisoryAuthority = "IMY (Integritetsskyddsmyndigheten), imy.se" };
+
+// ⚑ A CUSTOMER'S WORDS NEVER REACH THE AUDIT TRAIL — an erasure cannot reach a value the trail recorded. Every field
+//   holding them is classified `Personal.*` — the kits' on their own fields (conversations, mail, the inbox's title,
+//   the composer's drafts), the desk's on its own (a ticket's root cause and resolution, a form's answers, a customer's
+//   title) — and a personal field is recorded as changed, never as itself. So the desk keeps no list of its own.
+//
+// Who reads them is each row's own security: a customer their own messages, an agent the conversations they work, the
+// admins who manage privacy its requests and holds. The kits' levels read that way with nothing said here; the desk
+// says the same of its OWN two — `Open` keeps the level personal (out of the trail, restrictable, followed by memory)
+// and adds no role clearance on top of the row's.
+app = new() {
+  Name = "Helpdesk",
+  Classifications = [
+    new Classification(Personal.Content) { Open = true },
+    new Classification(Personal.Identity) { Open = true },
+  ],
+};
+
+/// Start a privacy request for the customer behind a ticket — on their behalf, saying how you checked it is them. It is
+/// PLANNED at once, category by category, and nothing happens until an admin approves the plan on the Inbox. Nothing is
+/// mailed to the customer's address: it was not proven by them here, so the answer goes back through the channel you
+/// checked them on.
+[Authorize(ManagesPrivacy)]
+public PrivacyRequest StartPrivacyRequestFor(Guid partyId, RequestKind right, IdentityCheck check, string checkedHow) {
+  var party = Party.Single(p => p.Id == partyId);
+  var address = ContactPoint.Where(p => p.Party == party && p.Kind == ContactPointKind.Email)
+    .OrderByDescending(p => p.IsPreferred).ThenByDescending(p => p.VerifiedAt).Select(p => p.Value).FirstOrDefault();
+  var phone = ContactPoint.Where(p => p.Party == party && p.Kind == ContactPointKind.Phone)
+    .OrderByDescending(p => p.IsPreferred).Select(p => p.Value).FirstOrDefault();
+  Guid? account = party.Account == null ? null : party.Account!.Id;
+  if ((address == null || address == "") && account == null && (phone == null || phone == "")) {
+    throw new ValidationException("This customer has no address, number or account the request could be about — it would reach nothing.");
+  }
+  return FileRequest(right, account, address ?? "", check, checkedHow, phone ?? "");
+}

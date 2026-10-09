@@ -1,0 +1,35 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Orbs, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Orbs · Osysharp.Orbs.OrbProfile.Label ──
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Composing…" => "جارٍ التأليف…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Connecting…" => "جارٍ الاتصال…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Listening…" => "جارٍ الاستماع…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Searching…" => "جارٍ البحث…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Shaping…" => "جارٍ التشكيل…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Solving…" => "جارٍ الحل…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Thinking…" => "جارٍ التفكير…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Weaving…" => "جارٍ النسج…";
+  /// Osysharp.Orbs.OrbProfile.Label · a control's name for screen readers
+  /// shown through Label()
+  accessibleName "Working…" => "جارٍ العمل…";
+}

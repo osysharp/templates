@@ -1,0 +1,161 @@
+// TICKETS AND EACH OTHER (H2) — who else is copied on a ticket, a second question split off into a ticket of its own,
+// typed links between tickets, and a problem whose incidents are solved with it.
+//
+// ⚑ THE MECHANISMS ARE THE KITS'. Copying somebody in and splitting a message off are Osysharp.Conversations' (`CopyIn`,
+//   `SplitOff` — the message moves by the kit's own run, with its files and its mail thread); a link between two tickets is
+//   Osysharp.Inbox's (`Link`, `WorkLink`, the `ItemLinks` panel), of the kinds the desk declares below. What is the
+//   desk's here is what they MEAN to a desk: a split is a new ticket for the same customer that says where it came
+//   from; a ticket an incident is OF is a problem, and solving it solves them.
+using Osysharp.Identity;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+
+/// The ways two tickets are linked on this desk — a closed set, said in the reader's language wherever a link is shown.
+public class DeskLinks : InboxLinks {
+  public override List<LinkKind> Kinds() {
+    return [
+      new LinkKind { Key = "related", Says = "Related to", Mutual = true },
+      // A duplicate offers to be merged into the ticket it repeats (`MergeInto`) — "Merge into #1042" on its link.
+      new LinkKind { Key = "duplicate", Says = "Duplicate of", Back = "Duplicated by", One = true, Act = "Merge into" },
+      new LinkKind { Key = "caused-by", Says = "Caused by", Back = "Caused" },
+      // An incident is one customer's report of a problem; the ticket it is OF is the problem, and solving it solves
+      // its incidents (`SolveIncidents`).
+      new LinkKind { Key = "incident", Says = "Incident of", Back = "Problem behind" , One = true },
+      // Made only by a split — the new ticket says where it came from, the old one where its message went.
+      new LinkKind { Key = "split", Says = "Split from", Back = "Split into", Offered = false },
+    ];
+  }
+}
+
+// ── copying people in ────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// Copy somebody in on a ticket by their address — from now on they are sent every reply on it, and read it in the
+/// portal when they sign in. The customer the desk already knows at that address, else a new one (put in the company
+/// whose domain it is on). Its timeline says so.
+public void AddCc(Guid ticketId, string email, string name = "") {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  if (t.Category == StatusCategory.Closed) { throw new ValidationException($"#{t.Number} is closed — nothing more is sent on it."); }
+  if (t.KeptFor != "") { throw new ValidationException($"#{t.Number} is kept out of use — nobody is added to it."); }
+  var address = email.Trim().ToLower();
+  var at = address.IndexOf("@");
+  if (at < 1 || at == address.Length - 1 || address.Contains(" ")) {
+    throw new ValidationException("Give the address to copy in — like ana@example.com.");
+  }
+  CopyIn(t.Conversation, CustomerFor(address, name.Trim()));
+  UnitOfWork.Commit();
+}
+
+/// Take somebody copied off a ticket — nothing more is sent to them, and they no longer read it.
+public void RemoveCc(Guid ticketId, Guid seatId) {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  var seat = Participant.FirstOrDefault(p => p.Id == seatId && p.Conversation == t.Conversation);
+  if (seat == null) { throw new ValidationException("They were already taken off."); }
+  Uncopy(seat);
+  UnitOfWork.Commit();
+}
+
+// ── splitting a message off ──────────────────────────────────────────────────────────────────────────────────────────
+
+/// A second question in a ticket's thread becomes a ticket of its own: `messageId` (something the customer wrote on
+/// `ticketId`) moves to a new ticket — with its files, and its mail thread, so their reply to that mail lands there —
+/// for the same customer, of the same type and urgency, under `subject`. Each ticket's timeline says where it went or
+/// came from, and they stay linked ("Split from" / "Split into"). Answers the new ticket's number.
+public int SplitTicket(Guid ticketId, Guid messageId, string subject) {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  var what = subject.Trim();
+  if (what == "") { throw new ValidationException("Give the new ticket a subject: one line saying what this part is about."); }
+  if (t.Category == StatusCategory.Closed) {
+    throw new ValidationException($"#{t.Number} is closed. Its messages stay with it — if the customer asks again, that opens a new ticket.");
+  }
+  if (t.KeptFor != "" || t.ClosedFor != null) {
+    throw new ValidationException($"#{t.Number} is kept out of use at the customer's request — nothing on it is moved.");
+  }
+  var message = Message.FirstOrDefault(m => m.Id == messageId && m.Conversation == t.Conversation);
+  if (message == null) { throw new ValidationException($"That message is not on #{t.Number} any more — have another look."); }
+  var writer = message.ByParty == null ? null : Survivor(message.ByParty!) as Customer;
+  if (writer == null || message.Direction != MessageDirection.Inbound || message.Visibility != EntryVisibility.Customer) {
+    throw new ValidationException("Only something a customer wrote can be split into a ticket of its own.");
+  }
+  // The kit refuses the only thing they wrote; its sentence says why.
+  var into = SplitOff(message, what, record: false);
+  var next = NewTicket(what, into, writer, t.Form, t.Priority);
+  Link(next, t, "split");
+  TicketLine(t, "helpdesk.split-out", new TicketFacts { Number = next.Number, Name = what });
+  TicketLine(next, "helpdesk.split-in", new TicketFacts { Number = t.Number, Name = t.Title });
+  UnitOfWork.Commit();
+  return next.Number;
+}
+
+// ── problems and their incidents ─────────────────────────────────────────────────────────────────────────────────────
+
+/// The incidents of `problem` still being worked — what solving it solves.
+/// The number of the problem `t` is an incident of — 0 when it is none's.
+public int ProblemNumberOf(Ticket t) {
+  var link = WorkLink.FirstOrDefault(l => l.From.Id == t.Id && l.Kind == "incident");
+  if (link == null) { return 0; }
+  var problem = Ticket.FirstOrDefault(x => x.Id == link!.To.Id);
+  return problem == null ? 0 : problem!.Number;
+}
+
+/// Link ticket `ticketId` as an incident of ticket number `problem` — "Seen before" found the problem it is another report
+/// of. The inbox's own checks apply: one problem per incident, and no problem that is itself an incident.
+[Authorize(IsAgent)]
+public void LinkAsIncidentOf(Guid ticketId, int problem) {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  var p = Ticket.FirstOrDefault(x => x.Number == problem);
+  if (p == null) { throw new ValidationException($"There is no ticket #{problem}."); }
+  LinkWork(t.Id, p!.Id, "incident");
+}
+
+List<Ticket> OpenIncidentsOf(Ticket problem) {
+  var ids = WorkLink.Where(l => l.To == problem && l.Kind == "incident").Select(l => l.From.Id).ToList();
+  if (ids.Count == 0) { return new List<Ticket>(); }
+  return Ticket.Where(i => ids.Contains(i.Id) && i.Category != StatusCategory.Solved && i.Category != StatusCategory.Closed)
+    .OrderBy(i => i.Number).ToList();
+}
+
+/// How many incidents `ticketId` has still open — what its status menu asks before solving it.
+public int OpenIncidentCount(Guid ticketId) {
+  return OpenIncidentsOf(Ticket.Single(x => x.Id == ticketId)).Count;
+}
+
+/// Why `problem` cannot be solved with its incidents, or "" — an incident whose type needs a root cause, when neither it
+/// nor the problem has one on record.
+string IncidentsBlock(Ticket problem) {
+  var hasCause = !Text.IsEmpty(problem.RootCause);
+  List<string> need = [];
+  foreach (var i in OpenIncidentsOf(problem)) {
+    if (i.Form != null && i.Form.AsksRootCause && Text.IsEmpty(i.RootCause) && !hasCause) { need.Add("#" + i.Number); }
+  }
+  if (need.Count == 0) { return ""; }
+  return $"{string.Join(", ", need)} need a root cause before they are solved. Record the root cause of #{problem.Number} — its incidents take it.";
+}
+
+/// `problem` was solved: each incident still open is solved with it — its root cause taken from the problem when its type
+/// needs one, its timeline saying which problem solved it, and its customer told it is solved by the solve notice
+/// (feedback.osy), with how it was solved (`summary`) and the question how we did.
+void SolveIncidents(Ticket problem, string summary) {
+  var solved = DefaultStatus(StatusCategory.Solved);
+  if (solved == null) { return; }
+  var incidents = OpenIncidentsOf(problem);
+  if (incidents.Count > 0) { TicketLine(problem, "helpdesk.solved-incidents", new TicketFacts { Number = incidents.Count }); }
+  foreach (var i in incidents) {
+    if (i.Form != null && i.Form.AsksRootCause && Text.IsEmpty(i.RootCause)) { i.RootCause = problem.RootCause; }
+    TicketLine(i, "helpdesk.solved-with", new TicketFacts { Number = problem.Number });
+    MoveTo(i, solved, "", summary);
+  }
+}
+
+/// Solve a problem and every incident still open on it, from its status menu: `statusId` is the Solved status chosen,
+/// `summary` how it was solved — said in the solve notice each incident's customer is mailed. Answers how many
+/// incidents were solved with it.
+public int SolveProblem(Guid ticketId, Guid statusId, string summary = "") {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  var status = TicketStatus.Single(s => s.Id == statusId);
+  if (status.Category != StatusCategory.Solved) { throw new ValidationException("Choose a Solved status to solve it with."); }
+  var count = OpenIncidentsOf(t).Count;
+  MoveTo(t, status, "", summary);
+  UnitOfWork.Commit();
+  return count;
+}

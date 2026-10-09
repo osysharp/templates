@@ -1,0 +1,272 @@
+// SIDE CONVERSATIONS (H9) — Ines asks somebody else about Olivia's ticket without leaving it: Dev at Orbit Labs (who
+// runs Larkspur's deliveries) by mail, or the team in a thread of its own. It sits on the ticket's timeline as a card that
+// opens into its thread; Dev's answer by mail lands in it — never in the ticket, never as a ticket of its own — and Ines,
+// who holds the ticket, is told. Dev never sees the ticket, and Olivia never sees the side conversation.
+// `osy test --pixels` photographs the card, the dialog and the phone (Docs/OsySharp/design/side-conversations-api/).
+//
+// The desk (Ines, Rahul, Lena; Olivia and Sam at Larkspur; Dev at Orbit Labs) is desk.test.osy's.
+using Osysharp.Identity;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Mail;
+using Osysharp.Mail.Receiving;
+using Osysharp.Notifications;
+
+/// The desk, with Ines also its admin — she turns the support mailbox on, and reads what it sent.
+[TestFixture]
+void SideDesk() {
+  Desk();
+  new RoleGrant { Member = Agent.Single(a => a.Email == "ines@helpdesk.test"), Role = AppRole.Admin };
+}
+
+/// Olivia's request about a crushed pallet — answered, with a note — and held by Ines. Answers its number.
+int CrushedPallet() {
+  var n = 0;
+  runas (Olivia) { n = SubmitRequest("Pallet 7 arrived crushed", "Our order 4471 came in on a crushed pallet this morning."); }
+  runas (Ines) {
+    var t = Ticket.Single(x => x.Number == n);
+    TakeWork(t, null);
+    ReplyToTicket(t.Id, "Sorry, Olivia — we are asking the carrier now.");
+    ReplyToTicket(t.Id, "Carrier is Northline; their claim number is CL-99.", note: true);
+  }
+  Background.Settle();
+  return n;
+}
+
+/// One mail the desk sent, as the test reads it.
+public class SentSide {
+  public string From = "";
+  public string Subject = "";
+  public string Text = "";
+  public string MessageId = "";
+}
+
+/// A sent mail as its reader's client shows it — who from, the subject, the words — for `Ui.Shot`.
+RenderedEmail AsReceived(SentSide m, string to) {
+  var body = m.Text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
+  var head = (m.From + "|" + to + "|" + m.Subject).Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Split("|");
+  return new RenderedEmail(m.Subject, m.Text) {
+    Html = "<!doctype html><html><body style=\"margin:0;background:#f4f4f2;font-family:-apple-system,Segoe UI,sans-serif\">"
+      + "<div style=\"max-width:640px;margin:24px auto;background:#fff;border:1px solid #ddd;border-radius:8px;padding:24px\">"
+      + "<div style=\"color:#666;font-size:13px;line-height:1.6\">From: " + head[0] + "<br>To: " + head[1] + "</div>"
+      + "<h2 style=\"font-size:18px;margin:12px 0 16px\">" + head[2] + "</h2>"
+      + "<div style=\"white-space:pre-wrap;font-size:15px;line-height:1.5\">" + body + "</div></div></body></html>",
+  };
+}
+
+/// What the desk mailed `to`, read by Ines (the outbox is an admin's to read).
+List<SentSide> MailedTo(string to) {
+  List<SentSide> found = [];
+  runas (Ines) {
+    found = KeptMail.Where(m => m.To == to).OrderBy(m => m.CreatedAt).ToList()
+      .Select(m => new SentSide { From = m.From, Subject = m.Subject, Text = m.Text, MessageId = m.MessageId }).ToList();
+  }
+  return found;
+}
+
+/// ⭐ SECURITY-INVARIANT(a-side-conversation-never-shows-its-parent), on the desk. Dev is mailed about Olivia's ticket and
+/// reads nothing of it — not the ticket, its conversation or one entry of it, not which conversation the side one is
+/// beside, nothing in his portal; what he was mailed is the side conversation's subject and words, with no ticket number.
+/// Olivia reads nothing of the side conversation, and no line about it on her ticket.
+[Test(SideDesk)]
+void dev_is_mailed_on_the_side_and_never_sees_olivias_ticket() {
+  var n = CrushedPallet();
+  Guid side = Guid.Empty;
+  Guid parent = Guid.Empty;
+  runas (Ines) {
+    var t = Ticket.Single(x => x.Number == n);
+    parent = t.Conversation.Id;
+    side = StartSideConversationOn(t.Id, "dev@orbit.test", "Crushed pallet on Monday's run",
+                                   "Can you check the pallet you delivered to Larkspur on Monday? It arrived crushed.");
+  }
+  Background.Settle();
+  runas (Dev) {
+    Assert.Equal(0, Ticket.Count(t => t.Number == n));
+    Assert.Equal(0, Conversation.Count(c => c.Id == parent));
+    Assert.Equal(0, ConversationEntry.Count(e => e.Conversation.Id == parent));
+    Assert.Equal(1, Message.Count(m => m.Conversation.Id == side));
+    Assert.Null(Conversation.Single(c => c.Id == side).SideOf);
+  }
+  var mail = MailedTo("dev@orbit.test").Single();
+  Assert.Equal("Crushed pallet on Monday's run", mail.Subject);
+  Assert.Contains("Can you check the pallet you delivered to Larkspur on Monday?", mail.Text);
+  Assert.DoesNotContain("#" + n, mail.Subject + mail.Text);
+  Assert.DoesNotContain("Pallet 7", mail.Subject + mail.Text);
+  Assert.DoesNotContain("asking the carrier", mail.Text);
+  Assert.DoesNotContain("CL-99", mail.Text);
+  runas (Olivia) {
+    Assert.Equal(0, ConversationEntry.Count(e => e.Conversation.Id == side));
+    Assert.Equal(0, ConversationEvent.Count(e => e.Conversation.Id == parent && e.Kind.StartsWith("conversations.side")));
+  }
+  // Dev's portal lists no request of Olivia's.
+  Ui.SignInAs(Dev);
+  Ui.Visit("/my");
+  Assert.Hidden("Pallet 7 arrived crushed");
+}
+
+/// Dev answers the mail: it lands in the side conversation — not on the ticket, and not as a ticket of its own — the
+/// ticket's timeline says so, and Ines, who holds it, is told in her bell.
+[Test(SideDesk)]
+void devs_answer_lands_in_the_side_conversation_and_whoever_holds_the_ticket_is_told() {
+  var n = CrushedPallet();
+  Guid side = Guid.Empty;
+  runas (Ines) {
+    side = StartSideConversationOn(Ticket.Single(x => x.Number == n).Id, "dev@orbit.test", "Crushed pallet on Monday's run",
+                                   "Can you check the pallet you delivered to Larkspur on Monday?");
+    Watching();
+  }
+  Background.Settle();
+  var ours = MailedTo("dev@orbit.test").Single().MessageId;
+  var tickets = 0;
+  runas (Ines) { tickets = Ticket.Count(); }
+  runas (Ines) {
+    Deliver(new MailMessage { From = "Dev Patel <dev@orbit.test>", To = ["support@helpdesk.test"],
+                              Subject = "Re: Crushed pallet on Monday's run", MessageId = "<dev-1@orbit.test>",
+                              InReplyTo = ours, References = [ours],
+                              Text = "Checked — the forklift caught it in our depot. We will pay for the goods." });
+    TestClock.Advance(TimeSpan.FromMinutes(1));
+    ReadMailbox();
+  }
+  Background.Settle();
+  runas (Ines) {
+    Assert.Equal(tickets, Ticket.Count());
+    var t = Ticket.Single(x => x.Number == n);
+    Assert.Equal(0, Message.Count(m => m.Conversation == t.Conversation && m.Text.StartsWith("Checked")));
+    Assert.Equal(1, Message.Count(m => m.Conversation.Id == side && m.Text.StartsWith("Checked")));
+    Assert.Contains("Dev Patel answered in the side conversation “Crushed pallet on Monday's run”.", LinesOf(t));
+    var line = TopOfMyBell();
+    Assert.Equal("Dev Patel answered in the side conversation “Crushed pallet on Monday's run”.", line.Sentence);
+    Assert.Equal($"#{n} · Pallet 7 arrived crushed", line.Title);
+    Assert.True(SideConversationsOf(t.Conversation.Id).Single().TheirTurn);
+  }
+}
+
+/// Dev answers on the WEB, signed in to the portal: it lands in the side conversation, the ticket's timeline says so —
+/// written by the desk's own run, not by Dev — and Ines, who holds the ticket, is told. No ticket is opened for it, and
+/// Dev still reads nothing of Olivia's ticket.
+[Test(SideDesk)]
+void devs_answer_on_the_web_is_noted_on_the_ticket_by_the_desk_and_dev_still_cannot_read_it() {
+  var n = CrushedPallet();
+  Guid side = Guid.Empty;
+  Guid ticketId = Guid.Empty;
+  runas (Ines) {
+    ticketId = Ticket.Single(x => x.Number == n).Id;
+    side = StartSideConversationOn(ticketId, "dev@orbit.test", "Crushed pallet on Monday's run",
+                                   "Can you check the pallet you delivered to Larkspur on Monday?");
+    Watching();
+  }
+  Background.Settle();
+  var tickets = 0;
+  runas (Ines) { tickets = Ticket.Count(); }
+  runas (Dev) { ReplyAsCustomer(side, "Checked — the forklift caught it in our depot. We will pay for the goods."); }
+  Background.Settle();
+  runas (Ines) {
+    Assert.Equal(tickets, Ticket.Count());
+    var t = Ticket.Single(x => x.Number == n);
+    Assert.Equal(1, Message.Count(m => m.Conversation.Id == side && m.Text.StartsWith("Checked")));
+    Assert.Contains("Dev Patel answered in the side conversation “Crushed pallet on Monday's run”.", LinesOf(t));
+    Assert.Equal("Dev Patel answered in the side conversation “Crushed pallet on Monday's run”.", TopOfMyBell().Sentence);
+  }
+  runas (Dev) {
+    Assert.Equal(0, Ticket.Count(x => x.Id == ticketId));
+    Assert.Equal(0, Message.Count(m => m.Conversation.Id != side && m.Text.Contains("Northline")));
+    Assert.Null(Conversation.Single(c => c.Id == side).SideOf);
+  }
+}
+
+/// A thread inside the team: notes only, mailed to nobody, read by nobody outside the team.
+[Test(SideDesk)]
+void a_thread_inside_the_team_is_mailed_to_nobody() {
+  var n = CrushedPallet();
+  Guid side = Guid.Empty;
+  runas (Ines) {
+    side = StartSideConversationOn(Ticket.Single(x => x.Number == n).Id, "", "Refund over 400 EUR?",
+                                   "@Lena can we refund the whole order here?");
+  }
+  Background.Settle();
+  runas (Ines) {
+    Assert.Equal(EntryVisibility.Internal, Message.Single(m => m.Conversation.Id == side).Visibility);
+    Assert.Contains("A thread inside the team was started beside this: “Refund over 400 EUR?”.",
+                    LinesOf(Ticket.Single(x => x.Number == n)));
+  }
+  // Nothing was mailed for it — not to Olivia, not to anybody.
+  runas (Ines) { Assert.Equal(0, KeptMail.Count(m => m.Text.Contains("refund the whole order"))); }
+  runas (Olivia) { Assert.Equal(0, ConversationEntry.Count(e => e.Conversation.Id == side)); }
+}
+
+/// Dev's address bounces: the card says the mail did not arrive — the desk never believes "sent" that was not.
+[Test(SideDesk)]
+void a_bounce_on_a_side_conversation_says_the_mail_did_not_arrive() {
+  var n = CrushedPallet();
+  Guid parent = Guid.Empty;
+  runas (Ines) {
+    var t = Ticket.Single(x => x.Number == n);
+    parent = t.Conversation.Id;
+    StartSideConversationOn(t.Id, "dev@orbit.test", "Crushed pallet on Monday's run", "Can you check it?");
+    Watching();
+  }
+  Background.Settle();
+  var ours = MailedTo("dev@orbit.test").Single().MessageId;
+  runas (Ines) {
+    Deliver(new MailMessage { From = "Mail Delivery System <mailer-daemon@orbit.test>", To = ["support@helpdesk.test"],
+                              Subject = "Undelivered Mail Returned to Sender", MessageId = "<bounce-1@orbit.test>",
+                              InReplyTo = ours, References = [ours], Text = "550 5.1.1 <dev@orbit.test>: user unknown" });
+    TestClock.Advance(TimeSpan.FromMinutes(1));
+    ReadMailbox();
+  }
+  Background.Settle();
+  runas (Ines) {
+    var d = MessageDelivery.Single(x => x.To == "dev@orbit.test");
+    Assert.Equal(ours, d.ExternalId);
+    Assert.Equal(DeliveryOutcome.Failed, d.Outcome);
+  }
+  runas (Ines) {
+    Assert.StartsWith("The mail bounced", SideConversationsOf(parent).Single().Problem);
+  }
+}
+
+/// ON SCREEN — Ines starts one from the ticket's head; it sits on the timeline as a card, closed and opened; Dev's answer
+/// on it; wide, dark and a phone (and in Arabic in tests/languages/ar.test.osy).
+[Test(SideDesk)]
+void a_side_conversation_is_started_from_the_ticket_and_sits_on_its_timeline() {
+  var n = CrushedPallet();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + n);
+  Ui.Click("Side conversation");
+  Assert.Dialog("Start a side conversation");
+  Ui.Fill("Their address", "dev@orbit.test");
+  Ui.Fill("Subject", "Crushed pallet on Monday's run");
+  Ui.Fill("Message", "Can you check the pallet you delivered to Larkspur on Monday? It arrived crushed.");
+  Ui.Shot("side start dialog wide");
+  Ui.Click("Send it");
+  Assert.Visible("Side conversation with Dev Patel");
+  Assert.Visible("Waiting on Dev Patel");
+  Ui.Shot("side card closed wide");
+  Background.Settle();
+  // What Dev receives: the side conversation's subject and words — nothing of the ticket.
+  Ui.Shot("side third party mail", AsReceived(MailedTo("dev@orbit.test").Single(), "dev@orbit.test"));
+  var ours = MailedTo("dev@orbit.test").Single().MessageId;
+  runas (Ines) {
+    Watching();
+    Deliver(new MailMessage { From = "Dev Patel <dev@orbit.test>", To = ["support@helpdesk.test"],
+                              Subject = "Re: Crushed pallet on Monday's run", MessageId = "<dev-1@orbit.test>",
+                              InReplyTo = ours, References = [ours],
+                              Text = "Checked — the forklift caught it in our depot. We will pay for the goods." });
+    TestClock.Advance(TimeSpan.FromMinutes(1));
+    ReadMailbox();
+  }
+  Ui.Visit("/v/open/t/" + n);
+  Assert.Visible("Dev Patel answered");
+  Ui.Click("Open the side conversation");
+  Assert.Visible("Checked — the forklift caught it in our depot. We will pay for the goods.");
+  Ui.Shot("side card open wide");
+  Ui.Theme("dark");
+  Ui.Shot("side card open wide dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/v/open/t/" + n);
+  Assert.NoOverflow();
+  Ui.Shot("side card phone");
+}

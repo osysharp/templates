@@ -4,7 +4,7 @@ using Osysharp.Storage;
 // The catalogue, a machine up close, the workshop's story, the archive, and the thank-you.
 
 [Title("Every bike — Rust & Chrome")]
-[Page("/bikes")]
+[Route("/bikes")]
 [Layout(Shop)]
 [Render(CSR)]
 [AllowAnonymous]
@@ -16,7 +16,7 @@ component AllBikes() {
 }
 
 [Title("Road — Rust & Chrome")]
-[Page("/bikes/road")]
+[Route("/bikes/road")]
 [Layout(Shop)]
 [Render(CSR)]
 [AllowAnonymous]
@@ -28,7 +28,7 @@ component RoadBikes() {
 }
 
 [Title("Track — Rust & Chrome")]
-[Page("/bikes/track")]
+[Route("/bikes/track")]
 [Layout(Shop)]
 [Render(CSR)]
 [AllowAnonymous]
@@ -40,7 +40,7 @@ component TrackBikes() {
 }
 
 [Title("Touring — Rust & Chrome")]
-[Page("/bikes/touring")]
+[Route("/bikes/touring")]
 [Layout(Shop)]
 [Render(CSR)]
 [AllowAnonymous]
@@ -52,7 +52,7 @@ component TouringBikes() {
 }
 
 [Title("The archive — Rust & Chrome")]
-[Page("/archive")]
+[Route("/archive")]
 [Layout(Shop)]
 [Render(CSR)]
 [AllowAnonymous]
@@ -94,7 +94,7 @@ component Catalogue(string title, string lead, List<Product> bikes) {
 }
 
 [Title("A machine up close — Rust & Chrome")]
-[Page("/bike/{id}")]
+[Route("/bike/{id}")]
 [Layout(Shop)]
 [Render(CSR)]
 [AllowAnonymous]
@@ -103,8 +103,8 @@ component BikePage(Guid id) {
   live var bike = Product.Include(p => p.Variants).Include(p => p.Images).Include(p => p.Specs).SingleOrDefault(p => p.Id == id);
   live var bag = Bag.Include(b => b.Lines).SingleOrDefault(b => b.VisitId == visitId);
   live var inBag = bag != null && bike != null && bag.Lines.Any(l => bike.Variants.Any(v => v.Id == l.Variant.Id));
-  live var sold = bike != null && IsSold(bike.Variants);
-  live var reserved = bike != null && IsHeld(bike.Variants);
+  live var sold = bike != null && Sold(bike.Variants);
+  live var reserved = bike != null && OnHold(bike.Variants);
   // The one variant a machine has — picked here, from the rows already loaded, so the action hands it straight on.
   live var variant = bike == null ? null : bike.Variants.FirstOrDefault();
   live var more = Product.Include(p => p.Variants).Include(p => p.Images).Include(p => p.Specs)
@@ -112,7 +112,17 @@ component BikePage(Guid id) {
     .OrderBy(p => p.Rank).Take(3).ToList();
   string problem = "";
 
-  action Add() { problem = AddToBag(visitId, variant, 1); }
+  action Add() { problem = AddToBag(variant, 1); }
+
+  // What a search engine and a shared link read — computed on the server from this product (the kit's helpers).
+  head {
+    Title = bike == null ? "Not found" : ProductHeadTitle(bike, TheShop());
+    Description = bike == null ? null : ProductHeadDescription(bike);
+    Canonical = bike == null ? null : ProductUrl(bike);
+    Image = bike == null ? null : ProductHeadImage(bike);
+    NoIndex = bike == null || bike.Status != ProductStatus.Listed;
+    StructuredData = bike == null ? null : ProductStructuredData(bike);
+  }
 
   render {
     // Counts the look for the workshop's figures; renders nothing.
@@ -129,13 +139,13 @@ component BikePage(Guid id) {
         Section {
           Box(display: Display.Grid, cols: "repeat(auto-fit, minmax(340px, 1fr))", gap: 12, pt: 10, pb: 16, align: Align.Start) {
             Box(position: Position.Relative, bg: Colors.Surface, animation: RiseIn) {
-              Image(src: File.Url(Cover(bike.Images)), alt: $"{bike.Brand} {bike.Name}, {SpecOf(bike.Specs, "Year")}", w: "100%", aspectRatio: "4 / 5",
+              Image(src: File.Url(CoverPhoto(bike.Images)), alt: $"{bike.Brand} {bike.Name}, {Spec(bike.Specs, "Year")}", w: "100%", aspectRatio: "4 / 5",
                     objectFit: ObjectFit.Cover, filter: sold ? "grayscale(1) brightness(0.7)" : "saturate(0.9) contrast(1.05)");
               if (sold) { SoldTag("SOLD"); } else if (reserved) { SoldTag("RESERVED"); }
             }
             Stack(gap: 6, position: Position.Sticky, top: "120px") {
               Stack(gap: 2) {
-                Text($"{bike.Brand} · {bike.Category?.Name} · {SpecOf(bike.Specs, "Year")}", fontFamily: Font.Mono, fontSize: FontSize.Label,
+                Text($"{bike.Brand} · {bike.Category?.Name} · {Spec(bike.Specs, "Year")}", fontFamily: Font.Mono, fontSize: FontSize.Label,
                      color: Colors.TextMuted, letterSpacing: "0.04em");
                 Text(bike.Name, fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Black, lineHeight: "0.88",
                      textTransform: TextTransform.Uppercase);
@@ -198,7 +208,7 @@ component SpecLine(string label, string value) {
 }
 
 [Title("The workshop — Rust & Chrome")]
-[Page("/workshop")]
+[Route("/workshop")]
 [Layout(Shop)]
 [Render(CSR)]
 [AllowAnonymous]

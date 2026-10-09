@@ -4,7 +4,7 @@ using Osysharp.Shop;
 // three ways to ride them.
 
 [Title("Rust & Chrome — restored steel road bicycles")]
-[Page("/")]
+[Route("/")]
 [Layout(Shop)]
 [Render(CSR)]
 [AllowAnonymous]

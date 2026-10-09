@@ -1,0 +1,260 @@
+// THE WORKSPACE FRAME — the inbox's shell (Osysharp.Inbox's `InboxShell`, on the Switchboard floor) holding the desk's
+// panes: the views, queues and saved views with their live counts in the rail, the inbox's dense list, and the open
+// ticket(s) as tabs beside it.
+//
+// ⚑ THE LIST LIVES IN THE LAYOUT, THE TICKET IN THE PAGE. A layout outlives navigation, so the list keeps its view,
+//   its sort, its selection and its scroll while tickets open and close beside it; each ticket is its own route,
+//   retained (`Outlet(retain: 8)`), so a half-written reply on one ticket is still there after working three others.
+//
+// ⚑ THE RAIL, THE LIST AND THE PANES ARE THE INBOX'S. A view is a route word the kit knows ("mine", "unassigned",
+//   "at-risk", a queue "q-<id>", a saved view "v-<id>"); the desk adds who each ticket is for (a customer usually has
+//   no account, so the kit cannot name them), its own bulk change (a status), and the ⌘K menu.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Privacy;
+using Osysharp.Notifications;
+
+/// "/v/unassigned/t/1042" → "unassigned"; anything without a view → "mine".
+string ViewSlugIn(string path) {
+  if (!path.StartsWith("/v/")) { return "mine"; }
+  var rest = path.Substring(3);
+  return rest.Contains("/") ? rest.Substring(0, rest.IndexOf("/")) : rest;
+}
+
+/// "/v/mine/t/1042" → 1042; anything else → 0.
+int TicketInPath(string path) {
+  if (!path.Contains("/t/")) { return 0; }
+  var digits = path.Substring(path.IndexOf("/t/") + 3);
+  if (digits.Contains("/")) { digits = digits.Substring(0, digits.IndexOf("/")); }
+  if (digits.Length > 9) { return 0; }
+  if (int.TryParse(digits, out var number) && number > 0) { return number; }
+  return 0;
+}
+
+/// "/v/mine/p/<id>" → that privacy request's id, "/v/mine/h/<id>" → that hold review's; anything else → none.
+Guid RequestInPath(string path) {
+  var at = path.Contains("/p/") ? path.IndexOf("/p/") : path.Contains("/h/") ? path.IndexOf("/h/") : -1;
+  if (at < 0) { return Guid.Empty; }
+  var id = path.Substring(at + 3);
+  if (id.Contains("/")) { id = id.Substring(0, id.IndexOf("/")); }
+  if (Guid.TryParse(id, out var parsed)) { return parsed; }
+  return Guid.Empty;
+}
+
+/// Do `a` and `b` hold the same ids, in the same order?
+bool SameIds(List<Guid> a, List<Guid> b) {
+  if (a.Count != b.Count) { return false; }
+  for (var i = 0; i < a.Count; i++) { if (a[i] != b[i]) { return false; } }
+  return true;
+}
+
+/// A ticket's id and who it is for — what the list names a row by.
+class TicketFor { public Guid Id; public string Name = ""; }
+
+/// The desk's shell — the inbox's rail above the desk's own rows, the account menu, search and New ticket. The
+/// workspace and the settings area both stand in it, so the rail is the same wherever you are.
+[Composable]
+component DeskShell(AppChrome desk) {
+  render {
+    InboxShell(desk, prefix: "/v") {
+      Slot;
+      slot search { Slot("search"); }
+      slot actions { Slot("actions"); }
+    }
+  }
+}
+
+/// THE DESK'S SHELL FOR EVERY PAGE BUT THE INBOX — Osysharp.Ui's `WorkspaceShell`, designed once: a kit's working pages
+/// (the knowledge base) and the settings area stand in it, with the same rail, top bar and account menu as the inbox.
+component HarbourShell() : WorkspaceShell {
+  live var me = Session.CurrentUser;
+  live var myName = me == null ? "" : me.DisplayName;
+  action SignOut() { Session.SignOut(); }
+  action GoAccount() { Navigation.Go("/account"); }
+  action Appearance() { Theme.Toggle(); }
+  render {
+    DeskShell(new AppChrome {
+      Product = "Harbour Desk",
+      Tagline = "Support",
+      Mark = Icons.Inbox,
+      Home = "/v/mine",
+      Panes = true,
+      User = new ShellUser {
+        Name = myName, Secondary = RoleWord(IsAdmin, IsLead), Initials = Initials(myName), Presence = ShellPresence.Online,
+        Menu = [
+          new MenuAction { Label = "Your account", Icon = Icons.User, OnPress = GoAccount },
+          new MenuAction { Label = "Appearance", Icon = Icons.Eye, OnPress = Appearance },
+          new MenuAction { Label = "Sign out", Icon = Icons.Logout, OnPress = SignOut, Tone = Tone.Danger, Divided = true },
+        ],
+      },
+      Nav = [new NavItem { Kind = NavKind.Section, Label = "Desk", Children = Nav.Pages() }],
+    }) {
+      Slot;
+      slot actions {
+        LanguageChoice(compact: !Layout.AtLeast(Tablet));
+        // What needs me — a mention while you change a setting or write an article still reaches you.
+        NotificationBell();
+      }
+    }
+  }
+}
+
+[Layout]
+component DeskFrame() {
+  // ── where we are ──────────────────────────────────────────────────────────────────────────────────────────
+  live var path = Navigation.CurrentPath ?? "/";
+  live var open = TicketInPath(path);
+  live var view = ViewSlugIn(path);
+  live var here = "/v/" + view;
+  live var opened = Ticket.Where(t => t.Number == open).Select(t => t.Id).ToList();
+  live var openId = opened.Count > 0 ? opened[0] : RequestInPath(path);
+
+  // ── who ───────────────────────────────────────────────────────────────────────────────────────────────────
+  live var me = Session.CurrentUser;
+  live var myName = me == null ? "" : me.DisplayName;
+
+  // ── what the list adds to the inbox's ────────────────────────────────────────────────────────────────────
+  // Who each ticket is for (a customer is a party, not an account) — read for the rows the list SHOWS, which the list
+  // tells us (`Shown`), never for the whole desk: a desk of thousands reads a window's worth of names per open.
+  List<Guid> listed = [];
+  string listSearch = "";
+  // ⚠ Only a CHANGE is written: the list tells us on every change it sees, and writing an equal list again re-renders
+  //   this frame, which tells the list again — a loop that ran the browser out of memory.
+  action Shown(List<Guid> ids, string search) {
+    if (!SameIds(listed, ids)) { listed = ids; }
+    if (listSearch != search) { listSearch = search; }
+  }
+  live var who = Ticket.Where(t => listed.Contains(t.Id)).Select(t => new TicketFor { Id = t.Id, Name = t.Customer.DisplayName }).ToList();
+  live var whoFor = who.ToDictionary(w => w.Id, w => w.Name);
+  // …and the list's filter finds a ticket by who it is for: the tickets whose customer's name holds the search.
+  live var whoMatches = Ticket.Where(t => listSearch != "" && t.Customer.DisplayName.ToLower().Contains(listSearch))
+    .Take(200).Select(t => t.Id).ToList();
+  live var statuses = TicketStatus.Where(s => s.Active && s.Category != StatusCategory.New)
+    .OrderBy(s => s.Category).ThenBy(s => s.Position).ToList();
+  live var statusMenu = new BulkMenu { Label = "Status",
+    Choices = statuses.Select(s => new BulkChoice { Id = s.Id, Label = s.Name }).ToList() };
+  live var savedViews = InboxView.Where(v => v.Active).OrderBy(v => v.Position).ThenBy(v => v.Name).ToList();
+  // ⌘K's "go to a ticket": the newest a dozen still being worked.
+  live var recent = Ticket.Where(t => t.Category == StatusCategory.New || t.Category == StatusCategory.Open)
+    .OrderByDescending(t => t.Number).Take(12).Select(t => new TabTitle { Number = t.Number, Subject = t.Title }).ToList();
+  // A closed ticket has nothing left to take — the palette does not offer it.
+  live var openIsClosed = Ticket.Any(t => t.Number == open && t.Category == StatusCategory.Closed);
+
+  // ── who is responsible (Osysharp.Privacy) ─────────────────────────────────────────────────────────────────
+  // Every answer to a privacy request names the legal entity running the desk. Until an admin names it, the desk says
+  // so to the people who can — live, so it goes the moment it is saved.
+  live var controllerNamed = PrivacyController.Any(c => c.LegalName != "");
+  string controllerByTheApp = "";
+  on mount { controllerByTheApp = ControllerByTheApp(); }
+
+  // ── the command menu (⌘K) ────────────────────────────────────────────────────────────────────────────────
+  bool palette = false;
+  // What the last change made from here says — a bulk status ("12 set to Pending."), or a refusal ("Rahul took this
+  // just now."). Stays long enough to read, then goes.
+  string said = "";
+  Tone saidTone = Tone.Default;
+  action OpenPalette() { palette = true; }
+  action ClosePalette() { palette = false; }
+  action Go(string to) { palette = false; Navigation.Go(to); }
+  action TakeOpen() {
+    palette = false; said = "";
+    var t = Ticket.FirstOrDefault(x => x.Number == open);
+    if (t == null) { return; }
+    try { TakeWork(t, t.Assignee == null ? null : t.Assignee.Id); } catch (Exception ex) { said = ex.Message; saidTone = Tone.Warning; }
+  }
+  action StatusOpen(Guid statusId) {
+    palette = false; said = "";
+    var t = Ticket.FirstOrDefault(x => x.Number == open);
+    if (t == null) { return; }
+    try { SetStatus(t.Id, statusId); } catch (Exception ex) { said = ex.Message; saidTone = Tone.Warning; }
+  }
+  /// The list's own bulk menu: the picked tickets to one status.
+  action BulkStatus(Guid statusId, List<Guid> ids) {
+    said = "";
+    try { said = SetStatusOfMany(statusId, ids); saidTone = Tone.Default; }
+    catch (Exception ex) { said = ex.Message; saidTone = Tone.Warning; }
+  }
+  on every (TimeSpan.FromSeconds(8)) { said = ""; }
+  action SignOut() { Session.SignOut(); }
+  action NewTicket() { palette = false; Navigation.Go("/new"); }
+  action GoAccount() { Navigation.Go("/account"); }
+  action Appearance() { Theme.Toggle(); }
+  action GoTeam() { palette = false; Navigation.Go("/settings/people"); }
+  action GoSettings() { palette = false; Navigation.Go("/settings"); }
+  action GoController() { Navigation.Go("/settings/privacy/controller"); }
+
+  render {
+    DeskShell(new AppChrome {
+      Product = "Harbour Desk",
+      Tagline = "Support",
+      Mark = Icons.Inbox,
+      Home = "/v/mine",
+      Panes = true,
+      User = new ShellUser {
+        Name = myName, Secondary = RoleWord(IsAdmin, IsLead), Initials = Initials(myName), Presence = ShellPresence.Online,
+        Menu = [
+          new MenuAction { Label = "Your account", Icon = Icons.User, OnPress = GoAccount },
+          new MenuAction { Label = "Appearance", Icon = Icons.Eye, OnPress = Appearance },
+          new MenuAction { Label = "Sign out", Icon = Icons.Logout, OnPress = SignOut, Tone = Tone.Danger, Divided = true },
+        ],
+      },
+      Nav = [new NavItem { Kind = NavKind.Section, Label = "Desk", Children = Nav.Pages() }],
+    }) {
+      // On a phone the list and the ticket are one screen each — the route says which. The Outlet is always there
+      // (a layout must hold one, and a retained ticket keeps its draft); with nothing open it is the overview.
+      // A ticket opens by its number; anything else on the Inbox — a privacy request — by its id.
+      // …a legal hold's review (its reference says so) by its id, on its own page.
+      InboxPanes(view, r => r.Reference.StartsWith("#") ? here + "/t/" + r.Reference.Substring(1)
+                            : r.Reference == "Legal hold" ? here + "/h/" + r.Id : here + "/p/" + r.Id, openId,
+                 whoFor: id => whoFor.ContainsKey(id) ? whoFor[id] : "",
+                 more: statusMenu, onMore: BulkStatus, headerNamesView: true, onShown: Shown, whoMatches: whoMatches,
+                 pageOpen: !path.StartsWith("/v/"), pageWide: path.StartsWith("/reports")) {
+        OpenTabs(open, here);
+        Outlet(retain: 8);
+      }
+      slot search { ShellSearch("Search tickets, people or #number", onPress: OpenPalette, shortcut: KeyCommands); }
+      slot actions {
+        // What routing reads about me (available, busy, away and who covers) — beside my name on a wide screen. On a
+        // phone the bar is the page title's, and a lead sets it on Team.
+        if (Layout.AtLeast(Tablet)) { MyStatus(); }
+        // Words where there is room for them; on a phone, a warning sign that says the same to a screen reader.
+        if (ManagesPrivacy && !controllerNamed && controllerByTheApp == "") {
+          if (Layout.AtLeast(Laptop)) {
+            Button("Name who is responsible for customer data", onPress: GoController, size: Size.Sm, tone: Tone.Warning);
+          } else {
+            IconButton("Name who is responsible for customer data", GoController, tone: Tone.Warning) { Icon(Icons.Warning); }
+          }
+        }
+        LanguageChoice(compact: !Layout.AtLeast(Tablet));
+        // What needs me — offered to me, at risk, a colleague's mention, a customer writing again (notifications.osy).
+        NotificationBell();
+        IconButton("New ticket", NewTicket, shortcut: KeyNewTicket) { Icon(Icons.Plus); }
+      }
+    }
+    if (said != "") { Toast(said, tone: saidTone); }
+    if (palette) {
+      CommandMenu(
+        statuses.Where(st => open > 0 && st.Category != StatusCategory.Closed).Select(st => new Command { Label = "Set #" + open + " to " + st.Name, Group = "This ticket",
+                                                                 Icon = Icons.CheckCircle, OnPress = () => StatusOpen(st.Id) })
+        .Concat(recent.Select(r => new Command { Label = "#" + r.Number + "  " + r.Subject, Group = "Go to ticket",
+                                                 Icon = Icons.File, OnPress = () => Go(here + "/t/" + r.Number) }))
+        .Concat(BuiltInView.Members.Where(v => v != BuiltInView.Offered && v != BuiltInView.MyAccounts)
+          .Select(v => new Command { Label = v.Label, Group = "Views", Icon = Icons.Inbox, OnPress = () => Go("/v/" + SlugOf(v)) }))
+        .Concat(savedViews.Select(v => new Command { Label = v.Name, Group = "Views", Icon = Icons.Filter,
+                                                     OnPress = () => Go("/v/v-" + v.Id) }))
+        .Concat(new List<Command> { new Command { Label = "Take the open ticket", Group = "This ticket", Icon = Icons.User, OnPress = TakeOpen } }
+          .Where(c => open > 0 && !openIsClosed))
+        .Concat([
+          // Its key is DERIVED: the top bar's New ticket button runs this same action and binds `KeyNewTicket`.
+          new Command { Label = "New ticket", Group = "Desk", Icon = Icons.Plus, OnPress = NewTicket },
+          new Command { Label = "Search tickets, answers and articles…", Group = "Desk", Icon = Icons.Search, OnPress = () => Go("/search") },
+          new Command { Label = "People", Group = "Desk", Icon = Icons.Users, OnPress = GoTeam },
+          new Command { Label = "Settings", Group = "Desk", Icon = Icons.Gear, OnPress = GoSettings },
+        ])
+        .ToArray(), onDismiss: ClosePalette, placeholder: "Take a ticket, set a status, go to a view…");
+    }
+  }
+}

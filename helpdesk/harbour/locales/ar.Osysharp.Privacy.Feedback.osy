@@ -1,0 +1,23 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Privacy.Feedback, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Privacy.Feedback · FieldAnswerLines ──
+  /// FieldAnswerLines · text on the page
+  /// also in Osysharp.Privacy.Feedback.FeedbackPersonalData.Export
+  text "Not answered" => "لم تتم الإجابة";
+
+  // ── Osysharp.Privacy.Feedback · Osysharp.Privacy.Feedback.FeedbackPersonalData.Categories ──
+  /// Osysharp.Privacy.Feedback.FeedbackPersonalData.Categories · text on the page
+  text "Learning how well we served you, and putting right what did not go well" => "معرفة مدى جودة خدمتنا لك، وإصلاح ما لم يسر على ما يرام";
+  /// Osysharp.Privacy.Feedback.FeedbackPersonalData.Categories · text on the page
+  text "What you told us when we asked how it went" => "ما أخبرتنا به عندما سألناك عن تجربتك";
+
+  // ── Osysharp.Privacy.Feedback · Osysharp.Privacy.Feedback.FeedbackPersonalData.Export ──
+  /// Osysharp.Privacy.Feedback.FeedbackPersonalData.Export · text on the page
+  text "Bad" => "سيئ";
+  /// Osysharp.Privacy.Feedback.FeedbackPersonalData.Export · text on the page
+  text "Good" => "جيد";
+}

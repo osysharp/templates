@@ -1,0 +1,693 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.People, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.People · AccessTrail ──
+  /// AccessTrail · text on the page
+  /// placeholders: {value} = … (string), {whom} = whom (string)
+  /// shown through AccessEvent.What
+  text "Gave the integration “{value}” to {whom}" => "Gav integrationen ”{value}” till {whom}";
+  /// AccessTrail · text on the page
+  /// placeholders: {Describe} = Describe(…) (string), {whom} = whom (string)
+  /// shown through AccessEvent.What
+  text "{Describe}, owned by {whom}" => "{Describe}, ägs av {whom}";
+
+  // ── Osysharp.People · AccessTrailList ──
+  /// AccessTrailList · a control's name for screen readers
+  accessibleName "Access changes" => "Behörighetsändringar";
+  /// AccessTrailList · text on the page
+  /// shown through EmptyState.body
+  text "Every change to somebody's access is listed here, with who made it and why." => "Varje ändring av någons behörighet listas här, med vem som gjorde den och varför.";
+
+  // ── Osysharp.People · AddIntegration ──
+  /// AddIntegration · an error message
+  /// shown through ValidationException
+  error "Keep the name under 100 characters — it is what every record it makes is filed under." => "Håll namnet under 100 tecken — det är namnet allt den gör sparas under.";
+  /// AddIntegration · an error message
+  /// shown through ValidationException
+  error "Name the integration — what it is, as you will recognise it in the list: “Zapier”." => "Ge integrationen ett namn — vad den är, så som du känner igen den i listan: ”Zapier”.";
+
+  // ── Osysharp.People · Ago ──
+  /// Ago · text on the page
+  /// placeholders: {d} = d (int) — {d} is a count: give one text per plural form
+  /// shown through Ago()
+  text "{d} days ago" => { one: "för en dag sedan", other: "för {d} dagar sedan" };
+  /// Ago · text on the page
+  /// placeholders: {value} = … (int) — {value} is a count: give one text per plural form
+  /// shown through Ago()
+  text "{value} h ago" => { one: "för en timme sedan", other: "för {value} timmar sedan" };
+  /// Ago · text on the page
+  /// placeholders: {value} = … (int) — {value} is a count: give one text per plural form
+  /// shown through Ago()
+  text "{value} min ago" => { one: "för en minut sedan", other: "för {value} minuter sedan" };
+
+  // ── Osysharp.People · ApiKeyLines ──
+  /// ApiKeyLines · text on the page
+  /// placeholders: {NameOf} = NameOf(…) (string)
+  /// shown through ApiKeyLine.RevokedWords
+  text " by {NameOf}" => " av {NameOf}";
+  /// ApiKeyLines · text on the page
+  /// placeholders: {NameOf} = NameOf(…) (string), {k.IssuedAt} = k.IssuedAt (DateTime)
+  /// shown through ApiKeyLine.Issued
+  text "Issued by {NameOf} · {k.IssuedAt}" => "Utfärdad av {NameOf} · {k.IssuedAt}";
+  /// ApiKeyLines · text on the page
+  /// placeholders: {Ago} = Ago(…) (string)
+  /// shown through ApiKeyLine.LastUsed
+  text "Last used {Ago}" => "Senast använd {Ago}";
+  /// ApiKeyLines · text on the page
+  /// shown through ApiKeyLine.LastUsed
+  text "Never used" => "Aldrig använd";
+  /// ApiKeyLines · text on the page
+  /// placeholders: {k.RevokedAt} = k.RevokedAt (DateTime), {value} = … (string)
+  /// shown through ApiKeyLine.RevokedWords
+  text "Revoked {k.RevokedAt}{value}" => "Återkallad {k.RevokedAt}{value}";
+
+  // ── Osysharp.People · ApiKeyManager ──
+  /// ApiKeyManager · a control's name for screen readers
+  accessibleName "API key" => "API-nyckel";
+  /// ApiKeyManager · a control's name for screen readers
+  /// beside: "Add an integration"
+  accessibleName "Integrations" => "Integrationer";
+  /// ApiKeyManager · a control's name for screen readers
+  /// beside: "Issue a key"
+  accessibleName "Keys in use" => "Nycklar som används";
+  /// ApiKeyManager · a control's name for screen readers
+  accessibleName "Revoked keys" => "Återkallade nycklar";
+  /// ApiKeyManager · a control's name for screen readers
+  /// beside: "Name", "Cancel"
+  accessibleName "What it may do" => "Vad den får göra";
+  /// ApiKeyManager · a button's label · at most ~26 characters
+  /// shown through Button.label
+  button "Add an integration" => "Lägg till integration";
+  /// ApiKeyManager · a button's label · at most ~31 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Add it and issue a key" => "Lägg till och utfärda nyckel";
+  /// ApiKeyManager · a button's label · at most ~12 characters
+  /// shown through Button.label
+  button "Copied" => "Kopierad";
+  /// ApiKeyManager · a button's label · at most ~10 characters
+  /// shown through Button.label
+  button "Copy" => "Kopiera";
+  /// ApiKeyManager · a button's label · at most ~18 characters
+  /// shown through Button.announceAs
+  button "Copy the key" => "Kopiera nyckeln";
+  /// ApiKeyManager · a button's label · at most ~24 characters
+  /// shown through Button.label
+  button "Hide revoked keys" => "Dölj återkallade nycklar";
+  /// ApiKeyManager · a button's label · at most ~23 characters
+  /// shown through Button.label
+  /// also in WebhookSubscriptions
+  button "I have copied it" => "Jag har kopierat den";
+  /// ApiKeyManager · a button's label · at most ~17 characters
+  /// shown through Button.label
+  button "Issue a key" => "Skapa nyckel";
+  /// ApiKeyManager · a button's label · at most ~14 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Issue it" => "Skapa";
+  /// ApiKeyManager · a button's label · at most ~17 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Reassign it" => "Ge den ny ägare";
+  /// ApiKeyManager · a button's label · at most ~15 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Revoke it" => "Återkalla";
+  /// ApiKeyManager · a button's label · at most ~49 characters
+  /// placeholders: {revoked.Count} = revoked.Count
+  /// shown through Button.label
+  button "Show revoked keys ({revoked.Count})" => "Visa återkallade nycklar ({revoked.Count})";
+  /// ApiKeyManager · a button's label · at most ~19 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Switch it off" => "Stäng av den";
+  /// ApiKeyManager · a description
+  /// shown through SettingsPage.description
+  description "A key lets a program call this app's API — as an integration of its own, or as the person it was issued to — with exactly what its holder may do. It is shown once, when it is issued." => "En nyckel låter ett program anropa appens API — som en egen integration, eller som personen den utfärdades till — med exakt det dess innehavare får göra. Den visas en gång, när den utfärdas.";
+  /// ApiKeyManager · a description
+  /// shown through SettingsSection.description
+  /// beside: "Keys in use"
+  description "A program that works with the app under its own name — what it does is recorded as its own, never as a teammate's. It holds keys and a role, and can never sign in. Switch it off and every key it holds stops working." => "Ett program som arbetar med appen under eget namn — det den gör sparas som dess eget, aldrig som en kollegas. Det har nycklar och en roll och kan aldrig logga in. Stäng av det så slutar alla dess nycklar att fungera.";
+  /// ApiKeyManager · a description
+  /// shown through SettingsSection.description
+  /// beside: "Integrations"
+  description "Each acts as its holder and nobody else. Revoke one and the next request that presents it is refused; deactivating a person revokes theirs." => "Varje nyckel agerar som sin innehavare och ingen annan. Återkalla en så nekas nästa anrop som använder den. Inaktiveras en person återkallas personens nycklar.";
+  /// ApiKeyManager · a description
+  /// shown through SettingsSection.description
+  description "Kept so you can see what a key was for and who took it away." => "Sparas så att du ser vad en nyckel var till för och vem som återkallade den.";
+  /// ApiKeyManager · a hint under a field
+  /// shown through Field.hint
+  /// beside: "Cancel"
+  hint "How you will recognise it in the list." => "Så känner du igen den i listan.";
+  /// ApiKeyManager · a hint under a field
+  /// shown through Field.hint
+  /// beside: "New owner", "Cancel"
+  hint "Kept with the change in the access trail." => "Sparas med ändringen i åtkomstloggen.";
+  /// ApiKeyManager · a hint under a field
+  /// shown through Field.hint
+  /// beside: "What it may do", "Cancel"
+  hint "What it is — everything it does is recorded under this name." => "Vad den är — allt den gör sparas under det här namnet.";
+  /// ApiKeyManager · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Dropdown.label
+  label "For" => "För";
+  /// ApiKeyManager · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Dropdown.label
+  /// beside: "Why", "Cancel"
+  label "New owner" => "Ny ägare";
+  /// ApiKeyManager · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Field.label
+  /// beside: "New owner", "Cancel"
+  /// also in PrivacyRequestPane
+  /// also in RetentionEditor
+  label "Why" => "Varför";
+  /// ApiKeyManager · message
+  /// placeholders: {p.DisplayName} = p.DisplayName
+  /// shown through HolderName()
+  message "{p.DisplayName} (integration)" => "{p.DisplayName} (integration)";
+  /// ApiKeyManager · placeholder text inside an empty field · at most ~23 characters
+  /// shown through Dropdown.placeholder
+  placeholder "Choose a person…" => "Välj en person…";
+  /// ApiKeyManager · placeholder text inside an empty field · at most ~20 characters
+  /// shown through Field.placeholder
+  /// beside: "Cancel"
+  placeholder "Nightly export" => "Nattlig export";
+  /// ApiKeyManager · placeholder text inside an empty field · at most ~26 characters
+  /// shown through Field.placeholder
+  /// beside: "New owner", "Cancel"
+  placeholder "They left the team" => "De har lämnat teamet";
+  /// ApiKeyManager · placeholder text inside an empty field · at most ~12 characters
+  /// shown through Field.placeholder
+  /// beside: "What it may do", "Cancel"
+  placeholder "Zapier" => "Zapier";
+  /// ApiKeyManager · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Choose who answers for it from now on: who to ask what it does and whether it is still needed. Its keys and its role stay as they are, and the change is recorded." => "Välj vem som ansvarar för den från och med nu: den man frågar vad den gör och om den fortfarande behövs. Dess nycklar och roll förblir som de är, och ändringen sparas.";
+  /// ApiKeyManager · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Every key it holds is refused from its next request. What it already did stays recorded under its name." => "Alla nycklar den har nekas från nästa anrop. Det den redan har gjort finns kvar under dess namn.";
+  /// ApiKeyManager · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "It acts under its own name with the role you choose, and you answer for it. It gets its first key now." => "Den agerar under eget namn med den roll du väljer, och du ansvarar för den. Den får sin första nyckel nu.";
+  /// ApiKeyManager · a subtitle
+  /// placeholders: {revokingWhose} = revokingWhose
+  /// shown through Dialog.subtitle
+  subtitle "The key {revokingWhose}. A program that still uses it is refused from its next request. This cannot be undone — issue a new key instead." => "Nyckeln {revokingWhose}. Ett program som fortfarande använder den nekas från nästa anrop. Det går inte att ångra, skapa en ny nyckel i stället.";
+  /// ApiKeyManager · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "The program that holds it acts as this person — it can do exactly what they can, and nothing more." => "Programmet som har den agerar som den här personen. Det kan göra exakt det personen kan, och inget mer.";
+  /// ApiKeyManager · text on the page
+  /// shown through EmptyState.body
+  text "Add one for each program that calls the app — Zapier, a nightly export, a partner's system." => "Lägg till en för varje program som anropar appen — Zapier, en nattlig export, en partners system.";
+  /// ApiKeyManager · text on the page
+  /// shown through addProblem
+  text "Choose what it may do — the role it acts with." => "Välj vad den får göra — rollen den agerar med.";
+  /// ApiKeyManager · text on the page
+  /// shown through reassignProblem
+  text "Choose who answers for it from now on." => "Välj vem som ansvarar för den från och med nu.";
+  /// ApiKeyManager · text on the page
+  /// shown through problem
+  text "Choose who the key is for." => "Välj vem nyckeln är till.";
+  /// ApiKeyManager · text on the page
+  /// beside: "Copy the key", "I have copied it"
+  text "Copy it into the program now — it is not shown again. The program sends it in the X-API-Key header." => "Kopiera in den i programmet nu, den visas inte igen. Programmet skickar den i headern X-API-Key.";
+  /// ApiKeyManager · text on the page
+  /// shown through EmptyState.body
+  text "Issue one to let a program call this app's API as somebody on the team." => "Skapa en så kan ett program anropa appens API som någon i teamet.";
+  /// ApiKeyManager · text on the page
+  /// placeholders: {reassigningFrom} = reassigningFrom
+  /// beside: "New owner", "Why", "Cancel"
+  text "Owned by {reassigningFrom}" => "Ägs av {reassigningFrom}";
+  /// ApiKeyManager · text on the page
+  /// placeholders: {revokingWords} = revokingWords
+  /// shown through notice
+  text "Revoked {revokingWords} — a request that presents it is refused from now on." => "Återkallade {revokingWords}. Ett anrop som använder den nekas från och med nu.";
+  /// ApiKeyManager · text on the page
+  /// shown through Hint.text
+  text "There is nobody to issue a key to — every account on the people list is deactivated." => "Det finns ingen att ge en nyckel till: alla konton i personlistan är inaktiverade.";
+  /// ApiKeyManager · text on the page
+  text "What it may do" => "Vad den får göra";
+  /// ApiKeyManager · text on the page
+  /// placeholders: {line.Ending} = line.Ending, {line.Holder} = line.Holder
+  /// shown through revokingWhose
+  text "{line.Ending} of {line.Holder}" => "{line.Ending} för {line.Holder}";
+  /// ApiKeyManager · text on the page
+  /// placeholders: {reassigningName} = reassigningName, {HolderName} = HolderName(…)
+  /// shown through notice
+  text "{reassigningName} is now answered for by {HolderName}. Its keys go on working." => "{HolderName} ansvarar nu för {reassigningName}. Dess nycklar fortsätter att fungera.";
+  /// ApiKeyManager · text on the page
+  /// placeholders: {switchingOffName} = switchingOffName
+  /// shown through notice
+  text "{switchingOffName} is switched off — every key it held is refused from now on." => "{switchingOffName} är avstängd — alla nycklar den hade nekas från och med nu.";
+  /// ApiKeyManager · text on the page
+  /// placeholders: {line.Name} = line.Name, {line.Ending} = line.Ending, {line.Holder} = line.Holder
+  /// shown through revokingWords
+  text "“{line.Name}” {line.Ending} of {line.Holder}" => "”{line.Name}” {line.Ending} för {line.Holder}";
+  /// ApiKeyManager · a title
+  /// shown through SettingsPage.title
+  /// also in ApiKeysSettings /settings/api-keys
+  title "API keys" => "API-nycklar";
+  /// ApiKeyManager · a title
+  /// shown through Dialog.title
+  title "Add an integration" => "Lägg till integration";
+  /// ApiKeyManager · a title
+  /// shown through SettingsSection.title
+  /// beside: "Keys in use"
+  title "Integrations" => "Integrationer";
+  /// ApiKeyManager · a title
+  /// shown through Dialog.title
+  title "Issue an API key" => "Skapa en API-nyckel";
+  /// ApiKeyManager · a title
+  /// shown through SettingsSection.title
+  /// beside: "Integrations"
+  title "Keys in use" => "Nycklar som används";
+  /// ApiKeyManager · a title
+  /// shown through EmptyState.title
+  title "No integrations yet" => "Inga integrationer än";
+  /// ApiKeyManager · a title
+  /// shown through EmptyState.title
+  title "No keys in use" => "Inga nycklar används";
+  /// ApiKeyManager · a title
+  /// shown through EmptyState.title
+  title "No keys yet" => "Inga nycklar än";
+  /// ApiKeyManager · a title
+  /// placeholders: {reassigningName} = reassigningName
+  /// shown through Dialog.title
+  title "Reassign {reassigningName}" => "Ge {reassigningName} en ny ägare";
+  /// ApiKeyManager · a title
+  /// placeholders: {revokingName} = revokingName
+  /// shown through Dialog.title
+  title "Revoke {revokingName}?" => "Återkalla {revokingName}?";
+  /// ApiKeyManager · a title
+  /// shown through SettingsSection.title
+  title "Revoked" => "Återkallade";
+  /// ApiKeyManager · a title
+  /// placeholders: {switchingOffName} = switchingOffName
+  /// shown through Dialog.title
+  title "Switch off {switchingOffName}?" => "Stäng av {switchingOffName}?";
+  /// ApiKeyManager · a title
+  /// placeholders: {keyFor} = keyFor
+  /// shown through Card.title
+  title "The key for {keyFor}" => "Nyckeln för {keyFor}";
+
+  // ── Osysharp.People · ApiKeyRow ──
+  /// ApiKeyRow · text on the page
+  /// placeholders: {line.Holder} = line.Holder
+  text "Acts as {line.Holder}" => "Agerar som {line.Holder}";
+
+  // ── Osysharp.People · Describe ──
+  /// Describe · text on the page
+  /// placeholders: {value} = … (string), {role} = role (string)
+  /// shown through Describe()
+  text "Added the integration “{value}” as {role}" => "Lade till integrationen ”{value}” som {role}";
+  /// Describe · text on the page
+  /// placeholders: {org} = org (string)
+  /// shown through Describe()
+  text "Added to {org}" => "Tillagd i {org}";
+  /// Describe · text on the page
+  /// placeholders: {value} = … (string)
+  /// shown through Describe()
+  text "Became the owner of the integration “{value}”" => "Blev ägare till integrationen ”{value}”";
+  /// Describe · text on the page
+  /// placeholders: {role} = role (string)
+  /// shown through Describe()
+  text "Granted {role}" => "Fick rollen {role}";
+  /// Describe · text on the page
+  /// placeholders: {role} = role (string), {org} = org (string)
+  /// shown through Describe()
+  text "Granted {role} at {org}" => "Fick rollen {role} hos {org}";
+  /// Describe · text on the page
+  /// placeholders: {c.Key.Name} = c.Key.Name (string), {c.Key.Ending} = c.Key.Ending (string)
+  /// shown through Describe()
+  text "Issued the API key “{c.Key.Name}” {c.Key.Ending}" => "Utfärdade API-nyckeln ”{c.Key.Name}” {c.Key.Ending}";
+  /// Describe · text on the page
+  /// placeholders: {org} = org (string)
+  /// shown through Describe()
+  text "Removed from {org}" => "Borttagen från {org}";
+  /// Describe · text on the page
+  /// placeholders: {c.Key.Name} = c.Key.Name (string), {c.Key.Ending} = c.Key.Ending (string)
+  /// shown through Describe()
+  text "Revoked the API key “{c.Key.Name}” {c.Key.Ending}" => "Återkallade API-nyckeln ”{c.Key.Name}” {c.Key.Ending}";
+  /// Describe · text on the page
+  /// placeholders: {role} = role (string)
+  /// shown through Describe()
+  text "Revoked {role}" => "Rollen {role} återkallades";
+  /// Describe · text on the page
+  /// placeholders: {role} = role (string), {org} = org (string)
+  /// shown through Describe()
+  text "Revoked {role} at {org}" => "Rollen {role} hos {org} återkallades";
+
+  // ── Osysharp.People · IntegrationRow ──
+  /// IntegrationRow · a button's label · at most ~14 characters
+  /// shown through Button.label
+  /// beside: "Switch off"
+  button "Reassign" => "Ny ägare";
+  /// IntegrationRow · a button's label · at most ~16 characters
+  /// shown through Button.label
+  /// beside: "Reassign"
+  /// also in RuleRow
+  button "Switch off" => "Slå av";
+  /// IntegrationRow · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Badge.label
+  label "Owner deactivated" => "Ägaren inaktiverad";
+  /// IntegrationRow · text on the page
+  /// placeholders: {line.Keys} = line.Keys
+  text "Keys in use: {line.Keys}" => "Nycklar i bruk: {line.Keys}";
+  /// IntegrationRow · text on the page
+  /// placeholders: {line.Owner} = line.Owner
+  text "Owned by {line.Owner}" => "Ägs av {line.Owner}";
+
+  // ── Osysharp.People · IssueApiKey ──
+  /// IssueApiKey · an error message
+  /// shown through ValidationException
+  error "Say what the key is for — it is how you will recognise it in the list." => "Skriv vad nyckeln är till för, så känner du igen den i listan.";
+  /// IssueApiKey · an error message
+  /// shown through ValidationException
+  error "This account already holds two keys — revoke one before issuing another." => "Kontot har redan två nycklar. Återkalla en innan du skapar en ny.";
+  /// IssueApiKey · an error message
+  /// shown through ValidationException
+  error "This account is deactivated — reactivate it before issuing it a key." => "Kontot är inaktiverat. Aktivera det igen innan du ger det en nyckel.";
+
+  // ── Osysharp.People · Osysharp.People.AccessChangeKind ──
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.People.AccessChangeKind.ApiKeyIssued
+  /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
+  label "API key issued" => "API-nyckel utfärdad";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.People.AccessChangeKind.ApiKeyRevoked
+  /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
+  label "API key revoked" => "API-nyckel återkallad";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~34 characters
+  /// shown through Osysharp.People.AccessChangeKind.JoinedOrganization
+  /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
+  label "Added to an organisation" => "Tillagd i en organisation";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.People.AccessChangeKind.Deactivated
+  /// beside: "Role granted", "Role revoked", "Reactivated", "Two-step sign-in reset", "Signed out everywhere", "Added to an organisation"
+  /// also in PersonListRow
+  /// also in PersonPanel
+  label "Deactivated" => "Inaktiverad";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Osysharp.People.AccessChangeKind.IntegrationAdded
+  /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
+  label "Integration added" => "Integration tillagd";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~31 characters
+  /// shown through Osysharp.People.AccessChangeKind.IntegrationReassigned
+  /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
+  label "Integration reassigned" => "Integration omfördelad";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// shown through Osysharp.People.AccessChangeKind.OrganizationRoleGranted
+  /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
+  label "Organisation role granted" => "Organisationsroll tilldelad";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// shown through Osysharp.People.AccessChangeKind.OrganizationRoleRevoked
+  /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
+  label "Organisation role revoked" => "Organisationsroll återkallad";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.People.AccessChangeKind.Reactivated
+  /// beside: "Role granted", "Role revoked", "Deactivated", "Two-step sign-in reset", "Signed out everywhere", "Added to an organisation"
+  label "Reactivated" => "Återaktiverad";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~40 characters
+  /// shown through Osysharp.People.AccessChangeKind.LeftOrganization
+  /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
+  label "Removed from an organisation" => "Borttagen från en organisation";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.People.AccessChangeKind.RoleGranted
+  /// beside: "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere", "Added to an organisation"
+  label "Role granted" => "Roll tilldelad";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.People.AccessChangeKind.RoleRevoked
+  /// beside: "Role granted", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere", "Added to an organisation"
+  label "Role revoked" => "Roll återkallad";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~30 characters
+  /// shown through Osysharp.People.AccessChangeKind.SignedOutEverywhere
+  /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Added to an organisation"
+  label "Signed out everywhere" => "Utloggad överallt";
+  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~31 characters
+  /// shown through Osysharp.People.AccessChangeKind.SecondFactorReset
+  /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Signed out everywhere", "Added to an organisation"
+  label "Two-step sign-in reset" => "Tvåstegsinloggning återställd";
+
+  // ── Osysharp.People · Osysharp.People.PeopleSettingsSections.Sections ──
+  /// Osysharp.People.PeopleSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Every change to somebody's access, who made it and why." => "Varje ändring av någons behörighet, vem som gjorde den och varför.";
+  /// Osysharp.People.PeopleSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Keys that let a program call the app's API as somebody on the team." => "Nycklar som låter ett program anropa appens API som någon i teamet.";
+  /// Osysharp.People.PeopleSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Who is in the app, their roles, two-step sign-in, invitations." => "Vilka som finns i appen, deras roller, tvåstegsinloggning och inbjudningar.";
+  /// Osysharp.People.PeopleSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through SettingsLink.Label
+  label "API keys" => "API-nycklar";
+  /// Osysharp.People.PeopleSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through SettingsLink.Label
+  label "Access changes" => "Behörighetsändringar";
+
+  // ── Osysharp.People · PeopleManager ──
+  /// PeopleManager · a control's name for screen readers
+  /// beside: "Search people"
+  accessibleName "Everyone" => "Alla";
+  /// PeopleManager · a control's name for screen readers
+  /// beside: "10px"
+  accessibleName "Search people" => "Sök personer";
+  /// PeopleManager · a button's label · at most ~20 characters
+  /// shown through Button.label
+  button "Invite someone" => "Bjud in någon";
+  /// PeopleManager · a label (a field, a list item, a menu entry) · at most ~33 characters
+  /// shown through Checkbox.label
+  /// beside: "Search people"
+  label "Show deactivated people" => "Visa inaktiverade personer";
+  /// PeopleManager · placeholder text inside an empty field · at most ~33 characters
+  /// beside: "10px"
+  placeholder "Find by name or address" => "Sök på namn eller adress";
+  /// PeopleManager · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "They get a link by mail, and join with the role you choose." => "De får en länk via e-post och går med med den roll du väljer.";
+  /// PeopleManager · a subtitle
+  /// shown through PageHead.subtitle
+  /// beside: "Search people", "Waiting invitations"
+  subtitle "Who works here, what each may do, and who changed it." => "Vem som arbetar här, vad var och en får göra och vem som ändrade det.";
+  /// PeopleManager · text on the page
+  /// beside: "Search people", "Show deactivated people"
+  text "1 person" => "1 person";
+  /// PeopleManager · text on the page
+  /// beside: "Person", "Roles", "Two-step"
+  text "Last signed in" => "Senast inloggad";
+  /// PeopleManager · text on the page
+  /// placeholders: {search} = search
+  /// shown through EmptyState.body
+  text "Nobody's name or address contains “{search}”." => "Ingens namn eller adress innehåller ”{search}”.";
+  /// PeopleManager · text on the page
+  /// beside: "Roles", "Two-step", "Last signed in"
+  text "Person" => "Person";
+  /// PeopleManager · text on the page
+  /// beside: "Person", "Two-step", "Last signed in"
+  /// also in PersonPanel
+  text "Roles" => "Roller";
+  /// PeopleManager · text on the page
+  /// shown through EmptyState.body
+  text "There is nobody here yet — invite someone." => "Det finns ingen här än. Bjud in någon.";
+  /// PeopleManager · text on the page
+  /// beside: "Person", "Roles", "Last signed in"
+  text "Two-step" => "Tvåsteg";
+  /// PeopleManager · text on the page
+  text "Waiting invitations" => "Väntande inbjudningar";
+  /// PeopleManager · text on the page
+  /// placeholders: {people.Count} = people.Count
+  /// beside: "Search people", "Show deactivated people"
+  text "{people.Count} people" => "{people.Count} personer";
+  /// PeopleManager · a title
+  /// shown through Dialog.title
+  title "Invite someone" => "Bjud in någon";
+  /// PeopleManager · a title
+  /// shown through EmptyState.title
+  title "Nobody matches" => "Ingen matchar";
+
+  // ── Osysharp.People · PersonDetailOf ──
+  /// PersonDetailOf · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through HeldRole.Label
+  /// also in Osysharp.Conversations.Participant
+  /// also in Osysharp.Inbox.QueueMember
+  label "Member" => "Medlem";
+  /// PersonDetailOf · text on the page
+  /// placeholders: {RoleLabel} = RoleLabel(…) (string)
+  /// shown through AccessEvent.What
+  text " as {RoleLabel}" => " som {RoleLabel}";
+  /// PersonDetailOf · text on the page
+  /// placeholders: {InvitedInto} = InvitedInto(…) (string), {value} = … (string)
+  /// shown through AccessEvent.What
+  text "Joined by an invitation to {InvitedInto}{value}" => "Gick med via en inbjudan till {InvitedInto}{value}";
+
+  // ── Osysharp.People · PersonListRow ──
+  /// PersonListRow · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Badge.label
+  /// also in PersonPanel
+  label "Two-step on" => "Tvåsteg på";
+  /// PersonListRow · text on the page
+  text "No role" => "Ingen roll";
+  /// PersonListRow · text on the page
+  text "Off" => "Av";
+  /// PersonListRow · text on the page
+  text "On" => "På";
+
+  // ── Osysharp.People · PersonPanel ──
+  /// PersonPanel · a control's name for screen readers
+  accessibleName "Give a role" => "Ge en roll";
+  /// PersonPanel · a control's name for screen readers
+  /// beside: "-0.01em", "Roles", "Signing in"
+  accessibleName "History" => "Historik";
+  /// PersonPanel · a control's name for screen readers
+  /// beside: "-0.01em", "Signing in", "History"
+  accessibleName "Roles" => "Roller";
+  /// PersonPanel · a control's name for screen readers
+  /// beside: "-0.01em", "Roles", "History"
+  accessibleName "Signing in" => "Inloggning";
+  /// PersonPanel · a button's label · at most ~16 characters
+  /// shown through Button.label
+  button "Deactivate" => "Inaktivera";
+  /// PersonPanel · a button's label · at most ~16 characters
+  /// shown through Button.label
+  button "Reactivate" => "Återaktivera";
+  /// PersonPanel · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// also in PendingFiles
+  /// also in RoutingRuleSettings
+  /// also in SharedViewSettings
+  button "Remove" => "Ta bort";
+  /// PersonPanel · a button's label · at most ~11 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Reset" => "Återställ";
+  /// PersonPanel · a button's label · at most ~31 characters
+  /// shown through Button.label
+  button "Reset two-step sign-in" => "Återställ tvåstegsinloggning";
+  /// PersonPanel · a button's label · at most ~27 characters
+  /// shown through Button.label
+  button "Sign out everywhere" => "Logga ut överallt";
+  /// PersonPanel · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Badge.label
+  label "Address not proven" => "Adress inte bekräftad";
+  /// PersonPanel · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Badge.label
+  label "Address proven" => "Adress bekräftad";
+  /// PersonPanel · a label (a field, a list item, a menu entry) · at most ~41 characters
+  /// shown through Badge.label
+  label "Two-step required, not set up" => "Tvåsteg krävs, inte inställt";
+  /// PersonPanel · a label (a field, a list item, a menu entry) · at most ~42 characters
+  /// shown through Field.label
+  /// beside: "Cancel"
+  label "Why (recorded with the change)" => "Varför (sparas med ändringen)";
+  /// PersonPanel · a label (a field, a list item, a menu entry) · at most ~63 characters
+  /// shown through Field.label
+  /// beside: "Cancel"
+  label "Why — who asked, and how you knew it was them" => "Varför: vem som frågade, och hur du visste att det var de";
+  /// PersonPanel · placeholder text inside an empty field · at most ~73 characters
+  /// shown through Field.placeholder
+  /// beside: "Cancel"
+  placeholder "Lost phone; confirmed on a call from her desk number" => "Tappad telefon; bekräftat via samtal från hennes bordsnummer";
+  /// PersonPanel · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Every session they have ends, on every device. They can sign in again." => "Alla deras sessioner avslutas, på alla enheter. De kan logga in igen.";
+  /// PersonPanel · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Their authenticator app and recovery codes stop working; they set it up again at their next sign-in. Do this only when you are sure it is them asking." => "Deras autentiseringsapp och återställningskoder slutar fungera; de ställer in det igen vid nästa inloggning. Gör det bara när du är säker på att det är de som frågar.";
+  /// PersonPanel · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "They can sign in again with the password they had." => "De kan logga in igen med lösenordet de hade.";
+  /// PersonPanel · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "They cannot sign in, and every session they have ends. Their work stays theirs." => "De kan inte logga in, och alla deras sessioner avslutas. Deras arbete förblir deras.";
+  /// PersonPanel · text on the page
+  text "Give a role" => "Ge en roll";
+  /// PersonPanel · text on the page
+  /// beside: "Signing in"
+  text "Has never signed in." => "Har aldrig loggat in.";
+  /// PersonPanel · text on the page
+  text "History" => "Historik";
+  /// PersonPanel · text on the page
+  /// placeholders: {ToString} = d.LastSignIn.Value.ToString(…)
+  /// beside: "Signing in"
+  text "Last signed in {ToString}." => "Senast inloggad {ToString}.";
+  /// PersonPanel · text on the page
+  text "No changes to their access yet." => "Inga ändringar av deras behörighet än.";
+  /// PersonPanel · text on the page
+  text "No roles — they can sign in, and do nothing that needs one." => "Inga roller. De kan logga in men inte göra något som kräver en roll.";
+  /// PersonPanel · text on the page
+  /// beside: "Signing in"
+  text "Not signed in anywhere right now." => "Inte inloggad någonstans just nu.";
+  /// PersonPanel · text on the page
+  /// beside: "Signing in"
+  text "Signed in on 1 browser or device right now." => "Inloggad i 1 webbläsare eller enhet just nu.";
+  /// PersonPanel · text on the page
+  /// placeholders: {d.SignedIn} = d.SignedIn
+  /// beside: "Signing in"
+  text "Signed in on {d.SignedIn} browsers or devices right now." => "Inloggad i {d.SignedIn} webbläsare eller enheter just nu.";
+  /// PersonPanel · text on the page
+  text "Signing in" => "Inloggning";
+  /// PersonPanel · text on the page
+  /// placeholders: {d.Name} = d.Name
+  /// shown through done
+  text "Two-step sign-in was reset for {d.Name}; they set it up again when they next sign in." => "Tvåstegsinloggning har återställts för {d.Name}; hen ställer in den igen vid nästa inloggning.";
+  /// PersonPanel · text on the page
+  /// placeholders: {r.Organization} = r.Organization
+  text "at {r.Organization}" => "hos {r.Organization}";
+  /// PersonPanel · text on the page
+  /// placeholders: {e.By} = e.By, {value} = …
+  /// also in AccessTrailList
+  text "by {e.By}{value}" => "av {e.By}{value}";
+  /// PersonPanel · text on the page
+  /// placeholders: {d.Name} = d.Name
+  /// shown through done
+  text "{d.Name} can no longer sign in, and was signed out everywhere." => "{d.Name} kan inte längre logga in och har loggats ut överallt.";
+  /// PersonPanel · text on the page
+  /// placeholders: {d.Name} = d.Name
+  /// shown through done
+  text "{d.Name} can sign in again." => "{d.Name} kan logga in igen.";
+  /// PersonPanel · text on the page
+  /// placeholders: {d.Name} = d.Name, {giving.Label} = giving.Label
+  /// shown through done
+  text "{d.Name} is now {giving.Label}." => "{d.Name} är nu {giving.Label}.";
+  /// PersonPanel · text on the page
+  /// placeholders: {d.Name} = d.Name
+  /// shown through done
+  text "{d.Name} was signed out everywhere." => "{d.Name} har loggats ut överallt.";
+  /// PersonPanel · text on the page
+  /// placeholders: {r.Label} = r.Label, {d.Name} = d.Name
+  /// shown through done
+  text "{r.Label} was taken from {d.Name}." => "{r.Label} togs från {d.Name}.";
+  /// PersonPanel · a title
+  /// placeholders: {d.Name} = d.Name
+  /// shown through Dialog.title
+  title "Deactivate {d.Name}?" => "Inaktivera {d.Name}?";
+  /// PersonPanel · a title
+  /// placeholders: {d.Name} = d.Name
+  /// shown through Dialog.title
+  title "Reactivate {d.Name}?" => "Återaktivera {d.Name}?";
+  /// PersonPanel · a title
+  /// shown through Dialog.title
+  title "Reset two-step sign-in?" => "Återställa tvåstegsinloggning?";
+  /// PersonPanel · a title
+  /// placeholders: {d.Name} = d.Name
+  /// shown through Dialog.title
+  title "Sign {d.Name} out everywhere?" => "Logga ut {d.Name} överallt?";
+
+  // ── Osysharp.People · SignedInWhen ──
+  /// SignedInWhen · text on the page
+  /// shown through SignedInWhen()
+  text "Never" => "Aldrig";
+  /// SignedInWhen · text on the page
+  /// placeholders: {ToString} = at.Value.ToString(…) (DateTime)
+  /// shown through SignedInWhen()
+  text "Today, {ToString}" => "I dag, {ToString}";
+  /// SignedInWhen · text on the page
+  /// shown through SignedInWhen()
+  text "Yesterday" => "I går";
+  /// SignedInWhen · text on the page
+  /// placeholders: {ToInt} = Convert.ToInt(…) (int) — {ToInt} is a count: give one text per plural form
+  /// shown through SignedInWhen()
+  text "{ToInt} days ago" => { one: "för {ToInt} dag sedan", other: "för {ToInt} dagar sedan" };
+}

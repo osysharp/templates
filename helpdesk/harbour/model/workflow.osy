@@ -1,0 +1,233 @@
+// THE TICKET'S LIFECYCLE — one durable run per ticket, beside the inbox's own.
+//
+// ⚑ THE DESK OWNS THE STATES, THE INBOX OWNS THE TIME. This run moves a ticket through the desk's stages — New, Open,
+//   Answered, Pending, On hold, Solved, Closed — and keeps what is the desk's own: the status a team names inside each
+//   category, the root cause an incident needs before it is solved, the customer chased while we wait on them, the
+//   week of silence that solves it, the four days that close it. It keeps NO clock. As each fact happens it tells the
+//   inbox (Osysharp.Inbox) — we answered, they wrote, we are waiting on them or on somebody else, it is solved, it is
+//   closed — and the inbox's own run (`WorkHandling`) keeps the three promises (first reply, next reply, resolution) on
+//   the ticket's policy, in that policy's hours, paused while it waits on the customer.
+//
+// Each fact is told AT the instant the stage moved (`at: DurableClock.UtcNow`, the instant this body runs at), so a
+// ticket imported or seeded with its history replays it into the inbox as it happened.
+using Osysharp.Identity;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Automations;
+
+/// The ticket arrived in `stage` at `at`: its category follows, and its status becomes the category's default unless the
+/// team already chose one inside it. A new category starts the status's clock and is told to the automations.
+void Arrive(Ticket t, Stage stage, DateTime at) {
+  var category = CategoryOf(stage);
+  var moved = t.Category != category;
+  t.Category = category;
+  if (t.Status == null || t.Status.Category != category) { t.Status = DefaultStatus(category); }
+  if (moved) {
+    t.StatusSince = at;
+    Raise(new TicketStatusChanged { Ticket = t });
+  }
+}
+
+workflow SupportTicket {
+  Tracks    = Ticket.Stage;
+  Autostart = true;
+  Initial   = New;
+  // A ticket's run starts when it ARRIVED — now for a live ticket, a month ago for one imported or seeded with its
+  // history (`RaiseX(t, at: …)` raises that history's moves when they happened) — the same instant the inbox counts from.
+  StartedAt = this.Item.ArrivedAt;
+
+  /// The team answered the customer (a public reply).
+  [Authorize(u => IsAgent)] event Reply();
+  /// The customer wrote — on the portal, by mail, on the form.
+  event CustomerWrote();
+  /// Waiting on the customer.
+  [Authorize(u => IsAgent)] event Pend();
+  /// Waiting on somebody else.
+  [Authorize(u => IsAgent)] event Hold(string waitingOn);
+  /// Back to being worked, from Pending or On hold.
+  [Authorize(u => IsAgent)] event Resume();
+  [Authorize(u => IsAgent)] event Solve(string summary);
+  [Authorize(u => IsAgent)] event Close();
+  [Authorize(u => IsAgent)] event Reopen(string reason);
+  /// A duplicate, folded into another ticket: closed here.
+  [Authorize(u => IsAgent)] event Merge(int into);
+  /// Its conversation was erased, or kept out of use, at the customer's request (Osysharp.Privacy): there is nothing
+  /// left on it to answer, so it is closed and every promise still running on it ends — no clock breaches on a
+  /// conversation nobody may read. Raised by the desk's privacy rules (`HarbourPrivacy`), in the privacy run.
+  event PrivacyClose(PrivacyLine why);
+
+  on Merge(int into) {
+    TicketLine(this.Item, "helpdesk.merged", new TicketFacts { Number = into });
+    CancelWork(this.Item, $"Merged into #{into}.");
+    goto Closed;
+  }
+
+  on PrivacyClose(PrivacyLine why) {
+    this.Item.ClosedFor = why;
+    CancelWork(this.Item, PrivacyWords(why, null));
+    goto Closed;
+  }
+
+  // The customer wrote. Where it lands depends on where the ticket is — so it is answered once, here, from any stage.
+  // Whoever holds it and whoever follows it are told (notifications.osy).
+  on CustomerWrote {
+    when (this.Item.Stage == Stage.Answered || this.Item.Stage == Stage.Pending || this.Item.Stage == Stage.OnHold) {
+      RequesterWrote(this.Item, DurableClock.UtcNow);
+      Raise(new CustomerWroteAgain { Ticket = this.Item });
+      goto Open;
+    }
+    when (this.Item.Stage == Stage.Solved) {
+      this.Item.ReopenCount = this.Item.ReopenCount + 1;
+      TicketReopened(this.Item);
+      TicketLine(this.Item, "helpdesk.reopened", new TicketFacts());
+      RequesterWrote(this.Item, DurableClock.UtcNow);
+      Raise(new CustomerWroteAgain { Ticket = this.Item });
+      goto Open;
+    }
+    default {
+      RequesterWrote(this.Item, DurableClock.UtcNow);
+      Raise(new CustomerWroteAgain { Ticket = this.Item });
+    }
+  }
+
+  Start {
+    // The number is the reference people quote — "#1042" — and what the inbox's list shows beside the title.
+    this.Item.Reference = "#" + this.Item.Number;
+    this.Item.StatusSince = this.Item.ArrivedAt;
+    Arrive(this.Item, Stage.New, DurableClock.UtcNow);
+    Raise(new TicketArrived { Ticket = this.Item });
+  }
+
+  state New {
+    subscribe Reply() as FirstReply;
+    subscribe Pend() as NewPend;
+    subscribe Hold(string waitingOn) as NewHold;
+    subscribe Solve(string summary) as NewSolve {
+      Requires {
+        RootCause { Must    = this.Item.Form == null || !this.Item.Form.AsksRootCause || !Text.IsEmpty(this.Item.RootCause);
+                    Message = "Record the root cause before solving it — its type asks for one."; }
+      }
+    }
+    on FirstReply { goto Answered; }
+    on NewPend { goto Pending; }
+    on NewHold(string waitingOn) { this.Item.WaitingOn = waitingOn; goto OnHold; }
+    on NewSolve(string summary) { this.Item.Resolution = summary; goto Solved; }
+  }
+
+  /// Owes the customer a reply.
+  state Open {
+    enter { Arrive(this.Item, Stage.Open, DurableClock.UtcNow); }
+    subscribe Reply() as Answer;
+    subscribe Pend() as OpenPend;
+    subscribe Hold(string waitingOn) as OpenHold;
+    subscribe Solve(string summary) as Fix {
+      Requires {
+        RootCause { Must    = this.Item.Form == null || !this.Item.Form.AsksRootCause || !Text.IsEmpty(this.Item.RootCause);
+                    Message = "Record the root cause before solving it — its type asks for one."; }
+      }
+    }
+    on Answer { goto Answered; }
+    on OpenPend { goto Pending; }
+    on OpenHold(string waitingOn) { this.Item.WaitingOn = waitingOn; goto OnHold; }
+    on Fix(string summary) { this.Item.Resolution = summary; goto Solved; }
+  }
+
+  /// Open, and the customer has had their answer — nothing is owed until they write again.
+  state Answered {
+    // We answered: the first reply, or the one owed since they last wrote, is kept (the inbox knows which).
+    enter { Arrive(this.Item, Stage.Answered, DurableClock.UtcNow); Responded(this.Item, DurableClock.UtcNow); }
+    subscribe Reply() as Again;
+    subscribe Pend() as AnsweredPend;
+    subscribe Hold(string waitingOn) as AnsweredHold;
+    subscribe Solve(string summary) as AnsweredSolve {
+      Requires {
+        RootCause { Must    = this.Item.Form == null || !this.Item.Form.AsksRootCause || !Text.IsEmpty(this.Item.RootCause);
+                    Message = "Record the root cause before solving it — its type asks for one."; }
+      }
+    }
+    on Again { }
+    on AnsweredPend { goto Pending; }
+    on AnsweredHold(string waitingOn) { this.Item.WaitingOn = waitingOn; goto OnHold; }
+    on AnsweredSolve(string summary) { this.Item.Resolution = summary; goto Solved; }
+  }
+
+  /// Waiting on the customer. Every clock is paused (the inbox's); they are reminded, and a week of silence solves it.
+  state Pending {
+    enter { Arrive(this.Item, Stage.Pending, DurableClock.UtcNow); WaitOn(this.Item, WaitFor.Requester, DurableClock.UtcNow); }
+    subscribe Resume() as Unpend {
+      Finished {
+        Within  = TimeSpan.FromDays(7);
+        Accrues = false;
+        Remind Chase(After = TimeSpan.FromDays(2), ThenEvery = TimeSpan.FromDays(2), Accrues = false) {
+          this.Item.ChasesSent = this.Item.ChasesSent + 1;
+          TicketLine(this.Item, "helpdesk.chased", new TicketFacts());
+        }
+        Unfinished {
+          TicketLine(this.Item, "helpdesk.auto-solved", new TicketFacts { Number = 7 });
+          goto Solved;
+        }
+      }
+    }
+    subscribe Reply() as PendingReply;
+    subscribe Hold(string waitingOn) as PendingHold;
+    subscribe Solve(string summary) as PendingSolve;
+    on Unpend { ResumeWork(this.Item, DurableClock.UtcNow); goto Open; }
+    on PendingReply { }
+    on PendingHold(string waitingOn) { this.Item.WaitingOn = waitingOn; goto OnHold; }
+    on PendingSolve(string summary) { this.Item.Resolution = summary; goto Solved; }
+  }
+
+  /// Waiting on somebody else. The customer is still waiting on us, so resolution time runs; the third party is chased.
+  state OnHold {
+    enter { Arrive(this.Item, Stage.OnHold, DurableClock.UtcNow); WaitOn(this.Item, WaitFor.Others, DurableClock.UtcNow); }
+    exit  { this.Item.WaitingOn = null; }
+    subscribe Resume() as Unhold {
+      Finished {
+        Within  = TimeSpan.FromDays(30);
+        Accrues = false;
+        Remind ChaseHold(After = TimeSpan.FromDays(2), ThenEvery = TimeSpan.FromDays(2), Accrues = false) {
+          this.Item.HoldChasesSent = this.Item.HoldChasesSent + 1;
+        }
+      }
+    }
+    subscribe Reply() as HoldReply;
+    subscribe Pend() as HoldPend;
+    subscribe Solve(string summary) as HoldSolve {
+      Requires {
+        RootCause { Must    = this.Item.Form == null || !this.Item.Form.AsksRootCause || !Text.IsEmpty(this.Item.RootCause);
+                    Message = "Record the root cause before solving it — its type asks for one."; }
+      }
+    }
+    on Unhold { ResumeWork(this.Item, DurableClock.UtcNow); goto Open; }
+    on HoldReply { }
+    on HoldPend { goto Pending; }
+    on HoldSolve(string summary) { this.Item.Resolution = summary; goto Solved; }
+  }
+
+  /// Answered for good, as far as we know. Closes by itself after four days unless the customer writes back.
+  state Solved {
+    // Its customer is told it is solved, and asked how it went (feedback.osy).
+    enter { Arrive(this.Item, Stage.Solved, DurableClock.UtcNow); WorkDone(this.Item, DurableClock.UtcNow); TicketSolved(this.Item); }
+    subscribe Close() as Confirm {
+      Finished {
+        Within  = TimeSpan.FromDays(4);
+        Accrues = false;
+        Unfinished { goto Closed; }
+      }
+    }
+    subscribe Reopen(string reason) as Reopened;
+    on Confirm { goto Closed; }
+    on Reopened(string reason) {
+      this.Item.ReopenCount = this.Item.ReopenCount + 1;
+      TicketReopened(this.Item);
+      this.Item.Resolution  = null;
+      ReopenWork(this.Item, DurableClock.UtcNow);
+      goto Open;
+    }
+  }
+
+  terminal success Closed {
+    enter { Arrive(this.Item, Stage.Closed, DurableClock.UtcNow); CloseWork(this.Item, DurableClock.UtcNow); }
+  }
+}

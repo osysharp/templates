@@ -1,5 +1,5 @@
 // The workshop's desk, through its pages: signing in, seeing who ordered, calling a reservation off. What the desk's
-// buttons DO — cancel, mark paid, refund through Stripe — is the shop kit's, and proven in its own tests
+// buttons DO — cancel, mark paid, refund through the payment provider — is the shop kit's, and proven in its own tests
 // (the Osysharp.Shop package's own tests); this is Rust & Chrome's desk driving it.
 
 using Osysharp.Shop;
@@ -11,14 +11,123 @@ void the_workshop_signs_in_and_calls_a_reservation_off() {
   Ui.Visit("/staff/orders");            // signed out → sent to sign in, and back here afterwards
   Ui.Fill("Email", "erik@rustandchrome.test");
   Ui.Fill("Password", "workshop-pass-1");
-  Ui.Click("Sign in");
+  Ui.Click("Sign in", within: "Page");   // the header's account button reads "Sign in" too
   Assert.Visible(reference);
   Assert.Visible("Anna Lindqvist", within: reference);   // the workshop sees who ordered
+  Assert.Hidden("Cancel…");                               // "All" shows each order's Details only
+  Ui.Click("Waiting for payment");
   Ui.Click("Cancel…", within: reference);
   Ui.Fill("Reason", "Frame needs more work than listed");
   Ui.Click("Cancel order");
-  Assert.Visible("Cancelled", within: reference);
+  Assert.Visible("Cancelled", within: reference);         // it stays in view until another tab is chosen
+  Ui.Click("Closed");
   Assert.Visible("Randonneur", within: reference);                    // the order still says what it was for
   Assert.Visible("Frame needs more work than listed", within: reference);
   Assert.Hidden("Cancel…");
+}
+
+/// The front door: the workshop writes no sign-in page of its own — /staff is the shop kit's. Signed in there, the page
+/// lists the staff pages the workshop may open, and they open.
+[Test(Window)]
+void the_workshop_signs_in_at_the_shops_own_staff_page() {
+  Ui.Visit("/staff");
+  Assert.Visible("Sign in", within: "Staff sign-in");
+  Ui.Fill("Email", "erik@rustandchrome.test");
+  Ui.Fill("Password", "workshop-pass-1");
+  Ui.Click("Sign in", within: "Staff sign-in");
+  Assert.Visible("Signed in");
+  Ui.Click("Orders", within: "Staff pages");
+  Assert.OnPage("/staff/orders");
+  Assert.Visible("waiting for payment");
+}
+
+/// …and a wrong password is told so, and nobody is signed in.
+[Test(Window)]
+void the_shops_staff_page_refuses_a_wrong_password() {
+  Ui.Visit("/staff");
+  Ui.Fill("Email", "erik@rustandchrome.test");
+  Ui.Fill("Password", "not-the-password");
+  Ui.Click("Sign in", within: "Staff sign-in");
+  Assert.Visible("That email and password do not match a staff account.");
+  Assert.Hidden("Signed in");
+}
+
+[Test(Window)]
+void the_workshop_takes_a_transfer_and_hands_the_bike_over() {
+  var reference = Reserve("visit-handover", "Randonneur");
+
+  Ui.Visit("/staff/orders");
+  Ui.Fill("Email", "erik@rustandchrome.test");
+  Ui.Fill("Password", "workshop-pass-1");
+  Ui.Click("Sign in", within: "Page");
+  Ui.Click("Waiting for payment");
+  Ui.Click("Payment received", within: reference);
+  Assert.Visible("Paid", within: reference);
+  Ui.Click("To pick");
+  Assert.Visible("Collected", within: reference);   // collected from the workshop, so there is no parcel to send
+  Assert.Visible("Refund…", within: reference);
+  Ui.Click("Collected", within: reference);
+  Assert.Visible("Delivered", within: reference);   // collected is delivered
+  Ui.Click("Delivered ·");
+  Assert.Hidden("Collected");                         // handed over once
+  Assert.Visible("Refund…", within: reference);       // and still refundable, should it come back
+}
+
+[Test(Window)]
+void the_workshop_keeps_its_books() {
+  var reference = Reserve("visit-books", "Randonneur");
+  Ui.Visit("/staff/orders");
+  Ui.Fill("Email", "erik@rustandchrome.test");
+  Ui.Fill("Password", "workshop-pass-1");
+  Ui.Click("Sign in", within: "Page");
+  Ui.Click("Waiting for payment");
+  Ui.Click("Payment received", within: reference);
+  Ui.Visit("/staff/books");
+  Assert.Visible("SIE 4 for the accountant");
+  Assert.Visible("sold 1150.00 · credited 0.00");   // the paid bike, at 25 %
+  Assert.Visible("VAT 230.00");
+  Ui.Click("SIE 4 for the accountant");
+  Assert.Visible("Download the SIE file");
+}
+
+[Test(Window)]
+void the_workshop_desk_opens_on_its_orders() {
+  var reference = Reserve("visit-desk-home", "Randonneur");
+  Ui.Visit("/staff/desk");
+  Ui.Fill("Email", "erik@rustandchrome.test");
+  Ui.Fill("Password", "workshop-pass-1");
+  Ui.Click("Sign in", within: "Page");
+  Assert.Visible(reference);
+  Assert.Visible("Figures");
+  Assert.Hidden("Payment received");                  // "All" shows each order's Details only
+  Ui.Click("Waiting for payment");
+  Assert.Visible("Payment received", within: reference);
+}
+
+[Test(Window)]
+void the_workshop_makes_a_code_and_a_rider_uses_it_at_the_checkout() {
+  Ui.Visit("/staff/codes");
+  Ui.Fill("Email", "erik@rustandchrome.test");
+  Ui.Fill("Password", "workshop-pass-1");
+  Ui.Click("Sign in", within: "Page");
+  Ui.Fill("Code", "winter10");
+  Ui.Fill("What it says", "Winter tune-up");
+  Ui.Fill("Percent or amount", "10");
+  Ui.Click("Create the code");
+  Assert.Visible("10 % off", within: "WINTER10");
+
+  Ui.Visit("/");
+  Ui.Click("PX-10");
+  Ui.Click("Add to bag");
+  Ui.Visit("/checkout");
+  Ui.Fill("Name", "Anna Lindqvist");
+  Ui.Fill("Email", "anna@example.test");
+  Ui.Click("Bank transfer");
+  Ui.Fill("Discount code", "Winter10");
+  Ui.Click("Apply");
+  Assert.Visible("Winter tune-up", within: "Your order");                 // the line that comes off, in the summary
+  Ui.Click("Order and pay");
+  Assert.Visible("Reserved.");
+  Ui.Visit("/staff/codes");
+  Assert.Visible("used 1", within: "WINTER10");
 }

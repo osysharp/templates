@@ -1,0 +1,102 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Organizations.Accounts, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Organizations.Accounts · Osysharp.Organizations.Accounts.AccountSettingsSections.Sections ──
+  /// Osysharp.Organizations.Accounts.AccountSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  heading "Organizations" => "Organisationer";
+  /// Osysharp.Organizations.Accounts.AccountSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "The levels of service an organisation can be on, and what each includes." => "De servicenivåer en organisation kan ha, och vad varje nivå innehåller.";
+  /// Osysharp.Organizations.Accounts.AccountSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through SettingsLink.Label
+  label "Tiers" => "Nivåer";
+
+  // ── Osysharp.Organizations.Accounts · Osysharp.Organizations.Accounts.AccountTeamRole ──
+  /// Osysharp.Organizations.Accounts.AccountTeamRole · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Organizations.Accounts.AccountTeamRole.Backup
+  /// beside: "Owner", "Team"
+  label "Backup" => "Reserv";
+  /// Osysharp.Organizations.Accounts.AccountTeamRole · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Organizations.Accounts.AccountTeamRole.Owner
+  /// beside: "Team", "Backup"
+  label "Owner" => "Ägare";
+
+  // ── Osysharp.Organizations.Accounts · Osysharp.Organizations.Accounts.OrganizationTier ──
+  /// Osysharp.Organizations.Accounts.OrganizationTier · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Organizations.Accounts.OrganizationTier.Rank
+  /// beside: "Name", "Description", "Is default"
+  /// also in TierSection
+  label "Rank" => "Rang";
+  /// Osysharp.Organizations.Accounts.OrganizationTier · validation
+  /// shown through Osysharp.Organizations.Accounts.OrganizationTier.Name [Required]
+  validation "Name the tier." => "Namnge nivån.";
+  /// Osysharp.Organizations.Accounts.OrganizationTier · validation
+  /// shown through Osysharp.Organizations.Accounts.OrganizationTier.Name [Unique]
+  validation "There is already a tier of that name." => "Det finns redan en nivå med det namnet.";
+
+  // ── Osysharp.Organizations.Accounts · TierEditor ──
+  /// TierEditor · a button's label · at most ~16 characters
+  /// shown through Button.label
+  button "Add a tier" => "Lägg till nivå";
+  /// TierEditor · a description
+  /// shown through TierEditor.description
+  description "The levels of service an organisation can be on. An organisation's tier is what it is entitled to, and what a support or sales kit promises it by; its own contract can add more." => "De servicenivåer en organisation kan ha. En organisations nivå avgör vad den har rätt till och vad ett support- eller säljkit lovar den; dess eget avtal kan lägga till mer.";
+  /// TierEditor · text on the page
+  /// shown through EmptyState.body
+  text "Every organisation gets the same service until there are tiers to tell them apart." => "Alla organisationer får samma service tills det finns nivåer som skiljer dem åt.";
+  /// TierEditor · text on the page
+  /// shown through SaveBar.saved
+  /// beside: "Add a tier"
+  text "Tiers saved." => "Nivåerna är sparade.";
+  /// TierEditor · a title
+  /// shown through EmptyState.title
+  title "No tiers yet" => "Inga nivåer än";
+
+  // ── Osysharp.Organizations.Accounts · TierSection ──
+  /// TierSection · a button's label · at most ~9 characters
+  /// shown through Button.label
+  /// beside: "Phone support"
+  /// also in QueueSettings
+  /// also in KnowledgeCategoryCard
+  /// also in HavingLine
+  button "Add" => "Lägg till";
+  /// TierSection · a button's label · at most ~26 characters
+  /// placeholders: {t.Name} = t.Name
+  /// shown through Button.announceAs
+  /// beside: "Phone support"
+  button "Add it to {t.Name}" => "Lägg till i {t.Name}";
+  /// TierSection · a button's label · at most ~21 characters
+  /// placeholders: {e.Name} = e.Name
+  /// shown through IconButton.label
+  button "Remove {e.Name}" => "Ta bort {e.Name}";
+  /// TierSection · a description
+  /// shown through SettingsSection.description
+  description "Where an organisation without a tier is." => "Var en organisation utan nivå hamnar.";
+  /// TierSection · a hint under a field
+  /// shown through NumberField.hint
+  hint "Higher is more." => "Högre är mer.";
+  /// TierSection · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// placeholders: {t.Name} = t.Name
+  /// shown through Field.label
+  label "Add to {t.Name}" => "Lägg till i {t.Name}";
+  /// TierSection · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Field.label
+  /// beside: "180px", "Where an organisation without a tier is", "Includes", "Phone support"
+  label "What it is" => "Vad den är";
+  /// TierSection · a label (a field, a list item, a menu entry) · at most ~55 characters
+  /// shown through Switch.label
+  /// beside: "180px", "What it is", "Includes", "Phone support"
+  label "Where an organisation without a tier is" => "Var en organisation utan nivå hamnar";
+  /// TierSection · placeholder text inside an empty field · at most ~19 characters
+  /// shown through Field.placeholder
+  placeholder "Phone support" => "Telefonsupport";
+  /// TierSection · text on the page
+  /// beside: "180px", "What it is", "Where an organisation without a tier is", "Phone support"
+  text "Includes" => "Ingår";
+  /// TierSection · text on the page
+  text "Nothing beyond what every organisation gets." => "Inget utöver det varje organisation får.";
+}

@@ -1,0 +1,48 @@
+using Osysharp.Shop;
+using Osysharp.Shop.Looks;
+
+// Where Stripe sends the visitor back — `/paid/{link}/{session}` after paying, `/paid/{link}/cancelled` if they turned
+// back. `{link}` is the order's signed link (`OrderLink`), never its reference: a reference opens nothing, and a link
+// that was altered or has run out never reaches this page (the shop's `LinkGone` answers it). What the page says is
+// asked of STRIPE on the server; the order itself is moved on by Stripe's signed webhook (payments.osy), not by this page.
+
+[Title("Payment — Second Round")]
+[Route("/paid/{link}/{session}")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Paid(OrderLink link, string session) {
+  string reference = "";
+  PaymentOutcome outcome = null;
+  string problem = "";
+
+  on mount {
+    try { reference = ReceiptFor(link).Reference; outcome = CheckPayment(link, session); }
+    catch (Exception ex) { problem = "We could not reach Stripe to confirm the payment. Your order is still reserved — we will write once it is through."; }
+  }
+
+  render {
+    ShopSection {
+      Stack(gap: 6, py: 20, maxW: "760px", animation: RiseIn) {
+        Text($"Order {reference}", fontFamily: Font.Mono, fontSize: FontSize.Body, color: Colors.Primary);
+        if (problem != "") {
+          Text(problem, fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary);
+        } else if (outcome == null) {
+          Text("Checking with Stripe…", fontSize: FontSize.Lead, color: Colors.TextMuted);
+        } else if (outcome.Paid) {
+          Text("Paid.", fontFamily: Font.Display, fontSize: FontSize.Mega, fontWeight: FontWeight.Headline, lineHeight: "0.95");
+          Text("That is the whole flow, end to end — in Stripe's test mode, so no money moved and no receipt is sent. What you bought stays sold until someone restocks the shop.",
+               fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary);
+        } else {
+          Text("Not paid yet.", fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Headline, lineHeight: "1");
+          Text($"{outcome.Message} Your order stays reserved for two days, then goes back on sale. (A demo: nothing was charged.)",
+               fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary);
+        }
+        Row(gap: 6) {
+          Link(href: $"/order/{link}", label: "See your order") { Text("See your order →", color: Colors.Primary); }
+          Link(href: "/shop", label: "Back to the shop") { Text("Back to the shop →", color: Colors.Primary); }
+        }
+      }
+    }
+  }
+}

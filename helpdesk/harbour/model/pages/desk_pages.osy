@@ -1,0 +1,157 @@
+// THE DESK'S OTHER PAGES — opening a ticket for somebody, and the companies. (The team is the settings area's
+// People page — Osysharp.People.)
+using Osysharp.Identity;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Accounts;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Fields;
+
+/// A ticket opened by the team — a call taken down, a mail forwarded by hand.
+[Route("/new")]
+[Layout(DeskFrame)]
+[Authorize(IsAgent)]
+[Render(CSR)]
+[Title("New ticket")]
+component NewTicketPage() {
+  // The forms and their fields — the team fills whatever it already knows, nothing required.
+  live var forms = TicketForm.Where(f => f.Active).OrderByDescending(f => f.IsDefault).ThenBy(f => f.Position).ThenBy(f => f.Name).ToList();
+  live var asked = FormField.OrderBy(x => x.Position).ThenBy(x => x.Field.Position)
+    .Select(x => new FieldSpec { Id = x.Field.Id, Name = x.Field.Name, Kind = x.Field.Kind, Options = x.Field.Options,
+                                 Hint = x.Field.Hint, Public = x.Field.Public, Required = x.Field.Required,
+                                 Active = x.Field.Active, Form = x.Form.Id, Position = x.Position,
+                                 ShowWhen = x.ShowWhen.Id, ShowValue = x.ShowValue }).ToList();
+  skeleton { Stack(gap: 4, p: 6) { Skeleton(shape: SkeletonShape.HalfLine); Skeleton(shape: SkeletonShape.Block); } }
+  render {
+    Stack(gap: 4, p: 6, maxW: "640px", w: "100%", overflowY: Overflow.Auto) {
+      PageHead("New ticket", subtitle: "For a request that reached you some other way: a call, a chat, a mail forwarded by hand.");
+      NewTicketForm(forms, asked);
+    }
+  }
+}
+
+/// The new ticket itself — made once the forms are read, so it holds one answer per field any form asks (`SlotsOf`).
+[Composable]
+component NewTicketForm(List<TicketForm> forms, List<FieldSpec> asked) {
+  live var slots = SlotsOf(asked);
+  live var defaultId = forms.Select(f => f.Id).FirstOrDefault();
+  string email = "";
+  string name = "";
+  string subject = "";
+  string text = "";
+  WorkPriority priority = WorkPriority.Normal;
+  TicketForm? form = null;
+  List<string> values = Padded(new List<string>(), SlotsOf(asked).Count);
+  bool tried = false;
+  string problem = "";
+  live var formId = form != null ? form.Id : defaultId;
+  live var onForm = asked.Where(x => x.Form == formId).ToList();
+  live var answers = AnswersBySlot(onForm, slots, values);
+  live var shown = ShownFields(onForm, answers, false);
+
+  action Create() {
+    problem = "";
+    tried = true;
+    if (onForm.Any(x => shown.Contains(x.Id) && SlotProblem(x, slots, values, false) != "")) {
+      problem = "Some answers need another look — each says what, above.";
+      return;
+    }
+    try {
+      var id = OpenTicket(email, name, subject, text, priority, formId: formId == Guid.Empty ? null : formId,
+                          answers: answers.Where(a => shown.Contains(a.Field)).ToList());
+      var number = Ticket.Single(t => t.Id == id).Number;
+      Navigation.Go("/v/open/t/" + number);
+    } catch (Exception ex) { problem = ex.Message; }
+  }
+
+  render {
+    Stack(gap: 4, label: "New ticket") {
+      Row(gap: 3, wrap: Wrapping.Wrap) {
+        Box(grow: 1, minW: "220px") { Field("Customer's address", value: email, type: "email", placeholder: "name@company.com"); }
+        Box(grow: 1, minW: "220px") { Field("Their name", value: name, placeholder: "Optional"); }
+      }
+      Field("Subject", value: subject, placeholder: "One line saying what is wrong");
+      TextAreaField("What they said", value: text, rows: 5);
+      Row(gap: 3, wrap: Wrapping.Wrap) {
+        Box(minW: "180px") { Dropdown("Priority", value: priority); }
+        if (forms.Count > 1) {
+          Box(minW: "180px") { Dropdown("Type", value: form, options: forms.ToArray(), placeholder: forms[0].Name) { f => Text(f.Name); } }
+        }
+      }
+      // What the team already knows — every field of the form, the team's own too; nothing here is required.
+      foreach (var x in onForm) {
+        if (shown.Contains(x.Id) && slots.IndexOf(x.Id) < values.Count) {
+          Question(x, value: values[slots.IndexOf(x.Id)], optional: true, error: tried ? SlotProblem(x, slots, values, false) : "");
+        }
+      }
+      if (problem != "") { Alert(problem, tone: Tone.Danger); }
+      Row(gap: 2) { Button("Open the ticket", onPress: Create, tone: Tone.Primary, shortcut: KeySend); }
+    }
+  }
+}
+
+[Route("/companies")]
+[Nav("Companies", Icon = Icons.Building, Order = 20)]
+[Layout(DeskFrame)]
+[Authorize(IsAgent)]
+[Render(CSR)]
+[Title("Companies")]
+component CompaniesPage() {
+  live var companies = Company.Include(c => c.Tier).OrderBy(c => c.Name).ToList();
+  live var domains = OrganizationDomain.Select(d => new CompanyDomain { CompanyId = d.Organization.Id, Domain = d.Domain }).ToList();
+  live var owners = AccountTeamMember.Where(m => m.Role == AccountTeamRole.Owner)
+    .Select(m => new CompanyDomain { CompanyId = m.Organization.Id, Domain = m.Member.DisplayName }).ToList();
+  // How many people and open tickets each company has — COUNTED by the database, one row per company, never a row per
+  // customer or per ticket (a desk holds thousands of both).
+  live var people = Customer.Where(x => x.Company != null).GroupBy(x => x.Company.Id)
+    .Select(g => new CompanyCount { CompanyId = g.Key, N = g.Count() }).ToList();
+  live var open = Ticket.Where(t => t.Category != StatusCategory.Solved && t.Category != StatusCategory.Closed && t.Customer.Company != null)
+    .GroupBy(t => t.Customer.Company.Id).Select(g => new CompanyCount { CompanyId = g.Key, N = g.Count() }).ToList();
+
+  render {
+    Stack(gap: 5, p: 6, w: "100%", maxW: "960px", overflowY: Overflow.Auto) {
+      PageHead("Companies", subtitle: "Every customer company, its plan, and what it has open.");
+      DataGrid(label: "Companies", rows: companies, columns: [
+        new GridColumn<Company> { Name = "Name", Label = "Company", Value = c => c.Name, Title = true, Fill = true, Width = 220 },
+        new GridColumn<Company> { Name = "Tier", Label = "Tier", Value = c => c.Tier == null ? "" : c.Tier.Name, Width = 120 },
+        new GridColumn<Company> { Name = "Domain", Label = "Mail domain", Value = c => string.Join(", ", domains.Where(d => d.CompanyId == c.Id).Select(d => d.Domain).ToList()), Width = 180 },
+        new GridColumn<Company> { Name = "Owner", Label = "Account owner", Value = c => string.Join(", ", owners.Where(d => d.CompanyId == c.Id).Select(d => d.Domain).ToList()), Width = 160 },
+        new GridColumn<Company> { Name = "People", Label = "People", Kind = GridColumnKind.Number,
+                                  Value = c => CountFor(people, c.Id).ToString(),
+                                  Number = c => CountFor(people, c.Id), Align = "right", Width = 90 },
+        new GridColumn<Company> { Name = "Open", Label = "Open tickets", Kind = GridColumnKind.Number,
+                                  Value = c => CountFor(open, c.Id).ToString(),
+                                  Number = c => CountFor(open, c.Id), Align = "right", Width = 110 },
+      ]);
+    }
+  }
+}
+
+/// One company's count of something — its people, its open tickets.
+class CompanyCount { public Guid CompanyId; public int N; }
+
+/// `id`'s count in `counts`; 0 when it has none.
+int CountFor(List<CompanyCount> counts, Guid id) {
+  foreach (var c in counts) { if (c.CompanyId == id) { return c.N; } }
+  return 0;
+}
+
+/// A company's id beside one string about it — a mail domain, an owner's name.
+class CompanyDomain { public Guid CompanyId; public string Domain = ""; }
+
+/// What customers said when their tickets were solved — for the team.
+[Route("/feedback")]
+[Nav("Feedback", Icon = Icons.Star, Order = 30)]
+[Layout(DeskFrame)]
+[Authorize(IsAgent)]
+[Render(CSR)]
+[Title("Feedback")]
+component DeskFeedbackPage() {
+  render {
+    Stack(gap: 5, w: "100%", maxW: "960px", mx: "auto", p: 5) {
+      PageHead("Feedback", subtitle: "What customers said when their tickets were solved — the last twelve weeks.");
+      Osysharp.Feedback.FeedbackResults();
+    }
+  }
+}

@@ -1,0 +1,567 @@
+{
+  "platform": {
+    "version": "0.9.0"
+  },
+  "entries": [
+    {
+      "name": "Osysharp.Accounts",
+      "kind": "package",
+      "version": "0.12.0",
+      "hash": "sha256:f498d5a5d2d71eebdb25b47f463f6fb7816568aa79c8140ae80dce57b08ce533",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/accounts@v0.12.0",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Identity",
+      "kind": "package",
+      "version": "0.8.0",
+      "hash": "sha256:7fadb5f2628cfd6895c44d2e88725b39055ea36c3a8276b3b345c72a931f4358",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/identity@v0.8.0",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Mail",
+      "kind": "package",
+      "version": "0.10.0",
+      "hash": "sha256:8f40fb4add0b7682298672fd1405173722ac1b587c6739933c5ee92736c01cd9",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/mail@v0.10.0",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Workflow",
+      "kind": "package",
+      "version": "1.0.1",
+      "hash": "sha256:9f7ccf1f6dbf22b62e551b015333d41c46431491acd812fb626762531e2a97f8",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "prewarmed:osysharp/workflow"
+    },
+    {
+      "name": "Osysharp.Sms",
+      "kind": "package",
+      "version": "0.4.0",
+      "hash": "sha256:7c20bbc6cd397f03cbb1840c886d2ba85d64c1ef4a7c2d550c4ab605a3aa6808",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/sms@v0.4.0",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.EmailTemplates",
+      "kind": "package",
+      "version": "0.1.2",
+      "hash": "sha256:4254f7963a7b43790e4291dc1ccb28c7f24d3f9d52517ea4eb7d5aa99fa4056a",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/emailtemplates@v0.1.2",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Ui",
+      "kind": "package",
+      "version": "2.18.1",
+      "hash": "sha256:5dae9b4103cc649967664228cc945c2d8b5bd9ff8d45e62bf9b67d9db079545e",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "prewarmed:osysharp/ui"
+    },
+    {
+      "name": "Osysharp.Oauth",
+      "kind": "package",
+      "version": "1.0.1",
+      "hash": "sha256:d98224c50ba53098b1df5c853625d4497a785499c40304f481182b31745e0366",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "prewarmed:osysharp/oauth"
+    },
+    {
+      "name": "Osysharp.Automations",
+      "kind": "package",
+      "version": "0.6.1",
+      "hash": "sha256:e51780b517284d58d41bd1807cb12e762d9f42c601c8107ade282f2db3d5047f",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/automations@v0.6.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Charts",
+      "kind": "package",
+      "version": "1.1.0",
+      "hash": "sha256:8532df9b8e3979e257295ab51d486b99eac08079ae1a771288e7902a07536653",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/charts@v1.1.0",
+      "constraint": "1"
+    },
+    {
+      "name": "Osysharp.Clock",
+      "kind": "package",
+      "version": "0.1.2",
+      "hash": "sha256:6c2bc35ceaf4d88ce5dc110c445e2140e04d996ec93ecd31c66a3a37dd0131fb",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/clock@v0.1.2",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Collaboration",
+      "kind": "package",
+      "version": "0.1.1",
+      "hash": "sha256:f51e3ea987b977c943ae226435085f4be8d9601eb4daac409d4c636a41cef55b",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/collaboration@v0.1.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Observability",
+      "kind": "package",
+      "version": "1.0.1",
+      "hash": "sha256:240f2b9d4a764186a4511669df519ad88399cc771ed87a643089a65ec25778f3",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "prewarmed:osysharp/observability"
+    },
+    {
+      "name": "Osysharp.Composer",
+      "kind": "package",
+      "version": "0.6.2",
+      "hash": "sha256:3c1e060674a190782f83273e3955087fbdd8d9b0fd96fb0d04cb069123ead326",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/composer@v0.6.2",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Storage",
+      "kind": "package",
+      "version": "1.2.1",
+      "hash": "sha256:a344786f4417d7005fb72cb752389bc62ae3e8623fb2cce4b3982fc9b3c7699d",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "prewarmed:osysharp/storage"
+    },
+    {
+      "name": "Osysharp.Conversations",
+      "kind": "package",
+      "version": "0.25.0",
+      "hash": "sha256:68561167491179c3f426264ab1a8139ee418cb7c6ffa5a3fe26904eae61e5dde",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/conversations@v0.25.0",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Memory",
+      "kind": "package",
+      "version": "1.0.1",
+      "hash": "sha256:90fbdb0f04af2cb4b9893812d4f2d188f5fdc4ef9aa690e0514c2a141ee05618",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "prewarmed:osysharp/memory"
+    },
+    {
+      "name": "Osysharp.Csv",
+      "kind": "package",
+      "version": "0.1.0",
+      "hash": "sha256:1e9cdc7953a3c0b5e0380e844d3cc25c5b65f7145985e499054d7c852c472af5",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/csv@v0.1.0",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Explore",
+      "kind": "package",
+      "version": "1.2.1",
+      "hash": "sha256:81c980b4b48ddf969f5505763fad3a95ba15526b92a0b322dcfe095042c3f208",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "prewarmed:osysharp/explore"
+    },
+    {
+      "name": "Osysharp.Feedback",
+      "kind": "package",
+      "version": "0.5.1",
+      "hash": "sha256:e3e6f28b31ce7afbc136dc19f407bea9d600c9094400b9727859e54bd43297c1",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/feedback@v0.5.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Fields",
+      "kind": "package",
+      "version": "0.3.1",
+      "hash": "sha256:876e99b24d26cb010a72aaa9b6eef1d8e7b44bc80f90944b7425d82ac6e66c25",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/fields@v0.3.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Http",
+      "kind": "package",
+      "version": "1.0.0",
+      "hash": "sha256:4c24068aeea5ef1a155459d4cc332c85d7ee3d96049f2404e54ac860d94beb0f",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "prewarmed:osysharp/http"
+    },
+    {
+      "name": "Osysharp.Inbox",
+      "kind": "package",
+      "version": "0.21.0",
+      "hash": "sha256:4acb0999096d3fa1792fbd9a9e705de3d2924c362d6fcd9edbf7c50870932249",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/inbox@v0.21.0",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Organizations",
+      "kind": "package",
+      "version": "0.4.1",
+      "hash": "sha256:bf13e6d48846dc47ef642c97b62128ca6f87a1e513972b932c64cd6634c950e1",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/organizations@v0.4.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Organizations.Accounts",
+      "kind": "package",
+      "version": "0.2.1",
+      "hash": "sha256:bef43902c0d941af28f542fd395f5872f6902dd27a3b149259b15454b3308279",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/organizations/accounts@accounts/v0.2.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.ServiceHours",
+      "kind": "package",
+      "version": "1.0.1",
+      "hash": "sha256:90a832068871ca1916ed1ac09ba15187e49610ec6101e5acf1b383915fa5c4f5",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "prewarmed:osysharp/servicehours"
+    },
+    {
+      "name": "Osysharp.Invitations",
+      "kind": "package",
+      "version": "0.3.0",
+      "hash": "sha256:bcab0f99f8c817d08211c3636bf4e3ad0737c34dddd07103fba683837c7f01cd",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/invitations@v0.3.0",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Knowledge",
+      "kind": "package",
+      "version": "0.9.0",
+      "hash": "sha256:f2ae5c864da9a509fc9a462cdd6e65955e61a3c5eee7d2a43c0ebbf8f7d412ee",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/knowledge@v0.9.0",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Markdown",
+      "kind": "package",
+      "version": "1.0.0",
+      "hash": "sha256:1d3c26de068b57c2124ae395a3c5891cb99cc75f6304028539ccaf458080d225",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "prewarmed:osysharp/markdown",
+      "constraint": "1"
+    },
+    {
+      "name": "Osysharp.MarkdownEditor",
+      "kind": "package",
+      "version": "1.0.2",
+      "hash": "sha256:c831a0f188e6fb940361f94eff8bfb45850969c79304392a73d3d68b5b843a52",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/markdowneditor@v1.0.2",
+      "constraint": "1",
+      "contractVersion": "1.1"
+    },
+    {
+      "name": "Osysharp.Stemming",
+      "kind": "package",
+      "version": "0.1.0",
+      "hash": "sha256:6d211af8b61b1ee729100f10df8baf329e8f9c6c7316ade49120e12ff688afc0",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/stemming@v0.1.0",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Seo",
+      "kind": "package",
+      "version": "0.2.1",
+      "hash": "sha256:3af8b4759cdb6f1f8fdcca3b15602514f156311705bacdf84f499ae1b19d0dd1",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/seo@v0.2.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.MachineTranslation",
+      "kind": "package",
+      "version": "0.2.1",
+      "hash": "sha256:f390f31397c0f9488849f866523cdc37c53c4c4fd4a1127fb999bf9a9473997d",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/machinetranslation@v0.2.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Mail.Gmail",
+      "kind": "package",
+      "version": "0.2.1",
+      "hash": "sha256:b04c2b995c96b1f29e283732d442ea114e2bc5a092e56cd568ad713820e9256b",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/mail/gmail@gmail/v0.2.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Mail.Receiving",
+      "kind": "package",
+      "version": "0.5.0",
+      "hash": "sha256:f11d354bf19cedfab0aec6ca5b1c3b9b2c310297eec9319df55cbfc5f963b6dd",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/mail/receiving@receiving/v0.5.0",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Memory.Testing",
+      "kind": "package",
+      "version": "0.1.1",
+      "hash": "sha256:b4d519eb3b35fd446626f12e5b5856a97da2e528ab63ade524232317be273bbb",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/memory/testing@testing/v0.1.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Models.Anthropic",
+      "kind": "package",
+      "version": "0.1.0",
+      "hash": "sha256:7927367b53b72ede4fc5f5233e31189c94946de94dcae90b5a13fb7c7e0a585f",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/models/anthropic@anthropic/v0.1.0",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Llm",
+      "kind": "package",
+      "version": "1.0.0",
+      "hash": "sha256:b5fd349cbd9900411d5161c4a900ed175eb8b604077403a6dbb20a3e924bcb99",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "prewarmed:osysharp/llm"
+    },
+    {
+      "name": "Osysharp.Notifications",
+      "kind": "package",
+      "version": "1.1.1",
+      "hash": "sha256:82edd46ed4326285140deebe27e4db6c2ab226b5320c99d065173ec506e43146",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/notifications@v1.1.1",
+      "constraint": "1"
+    },
+    {
+      "name": "Osysharp.Orbs",
+      "kind": "package",
+      "version": "0.1.1",
+      "hash": "sha256:c56e378d9016583f459060bbf312e40860aa5df88710fdd2bf34fcdaae93e54b",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/orbs@v0.1.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.People",
+      "kind": "package",
+      "version": "0.5.1",
+      "hash": "sha256:254c0a54d9305b70819e128b720045ec1286c14cb94cf644073d34769b7a975a",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/people@v0.5.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Privacy",
+      "kind": "package",
+      "version": "0.8.3",
+      "hash": "sha256:af1dc2a952716af756026d537831b32f08c4f02bb5df76a260973eb34fa8b5c5",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/privacy@v0.8.3",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Reports",
+      "kind": "package",
+      "version": "0.4.1",
+      "hash": "sha256:76af7b5ebaf0a01e089bd0ca8f80e1318446d4e5e9e4fa6c6493c3c058bcda2b",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/reports@v0.4.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Webhooks",
+      "kind": "package",
+      "version": "0.4.1",
+      "hash": "sha256:b2a3edd2de834a4e9a6451113ab504284abbfde424b7bc5f67243a0bc79a4424",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/webhooks@v0.4.1",
+      "constraint": "0"
+    },
+    {
+      "name": "Osysharp.Conversations.MachineTranslation",
+      "kind": "package",
+      "version": "0.2.1",
+      "hash": "sha256:f21577a5ce70a7e4142722e0d36edcc46b9e4b9d47b5780ee22b0f62745cbccc",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/conversations/machinetranslation@machinetranslation/v0.2.1",
+      "constraint": "0.2.1",
+      "included": "completes Osysharp.Conversations \u002B Osysharp.MachineTranslation"
+    },
+    {
+      "name": "Osysharp.Conversations.Mail",
+      "kind": "package",
+      "version": "0.4.1",
+      "hash": "sha256:b30c0116877b22f3e2d80aad279280ffffe71cb12150e40c5f99a7320c632608",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/conversations/mail@mail/v0.4.1",
+      "constraint": "0.4.1",
+      "included": "completes Osysharp.Conversations \u002B Osysharp.Mail.Receiving"
+    },
+    {
+      "name": "Osysharp.Inbox.Notifications",
+      "kind": "package",
+      "version": "0.3.1",
+      "hash": "sha256:7a87a7e3344926c6c3be996195dfccd6880d614a35d193bc4700d936a76fc6e9",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/inbox/notifications@notifications/v0.3.1",
+      "constraint": "0.3.1",
+      "included": "completes Osysharp.Inbox \u002B Osysharp.Notifications"
+    },
+    {
+      "name": "Osysharp.Inbox.Reports",
+      "kind": "package",
+      "version": "0.2.1",
+      "hash": "sha256:ad46a8dc87a9d54086f0b4d18a70d39ea72fdb71387bc58d47baf93a23029042",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/inbox/reports@reports/v0.2.1",
+      "constraint": "0.2.1",
+      "included": "completes Osysharp.Inbox \u002B Osysharp.Reports"
+    },
+    {
+      "name": "Osysharp.Privacy.Accounts",
+      "kind": "package",
+      "version": "0.2.1",
+      "hash": "sha256:3cb11186e59db686f754b51e68e7be92d3c2455fa8c09197eb4a867ed3a0e60f",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/privacy/accounts@accounts/v0.2.1",
+      "constraint": "0.2.1",
+      "included": "completes Osysharp.Privacy \u002B Osysharp.Accounts"
+    },
+    {
+      "name": "Osysharp.Privacy.Conversations",
+      "kind": "package",
+      "version": "0.6.2",
+      "hash": "sha256:d860f499f63a9e440a2644dfe3278cd5102ebdaea65264cbb0d4e7e4b54ecd63",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/privacy/conversations@conversations/v0.6.2",
+      "constraint": "0.6.2",
+      "included": "completes Osysharp.Privacy \u002B Osysharp.Conversations"
+    },
+    {
+      "name": "Osysharp.Privacy.Feedback",
+      "kind": "package",
+      "version": "0.2.1",
+      "hash": "sha256:940c14b47bbd28fcfdbe895e836b75a26bbed2a371cf12e41efe0b655e1ab163",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/privacy/feedback@feedback/v0.2.1",
+      "constraint": "0.2.1",
+      "included": "completes Osysharp.Privacy \u002B Osysharp.Feedback"
+    },
+    {
+      "name": "Osysharp.Privacy.Knowledge",
+      "kind": "package",
+      "version": "0.1.1",
+      "hash": "sha256:b1f5a35e1520c1515242b0836aa0baa69b0fab7a0c8ba7e333bddb63e6a30d5b",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/privacy/knowledge@knowledge/v0.1.1",
+      "constraint": "0.1.1",
+      "included": "completes Osysharp.Privacy \u002B Osysharp.Knowledge"
+    },
+    {
+      "name": "Osysharp.Privacy.MailReceiving",
+      "kind": "package",
+      "version": "0.2.1",
+      "hash": "sha256:61e818ea6bb40d12e79181aeb280726bc683460730a0b71d8464a311b39afa1e",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/privacy/mailreceiving@mailreceiving/v0.2.1",
+      "constraint": "0.2.1",
+      "included": "completes Osysharp.Privacy \u002B Osysharp.Mail.Receiving"
+    },
+    {
+      "name": "Osysharp.Privacy.Notifications",
+      "kind": "package",
+      "version": "0.2.1",
+      "hash": "sha256:073f47b46e8f4f83fb61edf041c2d3064212af23a04b67052aa8724d14a347c5",
+      "minPlatform": "0.9.0",
+      "shadow": "app-forkable",
+      "source": "github:osysharp/privacy/notifications@notifications/v0.2.1",
+      "constraint": "0.2.1",
+      "included": "completes Osysharp.Privacy \u002B Osysharp.Notifications"
+    }
+  ],
+  "controls": [],
+  "fonts": [],
+  "bridges": {
+    "searched": [
+      "workspace",
+      "platform",
+      "github"
+    ],
+    "notIncluded": [
+      {
+        "name": "Osysharp.Conversations.Sms",
+        "reason": "completes Osysharp.Conversations \u002B Osysharp.Sms, and this app does not use \u0060Osysharp.Sms\u0060."
+      },
+      {
+        "name": "Osysharp.Privacy.Sms",
+        "reason": "completes Osysharp.Privacy \u002B Osysharp.Sms, and this app does not use \u0060Osysharp.Sms\u0060."
+      }
+    ]
+  }
+}

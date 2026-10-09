@@ -1,0 +1,77 @@
+using Osysharp.Shop;
+using Osysharp.Workflow;
+
+// DEMO MODE — this shop is a showcase of Osy#, publicly reachable, running on Stripe's TEST mode. Everything that makes
+// it a demo rather than a shop lives in this file — the test-card hint at checkout and the public "Restock the window"
+// button — and in the announcement strip's default words (model/shell.osy, which staff can change at the desk). Delete
+// this file (and the places the compiler then names) to make it real.
+
+/// The test card, as checkout shows it.
+string TestCardHint() {
+  return "test card 4242 4242 4242 4242, any future date, any CVC. Nothing is charged.";
+}
+
+/// Puts everything back on sale — anybody may press it, because a public demo that sells out after five
+/// visitors is a broken demo. The press is a `ShopRestock` row, answered by its workflow AS THE SHOP: a visitor may not
+/// read other people's orders (an order is read through its link, D-ORDERLINK1), and the shop may. It goes THROUGH
+/// each order's workflow (`Void`), so every order ends as "Voided" and the desk still tells the whole story; the pieces
+/// go back exactly as a lapse puts them back. Answers how many orders it ended.
+[AllowAnonymous]
+int RestockWindow() {
+  var press = new ShopRestock();
+  UnitOfWork.Commit();
+  return ShopRestock.Single(r => r.Id == press.Id).Ended;
+}
+
+// ⚠ Appended, never inserted: an enum is stored by position.
+enum RestockStatus { Asked, Done }
+
+/// One press of "Restock the shop", and how many orders it ended — written by its workflow, as the shop.
+entity ShopRestock {
+  int Ended = 0;
+  RestockStatus Status;                              // no default — ShopRestocking owns it
+  security { allow create, read when IsAnonymous || IsAuthenticated; }
+}
+
+workflow ShopRestocking {
+  Tracks    = ShopRestock.Status;
+  Autostart = true;
+  Initial   = Asked;
+
+  state Asked {
+    enter {
+      var holding = Order
+        .Where(o => o.Status == OrderStatus.Reserved || o.Status == OrderStatus.Paid || o.Status == OrderStatus.Picking || o.Status == OrderStatus.Packed
+                 || o.Status == OrderStatus.Fulfilled || o.Status == OrderStatus.Delivered
+                 || o.Status == OrderStatus.RefundRequested || o.Status == OrderStatus.RefundProcessing)
+        .ToList();
+      foreach (var order in holding) { OrderLifecycle.RaiseVoid(order, "Restocked for the demo"); }
+      this.Item.Ended = holding.Count;
+      goto Done;
+    }
+  }
+  terminal success Done { }
+}
+
+/// The button, with how many pieces are reserved and would go back. Hidden when none is. (Counted on the pieces, not
+/// the orders — a visitor reads no orders but their own. A piece already paid for goes back with the same press.)
+[Composable]
+[AllowAnonymous]
+component RestockButton() {
+  live var held = Variant.Where(v => v.Reserved > 0).Count();
+  string done = "";
+
+  action Restock() {
+    var ended = RestockWindow();
+    done = ended == 1 ? "1 order restocked." : $"{ended} orders restocked.";
+  }
+
+  render {
+    Row(gap: 3, align: Align.Center) {
+      if (held > 0) {
+        Button($"Restock the shop ({held} {(held == 1 ? "piece" : "pieces")} out)", onPress: Restock);
+      }
+      if (done != "") { Text(done, fontSize: FontSize.Label, color: Colors.TextMuted); }
+    }
+  }
+}

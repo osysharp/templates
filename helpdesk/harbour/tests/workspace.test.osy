@@ -1,0 +1,350 @@
+// THE AGENT WORKSPACE, DRIVEN AS AN AGENT DRIVES IT — the views and their counts, the dense list, the keyboard, the
+// ticket with its timeline and composer, two people on one ticket, and many tickets at once. `osy test --pixels`
+// photographs each (`Ui.Shot`) — Docs/OsySharp/design/helpdesk/app/ keeps the ones worth keeping.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Mail.Receiving;
+using Osysharp.Inbox;
+using Osysharp.Fields;
+
+/// Ines runs the desk (an admin, an agent); the seed adds the rest of the team and the customers.
+[TestFixture]
+void Floor() {
+  var ines = new Agent { Email = "ines@helpdesk.test", DisplayName = "Ines Moreau" };
+  new RoleGrant { Member = ines, Role = AppRole.Agent };
+  new RoleGrant { Member = ines, Role = AppRole.Admin };
+  foreach (var n in ["Rahul Kapoor", "Elin Larsen", "Tomas Aguirre", "Mei Chen", "Kwame Mensah", "Sofia Rossi", "Lena Fischer"]) {
+    var a = new Agent { Email = n.ToLower().Replace(" ", ".") + "@helpdesk.test", DisplayName = n };
+    new RoleGrant { Member = a, Role = n == "Lena Fischer" ? AppRole.Lead : AppRole.Agent };
+    // Mei is off for the week — the inbox reads it (`Availability`), and routes nothing to her.
+    if (n == "Mei Chen") { new Availability { Person = a, Status = Presence.Away }; }
+  }
+}
+
+
+Ticket Numbered(int n) => Ticket.Single(t => t.Number == n);
+
+/// Let the inbox catch up with a seeded month, as a live platform's timers do within seconds of the seed: every offer
+/// already past its time falls through, and every promise already missed is recorded as missed — so the rail, the
+/// overview and the list agree on what is late before the screens are photographed.
+void CatchUp() {
+  // An offer that falls through makes the next one (the backup, then the pod) — at the time it fell through, so that
+  // one may be past its time too: round until no offer is.
+  for (var round = 0; round < 4; round++) {
+    var lapsed = RoutingOffer.Where(o => o.State == OfferState.Offered && o.EndsAt != null && o.EndsAt < DateTime.UtcNow).ToList();
+    if (lapsed.Count == 0) { break; }
+    foreach (var o in lapsed) { Workflow.Settle(o); }
+  }
+  foreach (var t in Ticket.Where(t => t.Category == StatusCategory.New || t.Category == StatusCategory.Open
+                                      || t.Category == StatusCategory.OnHold).ToList()) { Workflow.Settle(t); }
+}
+
+// ── the desk at real volume — built ONCE per run, and every test below gets its own copy of it ─────────────────────
+// Seeding 500 tickets through the desk's own model is ~145k statements and minutes of work; it used to happen in the
+// body of each of the three tests that wanted it. A fixture is built once and cloned for every test that names it, and
+// a fixture may build on another (`[TestFixture(FilledDesk)]`) — so the desk is seeded once and caught up once.
+
+/// A month of a support team's work — 500 tickets, seeded as Ines — on a working Tuesday morning, pinned: the seed
+/// writes its clocks relative to "now", so an unpinned desk measured how long seeding took and what hour the suite
+/// reached it (9 late at 17:35 on a busy box, not 2–8). Every test of it reads 10:00 that Tuesday.
+[TestFixture(Floor)]
+void FilledDesk() {
+  TestClock.Set(new DateTime(2030, 3, 5, 10, 0, 0));
+  FillTheDesk(500);
+}
+
+/// …and the same desk once the inbox has caught up with it, as a live platform's timers do within seconds of the seed.
+[TestFixture(FilledDesk)]
+void CaughtUpDesk() {
+  CatchUpAsInes();
+}
+
+/// Fill the desk as the person who runs it — the seed goes through the desk's own functions, and their own policies.
+void FillTheDesk(int tickets) {
+  runas (Ines) { SeedDemoDesk(tickets); }
+}
+
+void CatchUpAsInes() {
+  runas (Ines) { CatchUp(); }
+}
+
+[Test(CaughtUpDesk)]
+void the_desk_at_real_volume_shows_its_views_with_live_counts_and_a_dense_list() {
+  runas (Ines) { Assert.Equal(500, Ticket.Count()); }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open");
+  Assert.Visible("All open", within: "Work");
+  Assert.Visible("Unassigned", within: "Main navigation");
+  // Nothing open: the pane beside the list says what the view holds and how to work it — never a blank pane.
+  Assert.Visible("late", within: "What All open holds");
+  Assert.Hidden("every promise on time");                // the seeded month has missed a few, and the overview says so
+  Assert.Visible("set a status, go to a ticket", within: "No ticket selected");
+  Ui.Shot("workspace-wide-light");
+  // A ticket beside a couple of hundred rows: the panes scroll on their own (AppChrome.Panes), so the composer is ON the
+  // screen rather than below a page as long as the list.
+  Ui.Press("J");
+  Ui.Press("Enter");
+  Assert.Clickable("Send");
+  Ui.Shot("workspace-wide-ticket-light");
+  Ui.Click("Ines Moreau", within: "Page header");
+  Ui.Click("Appearance");
+  Ui.Shot("workspace-wide-ticket-dark");
+  Ui.Visit("/v/open");
+  Ui.Shot("workspace-wide-dark");
+}
+
+/// ⭐ A SEEDED DESK READS LIKE A MONTH OF WORK (the polish slice, 2026-10-01): no subject twice, and the open
+/// tickets' SLA clocks spread out, because each run started when its conversation did and each move was raised when
+/// it happened. Before, 500 runs started together and the queue read 0:59, 0:59, 3:59, 3:59…
+[Test(Floor)]
+void a_seeded_desk_reads_like_real_work() {
+  runas (Ines) {
+    SeedDemoDesk(120);
+    // A filled desk is a LIVE desk: it reads support@ from the start (polish slice 2 — it did not).
+    Assert.True(MailboxWatch.Any(w => w.Address == "support@helpdesk.test"));
+    var subjects = Ticket.Select(t => t.Title).ToList();
+    Assert.Equal(subjects.Count, subjects.Distinct().Count());
+    var due = Workflow.WorkByItem<Ticket>().Where(r => r.BreachesAt != null).ToList();
+    Assert.True(due.Count >= 10);
+    // Minutes to breach, as the list shows them: a desk whose clocks all started together has a handful of distinct
+    // values; one with real history has nearly as many as it has clocks.
+    var minutes = due.Select(r => Convert.ToInt((r.BreachesAt!.Value - DateTime.UtcNow).TotalMinutes)).Distinct().Count();
+    Assert.True(minutes * 2 > due.Count);
+  }
+}
+
+/// A lamp's look, as one comparable word.
+string LampKey(LampLook l) => l.Tone.ToString() + (l.Lit ? "-lit" : "-ring") + (l.Waiting ? "-waiting" : "") + (l.Live ? "-live" : "");
+
+/// "All open, due first" as the list draws it: the inbox's own rows for the view, in the list's own order.
+List<WorkRow> AllOpenDueFirst() { return Ordered(Rows(BuiltInView.Open), WorkSort.Due); }
+
+/// The tone a row's countdown is drawn in — the list's own rule.
+Tone ToneOf(WorkRow r, DateTime now) => DueTone(r.Handling, r.Sla, r.DueAt ?? r.BreachedAt, r.Budget, now);
+
+/// ⭐ THE SEEDED DESK'S FIRST SCREEN READS LIKE A DESK THAT IS COPING (polish slice 2), on the desk the screenshots
+/// use (500 tickets). Two things, measured on "All open, due first" as the list draws it:
+///   • TIME — most of what the team owes has plenty left, a few clocks are in their last quarter, and only a handful
+///     are past; by the same `DueTone` the list colours its rows with. Before, the first screen was red top to bottom
+///     (−4d … −23h) and 55 tickets were "at risk".
+///   • VARIETY — no two of any fifteen rows in a row were written from the same request template. Before, one screen
+///     held "Refund for order … shows twice" three times.
+[Test(FilledDesk)]
+void the_default_view_is_mostly_on_time_and_never_repeats_a_request_near_itself() {
+  // The desk as seeded, before anything catches up — on FilledDesk's pinned Tuesday morning.
+  Assert.Equal(new DateTime(2030, 3, 5, 10, 0, 0), DateTime.UtcNow);
+  runas (Ines) {
+    Assert.Equal(500, Ticket.Count());
+    var now = DateTime.UtcNow;
+    var rows = AllOpenDueFirst();
+    Assert.True(rows.Count >= 80);
+    var owed = rows.Where(r => r.DueAt != null || r.BreachedAt != null).ToList();
+    // Late = a promise broken: recorded (the row's red lamp — its countdown may still be a resolution with time left) or
+    // a clock already past that nothing has settled yet (red).
+    var late = owed.Count(r => r.Sla == SlaState.Breached || ToneOf(r, now) == Tone.Danger);
+    var risk = owed.Count(r => r.Sla != SlaState.Breached && ToneOf(r, now) == Tone.Warning);
+    var fine = owed.Count - late - risk;
+    Log.Information("All open: " + owed.Count + " owed — " + fine + " on time, " + risk + " at risk, " + late + " late");
+    Assert.True(fine * 100 >= owed.Count * 75);   // most are on time
+    Assert.True(late >= 2 && late <= 8);          // a handful are late — and some are: nothing late is not believable
+    Assert.True(risk >= 3 && risk * 100 <= owed.Count * 20);
+    // …so the first screen (fifteen rows, latest first) is mostly NOT red.
+    Assert.True(rows.Take(15).Count(r => ToneOf(r, now) == Tone.Danger) <= 8);
+    // COLOUR — each row's lamp says what the ticket is waiting on, so the first screen's column of lamps is not one
+    // colour (it was red on every row), and red is kept for a promise already broken.
+    // (Due first puts the missed promises on top and then the first replies owed soonest, so the first screen is red
+    // and the breathing accent of new work — two looks, never one. Before the inbox it was three: the desk's own
+    // "All open" also held tickets on hold, which the inbox files under Waiting.)
+    var looks = rows.Take(15).Select(r => LampKey(LampFor(r.Handling, r.Sla))).Distinct().Count();
+    Assert.True(looks >= 2);
+    Assert.Equal(rows.Count(r => r.Sla == SlaState.Breached), rows.Count(r => LampFor(r.Handling, r.Sla).Tone == Tone.Danger));
+
+    var kinds = rows.Select(r => TemplateOf(r.Title)).ToList();
+    Assert.False(kinds.Contains(-1));
+    var near = new List<string>();
+    for (var i = 0; i < kinds.Count; i++) {
+      for (var j = i + 1; j < kinds.Count && j < i + 15; j++) {
+        if (kinds[i] == kinds[j]) { near.Add("rows " + i + " and " + j + ": " + rows[i].Title + " / " + rows[j].Title); }
+      }
+    }
+    Assert.Equal("", string.Join("; ", near));
+    // …and the desk sees many kinds of request, not a few on repeat.
+    Assert.True(kinds.Distinct().Count() >= 40);
+  }
+}
+
+/// ⭐ THE LIST OPENS THE WAY THE READER LEFT IT ([Remembered], owner call 2026-10-01): its order and its density are
+/// kept in this browser — a reload keeps them, and another browser starts with the desk's defaults.
+[Test(Floor)]
+void the_lists_order_and_density_are_remembered_in_this_browser() {
+  runas (Ines) { SeedDemoDesk(10); }
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open");
+  Ui.Click("Due first");
+  Ui.Click("Newest");
+  Ui.Click("Newest");
+  Ui.Click("Compact rows");
+  Ui.Visit("/v/open");
+  Assert.Visible("Newest", within: "Work");
+  Ui.Click("Newest");
+  Assert.Checked("Compact rows");
+  Ui.NewDevice();
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open");
+  Assert.Visible("Due first", within: "Work");
+}
+
+[Test(Floor)]
+void the_keyboard_works_the_list_without_the_mouse() {
+  runas (Ines) { SeedDemoDesk(40); }
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open");
+  Ui.Press("J");
+  Ui.Press("Enter");
+  Assert.Visible("Send and set");                      // a ticket is open beside the list
+  var first = 0;
+  runas (Ines) { first = Ticket.Count(); }
+  Ui.Press("J");                                       // …and J opens the next one
+  Ui.Press("K");
+  Ui.Press("T");                                       // take it — the inbox's key
+  runas (Ines) { Assert.True(Ticket.Count(t => t.Assignee!.DisplayName == "Ines Moreau") > 0); }
+}
+
+[Test(Floor)]
+void a_reply_and_a_note_land_on_the_one_timeline_and_the_note_is_marked() {
+  var number = 0;
+  runas (Ines) {
+    SetUpTestDesk();
+    var opened = OpenTicket("hanna@kestrel.test", "Hanna Lindqvist", "Card payments failing for EU customers",
+      "Since this morning every card payment from our EU customers is declined at the last step.", WorkPriority.High);
+    number = Ticket.Single(t => t.Id == opened).Number;
+  }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + number);
+  Assert.Visible("Since this morning every card payment");
+  // A TICKET READS TOP-DOWN (polish slice 2): with one message, the reply box follows it — level with the customer
+  // panel's details, not pinned to the foot of the pane under an empty band. (The Composer kit's well — its bar and a
+  // five-line box — puts Send a line below "Follow"; it still sits above the panel's last control, mid-screen.)
+  Assert.Above("Send", "Start a privacy request…");   // the panel's privacy button (renamed from "Erase their data…")
+  Ui.Fill("Reply to Hanna Lindqvist", "We can see the declines too — looking at the acquirer now.");
+  Ui.Click("Send");
+  Assert.Visible("We can see the declines too");
+  Ui.Click("Internal note");
+  Ui.Fill("Internal note", "Same pattern as last week: the 3-D Secure challenge times out.");
+  Ui.Click("Add note");
+  Assert.Visible("internal note", within: "Internal note from Ines Moreau");
+  Ui.Shot("ticket-reply-and-note");
+  runas (Ines) {
+    var t = Numbered(number);
+    Assert.Equal(StatusCategory.Open, t.Category);
+    Assert.Equal(1, Message.Count(m => m.Conversation == t.Conversation && m.Visibility == EntryVisibility.Internal));
+  }
+}
+
+[Test(Floor)]
+void a_colleagues_reply_that_lands_while_you_write_stops_yours_with_their_name() {
+  var number = 0;
+  Guid id = Guid.Empty;
+  runas (Ines) {
+    SeedDemoDesk(10);
+    id = OpenTicket("hanna@kestrel.test", "Hanna Lindqvist", "Export stuck at 99%", "The export has been stuck since 09:10.");
+    number = Ticket.Single(t => t.Id == id).Number;
+  }
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + number);
+  Ui.Fill("Reply to Hanna Lindqvist", "Looking into it now.");
+  // Kapoor answers from his own screen while Ines is still writing.
+  runas (Kapoor) { ReplyToTicket(id, "Restarted the export worker — it finished a minute ago."); }
+  Ui.AwaitChange(Osysharp.Conversations.Message);
+  Ui.Click("Send");
+  Assert.Visible("Rahul Kapoor replied at");
+  Assert.Visible("Yours is still here");
+  runas (Ines) { Assert.Equal(1, Message.Count(m => m.Conversation.Subject == "Export stuck at 99%" && m.Direction == MessageDirection.Outbound)); }
+  // Having read it, she can still send hers.
+  Ui.Click("Send");
+  runas (Ines) { Assert.Equal(2, Message.Count(m => m.Conversation.Subject == "Export stuck at 99%" && m.Direction == MessageDirection.Outbound)); }
+}
+
+[Test(Floor)]
+void many_tickets_are_assigned_at_once_from_the_list() {
+  runas (Ines) { SeedDemoDesk(30); }
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/unassigned");
+  var before = 0;
+  runas (Ines) { before = Ticket.Count(t => t.Assignee == null && (t.Category == StatusCategory.New || t.Category == StatusCategory.Open)); }
+  Ui.Click("Select all");
+  Ui.Click("Hand to…", within: "Selected");
+  Ui.Click("Rahul Kapoor");
+  runas (Ines) {
+    Assert.True(before > 0);
+    Assert.Equal(0, Ticket.Count(t => t.Assignee == null && (t.Category == StatusCategory.New || t.Category == StatusCategory.Open)));
+  }
+}
+
+[Test(Floor)]
+void the_command_menu_sets_the_open_tickets_status() {
+  var number = 0;
+  runas (Ines) {
+    SetUpTestDesk();
+    var opened = OpenTicket("dev@orbit.test", "Dev Patel", "Webhook retries are arriving twice", "Twice, 30s apart.");
+    number = Ticket.Single(t => t.Id == opened).Number;
+    ReplyToTicket(opened, "Your endpoint answers after 12s; we retry after 10s.");
+  }
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + number);
+  Ui.Click("Search tickets, people or #number");
+  Ui.Shot("command-menu");
+  Ui.Click("Set #" + number + " to Pending");
+  runas (Ines) { Assert.Equal(StatusCategory.Pending, Numbered(number).Category); }
+}
+
+[Test(Floor)]
+void on_a_phone_the_list_and_the_ticket_are_one_screen_each() {
+  var number = 0;
+  runas (Ines) { SeedDemoDesk(40); number = Ticket.Where(t => t.Category == StatusCategory.Open).First().Number; }
+  Ui.Viewport(390, 844);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open");
+  // The header names the view; the list, which IS the screen, says how much it holds — not "All open" twice.
+  Assert.Visible("All open", within: "Page header");
+  Assert.Hidden("All open", within: "Work");
+  Assert.Visible("Due first", within: "Work");
+  Ui.Shot("workspace-phone-list");
+  Ui.Visit("/v/open/t/" + number);
+  Assert.Visible("Back to the list");
+  Assert.Hidden("Filter this view");
+  Ui.Shot("workspace-phone-ticket");
+  Ui.Visit("/v/open");
+  Ui.Click("Ines Moreau", within: "Page header");
+  Ui.Click("Appearance");
+  Ui.Shot("workspace-phone-list-dark");
+}
+
+/// A REAL DESK STARTS EMPTY, AND SAYS SO (Harbour is Osyrin's own support desk from launch day — slice 7 removed the
+/// "fill it with a month of sample work" button that sat on every empty desk): where tickets come from, and New ticket.
+/// And a teammate in no queue is told why they cannot take anything, and who can change it.
+[Test(Floor)]
+void an_empty_desk_says_where_tickets_come_from_and_a_teammate_in_no_queue_is_told() {
+  runas (Ines) { SetUpTestDesk(); }
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open");
+  Assert.Visible("No tickets yet");
+  Assert.Hidden("sample work");
+  Assert.Hidden("You are not in any queue yet");      // SetUpDesk put the team on its queues
+  Ui.Shot("empty-desk");
+  Ui.Click("New ticket", within: "Empty desk");
+  Assert.OnPage("/new");
+  Ui.SignInAs(Kapoor);
+  Ui.Visit("/v/open");
+  Assert.Hidden("You are not in any queue yet");
+  runas (Ines) {
+    foreach (var m in QueueMember.Where(m => m.Member.Email == "rahul.kapoor@helpdesk.test").ToList()) { m.Delete(); }
+    UnitOfWork.Commit();
+  }
+  Ui.Visit("/v/open");
+  Assert.Visible("You are not in any queue yet");
+}

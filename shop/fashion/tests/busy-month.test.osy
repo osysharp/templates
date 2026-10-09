@@ -1,0 +1,168 @@
+// Vall's back office after a busy month — the pictures the website shows. Four weeks of customers ordering through the
+// shop's own functions (`AddToBag`, `PlaceOrder`), staff moving each order along (`MarkPaid`, `StartPicking`, `MarkSent`,
+// `MarkDelivered`), visitors looking at products (`ViewedProduct`) — so every step of the desk holds several orders and
+// the figures are sums of real sales, not one order each. `osy test --pixels` photographs each page wide.
+
+using Osysharp.Shop;
+using Osysharp.Workflow;
+
+[TestFixture]
+void BusyMonth() {
+  new ShopSettings { Name = "Vall", Currency = "SEK", CurrencySymbol = "kr", SymbolAfter = true, OrderPrefix = "VL-",
+                     HoldDays = 2, DeliveryFee = 59m, FreeDeliveryFrom = 1000m, VatPercent = 25m };
+  var dresses = new Category { Name = "Dresses", Slug = "dresses", Rank = 1 };
+  var knitwear = new Category { Name = "Knitwear", Slug = "knitwear", Rank = 2 };
+  var coats = new Category { Name = "Coats & jackets", Slug = "coats-jackets", Rank = 3 };
+  var shoes = new Category { Name = "Shoes", Slug = "shoes", Rank = 4 };
+  var bags = new Category { Name = "Bags", Slug = "bags", Rank = 5 };
+  Piece("Satin cowl slip dress", dresses, 1290m, 410m, 12, "photos/satin_slip_dress_1.jpg");
+  Piece("Jersey pencil midi dress", dresses, 1590m, 520m, 10, "photos/jersey_midi_dress_1.jpg");
+  Piece("Cotton V-neck cardigan", knitwear, 990m, 300m, 14, "photos/cotton_cardigan_1.jpg");
+  Piece("Chunky rib cardigan", knitwear, 1190m, 380m, 6, "photos/rib_knit_cardigan_1.jpg");
+  Piece("Cotton trench coat", coats, 2890m, 1010m, 7, "photos/cotton_trench_coat_1.jpg");
+  Piece("Check double-breasted blazer", coats, 1790m, 640m, 6, "photos/check_blazer_1.jpg");
+  Piece("Lace-up leather boot", shoes, 1990m, 720m, 8, "photos/lace_up_boot_1.jpg");
+  Piece("Leather platform sneaker", shoes, 1490m, 500m, 9, "photos/leather_sneaker_1.jpg");
+  Piece("Padded block-heel mule", shoes, 1390m, 460m, 5, "photos/padded_mule_1.jpg");
+  Piece("Croc-embossed leather tote", bags, 2490m, 880m, 6, "photos/croc_tote_1.jpg");
+  Piece("Kitten heel pump", shoes, 1290m, 430m, 5, "photos/kitten_heel_pump_1.jpg");         // nobody buys it
+  Piece("Pleated wool-blend mini skirt", knitwear, 890m, 280m, 6, "photos/pleated_mini_skirt_1.jpg");   // nor this
+  var ida = new ShopAccount { Email = "ida@vall.test", Name = "Ida Vall", PasswordHash = Security.HashPassword("desk-pass-1") };
+  new ShopRoleGrant { Member = ida, Role = ShopRole.Staff };
+  foreach (var c in Customers()) {
+    var a = new ShopAccount { Email = c.ToLower().Replace(" ", ".") + "@example.test", Name = c,
+                              PasswordHash = Security.HashPassword("customer-pass-1") };
+    new ShopRoleGrant { Member = a, Role = ShopRole.Customer };
+  }
+}
+
+/// A piece in S, M and L — `stock` of each, the L a little short — bought in at `cost` without VAT.
+void Piece(string name, Category category, decimal price, decimal cost, int stock, string photo) {
+  var slug = name.ToLower().Replace(" ", "-").Replace("&", "and");
+  var p = new Product { Name = name, Slug = slug, Brand = "Vall Studio", Category = category, Price = price };
+  new Variant { Product = p, Sku = slug.ToUpper() + "-S", Size = "S", Stock = stock, CostPrice = cost };
+  new Variant { Product = p, Sku = slug.ToUpper() + "-M", Size = "M", Stock = stock + 2, CostPrice = cost };
+  new Variant { Product = p, Sku = slug.ToUpper() + "-L", Size = "L", Stock = stock / 2, CostPrice = cost };
+  new ProductImage { Product = p, Path = photo, Alt = name };
+}
+
+List<string> Customers() {
+  return ["Maja Berg", "Elin Holm", "Sara Lind", "Nora Ek", "Alva Berg", "Tove Sandberg", "Linnea Dahl", "Freja Nyman",
+          "Ebba Strand", "Wilma Falk", "Astrid Moberg", "Klara Wik"];
+}
+
+List<string> Pieces() {
+  return ["Satin cowl slip dress", "Jersey pencil midi dress", "Cotton V-neck cardigan", "Cotton trench coat",
+          "Lace-up leather boot", "Croc-embossed leather tote", "Leather platform sneaker", "Check double-breasted blazer",
+          "Chunky rib cardigan", "Satin cowl slip dress", "Cotton V-neck cardigan", "Padded block-heel mule"];
+}
+
+principal Staff => ShopAccount.Single(s => s.Email == "ida@vall.test");
+
+/// One customer's order through the shop's own checkout, as a signed-in customer: one or two pieces, delivered home,
+/// paid by transfer. Answers its reference.
+string MonthOrder(int n) {
+  var names = Customers();
+  var pieces = Pieces();
+  var who = names[n % names.Count];
+  var email = who.ToLower().Replace(" ", ".") + "@example.test";
+  var visit = "v-month-" + Convert.ToString(n);
+  List<string> sizes = ["M", "S", "L", "M", "S"];
+  var reference = "";
+  runas (new Visitor { Id = visit }) {
+    runas (ShopAccount.Single(a => a.Email == email)) {
+      var first = pieces[n % pieces.Count];
+      AddToBag(Variant.Single(v => v.Product.Name == first && v.Size == sizes[n % sizes.Count]), 1);
+      if (n % 3 == 0) {
+        var second = pieces[(n + 5) % pieces.Count];
+        AddToBag(Variant.Single(v => v.Product.Name == second && v.Size == "M"), 1);
+      }
+      reference = PlaceOrder(who, email, "", "flat", "banktransfer", "Storgatan " + Convert.ToString(n % 40 + 1),
+                             "11122", "Stockholm", "SE").Reference;
+    }
+  }
+  return reference;
+}
+
+/// What the desk does with the orders at the end of `day`: pays yesterday's, picks, sends and closes older ones.
+void Move(List<string> all, int day) {
+  foreach (var reference in all) {
+    var o = Order.Single(x => x.Reference == reference);
+    var age = (DateTime.UtcNow - o.PlacedAt).TotalHours;
+    if (o.Status == OrderStatus.Reserved && age >= 20) { MarkPaid(o, "Bank transfer"); Workflow.Settle(o); }
+  }
+  if (day < 25) {
+    foreach (var reference in all) {
+      var o = Order.Single(x => x.Reference == reference);
+      var age = (DateTime.UtcNow - o.PlacedAt).TotalDays;
+      if (o.Status == OrderStatus.Paid && age >= 2) { StartPicking(o); Workflow.Settle(o); }
+      else if (o.Status == OrderStatus.Picking && age >= 3) { MarkPacked(o); Workflow.Settle(o); }
+      else if (o.Status == OrderStatus.Packed && age >= 3) {
+        MarkSent(o, "0037350109305" + Convert.ToString(7000000 + day * 100 + all.IndexOf(reference)));
+        Workflow.Settle(o);
+      }
+      else if (o.Status == OrderStatus.Fulfilled && age >= 7) { MarkDelivered(o); Workflow.Settle(o); }
+    }
+  }
+}
+
+void SignInAtTheDesk(string page) {
+  Ui.Viewport(1440, 1000);
+  Ui.Visit(page);
+  Ui.Fill("Email", "ida@vall.test");
+  Ui.Fill("Password", "desk-pass-1");
+  Ui.Click("Sign in", within: "Page");
+}
+
+[Test(BusyMonth)]
+void the_desk_after_a_busy_month() {
+  // Four weeks of trade: two or three orders a day, each paid the next day and moved along by the desk — so the oldest
+  // are delivered, last week's are sent, and today's wait to be picked, packed or paid.
+  // The shop has been open a while (what never sold shows as slow), and the month starts on the 2nd — so the books'
+  // month-to-date holds the whole of it.
+  var opened = DateTime.UtcNow;
+  var first = new DateTime(opened.Year, opened.Month, 1).AddMonths(3).AddDays(1).AddHours(9);
+  TestClock.Advance(first - opened);
+  var pieces = Pieces();
+  var n = 0;
+  List<string> all = [];
+  for (var day = 0; day < 26; day = day + 1) {
+    var today = day % 4 == 1 ? 3 : 2;
+    for (var k = 0; k < today; k = k + 1) {
+      all.Add(MonthOrder(n));
+      n = n + 1;
+    }
+    // Visitors look at far more than they buy.
+    for (var v = 0; v < 6 + day % 5; v = v + 1) {
+      var looked = pieces[(day * 7 + v * 3) % pieces.Count];
+      ViewedProduct(Product.Single(p => p.Name == looked));
+    }
+    runas (Staff) { Move(all, day); }
+    TestClock.Advance(TimeSpan.FromHours(23));
+  }
+  runas (Staff) {
+    Assert.True(Order.Count(o => o.Status == OrderStatus.Delivered) >= 20);
+    Assert.True(Order.Count(o => o.Status == OrderStatus.Fulfilled) >= 5);
+    Assert.True(Order.Count(o => o.Status == OrderStatus.Reserved) >= 2);
+  }
+  SignInAtTheDesk("/staff/orders");
+  Assert.Visible("Tove Sandberg");
+  Ui.Shot("the orders after a busy month, wide");
+  Ui.Visit("/staff/desk");
+  Assert.Visible("Waiting for payment · 3");     // every step holds orders: the tabs count them
+  Assert.Visible("Being picked · 3");
+  Ui.Shot("the desk after a busy month, wide");
+  Ui.Click("Figures");
+  Assert.Visible("Orders, 30 days");
+  Assert.Visible("Kitten heel pump");                     // sitting on the shelf
+  Ui.Shot("the figures after a busy month, wide");
+  Ui.Click("Stock");
+  Assert.Visible("Padded block-heel mule");
+  Ui.Shot("the stock after a busy month, wide");
+  Ui.Click("Customers");
+  Assert.Visible("Klara Wik");
+  Ui.Shot("the customers after a busy month, wide");
+  Ui.Visit("/staff/books");
+  Assert.Visible("SIE 4 for the accountant");
+  Ui.Shot("the books after a busy month, wide");
+}

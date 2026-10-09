@@ -1,0 +1,1271 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Conversations, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Conversations · AiDraftedNote ──
+  /// AiDraftedNote · text on the page
+  /// placeholders: {message.ByName} = message.ByName
+  text "Drafted by AI, sent by {message.ByName}" => "Utkast av AI, skickat av {message.ByName}";
+  /// AiDraftedNote · text on the page
+  /// placeholders: {message.ByName} = message.ByName
+  text "Written with AI, checked and sent by {message.ByName}" => "Skrivet med AI, granskat och skickat av {message.ByName}";
+
+  // ── Osysharp.Conversations · ApproveDraft ──
+  /// ApproveDraft · an error message
+  /// shown through ValidationException
+  error "Only an AI's draft is approved — this entry is not one." => "Bara ett AI-utkast kan godkännas, och det här är inte ett.";
+
+  // ── Osysharp.Conversations · AttachmentCard ──
+  /// AttachmentCard · a control's name for screen readers
+  /// placeholders: {file.FileName} = file.FileName
+  accessibleName "Contents of {file.FileName}" => "Innehållet i {file.FileName}";
+  /// AttachmentCard · a control's name for screen readers
+  /// placeholders: {file.FileName} = file.FileName
+  accessibleName "Download {file.FileName}" => "Ladda ner {file.FileName}";
+  /// AttachmentCard · a control's name for screen readers
+  /// placeholders: {file.FileName} = file.FileName
+  accessibleName "File {file.FileName}" => "Filen {file.FileName}";
+  /// AttachmentCard · text on the page
+  text "Download" => "Ladda ner";
+  /// AttachmentCard · text on the page
+  text "This archive could not be read — download it to open it." => "Arkivet kunde inte läsas. Ladda ner det för att öppna det.";
+  /// AttachmentCard · text on the page
+  /// placeholders: {preview.MoreEntries} = preview.MoreEntries
+  text "…and {preview.MoreEntries} more" => "…och {preview.MoreEntries} till";
+
+  // ── Osysharp.Conversations · CheckSize ──
+  /// CheckSize · an error message
+  /// placeholders: {Megabytes} = Megabytes(…) (string), {Megabytes2} = Megabytes(…) (string)
+  /// shown through ValidationException
+  error "These files come to {Megabytes}, and one message may carry at most {Megabytes2}. Send some of them in a second message." => "Filerna är sammanlagt {Megabytes}, och ett meddelande får innehålla högst {Megabytes2}. Skicka några av dem i ett andra meddelande.";
+  /// CheckSize · an error message
+  /// placeholders: {name} = name (string), {Megabytes} = Megabytes(…) (string), {Megabytes2} = Megabytes(…) (string)
+  /// shown through ValidationException
+  error "{name} is {Megabytes}, and a file may be at most {Megabytes2}. Send a smaller one — a cropped screenshot, or the part of the log that matters." => "{name} är {Megabytes}, och en fil får vara högst {Megabytes2}. Skicka en mindre, till exempel en beskuren skärmbild eller den del av loggen som spelar roll.";
+
+  // ── Osysharp.Conversations · ClaimAddress ──
+  /// ClaimAddress · an error message
+  /// shown through ValidationException
+  error "That does not look like an email address — check it, or leave it empty." => "Det ser inte ut som en e-postadress. Kontrollera den eller lämna fältet tomt.";
+
+  // ── Osysharp.Conversations · CodeView ──
+  /// CodeView · text on the page
+  /// placeholders: {lines.Count} = lines.Count, {totalLines} = totalLines
+  text "Showing the first {lines.Count} of {totalLines} lines — download the file for the rest." => "Visar de första {lines.Count} av {totalLines} raderna. Ladda ner filen för att se resten.";
+
+  // ── Osysharp.Conversations · ContinueHere ──
+  /// ContinueHere · an error message
+  /// shown through ValidationException
+  error "This browser cannot keep a conversation — let it keep cookies for this site and open the link again." => "Den här webbläsaren kan inte spara en konversation. Tillåt cookies för den här webbplatsen och öppna länken igen.";
+
+  // ── Osysharp.Conversations · ConversationBubble ──
+  /// ConversationBubble · a control's name for screen readers
+  /// shown through AiMark.words
+  /// also in ThreadMessage
+  accessibleName "AI assistant" => "AI-assistent";
+  /// ConversationBubble · a control's name for screen readers
+  /// shown through AiMark.words
+  /// also in ThreadMessage
+  accessibleName "AI draft — not sent" => "AI-utkast – inte skickat";
+  /// ConversationBubble · a control's name for screen readers
+  /// shown through AiMark.words
+  /// also in ThreadMessage
+  accessibleName "Sent by AI" => "Skickat av AI";
+  /// ConversationBubble · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Show original" => "Visa original";
+  /// ConversationBubble · a button's label · at most ~23 characters
+  /// shown through Button.label
+  button "Show translation" => "Visa översättning";
+  /// ConversationBubble · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Badge.label
+  /// also in ConversationComposer
+  /// also in Composer
+  label "Internal note" => "Intern anteckning";
+  /// ConversationBubble · note
+  /// placeholders: {LanguageNameOf} = LanguageNameOf(…)
+  /// shown through note
+  note "Translated from {LanguageNameOf}" => "Översatt från {LanguageNameOf}";
+  /// ConversationBubble · text on the page
+  /// also in ThreadMessage
+  /// also in ConversationPresenceChip
+  text "Support" => "Support";
+  /// ConversationBubble · text on the page
+  text "You" => "Du";
+
+  // ── Osysharp.Conversations · ConversationChatPage (/conversations/chat) ──
+  /// ConversationChatPage · /conversations/chat · a title
+  /// shown through [Title]
+  title "Your conversation" => "Din konversation";
+
+  // ── Osysharp.Conversations · ConversationComposer ──
+  /// ConversationComposer · a button's label · at most ~14 characters
+  /// shown through Button.label
+  /// beside: "Attach files"
+  /// also in Composer
+  button "Add note" => "Lägg till";
+  /// ConversationComposer · a button's label · at most ~10 characters
+  /// shown through Button.label
+  /// beside: "Attach files"
+  /// also in Composer
+  button "Send" => "Skicka";
+  /// ConversationComposer · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through TextAreaField.label
+  /// beside: "Attach files"
+  label "Note to the team" => "Anteckning till teamet";
+  /// ConversationComposer · placeholder text inside an empty field · at most ~35 characters
+  /// shown through TextAreaField.placeholder
+  /// beside: "Attach files"
+  /// also in SideConversationCard
+  placeholder "Only your team sees this." => "Bara ditt team ser det här.";
+  /// ConversationComposer · placeholder text inside an empty field · at most ~23 characters
+  /// shown through ConversationComposer.placeholder
+  placeholder "Write a message…" => "Skriv ett meddelande…";
+
+  // ── Osysharp.Conversations · ConversationContinue ──
+  /// ConversationContinue · a control's name for screen readers
+  accessibleName "Continue the conversation" => "Fortsätt konversationen";
+  /// ConversationContinue · a button's label · at most ~19 characters
+  /// shown through Button.label
+  /// beside: "Carry on where you left off", "The link works once. If you did not ask us anything, you can ignore it."
+  button "Continue here" => "Fortsätt här";
+  /// ConversationContinue · text on the page
+  /// beside: "The conversation opens here, in this browser, with everything said so far — and stays here when you come back."
+  text "Carry on where you left off" => "Fortsätt där du slutade";
+  /// ConversationContinue · text on the page
+  /// beside: "Carry on where you left off"
+  text "The conversation opens here, in this browser, with everything said so far — and stays here when you come back." => "Konversationen öppnas här, i den här webbläsaren, med allt som sagts hittills, och finns kvar här när du kommer tillbaka.";
+  /// ConversationContinue · text on the page
+  /// beside: "Carry on where you left off", "Continue here"
+  text "The link works once. If you did not ask us anything, you can ignore it." => "Länken fungerar en gång. Om du inte har frågat oss något kan du strunta i den.";
+
+  // ── Osysharp.Conversations · ConversationContinuePage (/conversations/continue/{link}) ──
+  /// ConversationContinuePage · /conversations/continue/{link} · a title
+  /// shown through [Title]
+  title "Continue the conversation" => "Fortsätt konversationen";
+
+  // ── Osysharp.Conversations · ConversationLanguageNotice ──
+  /// ConversationLanguageNotice · a button's label · at most ~15 characters
+  /// shown through Button.label
+  button "Try again" => "Försök igen";
+  /// ConversationLanguageNotice · message
+  /// shown through Alert.message
+  message "One message here was not translated — you are reading it as it was written." => "Ett meddelande här översattes inte. Du läser det som det skrevs.";
+  /// ConversationLanguageNotice · message
+  /// placeholders: {status.Untranslated} = status.Untranslated
+  /// shown through Alert.message
+  message "{status.Untranslated} messages here were not translated — you are reading them as they were written." => "{status.Untranslated} meddelanden här översattes inte. Du läser dem som de skrevs.";
+  /// ConversationLanguageNotice · text on the page
+  /// shown through said
+  text "Translating 1 message again." => "Översätter 1 meddelande igen.";
+  /// ConversationLanguageNotice · text on the page
+  /// placeholders: {again} = again
+  /// shown through said
+  text "Translating {again} messages again." => "Översätter {again} meddelanden igen.";
+  /// ConversationLanguageNotice · a title
+  /// shown through Alert.title
+  title "Not translated" => "Inte översatt";
+  /// ConversationLanguageNotice · a title
+  /// shown through Alert.title
+  title "Translation is off" => "Översättning är avstängd";
+
+  // ── Osysharp.Conversations · ConversationPresenceChip ──
+  /// ConversationPresenceChip · text on the page
+  text "The customer is here" => "Kunden är här";
+  /// ConversationPresenceChip · text on the page
+  /// placeholders: {value} = …
+  text "{value} is typing…" => "{value} skriver…";
+
+  // ── Osysharp.Conversations · ConversationProveAddress ──
+  /// ConversationProveAddress · a button's label · at most ~21 characters
+  /// shown through Button.label
+  /// beside: "Your email"
+  button "Email me a code" => "Mejla mig en kod";
+  /// ConversationProveAddress · a button's label · at most ~30 characters
+  /// shown through Button.label
+  /// beside: "Code"
+  button "Show my conversations" => "Visa mina konversationer";
+  /// ConversationProveAddress · a button's label · at most ~73 characters
+  /// shown through Button.label
+  button "Written to us before? Get your earlier conversations" => "Har du skrivit till oss förut? Hämta dina tidigare konversationer";
+  /// ConversationProveAddress · a hint under a field
+  /// shown through Field.hint
+  /// beside: "Email me a code"
+  hint "We mail a code to it — the code shows it is yours." => "Vi mejlar en kod dit. Koden visar att adressen är din.";
+  /// ConversationProveAddress · text on the page
+  /// shown through done
+  text "Done — your earlier conversations with us are here now." => "Klart. Dina tidigare konversationer med oss finns här nu.";
+  /// ConversationProveAddress · text on the page
+  /// placeholders: {address} = address
+  /// beside: "Code", "Show my conversations"
+  text "We sent a code to {address}. It works for 15 minutes." => "Vi har skickat en kod till {address}. Den gäller i 15 minuter.";
+
+  // ── Osysharp.Conversations · ConversationThread ──
+  /// ConversationThread · a button's label · at most ~16 characters
+  /// shown through ConversationThread.splitLabel
+  /// also in ThreadMessage
+  button "Split off…" => "Dela av…";
+  /// ConversationThread · text on the page
+  /// shown through EmptyState.body
+  text "Messages and notes appear here as they are written." => "Meddelanden och anteckningar visas här när de skrivs.";
+  /// ConversationThread · a title
+  /// shown through EmptyState.title
+  title "Nothing written yet" => "Inget skrivet än";
+
+  // ── Osysharp.Conversations · ConversationTranscript ──
+  /// ConversationTranscript · a button's label · at most ~18 characters
+  /// shown through Button.label
+  /// also in ConversationThread
+  button "Show earlier" => "Visa tidigare";
+  /// ConversationTranscript · text on the page
+  /// shown through EmptyState.body
+  text "Messages appear here as they are written." => "Meddelanden visas här när de skrivs.";
+  /// ConversationTranscript · a title
+  /// shown through EmptyState.title
+  title "No messages yet" => "Inga meddelanden än";
+
+  // ── Osysharp.Conversations · CopyIn ──
+  /// CopyIn · an error message
+  /// placeholders: {NameOf} = NameOf(…) (string)
+  /// shown through ValidationException
+  error "{NameOf} is already copied in." => "{NameOf} får redan kopior.";
+  /// CopyIn · an error message
+  /// placeholders: {NameOf} = NameOf(…) (string)
+  /// shown through ValidationException
+  error "{NameOf} is who this conversation is with — every reply goes to them already." => "Konversationen förs med {NameOf}, som redan får varje svar.";
+
+  // ── Osysharp.Conversations · Describe ──
+  /// Describe · text on the page
+  /// shown through Describe()
+  text "a PDF" => "en PDF";
+  /// Describe · text on the page
+  /// shown through Describe()
+  text "a ZIP archive" => "ett ZIP-arkiv";
+  /// Describe · text on the page
+  /// shown through Describe()
+  text "a file of another kind" => "en fil av annat slag";
+  /// Describe · text on the page
+  /// placeholders: {ToUpper} = ….ToUpper(…) (string)
+  /// shown through Describe()
+  text "a {ToUpper} picture" => "en {ToUpper}-bild";
+
+  // ── Osysharp.Conversations · EventWords ──
+  /// EventWords · text on the page
+  /// shown through EventWords()
+  text "Erased with the conversation's words." => "Raderad tillsammans med konversationens ord.";
+
+  // ── Osysharp.Conversations · KeepUpload ──
+  /// KeepUpload · an error message
+  /// shown through ValidationException
+  /// also in KeepPrivately
+  error "That file was uploaded somewhere else — in another browser, or before you signed out. Please upload it again." => "Filen laddades upp någon annanstans — i en annan webbläsare, eller innan du loggade ut. Ladda upp den igen.";
+
+  // ── Osysharp.Conversations · LanguageNameOf ──
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Arabic" => "arabiska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Chinese" => "kinesiska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Danish" => "danska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Dutch" => "nederländska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "English" => "engelska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Finnish" => "finska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "French" => "franska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "German" => "tyska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Greek" => "grekiska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Hebrew" => "hebreiska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Hindi" => "hindi";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Italian" => "italienska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Japanese" => "japanska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Korean" => "koreanska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Norwegian" => "norska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Persian" => "persiska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Polish" => "polska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Portuguese" => "portugisiska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Russian" => "ryska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Spanish" => "spanska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Swedish" => "svenska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Thai" => "thailändska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Turkish" => "turkiska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Ukrainian" => "ukrainska";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "Urdu" => "urdu";
+  /// LanguageNameOf · text on the page
+  /// shown through LanguageNameOf()
+  text "another language" => "ett annat språk";
+
+  // ── Osysharp.Conversations · Megabytes ──
+  /// Megabytes · text on the page
+  /// placeholders: {ToString} = Convert.ToString(…) (long) — {ToString} is a count: give one text per plural form
+  /// shown through Megabytes()
+  /// also in SizeOf
+  text "{ToString} KB" => { one: "{ToString} KB", other: "{ToString} KB" };
+  /// Megabytes · text on the page
+  /// placeholders: {ToString} = ….ToString(…) (decimal)
+  /// shown through Megabytes()
+  /// also in SizeOf
+  text "{ToString} MB" => "{ToString} MB";
+
+  // ── Osysharp.Conversations · MergeIntoParty ──
+  /// MergeIntoParty · an error message
+  /// shown through ValidationException
+  error "That merge was refused." => "Sammanslagningen avvisades.";
+
+  // ── Osysharp.Conversations · MessageBody ──
+  /// MessageBody · a button's label · at most ~23 characters
+  /// shown through Button.label
+  button "Hide quoted text" => "Dölj citerad text";
+  /// MessageBody · a button's label · at most ~23 characters
+  /// shown through Button.label
+  button "Show quoted text" => "Visa citerad text";
+  /// MessageBody · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// placeholders: {segment.Language} = segment.Language
+  /// shown through CodeView.label
+  label "Code ({segment.Language})" => "Kod ({segment.Language})";
+
+  // ── Osysharp.Conversations · MessageFiles ──
+  /// MessageFiles · a control's name for screen readers
+  accessibleName "Attachments" => "Bilagor";
+  /// MessageFiles · a control's name for screen readers
+  /// placeholders: {picture.FileName} = picture.FileName
+  /// beside: "18rem"
+  accessibleName "Open {picture.FileName}" => "Öppna {picture.FileName}";
+  /// MessageFiles · text on the page
+  /// placeholders: {openedName} = openedName
+  text "Download {openedName}" => "Ladda ner {openedName}";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.AttachmentKind ──
+  /// Osysharp.Conversations.AttachmentKind · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Conversations.AttachmentKind.Archive
+  /// beside: "Picture", "Code", "Text", "PDF", "File"
+  /// also in ArchiveKnowledge
+  label "Archive" => "Arkiv";
+  /// Osysharp.Conversations.AttachmentKind · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Conversations.AttachmentKind.Other
+  /// beside: "Picture", "Code", "Text", "Archive", "PDF"
+  label "File" => "Fil";
+  /// Osysharp.Conversations.AttachmentKind · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.Conversations.AttachmentKind.Pdf
+  /// beside: "Picture", "Code", "Text", "Archive", "File"
+  label "PDF" => "PDF";
+  /// Osysharp.Conversations.AttachmentKind · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Conversations.AttachmentKind.Image
+  /// beside: "Code", "Text", "Archive", "PDF", "File"
+  label "Picture" => "Bild";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ContactPoint ──
+  /// Osysharp.Conversations.ContactPoint · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Conversations.ContactPoint.AssertedBy
+  /// beside: "Party", "Kind", "Value", "Verified key", "Verified at", "Verified by"
+  label "Asserted by" => "Uppgiven av";
+  /// Osysharp.Conversations.ContactPoint · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Conversations.ContactPoint.IsPreferred
+  /// beside: "Party", "Kind", "Value", "Verified key", "Verified at", "Verified by"
+  label "Is preferred" => "Föredragen";
+  /// Osysharp.Conversations.ContactPoint · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Conversations.ContactPoint.Label
+  /// beside: "Party", "Kind", "Value", "Verified key", "Verified at", "Verified by"
+  label "Label" => "Etikett";
+  /// Osysharp.Conversations.ContactPoint · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Conversations.ContactPoint.VerifiedAt
+  /// beside: "Party", "Kind", "Value", "Verified key", "Verified by", "Asserted by"
+  label "Verified at" => "Verifierad";
+  /// Osysharp.Conversations.ContactPoint · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Conversations.ContactPoint.VerifiedBy
+  /// beside: "Party", "Kind", "Value", "Verified key", "Verified at", "Asserted by"
+  label "Verified by" => "Verifierad av";
+  /// Osysharp.Conversations.ContactPoint · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Conversations.ContactPoint.VerifiedKey
+  /// beside: "Party", "Kind", "Value", "Verified at", "Verified by", "Asserted by"
+  label "Verified key" => "Verifierad nyckel";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ContactPointKind ──
+  /// Osysharp.Conversations.ContactPointKind · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Conversations.ContactPointKind.Visitor
+  /// beside: "Email", "Phone", "Handle"
+  label "Chat visitor" => "Chattbesökare";
+  /// Osysharp.Conversations.ContactPointKind · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Conversations.ContactPointKind.Handle
+  /// beside: "Email", "Phone", "Chat visitor"
+  label "Handle" => "Användarnamn";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.Conversation ──
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Conversations.Conversation.Entries
+  /// beside: "Subject", "Started at", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint"
+  label "Entries" => "Inlägg";
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Conversations.Conversation.IsSide
+  /// beside: "Subject", "Started at", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint"
+  label "Is side" => "Är sidokonversation";
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~31 characters
+  /// shown through Osysharp.Conversations.Conversation.LastCustomerEntryAt
+  /// beside: "Subject", "Started at", "Last entry at", "Reply channel", "Reply endpoint", "Started by visit"
+  label "Last customer entry at" => "Kundens senaste inlägg";
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.Conversations.Conversation.LastEntryAt
+  /// beside: "Subject", "Started at", "Last customer entry at", "Reply channel", "Reply endpoint", "Started by visit"
+  label "Last entry at" => "Senaste inlägg";
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Conversations.Conversation.Participants
+  /// beside: "Subject", "Started at", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint"
+  label "Participants" => "Deltagare";
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Conversations.Conversation.Reference
+  /// beside: "Subject", "Started at", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint"
+  /// also in Osysharp.Inbox.WorkItem
+  label "Reference" => "Referens";
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.Conversations.Conversation.ReplyChannel
+  /// beside: "Subject", "Started at", "Last entry at", "Last customer entry at", "Reply endpoint", "Started by visit"
+  label "Reply channel" => "Svarskanal";
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.Conversations.Conversation.ReplyEndpoint
+  /// beside: "Subject", "Started at", "Last entry at", "Last customer entry at", "Reply channel", "Started by visit"
+  label "Reply endpoint" => "Svarsadress";
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.Conversations.Conversation.SideClosedAt
+  /// beside: "Subject", "Started at", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint"
+  label "Side closed at" => "Sidokonversation stängd";
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Conversations.Conversation.SideOf
+  /// beside: "Subject", "Started at", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint"
+  label "Side of" => "Sidokonversation till";
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Conversations.Conversation.SplitFrom
+  /// beside: "Subject", "Started at", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint"
+  label "Split from" => "Utbruten från";
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Conversations.Conversation.StartedAt
+  /// beside: "Subject", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint", "Started by visit"
+  /// also in Osysharp.Inbox.SlaClock
+  label "Started at" => "Startad";
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.Conversations.Conversation.StartedByVisit
+  /// beside: "Subject", "Started at", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint"
+  label "Started by visit" => "Startad av besök";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ConversationCopy.EventSentence ──
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  /// also in NameOf
+  text "A customer" => "En kund";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {blanked} = blanked (int) — {blanked} is a count: give one text per plural form
+  /// shown through EventSentence()
+  text "A customer's words were erased on request. Messages blanked: {blanked}. The timeline keeps its shape." => { one: "En kunds ord raderades på begäran. Ett meddelande tömdes. Tidslinjen behåller sin form.", other: "En kunds ord raderades på begäran. {blanked} meddelanden tömdes. Tidslinjen behåller sin form." };
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through EventSentence()
+  text "A message from {who} was split off into a conversation of its own." => "Ett meddelande från {who} delades av till en egen konversation.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {why} = why (string)
+  /// shown through EventSentence()
+  text "A message from {who} was split off into a conversation of its own: “{why}”." => "Ett meddelande från {who} delades av till en egen konversation: ”{why}”.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {happened.Person} = happened.Person (string), {why} = why (string)
+  /// shown through EventSentence()
+  text "A side conversation with {happened.Person} was started: “{why}”." => "En sidokonversation med {happened.Person} startades: ”{why}”.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {why} = why (string)
+  /// shown through EventSentence()
+  text "A thread inside the team was started beside this: “{why}”." => "En tråd inom teamet startades bredvid det här: ”{why}”.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {happened.Person} = happened.Person (string)
+  /// shown through EventSentence()
+  text "An automatic reply from {happened.Person} was received and not answered." => "Ett automatiskt svar från {happened.Person} togs emot och besvarades inte.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "An automatic reply was received and not answered." => "Ett automatiskt svar togs emot och besvarades inte.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "Erased: it was kept for legal claims, and that period ended." => "Raderad: den sparades för rättsliga anspråk, och den perioden har tagit slut.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "Erased: its period ended." => "Raderad: lagringstiden tog slut.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  /// also in PrioritisedWords
+  /// also in ToldHolderWords
+  /// also in ToldLeadsWords
+  text "Something happened." => "Något hände.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through EventSentence()
+  text "Split off from another conversation, with {who}'s message." => "Avdelad från en annan konversation, med meddelandet från {who}.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {why} = why (string), {who} = who (string)
+  /// shown through EventSentence()
+  text "Split off from “{why}”, with {who}'s message." => "Avdelad från ”{why}”, med meddelandet från {who}.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "This message quoted another conversation's thread, but its sender is not in it — started separately." => "Meddelandet citerade en annan konversations tråd, men avsändaren finns inte med i den, så en ny konversation startades.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "another customer" => "en annan kund";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {why} = why (string)
+  /// shown through EventSentence()
+  text "{who} answered in the side conversation “{why}”." => "{who} svarade i sidokonversationen ”{why}”.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through EventSentence()
+  text "{who} is no longer copied in." => "{who} får inte längre kopior.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through EventSentence()
+  text "{who} was copied in." => "{who} fick en kopia.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {whom} = whom (string)
+  /// shown through EventSentence()
+  text "{who} was merged into {whom} — they proved an address of theirs, so they are the same person." => "{who} slogs ihop med {whom}. Hen bekräftade en av sina adresser, så det är samma person.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {whom} = whom (string)
+  /// shown through EventSentence()
+  text "{who} was merged into {whom}." => "{who} slogs ihop med {whom}.";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {whom} = whom (string), {why} = why (string)
+  /// shown through EventSentence()
+  text "{who} was merged into {whom}: {why}" => "{who} slogs ihop med {whom}: {why}";
+  /// Osysharp.Conversations.ConversationCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {whom} = whom (string)
+  /// shown through EventSentence()
+  text "{who} was separated from {whom} again." => "{who} skildes från {whom} igen.";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ConversationCopy.LauncherClose ──
+  /// Osysharp.Conversations.ConversationCopy.LauncherClose · a button's label · at most ~20 characters
+  /// shown through LauncherClose()
+  button "Close the chat" => "Stäng chatten";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ConversationCopy.LauncherLabel ──
+  /// Osysharp.Conversations.ConversationCopy.LauncherLabel · a control's name for screen readers
+  /// shown through LauncherLabel()
+  accessibleName "Chat with us" => "Chatta med oss";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ConversationCopy.WidgetIntro ──
+  /// Osysharp.Conversations.ConversationCopy.WidgetIntro · text on the page
+  /// shown through WidgetIntro()
+  text "Ask us anything — we read every message." => "Fråga oss vad som helst, vi läser alla meddelanden.";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ConversationCopy.WidgetMailNotice ──
+  /// Osysharp.Conversations.ConversationCopy.WidgetMailNotice · a hint under a field
+  /// shown through WidgetMailNotice()
+  hint "Leave your email and we will send our answer there if you have left by then." => "Lämna din e-postadress så skickar vi vårt svar dit om du har lämnat sidan då.";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ConversationCopy.WidgetMessageLabel ──
+  /// Osysharp.Conversations.ConversationCopy.WidgetMessageLabel · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through WidgetMessageLabel()
+  /// also in ConversationComposer
+  label "Your message" => "Ditt meddelande";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ConversationCopy.WidgetStart ──
+  /// Osysharp.Conversations.ConversationCopy.WidgetStart · a button's label · at most ~31 characters
+  /// shown through WidgetStart()
+  button "Start the conversation" => "Starta konversationen";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ConversationCopy.WidgetWriteFirst ──
+  /// Osysharp.Conversations.ConversationCopy.WidgetWriteFirst · message
+  /// shown through WidgetWriteFirst()
+  message "Write a message first." => "Skriv ett meddelande först.";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ConversationEntry ──
+  /// Osysharp.Conversations.ConversationEntry · a label (a field, a list item, a menu entry) · at most ~8 characters
+  /// shown through Osysharp.Conversations.ConversationEntry.At
+  /// beside: "Conversation", "Sequence", "Visibility", "By party", "By member", "By agent"
+  /// also in Osysharp.Inbox.Assignment
+  label "At" => "Tid";
+  /// Osysharp.Conversations.ConversationEntry · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Conversations.ConversationEntry.ByAgent
+  /// beside: "Conversation", "Sequence", "At", "Visibility", "By party", "By member"
+  label "By agent" => "Av agent";
+  /// Osysharp.Conversations.ConversationEntry · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Conversations.ConversationEntry.ByMember
+  /// beside: "Conversation", "Sequence", "At", "Visibility", "By party", "By agent"
+  label "By member" => "Av medlem";
+  /// Osysharp.Conversations.ConversationEntry · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Conversations.ConversationEntry.ByName
+  /// beside: "Conversation", "Sequence", "At", "Visibility", "By party", "By member"
+  label "By name" => "Av namn";
+  /// Osysharp.Conversations.ConversationEntry · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Conversations.ConversationEntry.ByParty
+  /// beside: "Conversation", "Sequence", "At", "Visibility", "By member", "By agent"
+  label "By party" => "Av part";
+  /// Osysharp.Conversations.ConversationEntry · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Conversations.ConversationEntry.Sequence
+  /// beside: "Conversation", "At", "Visibility", "By party", "By member", "By agent"
+  label "Sequence" => "Nummer";
+  /// Osysharp.Conversations.ConversationEntry · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Conversations.ConversationEntry.Visibility
+  /// beside: "Conversation", "Sequence", "At", "By party", "By member", "By agent"
+  label "Visibility" => "Synlighet";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.DeliveryOutcome ──
+  /// Osysharp.Conversations.DeliveryOutcome · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Conversations.DeliveryOutcome.Read
+  /// beside: "Delivered", "Failed"
+  label "Read" => "Läst";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.DeliveryState ──
+  /// Osysharp.Conversations.DeliveryState · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Conversations.DeliveryState.Held
+  /// beside: "Waiting", "Sent", "Waiting for its translation"
+  /// also in Osysharp.Conversations.ProofState
+  /// also in Osysharp.Webhooks.WebhookDeliveryState
+  /// also in Osysharp.Webhooks.WebhookOutcome
+  label "Not sent" => "Inte skickad";
+  /// Osysharp.Conversations.DeliveryState · a label (a field, a list item, a menu entry) · at most ~38 characters
+  /// shown through Osysharp.Conversations.DeliveryState.AwaitingLanguage
+  /// beside: "Waiting", "Sent", "Not sent"
+  label "Waiting for its translation" => "Väntar på sin översättning";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.EntryVisibility ──
+  /// Osysharp.Conversations.EntryVisibility · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Conversations.EntryVisibility.AiInternal
+  /// beside: "Customer", "Internal"
+  label "AI, internal" => "AI, intern";
+  /// Osysharp.Conversations.EntryVisibility · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Conversations.EntryVisibility.Internal
+  /// beside: "Customer", "AI, internal"
+  /// also in TranscriptEvent
+  label "Internal" => "Intern";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ErasureCause ──
+  /// Osysharp.Conversations.ErasureCause · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.Conversations.ErasureCause.PeriodEnded
+  /// beside: "On their request", "Kept for legal claims until its period ended", "Kept for legal claims, erased when that ended, as they asked"
+  label "Its period ended" => "Lagringstiden tog slut";
+  /// Osysharp.Conversations.ErasureCause · a label (a field, a list item, a menu entry) · at most ~62 characters
+  /// shown through Osysharp.Conversations.ErasureCause.ClaimsPeriodEnded
+  /// beside: "On their request", "Its period ended", "Kept for legal claims, erased when that ended, as they asked"
+  label "Kept for legal claims until its period ended" => "Sparad för rättsliga anspråk tills lagringstiden tog slut";
+  /// Osysharp.Conversations.ErasureCause · a label (a field, a list item, a menu entry) · at most ~84 characters
+  /// shown through Osysharp.Conversations.ErasureCause.AskedWhileKept
+  /// beside: "On their request", "Its period ended", "Kept for legal claims until its period ended"
+  label "Kept for legal claims, erased when that ended, as they asked" => "Sparad för rättsliga anspråk, raderad när det upphörde, som de bad om";
+  /// Osysharp.Conversations.ErasureCause · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.Conversations.ErasureCause.Request
+  /// beside: "Its period ended", "Kept for legal claims until its period ended", "Kept for legal claims, erased when that ended, as they asked"
+  label "On their request" => "På egen begäran";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ErasureReach ──
+  /// Osysharp.Conversations.ErasureReach · a label (a field, a list item, a menu entry) · at most ~42 characters
+  /// shown through Osysharp.Conversations.ErasureReach.Conversation
+  /// beside: "Their words", "Copies used to improve support", "Who they are", "What the desk wrote about them beside"
+  label "A conversation past its period" => "En konversation efter sin lagringstid";
+  /// Osysharp.Conversations.ErasureReach · a label (a field, a list item, a menu entry) · at most ~42 characters
+  /// shown through Osysharp.Conversations.ErasureReach.CanonicalCopies
+  /// beside: "Their words", "Who they are", "A conversation past its period", "What the desk wrote about them beside"
+  label "Copies used to improve support" => "Kopior för att förbättra supporten";
+  /// Osysharp.Conversations.ErasureReach · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Conversations.ErasureReach.Words
+  /// beside: "Copies used to improve support", "Who they are", "A conversation past its period", "What the desk wrote about them beside"
+  label "Their words" => "Deras ord";
+  /// Osysharp.Conversations.ErasureReach · a label (a field, a list item, a menu entry) · at most ~52 characters
+  /// shown through Osysharp.Conversations.ErasureReach.DeskWordsBeside
+  /// beside: "Their words", "Copies used to improve support", "Who they are", "A conversation past its period"
+  label "What the desk wrote about them beside" => "Vad desken skrev om dem vid sidan av";
+  /// Osysharp.Conversations.ErasureReach · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Conversations.ErasureReach.Identity
+  /// beside: "Their words", "Copies used to improve support", "A conversation past its period", "What the desk wrote about them beside"
+  label "Who they are" => "Vem de är";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ErasureState ──
+  /// Osysharp.Conversations.ErasureState · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Conversations.ErasureState.Erased
+  label "Erased" => "Raderad";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.FollowUpState ──
+  /// Osysharp.Conversations.FollowUpState · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Conversations.FollowUpState.Sent
+  /// beside: "None", "Waiting"
+  /// also in Osysharp.Feedback.FeedbackMailState
+  label "Mailed" => "Mejlad";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.IConversationChannel.NotReadyReason ──
+  /// Osysharp.Conversations.IConversationChannel.NotReadyReason · note
+  /// placeholders: {Key} = Key (string)
+  /// shown through NotReadyReason()
+  note "The '{Key}' channel is not ready — its settings are not complete." => "Kanalen '{Key}' är inte klar: dess inställningar är inte ifyllda.";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.LanguageWorkState ──
+  /// Osysharp.Conversations.LanguageWorkState · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.Conversations.LanguageWorkState.Unavailable
+  /// beside: "Waiting", "Done", "Trying again"
+  label "Not translated" => "Inte översatt";
+  /// Osysharp.Conversations.LanguageWorkState · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Conversations.LanguageWorkState.Retrying
+  /// beside: "Waiting", "Done", "Not translated"
+  label "Trying again" => "Försöker igen";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.MergeState ──
+  /// Osysharp.Conversations.MergeState · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Conversations.MergeState.Merged
+  /// beside: "Undone", "Refused"
+  label "Merged" => "Sammanslagen";
+  /// Osysharp.Conversations.MergeState · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Conversations.MergeState.Undone
+  /// beside: "Merged", "Refused"
+  label "Undone" => "Ångrad";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.MessageDirection ──
+  /// Osysharp.Conversations.MessageDirection · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Conversations.MessageDirection.Internal
+  /// beside: "Received", "Sent"
+  label "Note" => "Anteckning";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.Participant ──
+  /// Osysharp.Conversations.Participant · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Conversations.Participant.AgentName
+  /// beside: "Conversation", "Party", "Member", "Role", "Joined at", "Left at"
+  label "Agent name" => "Agentens namn";
+  /// Osysharp.Conversations.Participant · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Conversations.Participant.FollowUp
+  /// beside: "Conversation", "Party", "Member", "Agent name", "Role", "Joined at"
+  label "Follow up" => "Följ upp";
+  /// Osysharp.Conversations.Participant · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Osysharp.Conversations.Participant.FollowUpStartedAt
+  /// beside: "Conversation", "Party", "Member", "Agent name", "Role", "Joined at"
+  label "Follow up started at" => "Uppföljning startad";
+  /// Osysharp.Conversations.Participant · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Conversations.Participant.JoinedAt
+  /// beside: "Conversation", "Party", "Member", "Agent name", "Role", "Left at"
+  label "Joined at" => "Gick med";
+  /// Osysharp.Conversations.Participant · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Conversations.Participant.LastReadAt
+  /// beside: "Conversation", "Party", "Member", "Agent name", "Role", "Joined at"
+  label "Last read at" => "Senast läst";
+  /// Osysharp.Conversations.Participant · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Osysharp.Conversations.Participant.LastReadSequence
+  /// beside: "Conversation", "Party", "Member", "Agent name", "Role", "Joined at"
+  label "Last read sequence" => "Senast läst nummer";
+  /// Osysharp.Conversations.Participant · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Conversations.Participant.LeftAt
+  /// beside: "Conversation", "Party", "Member", "Agent name", "Role", "Joined at"
+  label "Left at" => "Lämnade";
+  /// Osysharp.Conversations.Participant · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Conversations.Participant.Party
+  /// beside: "Conversation", "Member", "Agent name", "Role", "Joined at", "Left at"
+  /// also in Osysharp.Conversations.ContactPoint
+  label "Party" => "Part";
+  /// Osysharp.Conversations.Participant · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Conversations.Participant.Role
+  /// beside: "Conversation", "Party", "Member", "Agent name", "Joined at", "Left at"
+  label "Role" => "Roll";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ParticipantRole ──
+  /// Osysharp.Conversations.ParticipantRole · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Conversations.ParticipantRole.Ai
+  /// beside: "Customer", "Copied", "Staff", "Observer"
+  label "AI agent" => "AI-agent";
+  /// Osysharp.Conversations.ParticipantRole · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Conversations.ParticipantRole.Cc
+  /// beside: "Customer", "Staff", "AI agent", "Observer"
+  label "Copied" => "Kopia";
+  /// Osysharp.Conversations.ParticipantRole · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Conversations.ParticipantRole.Observer
+  /// beside: "Customer", "Copied", "Staff", "AI agent"
+  label "Observer" => "Observatör";
+  /// Osysharp.Conversations.ParticipantRole · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Conversations.ParticipantRole.Staff
+  /// beside: "Customer", "Copied", "AI agent", "Observer"
+  label "Staff" => "Personal";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.Party ──
+  /// Osysharp.Conversations.Party · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Conversations.Party.Account
+  /// beside: "Display name", "Language", "Created by visit", "Merged into", "Erased at", "Points"
+  label "Account" => "Konto";
+  /// Osysharp.Conversations.Party · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.Conversations.Party.CreatedByVisit
+  /// beside: "Display name", "Language", "Account", "Merged into", "Erased at", "Points"
+  label "Created by visit" => "Skapad av besök";
+  /// Osysharp.Conversations.Party · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Conversations.Party.ErasedAt
+  /// beside: "Display name", "Language", "Account", "Created by visit", "Merged into", "Points"
+  label "Erased at" => "Raderad";
+  /// Osysharp.Conversations.Party · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Conversations.Party.Points
+  /// beside: "Display name", "Language", "Account", "Created by visit", "Merged into", "Erased at"
+  label "Points" => "Kontaktvägar";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.ProofState ──
+  /// Osysharp.Conversations.ProofState · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Conversations.ProofState.Sending
+  /// beside: "Waiting for the code", "Proven", "Not proven", "Not sent"
+  /// also in Osysharp.Webhooks.WebhookDeliveryState
+  label "Sending" => "Skickar";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.SplitState ──
+  /// Osysharp.Conversations.SplitState · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Conversations.SplitState.Split
+  /// beside: "Refused"
+  label "Split" => "Avdelad";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.TextSource ──
+  /// Osysharp.Conversations.TextSource · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Osysharp.Conversations.TextSource.Human
+  /// beside: "Original", "Machine translation"
+  label "Human translation" => "Mänsklig översättning";
+  /// Osysharp.Conversations.TextSource · a label (a field, a list item, a menu entry) · at most ~27 characters
+  /// shown through Osysharp.Conversations.TextSource.Machine
+  /// beside: "Original", "Human translation"
+  label "Machine translation" => "Maskinöversättning";
+  /// Osysharp.Conversations.TextSource · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Conversations.TextSource.Original
+  /// beside: "Machine translation", "Human translation"
+  label "Original" => "Original";
+
+  // ── Osysharp.Conversations · Osysharp.Conversations.VerificationMethod ──
+  /// Osysharp.Conversations.VerificationMethod · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Conversations.VerificationMethod.Link
+  /// beside: "Code", "Signed in", "Received from"
+  /// also in Composer
+  label "Link" => "Länk";
+  /// Osysharp.Conversations.VerificationMethod · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.Conversations.VerificationMethod.InboundChannel
+  /// beside: "Link", "Code", "Signed in"
+  label "Received from" => "Mottaget från";
+  /// Osysharp.Conversations.VerificationMethod · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Conversations.VerificationMethod.SignIn
+  /// beside: "Link", "Code", "Received from"
+  label "Signed in" => "Inloggad";
+
+  // ── Osysharp.Conversations · PartyCard ──
+  /// PartyCard · a control's name for screen readers
+  accessibleName "Addresses and numbers" => "Adresser och nummer";
+  /// PartyCard · a control's name for screen readers
+  accessibleName "Probably the same person" => "Troligen samma person";
+  /// PartyCard · a button's label · at most ~40 characters
+  /// placeholders: {s.Name} = s.Name
+  /// shown through Button.label
+  button "Merge {s.Name} into this one" => "Slå ihop {s.Name} med den här";
+  /// PartyCard · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Badge.label
+  label "Signed-in customer" => "Inloggad kund";
+  /// PartyCard · message
+  /// placeholders: {facts.MergedInto} = facts.MergedInto
+  /// shown through Alert.message
+  message "Merged into {facts.MergedInto}." => "Sammanslagen med {facts.MergedInto}.";
+  /// PartyCard · text on the page
+  /// placeholders: {s.Name} = s.Name, {s.Shares} = s.Shares
+  text "{s.Name} — shares {s.Shares}" => "{s.Name}, delar {s.Shares}";
+
+  // ── Osysharp.Conversations · PartyCardOf ──
+  /// PartyCardOf · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through PartyCardPoint.Standing
+  /// also in Osysharp.Inbox.AssignReason
+  label "Claimed" => "Uppgiven";
+  /// PartyCardOf · a label (a field, a list item, a menu entry) · at most ~42 characters
+  /// shown through PartyCardPoint.Standing
+  label "Confirmed by staff — not proof" => "Bekräftad av personal, inte bevisad";
+  /// PartyCardOf · a label (a field, a list item, a menu entry) · at most ~33 characters
+  /// placeholders: {p.VerifiedBy} = p.VerifiedBy (string)
+  /// shown through PartyCardPoint.Standing
+  label "Proven — {p.VerifiedBy}" => "Bekräftad: {p.VerifiedBy}";
+  /// PartyCardOf · text on the page
+  /// shown through PartyCardMerge.Sentence
+  text " — by proof" => ", genom bevis";
+  /// PartyCardOf · text on the page
+  /// placeholders: {NameOf} = NameOf(…) (string), {NameOf2} = NameOf(…) (string), {m.Problem} = m.Problem (string)
+  /// shown through PartyCardMerge.Sentence
+  text "Merging {NameOf} into {NameOf2} was refused: {m.Problem}" => "Sammanslagningen av {NameOf} med {NameOf2} avvisades: {m.Problem}";
+  /// PartyCardOf · text on the page
+  /// placeholders: {NameOf} = NameOf(…) (string), {NameOf2} = NameOf(…) (string), {value} = … (string)
+  /// shown through PartyCardMerge.Sentence
+  text "{NameOf} merged into {NameOf2}{value}" => "{NameOf} sammanslagen med {NameOf2}{value}";
+  /// PartyCardOf · text on the page
+  /// placeholders: {NameOf} = NameOf(…) (string), {NameOf2} = NameOf(…) (string)
+  /// shown through PartyCardMerge.Sentence
+  text "{NameOf} was merged into {NameOf2}, then separated again" => "{NameOf} slogs ihop med {NameOf2} och skildes sedan åt igen";
+
+  // ── Osysharp.Conversations · PendingFiles ──
+  /// PendingFiles · a control's name for screen readers
+  /// also in Composer
+  accessibleName "Files to send" => "Filer att skicka";
+
+  // ── Osysharp.Conversations · ProveAddress ──
+  /// ProveAddress · message
+  /// shown through ProveAddress()
+  message "That is not the code we sent — check it and try again." => "Det är inte koden vi skickade. Kontrollera den och försök igen.";
+
+  // ── Osysharp.Conversations · ReceiveInbound ──
+  /// ReceiveInbound · an error message
+  /// placeholders: {inbound.ChannelKey} = inbound.ChannelKey (string)
+  /// shown through ValidationException
+  error "No channel '{inbound.ChannelKey}' is set up — name it in app.Conversations.Channels." => "Ingen kanal '{inbound.ChannelKey}' är konfigurerad. Ange den i app.Conversations.Channels.";
+
+  // ── Osysharp.Conversations · Reply ──
+  /// Reply · an error message
+  /// shown through ValidationException
+  /// also in Write
+  error "Write something first, or attach a file." => "Skriv något först, eller bifoga en fil.";
+
+  // ── Osysharp.Conversations · SendAddressCode ──
+  /// SendAddressCode · message
+  /// shown through SendAddressCode()
+  message "We cannot send codes by mail here." => "Vi kan inte skicka koder via e-post här.";
+
+  // ── Osysharp.Conversations · SetSideDone ──
+  /// SetSideDone · an error message
+  /// shown through ValidationException
+  error "Only a side conversation is set aside — this is a conversation of its own." => "Bara en sidokonversation kan läggas åt sidan. Det här är en egen konversation.";
+
+  // ── Osysharp.Conversations · ShownFor ──
+  /// ShownFor · note
+  /// placeholders: {NotReadyReason} = setup.Translator.NotReadyReason(…) (string)
+  /// shown through Note
+  note "Not translated — {NotReadyReason}" => "Inte översatt: {NotReadyReason}";
+  /// ShownFor · note
+  /// placeholders: {value} = … (string)
+  /// shown through Note
+  note "Not translated — {value}" => "Inte översatt: {value}";
+  /// ShownFor · note
+  /// placeholders: {Join} = string.Join(…) (string)
+  /// shown through Note
+  /// also in ConversationBubble
+  note "Sent in {Join}" => "Skickat på {Join}";
+  /// ShownFor · note
+  /// placeholders: {LanguageName} = setup.Copy.LanguageName(…) (string)
+  /// shown through Note
+  note "Translated from {LanguageName}" => "Översatt från {LanguageName}";
+  /// ShownFor · note
+  /// shown through Note
+  note "Translating…" => "Översätter…";
+  /// ShownFor · note
+  /// shown through Note
+  note "the translator did not answer." => "översättaren svarade inte.";
+
+  // ── Osysharp.Conversations · SideConversationCard ──
+  /// SideConversationCard · a control's name for screen readers
+  accessibleName "Delivery problem" => "Leveransproblem";
+  /// SideConversationCard · a button's label · at most ~38 characters
+  /// shown through IconButton.label
+  button "Close the side conversation" => "Stäng sidokonversationen";
+  /// SideConversationCard · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Mark as done" => "Markera som klar";
+  /// SideConversationCard · a button's label · at most ~14 characters
+  /// shown through Button.label
+  button "Not done" => "Inte klar";
+  /// SideConversationCard · a button's label · at most ~37 characters
+  /// shown through IconButton.label
+  button "Open the side conversation" => "Öppna sidokonversationen";
+  /// SideConversationCard · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Badge.label
+  label "1 message" => "1 meddelande";
+  /// SideConversationCard · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// placeholders: {with} = with
+  /// shown through Badge.label
+  label "Waiting on {with}" => "Väntar på {with}";
+  /// SideConversationCard · a label (a field, a list item, a menu entry) · at most ~27 characters
+  /// shown through ConversationComposer.label
+  label "Write in the thread" => "Skriv i tråden";
+  /// SideConversationCard · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// placeholders: {with} = with
+  /// shown through ConversationComposer.label
+  label "Write to {with}" => "Skriv till {with}";
+  /// SideConversationCard · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// placeholders: {count} = count
+  /// shown through Badge.label
+  label "{count} messages" => "{count} meddelanden";
+  /// SideConversationCard · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// placeholders: {with} = with
+  /// shown through Badge.label
+  label "{with} answered" => "{with} har svarat";
+  /// SideConversationCard · placeholder text inside an empty field · at most ~31 characters
+  /// placeholders: {with} = with
+  /// shown through ConversationComposer.placeholder
+  placeholder "Mailed to {with} only." => "Mejlas bara till {with}.";
+  /// SideConversationCard · text on the page
+  /// placeholders: {value} = …
+  /// shown through problem
+  text "Did not arrive — {value}" => "Kom inte fram: {value}";
+  /// SideConversationCard · text on the page
+  /// placeholders: {with} = with
+  text "Side conversation with {with}" => "Sidokonversation med {with}";
+  /// SideConversationCard · text on the page
+  text "Thread inside the team" => "Tråd inom teamet";
+
+  // ── Osysharp.Conversations · SideConversationStarter ──
+  /// SideConversationStarter · a control's name for screen readers
+  accessibleName "Start a side conversation" => "Starta en sidokonversation";
+  /// SideConversationStarter · a button's label · at most ~13 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  /// also in WebhookSubscriptions
+  button "Send it" => "Skicka";
+  /// SideConversationStarter · a button's label · at most ~23 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Start the thread" => "Starta tråden";
+  /// SideConversationStarter · an error message
+  /// shown through Field.error
+  /// beside: "Inside the team — nobody outside is written to", "Cancel"
+  error "Give it a subject — they read it as the mail's subject." => "Ge den ett ämne. Mottagaren ser det som mejlets ämnesrad.";
+  /// SideConversationStarter · an error message
+  /// shown through Field.error
+  /// beside: "Their name"
+  error "Give the address to write to." => "Ange adressen att skriva till.";
+  /// SideConversationStarter · an error message
+  /// shown through TextAreaField.error
+  /// beside: "Inside the team — nobody outside is written to", "Subject", "Cancel"
+  error "Write what you want to ask." => "Skriv vad du vill fråga.";
+  /// SideConversationStarter · a hint under a field
+  /// shown through Field.hint
+  /// beside: "Their name"
+  hint "They see only this conversation — never the one it is beside." => "De ser bara den här konversationen, aldrig den som den ligger bredvid.";
+  /// SideConversationStarter · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through TextAreaField.label
+  /// beside: "Inside the team — nobody outside is written to", "Subject", "Cancel"
+  label "First note" => "Första notering";
+  /// SideConversationStarter · a label (a field, a list item, a menu entry) · at most ~65 characters
+  /// shown through Switch.label
+  /// beside: "Subject", "Cancel"
+  label "Inside the team — nobody outside is written to" => "Inom teamet, inget skickas till någon utanför";
+  /// SideConversationStarter · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through TextAreaField.label
+  /// beside: "Inside the team — nobody outside is written to", "Subject", "Cancel"
+  label "Message" => "Meddelande";
+  /// SideConversationStarter · placeholder text inside an empty field · at most ~48 characters
+  /// shown through Field.placeholder
+  /// beside: "Their address"
+  placeholder "Optional — as you would greet them" => "Valfritt, så som du skulle hälsa på dem";
+  /// SideConversationStarter · placeholder text inside an empty field · at most ~41 characters
+  /// shown through TextAreaField.placeholder
+  /// beside: "Inside the team — nobody outside is written to", "Subject", "Cancel"
+  placeholder "What the team should look at." => "Vad teamet ska titta på.";
+  /// SideConversationStarter · placeholder text inside an empty field · at most ~35 characters
+  /// shown through Field.placeholder
+  /// beside: "Inside the team — nobody outside is written to", "Cancel"
+  placeholder "What you are asking about" => "Vad du frågar om";
+  /// SideConversationStarter · placeholder text inside an empty field · at most ~37 characters
+  /// shown through TextAreaField.placeholder
+  /// beside: "Inside the team — nobody outside is written to", "Subject", "Cancel"
+  placeholder "What you want to ask them." => "Vad du vill fråga dem.";
+  /// SideConversationStarter · placeholder text inside an empty field · at most ~33 characters
+  /// shown through Field.placeholder
+  /// beside: "Their name"
+  placeholder "orders@supplier.example" => "orders@supplier.example";
+
+  // ── Osysharp.Conversations · SideLine ──
+  /// SideLine · message
+  /// shown through SideConversationLine.Problem
+  message "Not sent." => "Inte skickat.";
+  /// SideLine · message
+  /// shown through SideConversationLine.Problem
+  message "The mail did not arrive." => "Mejlet kom inte fram.";
+
+  // ── Osysharp.Conversations · SplitOff ──
+  /// SplitOff · an error message
+  /// shown through ValidationException
+  error "Only a message a customer wrote can be split off into a conversation of its own." => "Bara ett meddelande som en kund skrivit kan delas av till en egen konversation.";
+  /// SplitOff · an error message
+  /// shown through ValidationException
+  error "That is the only thing the customer wrote here — there is nothing to split it from." => "Det är det enda kunden skrivit här, så det finns inget att dela av det från.";
+
+  // ── Osysharp.Conversations · StartConversation ──
+  /// StartConversation · an error message
+  /// shown through ValidationException
+  error "Write something first — a conversation starts with a message." => "Skriv något först. En konversation börjar med ett meddelande.";
+
+  // ── Osysharp.Conversations · StartSideConversation ──
+  /// StartSideConversation · an error message
+  /// shown through ValidationException
+  error "Give the side conversation a subject — the other side reads it as the mail's subject." => "Ge sidokonversationen ett ämne. Mottagaren ser det som mejlets ämnesrad.";
+  /// StartSideConversation · an error message
+  /// shown through ValidationException
+  error "Start a side conversation from the conversation itself, not from another side conversation." => "Starta en sidokonversation från själva konversationen, inte från en annan sidokonversation.";
+  /// StartSideConversation · an error message
+  /// shown through ValidationException
+  error "Write what you want to ask — a side conversation starts with a message." => "Skriv vad du vill fråga. En sidokonversation börjar med ett meddelande.";
+  /// StartSideConversation · an error message
+  /// placeholders: {NameOf} = NameOf(…) (string)
+  /// shown through ValidationException
+  error "{NameOf} has no address to mail — give one." => "{NameOf} har ingen adress att mejla till. Ange en.";
+  /// StartSideConversation · an error message
+  /// placeholders: {NameOf} = NameOf(…) (string)
+  /// shown through ValidationException
+  error "{NameOf} is on this conversation already — write to them here." => "{NameOf} är redan med i den här konversationen. Skriv till dem här.";
+
+  // ── Osysharp.Conversations · StartSideConversationTo ──
+  /// StartSideConversationTo · an error message
+  /// shown through ValidationException
+  error "Give the address to write to — like orders@supplier.example." => "Ange adressen att skriva till, till exempel orders@supplier.example.";
+
+  // ── Osysharp.Conversations · TakeDown ──
+  /// TakeDown · an error message
+  /// shown through ValidationException
+  error "Write what they said first." => "Skriv först vad de sa.";
+
+  // ── Osysharp.Conversations · ThreadEvent ──
+  /// ThreadEvent · text on the page
+  /// placeholders: {line} = line, {happened.ByName} = happened.ByName
+  /// beside: "6px"
+  text "{line} · by {happened.ByName}" => "{line} · av {happened.ByName}";
+
+  // ── Osysharp.Conversations · ThreadMessage ──
+  /// ThreadMessage · a control's name for screen readers
+  /// placeholders: {name} = name
+  accessibleName "AI draft from {name}" => "AI-utkast från {name}";
+  /// ThreadMessage · a control's name for screen readers
+  /// placeholders: {name} = name
+  accessibleName "Internal note from {name}" => "Intern anteckning från {name}";
+  /// ThreadMessage · a control's name for screen readers
+  /// placeholders: {name} = name
+  accessibleName "Message from {name}" => "Meddelande från {name}";
+  /// ThreadMessage · a button's label · at most ~24 characters
+  /// shown through Button.label
+  button "Hide the original" => "Dölj originalet";
+  /// ThreadMessage · a button's label · at most ~33 characters
+  /// shown through Button.label
+  button "Hide what they received" => "Dölj det de fick";
+  /// ThreadMessage · a button's label · at most ~24 characters
+  /// shown through Button.label
+  button "Show the original" => "Visa originalet";
+  /// ThreadMessage · a button's label · at most ~33 characters
+  /// shown through Button.label
+  button "Show what they received" => "Visa det de fick";
+  /// ThreadMessage · text on the page
+  /// placeholders: {delivery.To} = delivery.To
+  text " at {delivery.To}" => " till {delivery.To}";
+  /// ThreadMessage · text on the page
+  /// placeholders: {delivery.To} = delivery.To
+  text " to {delivery.To}" => " till {delivery.To}";
+  /// ThreadMessage · text on the page
+  /// shown through otherLabel
+  text "As it was written" => "Som det skrevs";
+  /// ThreadMessage · text on the page
+  /// placeholders: {LanguageNameOf} = LanguageNameOf(…)
+  text "As written, in {LanguageNameOf}" => "Som det skrevs, på {LanguageNameOf}";
+  /// ThreadMessage · text on the page
+  /// placeholders: {value} = …, {value2} = …
+  text "Did not arrive{value} — {value2}" => "Kom inte fram{value}: {value2}";
+  /// ThreadMessage · text on the page
+  /// placeholders: {LanguageNameOf} = LanguageNameOf(…)
+  /// beside: "pre-wrap"
+  text "In {LanguageNameOf}" => "På {LanguageNameOf}";
+  /// ThreadMessage · text on the page
+  /// placeholders: {value} = …
+  /// also in SideConversationCard
+  text "Not sent — {value}" => "Inte skickat: {value}";
+  /// ThreadMessage · text on the page
+  /// placeholders: {delivery.ChannelKey} = delivery.ChannelKey
+  text "Sending by {delivery.ChannelKey}…" => "Skickar via {delivery.ChannelKey}…";
+  /// ThreadMessage · text on the page
+  /// placeholders: {delivery.ChannelKey} = delivery.ChannelKey, {value} = …
+  text "Sent by {delivery.ChannelKey}{value}" => "Skickat via {delivery.ChannelKey}{value}";
+  /// ThreadMessage · text on the page
+  /// placeholders: {Join} = string.Join(…)
+  text "Sent in {Join}" => "Skickat på {Join}";
+  /// ThreadMessage · text on the page
+  /// shown through otherLabel
+  text "The original" => "Originalet";
+  /// ThreadMessage · text on the page
+  /// placeholders: {LanguageNameOf} = LanguageNameOf(…)
+  text "Translated from {LanguageNameOf}" => "Översatt från {LanguageNameOf}";
+  /// ThreadMessage · text on the page
+  /// placeholders: {delivery.ChannelKey} = delivery.ChannelKey
+  text "Translating, then sending by {delivery.ChannelKey}…" => "Översätter och skickar sedan via {delivery.ChannelKey}…";
+  /// ThreadMessage · text on the page
+  /// shown through otherLabel
+  text "What they received" => "Det de fick";
+  /// ThreadMessage · text on the page
+  /// also in SideConversationCard
+  /// also in SlaChip
+  text "held" => "spärrat";
+  /// ThreadMessage · text on the page
+  text "internal note" => "intern anteckning";
+  /// ThreadMessage · text on the page
+  text "replied" => "svarade";
+  /// ThreadMessage · text on the page
+  /// also in SideConversationCard
+  text "the carrier gave it back" => "e-postservern skickade tillbaka det";
+  /// ThreadMessage · text on the page
+  /// placeholders: {message.ChannelKey} = message.ChannelKey
+  text "via {message.ChannelKey}" => "via {message.ChannelKey}";
+
+  // ── Osysharp.Conversations · TranslateConversationAgain ──
+  /// TranslateConversationAgain · an error message
+  /// shown through ValidationException
+  /// also in TranslateAgain
+  error "No translator is set up." => "Ingen översättare är inställd.";
+
+  // ── Osysharp.Conversations · TranslatorNotReady ──
+  /// TranslatorNotReady · text on the page
+  text "The translator is not ready — its settings are not complete." => "Översättaren är inte redo, dess inställningar är inte klara.";
+
+  // ── Osysharp.Conversations · Uncopy ──
+  /// Uncopy · an error message
+  /// shown through ValidationException
+  error "Only somebody copied in can be taken off — not the person the conversation is with." => "Bara den som fått en kopia kan tas bort, inte personen konversationen förs med.";
+  /// Uncopy · an error message
+  /// placeholders: {NameOf} = NameOf(…) (string)
+  /// shown through ValidationException
+  error "{NameOf} is no longer copied in." => "{NameOf} får inte längre kopior.";
+
+  // ── Osysharp.Conversations · UnmergeParties ──
+  /// UnmergeParties · an error message
+  /// shown through ValidationException
+  error "Only a merge that went through can be undone." => "Bara en sammanslagning som genomfördes kan ångras.";
+
+  // ── Osysharp.Conversations · Write ──
+  /// Write · an error message
+  /// shown through ValidationException
+  error "A note is never sent on a channel — post it without one, or post a customer-visible reply." => "En anteckning skickas aldrig via en kanal. Publicera den utan kanal, eller skicka ett svar som kunden ser.";
+  /// Write · an error message
+  /// placeholders: {channel} = channel (string)
+  /// shown through ValidationException
+  error "No channel '{channel}' is set up — name it in app.Conversations.Channels, or reply on the web." => "Ingen kanal '{channel}' är konfigurerad. Ange den i app.Conversations.Channels, eller svara på webben.";
+  /// Write · an error message
+  /// placeholders: {said.Length} = said.Length (int), {channel} = channel (string), {MaxLength} = ….MaxLength(…) (int) — {said.Length} is a count: give one text per plural form
+  /// shown through ValidationException
+  error "This reply is {said.Length} characters, and one {channel} message carries at most {MaxLength} — shorten it, or send it on another channel." => { one: "Svaret är ett tecken långt, och ett {channel}-meddelande rymmer högst {MaxLength}. Korta det eller skicka det via en annan kanal.", other: "Svaret är {said.Length} tecken långt, och ett {channel}-meddelande rymmer högst {MaxLength}. Korta det eller skicka det via en annan kanal." };
+}

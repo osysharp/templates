@@ -1,0 +1,102 @@
+// Vall's back office, through its pages — what staff see on an ordinary day. `osy test --pixels` photographs each.
+
+using Osysharp.Shop;
+using Osysharp.Workflow;
+
+[TestFixture]
+void Day() {
+  new ShopSettings { Name = "Vall", Currency = "SEK", CurrencySymbol = "kr", SymbolAfter = true, OrderPrefix = "VL-",
+                     HoldDays = 2, DeliveryFee = 59m, FreeDeliveryFrom = 1000m, VatPercent = 25m };
+  var dresses = new Category { Name = "Dresses", Slug = "dresses", Rank = 1 };
+  var knitwear = new Category { Name = "Knitwear", Slug = "knitwear", Rank = 2 };
+  Stock("Satin cowl slip dress", "satin-cowl-slip-dress", dresses, 1290m, "photos/satin_slip_dress_1.jpg");
+  Stock("Jersey pencil midi dress", "jersey-pencil-midi-dress", dresses, 1590m, "photos/jersey_midi_dress_1.jpg");
+  Stock("Cotton V-neck cardigan", "cotton-v-neck-cardigan", knitwear, 990m, "");
+  Stock("Chunky rib cardigan", "chunky-rib-cardigan", knitwear, 1190m, "");
+  var ida = new ShopAccount { Email = "ida@vall.test", PasswordHash = Security.HashPassword("desk-pass-1") };
+  new ShopRoleGrant { Member = ida, Role = ShopRole.Staff };
+}
+
+void Stock(string name, string slug, Category category, decimal price, string photo) {
+  var p = new Product { Name = name, Slug = slug, Brand = "Vall Studio", Category = category, Price = price };
+  new Variant { Product = p, Sku = slug.ToUpper() + "-S", Size = "S", Stock = 6 };
+  new Variant { Product = p, Sku = slug.ToUpper() + "-M", Size = "M", Stock = 6 };
+  if (photo != "") { new ProductImage { Product = p, Path = photo, Alt = name }; }
+}
+
+principal Staff => ShopAccount.Single(s => s.Email == "ida@vall.test");
+
+/// An order of one piece, delivered home and paid by transfer — answers its reference.
+string Ordered(string visit, string product, string size, string name, string email) {
+  runas (new Visitor { Id = visit }) {
+    AddToBag(Variant.Single(v => v.Product.Name == product && v.Size == size), 1);
+    return PlaceOrder(name, email, "", "flat", "banktransfer", "Storgatan 1", "11122", "Stockholm", "SE").Reference;
+  }
+}
+
+/// A working day's orders: waiting, paid, being picked, sent, delivered — placed by customers; `Advance` moves them.
+List<string> AWorkingDay() {
+  return new List<string> {
+    Ordered("v-1", "Satin cowl slip dress", "S", "Maja Berg", "maja@example.test"),
+    Ordered("v-2", "Jersey pencil midi dress", "M", "Elin Holm", "elin@example.test"),
+    Ordered("v-3", "Cotton V-neck cardigan", "S", "Sara Lind", "sara@example.test"),
+    Ordered("v-4", "Chunky rib cardigan", "M", "Nora Ek", "nora@example.test"),
+    Ordered("v-5", "Satin cowl slip dress", "M", "Alva Berg", "alva@example.test"),
+  };
+}
+
+/// As staff: the four paid, one picking, one sent, one delivered.
+void Advance(List<string> day) {
+  for (var i = 1; i < day.Count; i = i + 1) {
+    var reference = day[i];
+    var o = Order.Single(x => x.Reference == reference);
+    MarkPaid(o, ""); Workflow.Settle(o);
+  }
+  var picking = day[2];
+  var sent = day[3];
+  var delivered = day[4];
+  var p = Order.Single(x => x.Reference == picking); StartPicking(p); Workflow.Settle(p);
+  var s = Order.Single(x => x.Reference == sent); MarkSent(s, "00373501093057988987"); Workflow.Settle(s);
+  var d = Order.Single(x => x.Reference == delivered); MarkSent(d, "00373501093057988994"); Workflow.Settle(d);
+  MarkDelivered(d); Workflow.Settle(d);
+}
+
+void SignIn(string page) {
+  Ui.Visit(page);
+  Ui.Fill("Email", "ida@vall.test");
+  Ui.Fill("Password", "desk-pass-1");
+  Ui.Click("Sign in", within: "Page");
+}
+
+[Test(Day)]
+void the_desk_on_a_working_day() {
+  var day = AWorkingDay();
+  runas (Staff) { Advance(day); }
+  SignIn("/staff/desk");
+  Assert.Hidden("Payment received");      // "All" shows each order's Details only
+  Ui.Click("Waiting for payment");
+  Assert.Visible("Payment received");
+  Ui.Click("To pick");
+  Assert.Visible("Start picking");
+  Assert.Visible("Being picked");
+  Assert.Visible("Delivered");
+}
+
+[Test(Day)]
+void the_orders_page_on_a_working_day() {
+  var day = AWorkingDay();
+  runas (Staff) { Advance(day); }
+  SignIn("/staff/orders");
+  Assert.Visible("Elin Holm");
+  Ui.Click("To pick");
+  Assert.Visible("Send…");
+}
+
+[Test(Day)]
+void the_books_on_a_working_day() {
+  var day = AWorkingDay();
+  runas (Staff) { Advance(day); }
+  SignIn("/staff/books");
+  Assert.Visible("SIE 4 for the accountant");
+  Assert.Visible("VAT 1023.80");                  // four paid orders, 25 % inside 5 119 kr (one paid delivery)
+}

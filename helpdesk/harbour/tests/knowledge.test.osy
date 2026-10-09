@@ -1,0 +1,284 @@
+// THE HELP CENTRE, THE HELP FORM'S SUGGESTIONS AND THE CHAT (H6 + H7) — Harbour's articles as a customer reads them, in
+// English, Swedish and Arabic; the playbooks the team keeps for itself, which no customer reads or finds; the help form
+// offering an article as the subject is typed; and the chat in the corner, searching the help centre before a person is
+// asked, opening a ticket with its first message and mailing a reply the customer left unread. Each screen is
+// photographed (`osy test --pixels`).
+using Osysharp.Identity;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Accounts;
+using Osysharp.Conversations;
+using Osysharp.Knowledge;
+using Osysharp.Mail;
+using Osysharp.Workflow;
+using Osysharp.Notifications;
+
+/// Harbour's help centre: Nadia writes articles, Leo (a lead) reviews and publishes them, Clara is a customer with a
+/// portal account. Two categories for everyone and the team's own playbooks.
+[TestFixture]
+void HelpCentre() {
+  SetUpTestDesk();
+  var nadia = new Agent { Email = "nadia@helpdesk.test", DisplayName = "Nadia Haddad" };
+  new RoleGrant { Member = nadia, Role = AppRole.Agent };
+  JoinTheDesk(nadia);
+  var leo = new Agent { Email = "leo@helpdesk.test", DisplayName = "Leo Varga" };
+  new RoleGrant { Member = leo, Role = AppRole.Lead };
+  JoinTheDesk(leo);
+  var clara = new User { Email = "clara@orbit.test", DisplayName = "Clara Diaz", EmailVerifiedAt = DateTime.UtcNow };
+  new RoleGrant { Member = clara, Role = AppRole.Customer };
+  var start = new KnowledgeCategory { Name = "Getting started", Slug = "getting-started", Position = 1,
+                                      Description = "Your first app, your account, and how to ask for help." };
+  new KnowledgeSection { Category = start, Name = "Your account", Slug = "your-account", Position = 1 };
+  new KnowledgeSection { Category = start, Name = "Your first app", Slug = "your-first-app", Position = 2 };
+  var billing = new KnowledgeCategory { Name = "Billing", Slug = "billing", Position = 2,
+                                        Description = "Plans, invoices and receipts." };
+  new KnowledgeSection { Category = billing, Name = "Invoices", Slug = "invoices", Position = 1 };
+  var playbooks = new KnowledgeCategory { Name = "Agent playbooks", Slug = "agent-playbooks", Position = 3,
+                                          Audience = KnowledgeAudience.Team, Description = "How the team handles the hard ones." };
+  new KnowledgeSection { Category = playbooks, Name = "Escalations", Slug = "escalations", Position = 1 };
+  UnitOfWork.Commit();
+  // The shelves' names in Swedish and Arabic — what the team types on the desk read in that language.
+  Session.SetLanguage("sv");
+  start.Name = "Kom igång"; start.Description = "Din första app, ditt konto och hur du ber om hjälp.";
+  billing.Name = "Fakturering"; billing.Description = "Abonnemang, fakturor och kvitton.";
+  UnitOfWork.Commit();
+  Session.SetLanguage("ar");
+  start.Name = "البدء"; start.Description = "تطبيقك الأول وحسابك وكيف تطلب المساعدة.";
+  billing.Name = "الفوترة"; billing.Description = "الخطط والفواتير والإيصالات.";
+  UnitOfWork.Commit();
+  Session.SetLanguage("en");
+}
+
+principal Nadia => Agent.Single(a => a.Email == "nadia@helpdesk.test");
+principal LeoLead => Agent.Single(a => a.Email == "leo@helpdesk.test");
+principal Clara => User.Single(u => u.Email == "clara@orbit.test");
+
+/// Nadia writes an article and Leo publishes it, the way the team does. Answers its address.
+string HarbourArticle(string section, string title, string summary, string body) {
+  var slug = "";
+  runas (Nadia) {
+    var d = NewKnowledgeArticle(KnowledgeSection.Single(s => s.Slug == section), title);
+    d.Summary = summary;
+    d.Body = body;
+    UnitOfWork.Commit();
+    slug = d.Article.Slug;
+    SendKnowledgeForReview(d);
+  }
+  Background.Settle();
+  runas (LeoLead) { PublishKnowledge(KnowledgeRevision.Single(r => r.Article.Slug == slug && r.Stage == KnowledgeStage.InReview)); }
+  Background.Settle();
+  return slug;
+}
+
+/// Nadia writes the `language` version of an article and Leo publishes it — when the desk speaks that language: a desk
+/// started without Swedish has no Swedish help centre to write it in (the knowledge kit refuses it, by name).
+void HarbourTranslation(string slug, string language, string title, string summary, string body) {
+  if (!App.Languages.Contains(language)) { return; }
+  runas (Nadia) {
+    var d = KnowledgeDraft(KnowledgeArticle.Single(a => a.Slug == slug), language);
+    d.Title = title;
+    d.Summary = summary;
+    d.Body = body;
+    UnitOfWork.Commit();
+    SendKnowledgeForReview(d);
+  }
+  Background.Settle();
+  runas (LeoLead) {
+    PublishKnowledge(KnowledgeRevision.Single(r => r.Article.Slug == slug && r.Language == language && r.Stage == KnowledgeStage.InReview));
+  }
+  Background.Settle();
+}
+
+/// The help centre with something in it — the sign-in article in three languages, and a playbook.
+void Written() {
+  var signIn = HarbourArticle("your-account", "Reset your password",
+    "When the sign-in code or the reset mail does not arrive.",
+    "## Ask for a new password\n\nChoose **Forgot your password?** on the sign-in page and type the address you signed up with. The mail arrives within a minute.\n\n## The mail does not arrive\n\n- Look in your spam folder.\n- Check the address — a typo sends it nowhere.\n- Ask us from the help form, and say which address you used.");
+  HarbourTranslation(signIn, "sv", "Återställ ditt lösenord", "När inloggningskoden eller återställningsmejlet inte kommer fram.",
+    "## Be om ett nytt lösenord\n\nVälj **Glömt lösenordet?** på inloggningssidan och skriv adressen du registrerade dig med. Mejlet kommer inom en minut.\n\n## Mejlet kommer inte fram\n\n- Titta i skräpposten.\n- Kontrollera adressen — ett stavfel skickar det ingenstans.");
+  HarbourTranslation(signIn, "ar", "إعادة تعيين كلمة المرور", "عندما لا يصل رمز تسجيل الدخول أو بريد إعادة التعيين.",
+    "## اطلب كلمة مرور جديدة\n\nاختر **نسيت كلمة المرور؟** في صفحة تسجيل الدخول واكتب العنوان الذي سجلت به. يصل البريد خلال دقيقة.\n\n## البريد لا يصل\n\n- ابحث في مجلد الرسائل غير المرغوب فيها.\n- تحقق من العنوان — خطأ مطبعي يرسله إلى لا مكان.");
+  HarbourArticle("your-first-app", "Deploy your first app", "From a new project to an address you can share.",
+    "Run `osy launch` in your project. It compiles the app and opens it in your browser.");
+  HarbourArticle("invoices", "Download an invoice", "Every invoice is on the Billing page.",
+    "Open **Billing**, pick the month, and choose **Download PDF**.");
+  HarbourArticle("escalations", "Escalate a password problem to engineering",
+    "When a reset mail fails for a whole domain.",
+    "If three customers on one mail domain cannot reset their password, move the ticket to Engineering and tag it **mail-delivery**.");
+}
+
+// SECURITY-INVARIANT(knowledge-team-articles-never-reach-a-customer) — Harbour's half: its playbooks, its widget.
+[Test(HelpCentre)]
+void a_customer_reads_the_help_centre_and_never_a_playbook() {
+  Written();
+  runas (Clara) {
+    Assert.True(KnowledgeArticleView("reset-your-password").Found);
+    Assert.False(KnowledgeArticleView("escalate-a-password-problem-to-engineering").Found);
+    Assert.Equal(["Reset your password"], SearchKnowledge("password").Hits.Select(h => h.Title).ToList());
+    Assert.Equal(["Reset your password"], SuggestKnowledge("my password reset mail never comes").Select(h => h.Title).ToList());
+  }
+  Assert.Equal(["Reset your password"], SearchKnowledge("password").Hits.Select(h => h.Title).ToList());
+  // The team finds the playbook on the desk — and the chat's search, for customers, still leaves it out.
+  runas (Nadia) {
+    Assert.Equal(2, SearchKnowledge("password", includeTeam: true).Hits.Count);
+    Assert.Equal(1, SearchKnowledge("password").Hits.Count);
+  }
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/help-centre");
+  Assert.Visible("How can we help?");
+  Assert.Visible("Getting started", within: "Categories");
+  Assert.Hidden("Agent playbooks");
+  Ui.Shot("help-centre-wide-light");
+  Ui.Theme("dark");
+  Ui.Shot("help-centre-wide-dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Shot("help-centre-phone-light");
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/help-centre/a/escalate-a-password-problem-to-engineering");
+  Assert.Visible("We could not find that article");
+  Ui.Shot("help-centre-playbook-refused-wide-light");
+}
+
+[Test(HelpCentre)]
+void an_article_reads_in_english() {
+  Written();
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/help-centre/a/reset-your-password");
+  Assert.Visible("Reset your password");
+  Assert.Visible("The mail does not arrive");
+  Ui.Shot("article-en-wide-light");
+}
+
+[Test(HelpCentre)]
+void the_help_form_suggests_articles_as_the_subject_is_typed() {
+  Written();
+  Ui.Viewport(1280, 900);
+  Ui.Visit("/help");
+  Ui.Fill("Subject", "My password reset mail never arrives");
+  Assert.Visible("These articles might answer it");
+  Assert.Visible("Reset your password");
+  Assert.Hidden("Escalate a password problem to engineering");
+  Ui.Shot("help-form-suggestions-wide-light");
+  Ui.Click("Reset your password");
+  Assert.Dialog("Reset your password");
+  Ui.Shot("help-form-suggestion-open-wide-light");
+  Ui.Click("Back to your message");
+  // What they wrote is still there.
+  Assert.Visible("These articles might answer it");
+  Ui.Viewport(390, 844);
+  Ui.Shot("help-form-suggestions-phone-light");
+}
+
+/// A reviewer is TOLD when an article waits for them — not left to find it in the queue — and the writer is told when it
+/// comes back with changes to make. Nobody is told about their own step.
+[Test(HelpCentre)]
+void a_reviewer_is_told_when_an_article_waits_and_the_writer_when_it_comes_back() {
+  var version = Guid.Empty;
+  runas (Nadia) {
+    var d = NewKnowledgeArticle(KnowledgeSection.Single(s => s.Slug == "invoices"), "Change your billing address");
+    d.Body = "Open **Billing** and choose **Edit address**.";
+    UnitOfWork.Commit();
+    SendKnowledgeForReview(d);
+    version = d.Id;
+  }
+  Background.Settle();
+  runas (LeoLead) {
+    var waiting = Notification.Single(n => n.About.Id == version);
+    Assert.Equal("Osysharp.Knowledge.ArticleSentForReview", waiting.Kind);
+    // The article's own facts — its title, and the page it opens on in its language — reach the bell with no words of
+    // the desk's: the kit's [Title] and [Opens], through the desk's take-over of that page.
+    var line = MyNotificationLines().Single(l => l.Title == "Change your billing address");
+    Assert.True(line.Link.StartsWith("/knowledge/a/"), line.Link);
+    SendKnowledgeBack(KnowledgeRevision.Single(r => r.Id == version), "Say where Billing is — top right, under your name.");
+  }
+  Background.Settle();
+  runas (Nadia) {
+    var back = Notification.Single(n => n.About.Id == version);
+    Assert.Equal("Osysharp.Knowledge.ArticleSentBack", back.Kind);
+    Assert.Equal("Sent back: Say where Billing is — top right, under your name.", SaidOf(back));
+  }
+  // The actions a rule or a macro may run on an article are the kit's own steps, by name.
+  runas (LeoLead) {
+    Assert.Equal("Publish", Actions.Find("Osysharp.Knowledge.PublishKnowledge")!.Label);
+    Assert.Equal("Archive", Actions.Find("Osysharp.Knowledge.ArchiveKnowledge")!.Label);
+    Assert.Equal("Bring back", Actions.Find("Osysharp.Knowledge.RestoreKnowledge")!.Label);
+  }
+}
+
+/// The help centre's frame — the portal's header, its language switch, its account and the chat — is the help centre's
+/// LAYOUT, so moving between its pages keeps it: a customer who opened the chat and searched it, then opened the article
+/// it found, still has the chat open beside the article, with their search in it.
+[Test(HelpCentre)]
+void the_chat_stays_open_while_a_customer_moves_between_help_centre_pages() {
+  Written();
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/help-centre");
+  Ui.Click("Chat with us");
+  Ui.Fill("Search our help articles", "invoice");
+  Ui.Click("Download an invoice", within: "Chat with us");
+  Assert.Visible("Download PDF");
+  Assert.Visible("Search our help articles");
+  Assert.Visible("Download an invoice", within: "Chat with us");
+  Ui.Shot("help-centre-article-chat-kept-wide-light");
+}
+
+[Test(HelpCentre)]
+void the_chat_searches_the_help_centre_and_its_first_message_opens_a_ticket() {
+  Written();
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/help-centre");
+  Ui.Click("Chat with us");
+  Assert.Visible("Search our help articles");
+  Ui.Fill("Search our help articles", "invoice");
+  Assert.Visible("Download an invoice");
+  Ui.Shot("chat-kb-search-wide-light");
+  Ui.Fill("Search our help articles", "escalate engineering");
+  Assert.Visible("Nothing found — write to us below and a person answers.");
+  Assert.Hidden("Escalate a password problem to engineering");
+  Ui.Fill("Your name", "Pat Kim");
+  Ui.Fill("Your email", "pat@lantern.test");
+  Ui.Fill("Your message", "Our team cannot reset passwords since this morning.");
+  Ui.Click("Start the conversation");
+  Assert.Visible("Our team cannot reset passwords since this morning.");
+  Ui.Shot("chat-started-wide-light");
+  Ui.Viewport(390, 844);
+  Ui.Shot("chat-started-phone-light");
+  // The first message opened a ticket on the desk, titled with its first words.
+  runas (Nadia) {
+    var t = Ticket.Single(x => x.Title == "Our team cannot reset passwords since this morning.");
+    Assert.Equal("Pat Kim", t.Customer.DisplayName);
+  }
+}
+
+[Test(HelpCentre)]
+void a_chat_reply_left_unread_is_mailed_with_a_link_back_to_the_chat() {
+  TestClock.Set(new DateTime(2030, 3, 4, 9, 0, 0));
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/help-centre");
+  Ui.Click("Chat with us");
+  Ui.Fill("Your email", "pat@lantern.test");
+  Ui.Fill("Your message", "Is there an export of all tickets?");
+  Ui.Click("Start the conversation");
+  Assert.Visible("Is there an export of all tickets?");
+  // They leave the chat — the reply arrives while nobody is reading it.
+  Ui.Click("Close the chat");
+  Ui.Visit("/help");
+  runas (Nadia) {
+    var t = Ticket.Single(x => x.Title == "Is there an export of all tickets?");
+    ReplyToTicket(t.Id, "Yes — Settings › Export, as CSV.");
+  }
+  // Ten minutes later the unread reply is mailed, with a link back to the chat.
+  TestClock.Advance(TimeSpan.FromMinutes(11));
+  runas (Nadia) {
+    var c = Ticket.Single(x => x.Title == "Is there an export of all tickets?").Conversation;
+    foreach (var seat in Participant.Where(p => p.Conversation == c && p.Party != null).ToList()) { Workflow.Settle(seat); }
+    foreach (var d in MessageDelivery.Where(d => d.Message.Conversation == c).ToList()) { Workflow.Settle(d); }
+  }
+  Background.Settle();
+  runas (AuthBootstrap) {
+    var mail = OutgoingMail.Where(m => m.To == "pat@lantern.test").OrderByDescending(m => m.CreatedAt).First();
+    Assert.Contains("Yes — Settings › Export, as CSV.", mail.Text ?? "");
+    Assert.Contains("/conversations/continue/", mail.Text ?? "");
+  }
+}

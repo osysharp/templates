@@ -1,0 +1,155 @@
+using Osysharp.Shop;
+using Osysharp.Pages;
+using Osysharp.Blocks;
+
+// The shop's desk — bookmark /staff/orders; signed out, it sends you to sign in and back. Sign in, see every order, mark a transfer received, send or hand over what is paid (booking it with the carrier), call a reservation off, refund. A tool, so it
+// gets a frame of its own — the storefront's bag and hero have no business here — in the same dark, same type.
+
+/// The desk's frame — Osysharp.Ui's `WorkspaceShell`, designed once. Every staff page stands in it (`[Layout(WorkspaceFrame)]`):
+/// this store's own, and the kits' — the shop's desk, counter and returns, the codes, the books — which put themselves
+/// in its navigation (`[Nav]`); the bar lists them with `Nav.Pages()`, each only for someone its page admits.
+[AllowAnonymous]
+component StaffShell() : WorkspaceShell {
+  render {
+    Stack(gap: 0, minH: Length.Screen, bg: Colors.Bg, color: Colors.OnBg) {
+      Row(justify: Justify.Between, align: Align.Center, gap: 4, px: 6, py: 4, borderBW: 1, border: Colors.Border,
+          wrap: Wrapping.Wrap, role: UiRole.Banner, label: "Shop desk") {
+        Row(gap: 3, align: Align.Baseline) {
+          Text("Second Round", fontFamily: Font.Display, fontSize: "22px", letterSpacing: "0.3em");
+          Text("shop desk", fontFamily: Font.Mono, fontSize: FontSize.Label, color: Colors.TextMuted);
+        }
+        Row(gap: 5) {
+          foreach (var n in Nav.Pages()) { Link(href: n.To, label: n.Label) { Text(n.Label, color: Colors.TextSecondary); } }
+          Link(href: "/", label: "The shop") { Text("The shop →", color: Colors.Primary); }
+        }
+      }
+      Box(grow: 1, role: UiRole.Main, label: "Desk") { Slot; }
+    }
+  }
+}
+
+[Title("Orders — Second Round")]
+[Route("/staff/orders")]
+[Layout(WorkspaceFrame)]
+[Nav("Orders", Order = 15)]
+[Render(CSR)]
+[Authorize(IsShopPacker)]   // a packer works the orders too; the row's buttons show them no money
+component StaffOrders() {
+  live var orders = Order.Include(o => o.Lines).Include(o => o.Contact).OrderByDescending(o => o.PlacedAt).ToList();
+  string stage = "all";
+  // An order acted on stays in view — its buttons greyed now — until a tab is chosen again, so a row does not vanish
+  // under the hand that just moved it.
+  List<Guid> kept = [];
+  action Show(string which) { stage = which; kept = orders.Where(o => InOrderStage(o, which)).Select(o => o.Id).ToList(); }
+
+  render {
+    Stack(gap: 0, px: 6, py: 10, maxW: "1200px") {
+      Row(justify: Justify.Between, align: Align.End, pb: 6) {
+        Text("Orders", fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Headline, lineHeight: "1");
+        Text($"{orders.Count(o => o.Status == OrderStatus.Reserved)} waiting for payment", fontFamily: Font.Mono,
+             fontSize: FontSize.Label, color: Colors.TextMuted);
+      }
+      if (orders.Count == 0) {
+        Text("No orders yet.", color: Colors.TextMuted, py: 8);
+      }
+      // Where the orders stand — each tab counts what is in it.
+      Box(pb: 5) {
+        Tabs() {
+          foreach (var t in OrderStageTabs()) {
+            Tab($"{t.Label} · {orders.Count(o => InOrderStage(o, t.Key))}", selected: stage == t.Key, onPress: () => Show(t.Key));
+          }
+        }
+      }
+      if (orders.Count > 0) { DeskHeader(); }
+      foreach (var order in orders) {
+        if (InOrderStage(order, stage) || kept.Contains(order.Id)) { OrderRow(order, stage); }
+      }
+    }
+  }
+}
+
+/// The desk's columns — ONE template for the header and every row, with a FIXED actions column. Each row is its own
+/// grid, and an `auto` last column sized itself to that row's buttons, so every row divided the width differently and
+/// no column lined up (a row with "Refund…", one with "Cancel…" and one with no button at all each put "Total" in a
+/// different place).
+string DeskColumns() {
+  return "minmax(0, 1.1fr) minmax(0, 1.6fr) minmax(0, 1.6fr) minmax(0, 0.8fr) 430px";
+}
+
+/// The column names, on the same template as the rows.
+[Composable]
+component DeskHeader() {
+  render {
+    Box(display: Display.Grid, cols: DeskColumns(), gap: 5, pb: 3) {
+      DeskLabel("Order");
+      DeskLabel("Customer");
+      DeskLabel("Items");
+      DeskLabel("Total");
+      Box(decorative: true) { }
+    }
+  }
+}
+
+[Composable]
+component DeskLabel(string text) {
+  render { Text(text, fontFamily: Font.Mono, fontSize: FontSize.Label, color: Colors.TextMuted, letterSpacing: "0.04em"); }
+}
+
+/// One order on the desk: reference and date, who, what, how much, where it stands — and what can be done to it.
+[Composable]
+component OrderRow(Order order, string stage) {
+  render {
+    Box(display: Display.Grid, cols: DeskColumns(), gap: 5,
+        align: Align.Center, py: 4, borderTW: 1, border: Colors.Border, label: order.Reference) {
+      Stack(gap: 1) {
+        Text(order.Reference, fontFamily: Font.Mono);
+        Text(order.PlacedAt.ToString("d MMM, HH:mm"), fontSize: FontSize.Label, color: Colors.TextMuted);
+      }
+      Stack(gap: 1, minW: "0") {
+        foreach (var c in order.Contact) {
+          Text(c.Name);
+          Text(c.Email, fontSize: FontSize.Label, color: Colors.TextMuted);
+        }
+      }
+      Stack(gap: 1, minW: "0") {
+        foreach (var line in order.Lines) { Text(line.VariantLabel == null ? line.ProductName : $"{line.ProductName} · {line.VariantLabel}"); }
+        Text($"{order.PaymentLabel ?? order.PaymentMethod} · {order.DeliveryLabel ?? order.Fulfilment.Label}", fontSize: FontSize.Label, color: Colors.TextMuted);
+        if (order.CancelReason != null) { Text(order.CancelReason, fontSize: FontSize.Label, color: Colors.TextMuted); }
+        if (order.RefundReason != null) { Text(order.RefundReason, fontSize: FontSize.Label, color: Colors.TextMuted); }
+        if (order.RefundProblem != null) { Text(order.RefundProblem, fontSize: FontSize.Label, color: "#F2C4A6"); }
+      }
+      Stack(gap: 1) {
+        Text(PriceText(order.Total), fontFamily: Font.Mono);
+        StatusTag(order.Status);
+      }
+      DeskOrderActions(order, stage: stage);
+    }
+  }
+}
+
+[Composable]
+component StatusTag(OrderStatus status) {
+  render {
+    Text(status.Label, fontFamily: Font.Mono, fontSize: FontSize.Label, letterSpacing: "0.04em",
+         color: status == OrderStatus.Paid ? Colors.Primary
+              : status == OrderStatus.Reserved ? "#E8C07C"
+              : status == OrderStatus.Refunded ? "#C9A0DC"
+              : status == OrderStatus.RefundRequested || status == OrderStatus.RefundProcessing ? "#E8C07C"
+              : Colors.TextMuted);
+  }
+}
+
+// The pages — the look each version of the site wears, the menu, the strip across the top, the footer and the front page,
+// in which version, and when. Staff arrange them beside the live page; nobody else sees a draft.
+[Title("Pages — the desk")]
+[Route("/staff/pages")]
+[Layout(WorkspaceFrame)]
+[Nav("Pages", Order = 90)]
+[Render(CSR)]
+[Authorize(IsShopStaff)]
+component StaffPages() {
+  render { Box(px: 6, py: 6) { PagesDesk(); } }
+}
+
+// Who may arrange the pages: staff. A customer reads the live site and nothing else (Osysharp.Blocks' own rules).
+policy ArrangesPages => IsShopStaff;

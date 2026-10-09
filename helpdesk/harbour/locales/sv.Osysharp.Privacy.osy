@@ -1,0 +1,1191 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Privacy, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Privacy · AskAboutAnAddress ──
+  /// AskAboutAnAddress · an error message
+  /// shown through ValidationException
+  error "This browser cannot keep your request — let it keep cookies for this site and ask again." => "Den här webbläsaren kan inte spara din förfrågan. Tillåt cookies för den här webbplatsen och fråga igen.";
+
+  // ── Osysharp.Privacy · AskToLift ──
+  /// AskToLift · an error message
+  /// shown through ValidationException
+  error "A lift is already waiting for a second person." => "En hävning väntar redan på en andra person.";
+  /// AskToLift · an error message
+  /// shown through ValidationException
+  error "Lifting a legal hold needs a reason — it is recorded, and it is what shows the hold was ended on purpose." => "Att häva ett rättsligt bevarande kräver ett skäl. Det sparas och visar att bevarandet avslutades avsiktligt.";
+
+  // ── Osysharp.Privacy · AskWithProof ──
+  /// AskWithProof · message
+  /// shown through AskWithProof()
+  /// also in AskAboutAnAddressWithProof
+  message "We could not file it — ask again." => "Vi kunde inte registrera den. Fråga igen.";
+
+  // ── Osysharp.Privacy · AskWithoutAnAccount ──
+  /// AskWithoutAnAccount · a control's name for screen readers
+  accessibleName "What this will do" => "Vad det här gör";
+  /// AskWithoutAnAccount · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Field.label
+  /// beside: "Send me a code"
+  label "Your email address" => "Din e-postadress";
+  /// AskWithoutAnAccount · a subtitle
+  /// placeholders: {sentTo} = sentTo
+  /// shown through Card.subtitle
+  subtitle "About {sentTo}, and nothing else." => "Om {sentTo}, och inget annat.";
+  /// AskWithoutAnAccount · a subtitle
+  /// shown through PageHead.subtitle
+  subtitle "No account needed — prove the email address you wrote to us from, and ask for a copy of what we hold, or to have it erased." => "Inget konto behövs. Bekräfta e-postadressen du skrev till oss från och be om en kopia av det vi har, eller om att få det raderat.";
+  /// AskWithoutAnAccount · a subtitle
+  /// shown through Card.subtitle
+  subtitle "We mail a code there. Only that address gets the answer." => "Vi mejlar en kod dit. Bara den adressen får svaret.";
+  /// AskWithoutAnAccount · a subtitle
+  /// placeholders: {sentTo} = sentTo
+  /// shown through Card.subtitle
+  subtitle "We sent a code to {sentTo}. It works for fifteen minutes." => "Vi har skickat en kod till {sentTo}. Den gäller i femton minuter.";
+  /// AskWithoutAnAccount · text on the page
+  /// shown through problem
+  text "Give the email address you wrote to us from." => "Ange e-postadressen du skrev till oss från.";
+  /// AskWithoutAnAccount · text on the page
+  /// shown through SectionLabel.text
+  /// beside: "Send the request"
+  text "What this will do" => "Vad det här gör";
+  /// AskWithoutAnAccount · text on the page
+  /// placeholders: {sentTo} = sentTo
+  /// shown through done
+  text "Your request is in. We answer within one month, by mail to {sentTo} — and only there." => "Din förfrågan är mottagen. Vi svarar inom en månad, via e-post till {sentTo}, och bara dit.";
+  /// AskWithoutAnAccount · a title
+  /// shown through Card.title
+  title "1. Your email address" => "1. Din e-postadress";
+  /// AskWithoutAnAccount · a title
+  /// shown through Card.title
+  title "2. The code" => "2. Koden";
+  /// AskWithoutAnAccount · a title
+  /// shown through Card.title
+  title "3. What you ask for" => "3. Vad du ber om";
+
+  // ── Osysharp.Privacy · AskedFor ──
+  /// AskedFor · a title
+  /// shown through AskedFor()
+  title "Your request for a copy of your data" => "Din begäran om en kopia av dina uppgifter";
+  /// AskedFor · a title
+  /// shown through AskedFor()
+  title "Your request to erase your data" => "Din begäran om att radera dina uppgifter";
+  /// AskedFor · a title
+  /// shown through AskedFor()
+  title "Your request to move your data" => "Din begäran om att flytta dina uppgifter";
+  /// AskedFor · a title
+  /// shown through AskedFor()
+  title "Your request to stop using your data" => "Din begäran om att sluta använda dina uppgifter";
+
+  // ── Osysharp.Privacy · CategoryOf ──
+  /// CategoryOf · an error message
+  /// placeholders: {key} = key (string), {Join} = string.Join(…) (string)
+  /// shown through ValidationException
+  error "No holder declares the category '{key}'. The categories are: {Join}." => "Ingen hållare anger kategorin '{key}'. Kategorierna är: {Join}.";
+
+  // ── Osysharp.Privacy · ControllerEditor ──
+  /// ControllerEditor · a control's name for screen readers
+  accessibleName "Who is responsible" => "Vem som är ansvarig";
+  /// ControllerEditor · a button's label · at most ~27 characters
+  /// shown through Button.label
+  button "Name the controller" => "Ange personuppgiftsansvarig";
+  /// ControllerEditor · a description
+  /// shown through SettingsSection.description
+  description "Named in every answer, set by the app." => "Anges i varje svar, inställt av appen.";
+  /// ControllerEditor · a description
+  /// shown through SettingsSection.description
+  /// beside: "Saved."
+  description "The legal entity that decides why and how people's data is used here — usually the company running the app. Every answer to a privacy request names it, and so do the records of processing." => "Den juridiska person som bestämmer varför och hur personuppgifter används här, oftast företaget som driver appen. Varje svar på en integritetsförfrågan anger den, och det gör även registren över behandling.";
+  /// ControllerEditor · a hint under a field
+  /// shown through Field.hint
+  hint "Its registered name — what a person would look up." => "Det registrerade namnet, det som en person skulle slå upp.";
+  /// ControllerEditor · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Field.label
+  label "Legal name" => "Juridiskt namn";
+  /// ControllerEditor · placeholder text inside an empty field · at most ~45 characters
+  /// shown through Field.placeholder
+  placeholder "As on the company's registration" => "Som i företagets registrering";
+  /// ControllerEditor · text on the page
+  /// beside: "Name the controller"
+  text "Name it here to say it in your own words." => "Ange den här för att säga det med egna ord.";
+  /// ControllerEditor · text on the page
+  /// placeholders: {fallback} = fallback
+  /// beside: "Name the controller"
+  text "Named by the app as {fallback}." => "Angiven av appen som {fallback}.";
+  /// ControllerEditor · text on the page
+  /// beside: "Name the controller"
+  text "Not named yet." => "Inte angiven än.";
+  /// ControllerEditor · text on the page
+  /// beside: "Name the controller"
+  text "Until it is, an answer says it comes from \"the people who run it\" — a person asking about their data is owed a name." => "Tills dess står det i svaren att de kommer från ”de som driver den”, men den som frågar om sina uppgifter har rätt till ett namn.";
+  /// ControllerEditor · text on the page
+  /// shown through SaveBar.blockedBy
+  /// beside: "The controller"
+  text "Write the controller's legal name." => "Skriv den personuppgiftsansvariges juridiska namn.";
+  /// ControllerEditor · a title
+  /// shown through SettingsSection.title
+  /// beside: "Saved."
+  title "The controller" => "Personuppgiftsansvarig";
+  /// ControllerEditor · a title
+  /// shown through SettingsSection.title
+  title "Where a person can complain" => "Var en person kan klaga";
+
+  // ── Osysharp.Privacy · ControllerSettings (/settings/privacy/controller) ──
+  /// ControllerSettings · /settings/privacy/controller · a title
+  /// shown through [Title]
+  title "Who is responsible" => "Vem som är ansvarig";
+
+  // ── Osysharp.Privacy · Deliver ──
+  /// Deliver · an email's subject line
+  /// shown through MailMessage.Subject
+  mailSubject "Our answer to your request about your data" => "Vårt svar på din förfrågan om dina uppgifter";
+  /// Deliver · text on the page
+  /// placeholders: {text} = text (string), {where} = where (string), {ToString} = r.ExportExpiresAt.Value.ToString(…) (DateTime)
+  /// shown through MailMessage.Text
+  text "{text}\n\nYour data is ready {where} — until {ToString}. It can be downloaded once; after that date it is deleted." => "{text}\n\nDina uppgifter finns {where} till och med {ToString}. De kan laddas ner en gång; efter det datumet raderas de.";
+
+  // ── Osysharp.Privacy · ExportByLinkPage (/privacy/export/{link}) ──
+  /// ExportByLinkPage · /privacy/export/{link} · a subtitle
+  /// shown through PageHead.subtitle
+  subtitle "A copy of what we hold about you. It can be downloaded once; after that, or after seven days, it is deleted." => "En kopia av det vi har om dig. Den kan laddas ner en gång; efter det, eller efter sju dagar, raderas den.";
+  /// ExportByLinkPage · /privacy/export/{link} · a title
+  /// shown through PageHead.title
+  /// also in ExportByLinkPage /privacy/export/{link}
+  title "Your data" => "Dina uppgifter";
+
+  // ── Osysharp.Privacy · ExtendDeadline ──
+  /// ExtendDeadline · an error message
+  /// shown through ValidationException
+  error "A deadline may be extended by one or two months, no more." => "En tidsfrist kan förlängas med en eller två månader, inte mer.";
+  /// ExtendDeadline · an error message
+  /// shown through ValidationException
+  error "An extension needs its reason — the person is told it." => "En förlängning behöver ett skäl. Personen får veta det.";
+  /// ExtendDeadline · an error message
+  /// shown through ValidationException
+  error "The first month is over — an extension must be decided, and told, within it." => "Den första månaden är över. En förlängning måste beslutas, och meddelas, inom den.";
+  /// ExtendDeadline · an error message
+  /// shown through ValidationException
+  error "This request is answered." => "Den här förfrågan är besvarad.";
+  /// ExtendDeadline · an error message
+  /// shown through ValidationException
+  error "This request was already extended." => "Den här förfrågan har redan förlängts.";
+  /// ExtendDeadline · an email's subject line
+  /// shown through MailMessage.Subject
+  mailSubject "Your request about your data will take longer" => "Din förfrågan om dina uppgifter tar längre tid";
+  /// ExtendDeadline · text on the page
+  /// placeholders: {ToString} = due.ToString(…) (DateTime), {Trim} = reason.Trim(…) (string)
+  /// shown through MailMessage.Text
+  text "We need more time to answer your request, and will answer by {ToString}: {Trim}" => "Vi behöver mer tid för att besvara din förfrågan och svarar senast {ToString}: {Trim}";
+
+  // ── Osysharp.Privacy · FactsOf ──
+  /// FactsOf · text on the page
+  /// shown through RequestFacts.Delivery
+  text "Filed by staff: send the answer yourself, through a channel you proved. Nothing is mailed to the address typed in." => "Registrerad av personal: skicka svaret själv, via en kanal du har bekräftat. Inget mejlas till den inskrivna adressen.";
+  /// FactsOf · text on the page
+  /// placeholders: {r.DeliverTo} = r.DeliverTo (string)
+  /// shown through RequestFacts.Delivery
+  text "Goes to {r.DeliverTo} — the address the person proved — when it is answered." => "Skickas till {r.DeliverTo}, adressen som personen bekräftade, när den besvaras.";
+  /// FactsOf · text on the page
+  /// placeholders: {l.Reason} = l.Reason (string)
+  /// shown through PlanRow.Detail
+  text "Kept, restricted — {l.Reason}" => "Sparas, begränsat: {l.Reason}";
+  /// FactsOf · text on the page
+  /// placeholders: {ToString} = ….ToString(…) (DateTime)
+  /// shown through PlanRow.Detail
+  text "Kept, restricted, through {ToString}" => "Sparas, begränsat, till och med {ToString}";
+  /// FactsOf · text on the page
+  /// placeholders: {PeriodWords} = PeriodWords(…) (string)
+  /// shown through PlanRow.Detail
+  text "Kept, restricted, {PeriodWords}" => "Sparas, begränsat, {PeriodWords}";
+  /// FactsOf · text on the page
+  /// placeholders: {ToString} = r.DeliveredAt.Value.ToString(…) (DateTime)
+  /// shown through RequestFacts.Delivery
+  text "Sent to the proven address on {ToString}." => "Skickat till den bekräftade adressen den {ToString}.";
+  /// FactsOf · text on the page
+  /// shown through RequestFacts.Asker
+  text "an erased person (kept as a fingerprint)" => "en raderad person (sparad som ett fingeravtryck)";
+
+  // ── Osysharp.Privacy · FetchMyExport ──
+  /// FetchMyExport · an error message
+  /// shown through ValidationException
+  /// also in FetchExportByLink
+  error "That export has expired and was deleted — ask again for a new one." => "Exporten har gått ut och raderats. Fråga igen för att få en ny.";
+  /// FetchMyExport · an error message
+  /// shown through ValidationException
+  /// also in FetchExportByLink
+  error "That export was already downloaded — ask again for a new one." => "Exporten har redan laddats ner. Fråga igen för att få en ny.";
+  /// FetchMyExport · an error message
+  /// shown through ValidationException
+  error "That is not your request." => "Det är inte din förfrågan.";
+
+  // ── Osysharp.Privacy · FileRequest ──
+  /// FileRequest · an error message
+  /// shown through ValidationException
+  error "A step-up is the person's own proof on their privacy page — say how YOU checked it is them." => "En extra verifiering är personens eget bevis på sin integritetssida. Ange hur DU kontrollerade att det är hen.";
+  /// FileRequest · an error message
+  /// shown through ValidationException
+  error "Say how you checked it is them — a fraudulent request is a known way to steal someone's data." => "Ange hur du kontrollerade att det är hen. En bedräglig förfrågan är ett känt sätt att stjäla någons uppgifter.";
+  /// FileRequest · an error message
+  /// shown through ValidationException
+  error "Say who the request is about — their address, their number, or their account." => "Ange vem förfrågan gäller: adress, nummer eller konto.";
+
+  // ── Osysharp.Privacy · FromPhrase ──
+  /// FromPhrase · text on the page
+  text "from the end of its calendar year" => "från slutet av kalenderåret";
+  /// FromPhrase · text on the page
+  text "from the end of its fiscal year" => "från slutet av räkenskapsåret";
+  /// FromPhrase · text on the page
+  text "from the end of the calendar year its fiscal year ended in" => "från slutet av det kalenderår då räkenskapsåret slutade";
+  /// FromPhrase · text on the page
+  text "from when it was collected" => "från när det samlades in";
+
+  // ── Osysharp.Privacy · HoldControl ──
+  /// HoldControl · a control's name for screen readers
+  accessibleName "Legal hold" => "Rättsligt bevarande";
+  /// HoldControl · a button's label · at most ~33 characters
+  /// shown through Button.label
+  button "Lift it on Legal holds…" => "Häv under Rättsligt bevarande…";
+  /// HoldControl · a button's label · at most ~27 characters
+  /// shown through Button.label
+  button "Place a legal hold…" => "Besluta bevarande…";
+  /// HoldControl · a button's label · at most ~20 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  /// also in LegalHoldsEditor
+  button "Place the hold" => "Besluta bevarande";
+  /// HoldControl · a hint under a field
+  /// shown through Field.hint
+  /// beside: "Why it must be kept", "Review by", "Cancel"
+  hint "Never shown to the customer." => "Visas aldrig för kunden.";
+  /// HoldControl · a hint under a field
+  /// shown through DatePicker.hint
+  /// beside: "Matter", "Why it must be kept", "Cancel"
+  /// also in LegalHoldsEditor
+  hint "When somebody looks at it again — a hold is never kept for ever unseen." => "När någon granskar det igen. Ett bevarande sparas aldrig för alltid utan granskning.";
+  /// HoldControl · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Field.label
+  /// beside: "Why it must be kept", "Review by", "Cancel"
+  /// also in LegalHoldsEditor
+  label "Matter" => "Ärende";
+  /// HoldControl · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through DatePicker.label
+  /// beside: "Matter", "Why it must be kept", "Cancel"
+  /// also in LegalHoldsEditor
+  label "Review by" => "Granska senast";
+  /// HoldControl · a label (a field, a list item, a menu entry) · at most ~27 characters
+  /// shown through Field.label
+  /// beside: "Matter", "Review by", "Cancel"
+  /// also in LegalHoldsEditor
+  label "Why it must be kept" => "Varför det måste sparas";
+  /// HoldControl · placeholder text inside an empty field · at most ~40 characters
+  /// shown through Field.placeholder
+  /// beside: "Why it must be kept", "Review by", "Cancel"
+  placeholder "Dispute about a refund, 2026" => "Tvist om en återbetalning, 2026";
+  /// HoldControl · placeholder text inside an empty field · at most ~69 characters
+  /// shown through Field.placeholder
+  /// beside: "Matter", "Review by", "Cancel"
+  placeholder "The customer has said they will take it to court." => "Kunden har sagt att hen kommer att gå till domstol.";
+  /// HoldControl · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Nothing on it is erased on request or purged until the hold is lifted. The customer is told only that it is kept for legal claims." => "Inget i det raderas på begäran eller rensas förrän bevarandet hävs. Kunden får bara veta att det sparas för rättsliga anspråk.";
+  /// HoldControl · text on the page
+  /// placeholders: {ToString} = facts.ReviewBy.Value.ToString(…)
+  /// beside: "Lift it on Legal holds…"
+  text " — reviewed by {ToString}" => ", granskas senast {ToString}";
+  /// HoldControl · text on the page
+  /// placeholders: {value} = …
+  /// beside: "Lift it on Legal holds…"
+  text "Nothing on it is erased or purged until the hold is lifted{value}." => "Inget i det raderas eller rensas förrän bevarandet hävs{value}.";
+  /// HoldControl · text on the page
+  /// placeholders: {facts.Matter} = facts.Matter
+  text "On legal hold: {facts.Matter}" => "Rättsligt bevarande: {facts.Matter}";
+  /// HoldControl · text on the page
+  /// shown through problem
+  text "Pick the date the hold is reviewed — a hold is never kept for ever unseen." => "Välj datum då bevarandet granskas. Ett bevarande sparas aldrig för alltid utan granskning.";
+  /// HoldControl · a title
+  /// placeholders: {label} = label
+  /// shown through Dialog.title
+  title "Place a legal hold on {label}" => "Besluta rättsligt bevarande av {label}";
+
+  // ── Osysharp.Privacy · HoldReviewOf ──
+  /// HoldReviewOf · text on the page
+  /// shown through HoldReviewFacts.On
+  /// also in HoldRows
+  text "an account" => "ett konto";
+
+  // ── Osysharp.Privacy · HoldReviewPane ──
+  /// HoldReviewPane · a control's name for screen readers
+  accessibleName "Legal hold review" => "Granskning av rättsligt bevarande";
+  /// HoldReviewPane · a control's name for screen readers
+  accessibleName "What it is for" => "Vad det gäller";
+  /// HoldReviewPane · a button's label · at most ~20 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  /// also in LegalHoldsEditor
+  button "Ask to lift it" => "Begär hävning";
+  /// HoldReviewPane · a button's label · at most ~13 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  /// also in LegalHoldsEditor
+  button "Keep it" => "Behåll det";
+  /// HoldReviewPane · a button's label · at most ~37 characters
+  /// shown through Button.label
+  /// beside: "Lift the hold…"
+  button "Keep it, and review again…" => "Behåll det och granska igen…";
+  /// HoldReviewPane · a button's label · at most ~19 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  /// also in LegalHoldsEditor
+  button "Lift the hold" => "Häv bevarandet";
+  /// HoldReviewPane · a button's label · at most ~20 characters
+  /// shown through Button.label
+  /// beside: "Keep it, and review again…"
+  button "Lift the hold…" => "Häv bevarandet…";
+  /// HoldReviewPane · a hint under a field
+  /// shown through Field.hint
+  /// beside: "Cancel"
+  /// also in LegalHoldsEditor
+  hint "Recorded with your name." => "Sparas med ditt namn.";
+  /// HoldReviewPane · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Badge.label
+  /// also in LegalHoldsEditor
+  label "Case" => "Ärende";
+  /// HoldReviewPane · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through DatePicker.label
+  /// beside: "Cancel"
+  /// also in LegalHoldsEditor
+  label "Next review" => "Nästa granskning";
+  /// HoldReviewPane · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Field.label
+  /// beside: "Cancel"
+  /// also in LegalHoldsEditor
+  label "Why it can be lifted" => "Varför det kan hävas";
+  /// HoldReviewPane · placeholder text inside an empty field · at most ~45 characters
+  /// shown through Field.placeholder
+  /// beside: "Cancel"
+  /// also in LegalHoldsEditor
+  placeholder "Settled out of court on 3 March." => "Förlikning utanför domstol den 3 mars.";
+  /// HoldReviewPane · a subtitle
+  /// shown through Dialog.subtitle
+  /// also in LegalHoldsEditor
+  subtitle "A second person confirms the lift. Until then it stays in force." => "En andra person bekräftar hävningen. Till dess fortsätter det att gälla.";
+  /// HoldReviewPane · a subtitle
+  /// shown through Dialog.subtitle
+  /// also in LegalHoldsEditor
+  subtitle "Erasures that waited on it run, and anything past its period is purged at the next run." => "Raderingar som väntade på det körs, och allt som passerat sin lagringstid rensas vid nästa körning.";
+  /// HoldReviewPane · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "It stays in force; this review closes, and a new one opens on the date you pick." => "Det fortsätter att gälla; den här granskningen stängs och en ny öppnas det datum du väljer.";
+  /// HoldReviewPane · text on the page
+  /// placeholders: {facts.On} = facts.On
+  text "A legal hold on {facts.On}" => "Ett rättsligt bevarande av {facts.On}";
+  /// HoldReviewPane · text on the page
+  /// placeholders: {ToString} = next.Value.ToString(…)
+  /// shown through done
+  text "Kept. Somebody looks at it again on {ToString}." => "Behållet. Någon granskar det igen den {ToString}.";
+  /// HoldReviewPane · text on the page
+  /// shown through done
+  /// also in LegalHoldsEditor
+  text "Lifted. What waited on it — an erasure, a purge — runs now." => "Hävt. Det som väntade på det, en radering eller en rensning, körs nu.";
+  /// HoldReviewPane · text on the page
+  /// beside: "Why it is kept"
+  text "Matter" => "Ärende";
+  /// HoldReviewPane · text on the page
+  /// shown through problem
+  /// also in LegalHoldsEditor
+  text "Pick the next review date." => "Välj nästa granskningsdatum.";
+  /// HoldReviewPane · text on the page
+  /// placeholders: {facts.PlacedBy} = facts.PlacedBy, {ToString} = facts.PlacedAt.ToString(…)
+  /// beside: "Matter", "Why it is kept"
+  text "Placed by {facts.PlacedBy} on {ToString}." => "Beslutat av {facts.PlacedBy} den {ToString}.";
+  /// HoldReviewPane · text on the page
+  text "Settled — this review is closed." => "Avgjort. Granskningen är stängd.";
+  /// HoldReviewPane · text on the page
+  /// shown through done
+  text "The lift waits for a second person to confirm it on the legal holds page — the hold stays in force until then." => "Hävningen väntar på att en andra person bekräftar den på sidan för rättsligt bevarande. Bevarandet gäller till dess.";
+  /// HoldReviewPane · text on the page
+  /// beside: "Matter"
+  text "Why it is kept" => "Varför det sparas";
+  /// HoldReviewPane · text on the page
+  /// placeholders: {value} = …
+  text "{value}. While it stands nothing it covers is erased or purged — keep it only as long as the matter needs it." => "{value}. Så länge det gäller raderas eller rensas inget som det omfattar. Behåll det bara så länge ärendet kräver det.";
+  /// HoldReviewPane · a title
+  /// shown through Dialog.title
+  title "Keep the hold" => "Behåll bevarandet";
+  /// HoldReviewPane · a title
+  /// placeholders: {facts.On} = facts.On
+  /// shown through Dialog.title
+  title "Lift the hold on {facts.On}" => "Häv bevarandet av {facts.On}";
+
+  // ── Osysharp.Privacy · KeepOnCompellingGrounds ──
+  /// KeepOnCompellingGrounds · an error message
+  /// placeholders: {line.Category} = line.Category (string)
+  /// shown through ValidationException
+  error "'{line.Category}' is not held on a legitimate interest, so there are no grounds to weigh." => "'{line.Category}' sparas inte med stöd av berättigat intresse, så det finns inga skäl att väga.";
+  /// KeepOnCompellingGrounds · an error message
+  /// shown through ValidationException
+  error "Keeping data a person asked to have erased needs the compelling grounds written down — they are told to the person." => "Att spara uppgifter som en person har bett om att få raderade kräver att de tvingande skälen skrivs ned. De meddelas personen.";
+  /// KeepOnCompellingGrounds · an error message
+  /// shown through ValidationException
+  error "Only a plan waiting for approval can be changed." => "Bara en plan som väntar på godkännande kan ändras.";
+
+  // ── Osysharp.Privacy · LegalHoldsEditor ──
+  /// LegalHoldsEditor · a button's label · at most ~33 characters
+  /// shown through Button.label
+  button "Change the review date…" => "Ändra granskningsdatum…";
+  /// LegalHoldsEditor · a button's label · at most ~23 characters
+  /// shown through Button.label
+  button "Confirm the lift" => "Bekräfta hävningen";
+  /// LegalHoldsEditor · a button's label · at most ~37 characters
+  /// placeholders: {r.On} = r.On
+  /// shown through Button.announceAs
+  button "Confirm the lift on {r.On}" => "Bekräfta hävningen för {r.On}";
+  /// LegalHoldsEditor · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Keep holding" => "Fortsätt bevara";
+  /// LegalHoldsEditor · a button's label · at most ~27 characters
+  /// placeholders: {r.On} = r.On
+  /// shown through Button.announceAs
+  button "Keep holding {r.On}" => "Fortsätt bevara {r.On}";
+  /// LegalHoldsEditor · a button's label · at most ~33 characters
+  /// shown through Button.label
+  button "Keep, and review again…" => "Behåll och granska igen…";
+  /// LegalHoldsEditor · a button's label · at most ~33 characters
+  /// placeholders: {r.On} = r.On
+  /// shown through Button.announceAs
+  button "Lift the hold on {r.On}" => "Häv bevarandet av {r.On}";
+  /// LegalHoldsEditor · a button's label · at most ~11 characters
+  /// shown through Button.label
+  button "Lift…" => "Häv…";
+  /// LegalHoldsEditor · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Place a hold" => "Besluta bevarande";
+  /// LegalHoldsEditor · a button's label · at most ~35 characters
+  /// placeholders: {r.On} = r.On
+  /// shown through Button.announceAs
+  button "Review the hold on {r.On}" => "Granska bevarandet av {r.On}";
+  /// LegalHoldsEditor · a description
+  /// shown through SettingsPage.description
+  description "A hold keeps everything about a person — or one case — from being erased or purged while a dispute, a claim or an audit needs it. A request to erase it waits, and the person is told only that it is kept for legal claims." => "Ett bevarande hindrar att allt om en person, eller ett enskilt ärende, raderas eller rensas medan en tvist, ett anspråk eller en revision kräver det. En begäran om radering får vänta, och personen får bara veta att uppgifterna sparas för rättsliga anspråk.";
+  /// LegalHoldsEditor · a description
+  /// shown through SettingsSection.description
+  description "Kept as a record — who lifted each hold, when and why — then forgotten after the period the kit's own records are kept." => "Sparas som en post, vem som hävde varje bevarande, när och varför, och glöms sedan efter den tid som kitets egna poster sparas.";
+  /// LegalHoldsEditor · a hint under a field
+  /// shown through Field.hint
+  /// beside: "Their email address", "Why it must be kept", "Review by", "Cancel"
+  hint "Never shown to the person." => "Visas aldrig för personen.";
+  /// LegalHoldsEditor · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Badge.label
+  label "No second person" => "Ingen andra person";
+  /// LegalHoldsEditor · a label (a field, a list item, a menu entry) · at most ~31 characters
+  /// shown through Badge.label
+  label "Second person required" => "Andra person krävs";
+  /// LegalHoldsEditor · a label (a field, a list item, a menu entry) · at most ~27 characters
+  /// shown through Field.label
+  /// beside: "Matter", "Why it must be kept", "Review by", "Cancel"
+  label "Their email address" => "Personens e-postadress";
+  /// LegalHoldsEditor · message
+  /// shown through Alert.message
+  message "Pick the date the hold is reviewed — a hold is never kept for ever unseen." => "Välj datum då bevarandet granskas. Ett bevarande sparas aldrig för alltid utan granskning.";
+  /// LegalHoldsEditor · placeholder text inside an empty field · at most ~37 characters
+  /// shown through Field.placeholder
+  /// beside: "Their email address", "Why it must be kept", "Review by", "Cancel"
+  placeholder "Dispute with Acme AB, 2026" => "Tvist med Acme AB, 2026";
+  /// LegalHoldsEditor · placeholder text inside an empty field · at most ~42 characters
+  /// shown through Field.placeholder
+  /// beside: "Their email address", "Matter", "Review by", "Cancel"
+  placeholder "The complaint may go to court." => "Klagomålet kan gå till domstol.";
+  /// LegalHoldsEditor · placeholder text inside an empty field · at most ~21 characters
+  /// shown through Field.placeholder
+  /// beside: "Matter", "Why it must be kept", "Review by", "Cancel"
+  placeholder "ann@example.com" => "anna@example.com";
+  /// LegalHoldsEditor · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Everything held about this person is kept — not erased on request, not purged — until the hold is lifted." => "Allt som sparas om den här personen behålls, raderas inte på begäran och rensas inte, förrän bevarandet hävs.";
+  /// LegalHoldsEditor · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "It stays in force; somebody looks at it again on the date you pick." => "Det fortsätter att gälla; någon granskar det igen det datum du väljer.";
+  /// LegalHoldsEditor · text on the page
+  /// placeholders: {ToString} = r.LiftedAt.Value.ToString(…)
+  text " on {ToString}" => " den {ToString}";
+  /// LegalHoldsEditor · text on the page
+  /// placeholders: {ToLower} = ….ToLower(…)
+  /// shown through done
+  text "Holding everything about {ToLower}. Nothing about them is erased or purged until the hold is lifted." => "Bevarar allt om {ToLower}. Inget om personen raderas eller rensas förrän bevarandet hävs.";
+  /// LegalHoldsEditor · text on the page
+  /// placeholders: {ToString} = nextReview.Value.ToString(…)
+  /// shown through done
+  text "Kept, and reviewed again on {ToString}." => "Behållet, och granskas igen den {ToString}.";
+  /// LegalHoldsEditor · text on the page
+  /// placeholders: {r.LiftedBy} = r.LiftedBy, {value} = …, {r.LiftReason} = r.LiftReason
+  text "Lifted by {r.LiftedBy}{value}: “{r.LiftReason}”" => "Hävt av {r.LiftedBy}{value}: ”{r.LiftReason}”";
+  /// LegalHoldsEditor · text on the page
+  /// shown through done
+  text "Lifted. What waited on it runs now." => "Hävt. Det som väntade på det körs nu.";
+  /// LegalHoldsEditor · text on the page
+  /// shown through EmptyState.body
+  text "Nothing is held now. When a dispute, a claim or an audit needs a person's data kept, place a hold here — or on a case from its own page." => "Inget bevaras nu. När en tvist, ett anspråk eller en revision kräver att en persons uppgifter sparas, besluta om bevarande här, eller på ett ärende från dess egen sida.";
+  /// LegalHoldsEditor · text on the page
+  /// placeholders: {r.PlacedBy} = r.PlacedBy, {ToString} = r.PlacedAt.ToString(…), {ToString2} = r.ReviewBy.ToString(…)
+  text "Placed by {r.PlacedBy} on {ToString} · review by {ToString2}" => "Beslutat av {r.PlacedBy} den {ToString} · granskas senast {ToString2}";
+  /// LegalHoldsEditor · text on the page
+  /// shown through done
+  text "The lift waits for a second person to confirm it — the hold stays in force until then." => "Hävningen väntar på att en andra person bekräftar den. Bevarandet gäller till dess.";
+  /// LegalHoldsEditor · text on the page
+  /// shown through done
+  text "The lift was withdrawn — the hold stays in force." => "Hävningen drogs tillbaka. Bevarandet fortsätter att gälla.";
+  /// LegalHoldsEditor · text on the page
+  /// placeholders: {r.LiftRequestedBy} = r.LiftRequestedBy, {r.LiftReason} = r.LiftReason
+  text "{r.LiftRequestedBy} asked to lift it: “{r.LiftReason}”" => "{r.LiftRequestedBy} har begärt hävning: ”{r.LiftReason}”";
+  /// LegalHoldsEditor · a title
+  /// shown through SettingsPage.title
+  /// also in LegalHoldsSettings /settings/privacy/holds
+  title "Legal holds" => "Rättsligt bevarande";
+  /// LegalHoldsEditor · a title
+  /// placeholders: {liftOn} = liftOn
+  /// shown through Dialog.title
+  title "Lift the hold on {liftOn}" => "Häv bevarandet av {liftOn}";
+  /// LegalHoldsEditor · a title
+  /// shown through SettingsSection.title
+  title "Lifted" => "Hävda";
+  /// LegalHoldsEditor · a title
+  /// shown through SettingsSection.title
+  /// beside: "Place a hold"
+  title "Lifting a hold" => "Att häva ett bevarande";
+  /// LegalHoldsEditor · a title
+  /// shown through EmptyState.title
+  title "No legal holds in force" => "Inga rättsliga bevaranden gäller";
+  /// LegalHoldsEditor · a title
+  /// shown through Dialog.title
+  title "Place a legal hold" => "Besluta rättsligt bevarande";
+  /// LegalHoldsEditor · a title
+  /// shown through Dialog.title
+  title "Review the hold" => "Granska bevarandet";
+
+  // ── Osysharp.Privacy · MyPrivacy ──
+  /// MyPrivacy · a control's name for screen readers
+  /// beside: "Your privacy", "Your requests", "What we keep"
+  accessibleName "Ask us" => "Fråga oss";
+  /// MyPrivacy · a control's name for screen readers
+  /// beside: "Your privacy", "Ask us", "Your requests"
+  accessibleName "What we keep" => "Vad vi sparar";
+  /// MyPrivacy · a button's label · at most ~27 characters
+  /// shown through AskChoice.title
+  /// beside: "Move your data", "Erase your data", "Stop using your data"
+  /// also in AskWithoutAnAccount
+  button "A copy of your data" => "En kopia av dina uppgifter";
+  /// MyPrivacy · a button's label · at most ~26 characters
+  /// shown through Button.label
+  /// beside: "Once, within seven days of the answer."
+  /// also in ExportByLinkPage /privacy/export/{link}
+  button "Download your data" => "Ladda ner dina uppgifter";
+  /// MyPrivacy · a button's label · at most ~47 characters
+  /// placeholders: {r.Title} = r.Title
+  /// shown through Button.announceAs
+  /// beside: "Once, within seven days of the answer."
+  button "Download your data from {r.Title}" => "Ladda ner dina uppgifter från {r.Title}";
+  /// MyPrivacy · a button's label · at most ~21 characters
+  /// shown through AskChoice.title
+  /// beside: "A copy of your data", "Move your data", "Stop using your data"
+  /// also in AskWithoutAnAccount
+  button "Erase your data" => "Radera dina uppgifter";
+  /// MyPrivacy · a button's label · at most ~20 characters
+  /// shown through AskChoice.title
+  /// beside: "A copy of your data", "Erase your data", "Stop using your data"
+  button "Move your data" => "Flytta uppgifter";
+  /// MyPrivacy · a button's label · at most ~20 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  /// also in AskWithoutAnAccount
+  button "Send me a code" => "Skicka mig en kod";
+  /// MyPrivacy · a button's label · at most ~23 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  /// also in AskWithoutAnAccount
+  button "Send the request" => "Skicka förfrågan";
+  /// MyPrivacy · a button's label · at most ~28 characters
+  /// shown through AskChoice.title
+  /// beside: "A copy of your data", "Move your data", "Erase your data"
+  button "Stop using your data" => "Sluta använda mina uppgifter";
+  /// MyPrivacy · a subtitle
+  /// placeholders: {ToString} = r.AnswerBy.Value.ToString(…)
+  /// shown through Card.subtitle
+  subtitle " · we answer by {ToString}" => " · vi svarar senast {ToString}";
+  /// MyPrivacy · a subtitle
+  /// shown through Card.subtitle
+  subtitle "Before anything happens, this is what your request does to each kind of data we hold." => "Innan något händer: så här påverkar din förfrågan varje typ av uppgifter vi har.";
+  /// MyPrivacy · a subtitle
+  /// placeholders: {ToString} = r.ReceivedAt.ToString(…), {value} = …
+  /// shown through Card.subtitle
+  subtitle "Received {ToString}{value}" => "Mottagen {ToString}{value}";
+  /// MyPrivacy · a subtitle
+  /// shown through PageHead.subtitle
+  /// beside: "Ask us", "Your requests", "What we keep"
+  subtitle "What we keep about you, why, and for how long — and how to ask for a copy, or to have it erased." => "Vad vi sparar om dig, varför och hur länge, och hur du ber om en kopia eller om att få det raderat.";
+  /// MyPrivacy · text on the page
+  /// shown through SectionLabel.text
+  text "Ask us" => "Fråga oss";
+  /// MyPrivacy · text on the page
+  /// shown through AskChoice.body
+  /// beside: "Move your data", "Erase your data", "Stop using your data"
+  /// also in AskWithoutAnAccount
+  text "Everything we hold about you, and why we keep it." => "Allt vi har om dig, och varför vi sparar det.";
+  /// MyPrivacy · text on the page
+  /// beside: "Download your data"
+  text "Once, within seven days of the answer." => "En gång, inom sju dagar från svaret.";
+  /// MyPrivacy · text on the page
+  /// beside: "Cancel"
+  text "To be sure it is you, we mail a code to the address on your account." => "För att vara säkra på att det är du mejlar vi en kod till adressen på ditt konto.";
+  /// MyPrivacy · text on the page
+  /// shown through askProblem
+  /// also in AskWithoutAnAccount
+  text "Type the code from the mail." => "Skriv in koden från mejlet.";
+  /// MyPrivacy · text on the page
+  /// shown through AskChoice.body
+  /// beside: "A copy of your data", "Move your data", "Stop using your data"
+  /// also in AskWithoutAnAccount
+  text "We erase what we may, and tell you what the law makes us keep." => "Vi raderar det vi får och berättar vad lagen kräver att vi sparar.";
+  /// MyPrivacy · text on the page
+  /// shown through AskChoice.body
+  /// beside: "A copy of your data", "Move your data", "Erase your data"
+  text "We keep it, but use it for nothing until you say so." => "Vi sparar dem, men använder dem inte till något förrän du säger till.";
+  /// MyPrivacy · text on the page
+  /// placeholders: {sentTo} = sentTo
+  /// beside: "240px", "Cancel"
+  text "We sent a code to {sentTo}. It works for fifteen minutes." => "Vi har skickat en kod till {sentTo}. Den gäller i femton minuter.";
+  /// MyPrivacy · text on the page
+  /// shown through SectionLabel.text
+  /// beside: "Beside each kind, how much of it we hold about you right now. Only how many — what they say is in a copy of your data."
+  text "What we keep about people, and why" => "Vad vi sparar om personer, och varför";
+  /// MyPrivacy · text on the page
+  /// shown through AskChoice.body
+  /// beside: "A copy of your data", "Erase your data", "Stop using your data"
+  text "What you gave us, in a file another service can read." => "Det du gett oss, i en fil som en annan tjänst kan läsa.";
+  /// MyPrivacy · text on the page
+  /// shown through EmptyState.body
+  text "When you ask us for a copy of your data, or to erase it, it shows here until it is answered — and after." => "När du ber oss om en kopia av dina uppgifter, eller om att radera dem, visas det här tills det är besvarat, och även efteråt.";
+  /// MyPrivacy · text on the page
+  /// shown through done
+  text "Your request is in. We answer within one month — by mail to the address you just confirmed, and here." => "Din förfrågan är mottagen. Vi svarar inom en månad, via e-post till adressen du just bekräftade, och här.";
+  /// MyPrivacy · a title
+  /// shown through EmptyState.title
+  title "No requests yet" => "Inga förfrågningar än";
+  /// MyPrivacy · a title
+  /// shown through Card.title
+  title "What this will do" => "Vad det här gör";
+
+  // ── Osysharp.Privacy · MyRequestRows ──
+  /// MyRequestRows · text on the page
+  /// placeholders: {ToString} = fetched.At.ToString(…) (DateTime)
+  /// shown through MyRequestRow.ExportWords
+  text "Downloaded on {ToString}." => "Nedladdat den {ToString}.";
+  /// MyRequestRows · text on the page
+  /// placeholders: {ToString} = r.ExportExpiresAt.Value.ToString(…) (DateTime)
+  /// shown through MyRequestRow.ExportWords
+  text "Not downloaded, so deleted on {ToString}. Ask again for a new copy." => "Inte nedladdat, så det raderades den {ToString}. Fråga igen för att få en ny kopia.";
+  /// MyRequestRows · text on the page
+  /// placeholders: {r.ExtensionReason} = r.ExtensionReason (string)
+  /// shown through MyRequestRow.Extension
+  text "We need more time: {r.ExtensionReason}" => "Vi behöver mer tid: {r.ExtensionReason}";
+
+  // ── Osysharp.Privacy · NewHold ──
+  /// NewHold · an error message
+  /// shown through ValidationException
+  error "A hold needs a review date in the future — a hold is reviewed, so it never becomes keeping for ever." => "Ett bevarande behöver ett granskningsdatum i framtiden. Det granskas, så det blir aldrig sparande för alltid.";
+  /// NewHold · an error message
+  /// shown through ValidationException
+  error "Name the matter the hold is for — it is what a reviewer reads." => "Ange vilket ärende bevarandet gäller. Det är det som granskaren läser.";
+  /// NewHold · an error message
+  /// shown through ValidationException
+  error "Say why the data must be kept — a hold without a reason cannot be reviewed." => "Ange varför uppgifterna måste sparas. Ett bevarande utan skäl kan inte granskas.";
+
+  // ── Osysharp.Privacy · NoSelfService ──
+  /// NoSelfService · message
+  /// placeholders: {value} = … (string)
+  /// shown through NoSelfService()
+  message "This app cannot confirm it is you yet, so a request is made by writing to {value} — they will check it is you." => "Appen kan inte bekräfta att det är du än, så en förfrågan görs genom att skriva till {value}. De kontrollerar att det är du.";
+  /// NoSelfService · message
+  /// shown through NoSelfService()
+  message "the people who run it" => "de som driver den";
+
+  // ── Osysharp.Privacy · Osysharp.Inbox.Handling ──
+  /// Osysharp.Inbox.Handling · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Inbox.Handling.Answered
+  /// beside: "New", "Owed a response", "Waiting on the requester", "Waiting on others", "Paused", "Done"
+  /// also in Osysharp.Feedback.FeedbackChange
+  /// also in Osysharp.Feedback.FeedbackStage
+  /// also in FeedbackResults
+  label "Answered" => "Besvarad";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.AskState ──
+  /// Osysharp.Privacy.AskState · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Osysharp.Privacy.AskState.Checking
+  /// beside: "Filed", "Not filed"
+  label "Checking it is you" => "Kontrollerar att det är du";
+  /// Osysharp.Privacy.AskState · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Privacy.AskState.Filed
+  /// beside: "Checking it is you", "Not filed"
+  label "Filed" => "Registrerad";
+  /// Osysharp.Privacy.AskState · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Privacy.AskState.Refused
+  /// beside: "Checking it is you", "Filed"
+  label "Not filed" => "Ej registrerad";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.ControllerSettingsSections.Sections ──
+  /// Osysharp.Privacy.ControllerSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  /// also in Osysharp.Privacy.LegalHoldSettingsSections.Sections
+  /// also in Osysharp.Privacy.PrivacySettingsSections.Sections
+  heading "Privacy" => "Integritet";
+  /// Osysharp.Privacy.ControllerSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "The legal entity every privacy answer, and the records of processing, name." => "Den juridiska person som anges i varje integritetssvar och i registren över behandling.";
+  /// Osysharp.Privacy.ControllerSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through SettingsLink.Label
+  label "Who is responsible" => "Vem som är ansvarig";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.HoldState ──
+  /// Osysharp.Privacy.HoldState · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Privacy.HoldState.Holding
+  /// beside: "Review due", "Lift waiting for a second person", "Lifted", "Expired"
+  /// also in LegalHoldsEditor
+  label "Holding" => "Bevaras";
+  /// Osysharp.Privacy.HoldState · a label (a field, a list item, a menu entry) · at most ~45 characters
+  /// shown through Osysharp.Privacy.HoldState.LiftPending
+  /// beside: "Holding", "Review due", "Lifted", "Expired"
+  /// also in LegalHoldsEditor
+  label "Lift waiting for a second person" => "Hävning väntar på en andra person";
+  /// Osysharp.Privacy.HoldState · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Privacy.HoldState.Lifted
+  /// beside: "Holding", "Review due", "Lift waiting for a second person", "Expired"
+  label "Lifted" => "Hävt";
+  /// Osysharp.Privacy.HoldState · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Privacy.HoldState.ReviewDue
+  /// beside: "Holding", "Lift waiting for a second person", "Lifted", "Expired"
+  /// also in LegalHoldsEditor
+  label "Review due" => "Ska granskas";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.IPersonalDataHolder.Restrict ──
+  /// Osysharp.Privacy.IPersonalDataHolder.Restrict · an error message
+  /// placeholders: {Key} = Key(…) (string), {category.Key} = category.Key (string), {category.Basis} = category.Basis (string)
+  /// shown through Exception
+  error "{Key} declares '{category.Key}' as kept ({category.Basis}) but does not say how its rows are kept — implement Restrict." => "{Key} anger '{category.Key}' som sparad ({category.Basis}) men säger inte hur dess rader sparas. Implementera Restrict.";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.IdentityCheck ──
+  /// Osysharp.Privacy.IdentityCheck · a label (a field, a list item, a menu entry) · at most ~40 characters
+  /// shown through Osysharp.Privacy.IdentityCheck.CodeToKnownAddress
+  /// beside: "Signed in, and proved it again", "Details only they would know", "An identity document", "BankID", "In person", "A code to the address they asked about"
+  label "A code to an address on file" => "En kod till en registrerad adress";
+  /// Osysharp.Privacy.IdentityCheck · a label (a field, a list item, a menu entry) · at most ~54 characters
+  /// shown through Osysharp.Privacy.IdentityCheck.CodeToTheirAddress
+  /// beside: "Signed in, and proved it again", "A code to an address on file", "Details only they would know", "An identity document", "BankID", "In person"
+  label "A code to the address they asked about" => "En kod till adressen som förfrågan gäller";
+  /// Osysharp.Privacy.IdentityCheck · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Osysharp.Privacy.IdentityCheck.Document
+  /// beside: "Signed in, and proved it again", "A code to an address on file", "Details only they would know", "BankID", "In person", "A code to the address they asked about"
+  label "An identity document" => "En identitetshandling";
+  /// Osysharp.Privacy.IdentityCheck · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Privacy.IdentityCheck.BankId
+  /// beside: "Signed in, and proved it again", "A code to an address on file", "Details only they would know", "An identity document", "In person", "A code to the address they asked about"
+  label "BankID" => "BankID";
+  /// Osysharp.Privacy.IdentityCheck · a label (a field, a list item, a menu entry) · at most ~40 characters
+  /// shown through Osysharp.Privacy.IdentityCheck.KnownDetails
+  /// beside: "Signed in, and proved it again", "A code to an address on file", "An identity document", "BankID", "In person", "A code to the address they asked about"
+  label "Details only they would know" => "Uppgifter bara hen skulle känna till";
+  /// Osysharp.Privacy.IdentityCheck · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Privacy.IdentityCheck.InPerson
+  /// beside: "Signed in, and proved it again", "A code to an address on file", "Details only they would know", "An identity document", "BankID", "A code to the address they asked about"
+  label "In person" => "Personligen";
+  /// Osysharp.Privacy.IdentityCheck · a label (a field, a list item, a menu entry) · at most ~42 characters
+  /// shown through Osysharp.Privacy.IdentityCheck.StepUp
+  /// beside: "A code to an address on file", "Details only they would know", "An identity document", "BankID", "In person", "A code to the address they asked about"
+  label "Signed in, and proved it again" => "Inloggad, och bevisade det igen";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.LegalHold ──
+  /// Osysharp.Privacy.LegalHold · validation
+  /// shown through Osysharp.Privacy.LegalHold.Matter [Required]
+  validation "Name the matter the hold is for." => "Ange vilket ärende bevarandet gäller.";
+  /// Osysharp.Privacy.LegalHold · validation
+  /// shown through Osysharp.Privacy.LegalHold.Reason [Required]
+  validation "Say why the data must be kept." => "Ange varför uppgifterna måste sparas.";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.LegalHoldSettingsSections.Sections ──
+  /// Osysharp.Privacy.LegalHoldSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Keep what a dispute or an audit needs from being erased or purged." => "Hindra att det som en tvist eller revision kräver raderas eller rensas.";
+  /// Osysharp.Privacy.LegalHoldSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through SettingsLink.Label
+  label "Legal holds" => "Rättsligt bevarande";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.MailPersonalData.Categories ──
+  /// Osysharp.Privacy.MailPersonalData.Categories · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through DataCategory.Label
+  label "Mail we sent you" => "E-post vi skickat dig";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.PlanOutcome ──
+  /// Osysharp.Privacy.PlanOutcome · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Privacy.PlanOutcome.Blocked
+  /// beside: "Not held", "Erase", "Keep restricted", "Keep", "Export"
+  label "Blocked" => "Blockerad";
+  /// Osysharp.Privacy.PlanOutcome · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Privacy.PlanOutcome.Erase
+  /// beside: "Not held", "Keep restricted", "Blocked", "Keep", "Export"
+  label "Erase" => "Radera";
+  /// Osysharp.Privacy.PlanOutcome · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Privacy.PlanOutcome.Export
+  /// beside: "Not held", "Erase", "Keep restricted", "Blocked", "Keep"
+  label "Export" => "Exportera";
+  /// Osysharp.Privacy.PlanOutcome · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Privacy.PlanOutcome.Keep
+  /// beside: "Not held", "Erase", "Keep restricted", "Blocked", "Export"
+  label "Keep" => "Spara";
+  /// Osysharp.Privacy.PlanOutcome · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.Privacy.PlanOutcome.Restrict
+  /// beside: "Not held", "Erase", "Blocked", "Keep", "Export"
+  label "Keep restricted" => "Spara begränsat";
+  /// Osysharp.Privacy.PlanOutcome · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Privacy.PlanOutcome.NotHeld
+  /// beside: "Erase", "Keep restricted", "Blocked", "Keep", "Export"
+  label "Not held" => "Sparas inte";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.PlatformPersonalData.Categories ──
+  /// Osysharp.Privacy.PlatformPersonalData.Categories · a label (a field, a list item, a menu entry) · at most ~55 characters
+  /// shown through DataCategory.Label
+  label "Text sent to an AI model on your behalf" => "Text som skickats till en AI-modell för din räkning";
+  /// Osysharp.Privacy.PlatformPersonalData.Categories · a label (a field, a list item, a menu entry) · at most ~89 characters
+  /// shown through DataCategory.Label
+  label "Your requests to us about your data, and what we did about them" => "Dina förfrågningar till oss om dina uppgifter, och vad vi gjorde med dem";
+  /// Osysharp.Privacy.PlatformPersonalData.Categories · text on the page
+  text "from when you asked" => "från när du frågade";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.PrivacySettingsSections.Sections ──
+  /// Osysharp.Privacy.PrivacySettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "How long each kind of personal data is kept, and on what basis." => "Hur länge varje typ av personuppgifter sparas, och på vilken grund.";
+  /// Osysharp.Privacy.PrivacySettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through SettingsLink.Label
+  label "Data retention" => "Lagringstid";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.PurgeAskState ──
+  /// Osysharp.Privacy.PurgeAskState · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Privacy.PurgeAskState.Purged
+  /// beside: "Purging"
+  label "Purged" => "Rensat";
+  /// Osysharp.Privacy.PurgeAskState · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Privacy.PurgeAskState.Purging
+  /// beside: "Purged"
+  label "Purging" => "Rensar";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.RecordKind ──
+  /// Osysharp.Privacy.RecordKind · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Privacy.RecordKind.Bookkeeping
+  /// beside: "Ordinary"
+  label "Bookkeeping" => "Bokföring";
+  /// Osysharp.Privacy.RecordKind · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Privacy.RecordKind.Ordinary
+  /// beside: "Bookkeeping"
+  label "Ordinary" => "Vanlig";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.RequestKind ──
+  /// Osysharp.Privacy.RequestKind · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Privacy.RequestKind.Erasure
+  /// beside: "Access", "Portability", "Restriction"
+  label "Erasure" => "Radering";
+  /// Osysharp.Privacy.RequestKind · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Privacy.RequestKind.Portability
+  /// beside: "Access", "Erasure", "Restriction"
+  label "Portability" => "Portabilitet";
+  /// Osysharp.Privacy.RequestKind · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Privacy.RequestKind.Restriction
+  /// beside: "Access", "Portability", "Erasure"
+  label "Restriction" => "Begränsning";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.RequestState ──
+  /// Osysharp.Privacy.RequestState · a label (a field, a list item, a menu entry) · at most ~40 characters
+  /// shown through Osysharp.Privacy.RequestState.Waiting
+  /// beside: "Received", "Waiting for approval", "Running", "Done", "Failed"
+  label "Waiting for a block to clear" => "Väntar på att ett hinder ska lösas";
+  /// Osysharp.Privacy.RequestState · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Osysharp.Privacy.RequestState.Review
+  /// beside: "Received", "Running", "Waiting for a block to clear", "Done", "Failed"
+  label "Waiting for approval" => "Väntar på godkännande";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.RetentionBasis ──
+  /// Osysharp.Privacy.RetentionBasis · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Privacy.RetentionBasis.Consent
+  /// beside: "None — erased on request", "Contract", "Legal obligation", "Legal claims", "Legitimate interest"
+  label "Consent" => "Samtycke";
+  /// Osysharp.Privacy.RetentionBasis · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Privacy.RetentionBasis.Contract
+  /// beside: "None — erased on request", "Consent", "Legal obligation", "Legal claims", "Legitimate interest"
+  label "Contract" => "Avtal";
+  /// Osysharp.Privacy.RetentionBasis · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Privacy.RetentionBasis.LegalClaims
+  /// beside: "None — erased on request", "Consent", "Contract", "Legal obligation", "Legitimate interest"
+  label "Legal claims" => "Rättsliga anspråk";
+  /// Osysharp.Privacy.RetentionBasis · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.Privacy.RetentionBasis.LegalObligation
+  /// beside: "None — erased on request", "Consent", "Contract", "Legal claims", "Legitimate interest"
+  label "Legal obligation" => "Rättslig förpliktelse";
+  /// Osysharp.Privacy.RetentionBasis · a label (a field, a list item, a menu entry) · at most ~27 characters
+  /// shown through Osysharp.Privacy.RetentionBasis.LegitimateInterest
+  /// beside: "None — erased on request", "Consent", "Contract", "Legal obligation", "Legal claims"
+  label "Legitimate interest" => "Berättigat intresse";
+  /// Osysharp.Privacy.RetentionBasis · a label (a field, a list item, a menu entry) · at most ~34 characters
+  /// shown through Osysharp.Privacy.RetentionBasis.None
+  /// beside: "Consent", "Contract", "Legal obligation", "Legal claims", "Legitimate interest"
+  label "None — erased on request" => "Ingen, raderas på begäran";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.RetentionStart ──
+  /// Osysharp.Privacy.RetentionStart · a label (a field, a list item, a menu entry) · at most ~34 characters
+  /// shown through Osysharp.Privacy.RetentionStart.EndOfCalendarYear
+  /// beside: "When it was collected", "End of the calendar year the fiscal year ended in", "End of the fiscal year"
+  label "End of the calendar year" => "Slutet av kalenderåret";
+  /// Osysharp.Privacy.RetentionStart · a label (a field, a list item, a menu entry) · at most ~69 characters
+  /// shown through Osysharp.Privacy.RetentionStart.EndOfFiscalYearCalendarYear
+  /// beside: "When it was collected", "End of the calendar year", "End of the fiscal year"
+  label "End of the calendar year the fiscal year ended in" => "Slutet av det kalenderår då räkenskapsåret slutade";
+  /// Osysharp.Privacy.RetentionStart · a label (a field, a list item, a menu entry) · at most ~31 characters
+  /// shown through Osysharp.Privacy.RetentionStart.EndOfFiscalYear
+  /// beside: "When it was collected", "End of the calendar year", "End of the calendar year the fiscal year ended in"
+  label "End of the fiscal year" => "Slutet av räkenskapsåret";
+  /// Osysharp.Privacy.RetentionStart · a label (a field, a list item, a menu entry) · at most ~30 characters
+  /// shown through Osysharp.Privacy.RetentionStart.Collected
+  /// beside: "End of the calendar year", "End of the calendar year the fiscal year ended in", "End of the fiscal year"
+  label "When it was collected" => "När det samlades in";
+
+  // ── Osysharp.Privacy · Osysharp.Privacy.RetentionWatchState ──
+  /// Osysharp.Privacy.RetentionWatchState · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.Privacy.RetentionWatchState.Watching
+  /// beside: "Stopped"
+  label "Purging daily" => "Rensar dagligen";
+
+  // ── Osysharp.Privacy · PlaceCaseHold ──
+  /// PlaceCaseHold · an error message
+  /// shown through ValidationException
+  error "Say what kind of record the case is." => "Ange vilken typ av post ärendet är.";
+
+  // ── Osysharp.Privacy · PlaceHold ──
+  /// PlaceHold · an error message
+  /// shown through ValidationException
+  error "Say who the hold is on — their email address, or their account." => "Ange vem bevarandet gäller: e-postadress eller konto.";
+
+  // ── Osysharp.Privacy · PlanReviewNow ──
+  /// PlanReviewNow · a control's name for screen readers
+  /// shown through PlanReviewFacts.Words
+  accessibleName "A plan runs at once when it follows wholly from the declarations; one with a judgement in it, or filed by staff, waits for approval." => "En plan körs direkt när den helt följer av deklarationerna. En plan med en bedömning i, eller som personalen lämnat in, väntar på godkännande.";
+  /// PlanReviewNow · a control's name for screen readers
+  /// shown through PlanReviewFacts.Words
+  accessibleName "Every plan waits for somebody managing privacy to approve it before it runs." => "Varje plan väntar på att någon som sköter integritetsfrågor godkänner den innan den körs.";
+
+  // ── Osysharp.Privacy · PresetChanges ──
+  /// PresetChanges · an error message
+  /// placeholders: {jurisdiction} = jurisdiction (string), {Join} = string.Join(…) (string)
+  /// shown through ValidationException
+  error "There is no preset for '{jurisdiction}'. The presets are {Join}." => "Det finns ingen förinställning för '{jurisdiction}'. Förinställningarna är {Join}.";
+
+  // ── Osysharp.Privacy · PrivacyRequestPane ──
+  /// PrivacyRequestPane · a control's name for screen readers
+  accessibleName "Privacy request" => "Integritetsförfrågan";
+  /// PrivacyRequestPane · a button's label · at most ~34 characters
+  /// shown through Button.label
+  button "Approve and run the plan" => "Godkänn och kör planen";
+  /// PrivacyRequestPane · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Extend" => "Förläng";
+  /// PrivacyRequestPane · a button's label · at most ~28 characters
+  /// shown through Button.label
+  button "Extend the deadline…" => "Förläng tidsfristen…";
+  /// PrivacyRequestPane · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Run it again" => "Kör igen";
+  /// PrivacyRequestPane · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through NumberField.label
+  label "Months" => "Månader";
+  /// PrivacyRequestPane · placeholder text inside an empty field · at most ~56 characters
+  /// shown through Field.placeholder
+  /// beside: "160px", "Cancel"
+  placeholder "Your request covers ten years of orders." => "Din förfrågan omfattar tio års beställningar.";
+  /// PrivacyRequestPane · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "By one or two months, only within the first month, and only with the reason — the person is told it." => "Med en eller två månader, bara inom den första månaden och bara med ett skäl. Personen får veta det.";
+  /// PrivacyRequestPane · text on the page
+  /// placeholders: {ToString} = f.DueAt.Value.ToString(…)
+  text "Answer by {ToString}" => "Svara senast {ToString}";
+  /// PrivacyRequestPane · text on the page
+  /// shown through done
+  text "Approved — the plan ran." => "Godkänt, planen kördes.";
+  /// PrivacyRequestPane · text on the page
+  /// shown through done
+  text "Extended — the person is told why." => "Förlängt, personen får veta varför.";
+  /// PrivacyRequestPane · text on the page
+  /// placeholders: {f.Extension} = f.Extension
+  text "Extended: {f.Extension}" => "Förlängd: {f.Extension}";
+  /// PrivacyRequestPane · text on the page
+  /// placeholders: {Join} = string.Join(…)
+  text "Not held: {Join}." => "Sparas inte: {Join}.";
+  /// PrivacyRequestPane · text on the page
+  /// shown through SectionLabel.text
+  text "The plan" => "Planen";
+  /// PrivacyRequestPane · text on the page
+  /// shown through SectionLabel.text
+  text "What the person is told" => "Vad personen får veta";
+  /// PrivacyRequestPane · text on the page
+  /// shown through SectionLabel.text
+  text "Who, and how we know" => "Vem, och hur vi vet";
+  /// PrivacyRequestPane · text on the page
+  /// placeholders: {ToString} = f.ReceivedAt.ToString(…)
+  text "received {ToString}" => "mottagen {ToString}";
+  /// PrivacyRequestPane · a title
+  /// shown through Dialog.title
+  title "Extend the deadline" => "Förläng tidsfristen";
+  /// PrivacyRequestPane · a title
+  /// shown through Alert.title
+  title "It could not be done" => "Det gick inte att genomföra";
+
+  // ── Osysharp.Privacy · RefuseLifted ──
+  /// RefuseLifted · an error message
+  /// shown through ValidationException
+  error "This hold is no longer in force." => "Det här bevarandet gäller inte längre.";
+
+  // ── Osysharp.Privacy · RefusePastReview ──
+  /// RefusePastReview · an error message
+  /// shown through ValidationException
+  error "The next review date must be in the future." => "Nästa granskningsdatum måste vara i framtiden.";
+
+  // ── Osysharp.Privacy · Release ──
+  /// Release · an error message
+  /// placeholders: {Key} = h.Key(…) (string), {c.Key} = c.Key (string)
+  /// shown through ValidationException
+  error "{Key} cannot give '{c.Key}' its period back, so the hold is not lifted — its rows would otherwise be kept for ever." => "{Key} kan inte ge '{c.Key}' tillbaka sin lagringstid, så bevarandet hävs inte. Annars skulle dess rader sparas för alltid.";
+
+  // ── Osysharp.Privacy · RetentionEditor ──
+  /// RetentionEditor · a button's label · at most ~31 characters
+  /// placeholders: {p.Jurisdiction} = p.Jurisdiction
+  /// shown through Button.label
+  button "Apply {p.Jurisdiction}" => "Tillämpa {p.Jurisdiction}";
+  /// RetentionEditor · a button's label · at most ~24 characters
+  /// placeholders: {r.Label} = r.Label
+  /// shown through Button.announceAs
+  /// beside: "Needs your decision"
+  button "Confirm {r.Label}" => "Bekräfta {r.Label}";
+  /// RetentionEditor · a description
+  /// shown through SettingsSection.description
+  /// beside: "Bookkeeping preset", "Retention saved."
+  description " Set in the app's own code." => " Anges i appens egen kod.";
+  /// RetentionEditor · a description
+  /// shown through SettingsPage.description
+  description "How long each kind of personal data is kept after its purpose ends, and on what basis. A request to erase keeps what the law still needs, restricted, until its period ends — then the daily purge removes it." => "Hur länge varje typ av personuppgifter sparas efter att syftet upphört, och på vilken grund. En begäran om radering behåller det som lagen fortfarande kräver, begränsat, tills lagringstiden tar slut. Sedan tar den dagliga rensningen bort det.";
+  /// RetentionEditor · a description
+  /// shown through SettingsSection.description
+  /// beside: "Plan review", "Retention saved."
+  description "Set every bookkeeping category to a country's statutory period at once — recorded, and yours to verify with your adviser." => "Sätt alla bokföringskategorier till ett lands lagstadgade tid på en gång. Det sparas, och du kontrollerar det med din rådgivare.";
+  /// RetentionEditor · a description
+  /// placeholders: {value} = …
+  /// shown through SettingsSection.description
+  /// beside: "Bookkeeping preset", "Retention saved."
+  description "Which privacy-request plans wait for approval before they run.{value}" => "Vilka planer för integritetsförfrågningar som väntar på godkännande innan de körs.{value}";
+  /// RetentionEditor · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Field.label
+  label "Jurisdiction" => "Jurisdiktion";
+  /// RetentionEditor · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through NumberField.label
+  label "Months kept" => "Månader sparad";
+  /// RetentionEditor · a label (a field, a list item, a menu entry) · at most ~27 characters
+  /// shown through Badge.label
+  /// beside: "Confirm"
+  label "Needs your decision" => "Behöver ditt beslut";
+  /// RetentionEditor · placeholder text inside an empty field · at most ~8 characters
+  /// shown through Field.placeholder
+  placeholder "SE" => "SE";
+  /// RetentionEditor · placeholder text inside an empty field · at most ~54 characters
+  /// shown through Field.placeholder
+  placeholder "The statute or decision that allows it" => "Lagen eller beslutet som tillåter det";
+  /// RetentionEditor · text on the page
+  /// shown through done
+  text " categories" => " kategorier";
+  /// RetentionEditor · text on the page
+  /// shown through done
+  text " category" => " kategori";
+  /// RetentionEditor · text on the page
+  /// placeholders: {r.MinMonths} = r.MinMonths
+  /// shown through Limits()
+  text "At least {r.MinMonths} months without a stated reason" => "Minst {r.MinMonths} månader utan angivet skäl";
+  /// RetentionEditor · text on the page
+  /// placeholders: {s.Jurisdiction} = s.Jurisdiction, {s.Reason} = s.Reason
+  text "Outside the kit's limits for {s.Jurisdiction}: {s.Reason}" => "Utanför kitets gränser för {s.Jurisdiction}: {s.Reason}";
+  /// RetentionEditor · text on the page
+  /// beside: "160px"
+  text "Outside the kit's limits only for a jurisdiction that allows it — say which, and why. Both are recorded." => "Utanför kitets gränser bara för en jurisdiktion som tillåter det. Ange vilken, och varför. Båda sparas.";
+  /// RetentionEditor · text on the page
+  /// shown through Refusal()
+  text "Outside the kit's limits, a period is saved only with the jurisdiction that allows it and the reason." => "Utanför kitets gränser sparas en lagringstid bara med den jurisdiktion som tillåter den och skälet.";
+  /// RetentionEditor · text on the page
+  /// shown through SaveBar.saved
+  /// beside: "Bookkeeping preset", "Plan review"
+  text "Retention saved." => "Lagringstiderna är sparade.";
+  /// RetentionEditor · text on the page
+  /// shown through EmptyState.body
+  text "The app and its kits declare what personal data they hold; each kind appears here with its period." => "Appen och dess kit anger vilka personuppgifter de har; varje typ visas här med sin lagringstid.";
+  /// RetentionEditor · text on the page
+  /// placeholders: {p.Jurisdiction} = p.Jurisdiction, {changes.Count} = changes.Count, {value} = …
+  /// shown through done
+  text "{p.Jurisdiction} preset set on {changes.Count}{value} — Save keeps it." => "Förinställningen {p.Jurisdiction} tillämpad på {changes.Count}{value}. Spara för att behålla den.";
+  /// RetentionEditor · text on the page
+  /// placeholders: {r.MinMonths} = r.MinMonths, {r.MaxMonths} = r.MaxMonths
+  /// shown through Limits()
+  text "{r.MinMonths}–{r.MaxMonths} months without a stated reason" => "{r.MinMonths}–{r.MaxMonths} månader utan angivet skäl";
+  /// RetentionEditor · a title
+  /// shown through SettingsSection.title
+  /// beside: "Plan review", "Retention saved."
+  title "Bookkeeping preset" => "Förinställning för bokföring";
+  /// RetentionEditor · a title
+  /// shown through SettingsPage.title
+  /// also in PrivacySettings /settings/privacy
+  title "Data retention" => "Lagringstid";
+  /// RetentionEditor · a title
+  /// shown through EmptyState.title
+  title "Nothing declared yet" => "Inget angivet än";
+  /// RetentionEditor · a title
+  /// shown through SettingsSection.title
+  /// beside: "Bookkeeping preset", "Retention saved."
+  title "Plan review" => "Granskning av planer";
+
+  // ── Osysharp.Privacy · RetentionLimitRefusal ──
+  /// RetentionLimitRefusal · text on the page
+  /// placeholders: {label} = label (string), {limit} = limit (string), {minMonths} = minMonths (int), {maxMonths} = maxMonths (int) — {minMonths} is a count: give one text per plural form
+  /// shown through RetentionLimitRefusal()
+  text "'{label}' cannot be kept {limit} without saying why: the kit declares {minMonths}–{maxMonths} months as the range no law it knows of asks you to leave. Set it outside only for a jurisdiction that allows it — state the jurisdiction and the reason, and both are recorded." => { one: "'{label}' kan inte sparas {limit} utan motivering: kitet anger {minMonths}–{maxMonths} månader som det intervall som ingen lag det känner till kräver att du lämnar. Ange ett värde utanför bara för en jurisdiktion som tillåter det. Ange jurisdiktionen och skälet, så sparas båda.", other: "'{label}' kan inte sparas {limit} utan motivering: kitet anger {minMonths}–{maxMonths} månader som det intervall som ingen lag det känner till kräver att du lämnar. Ange ett värde utanför bara för en jurisdiktion som tillåter det. Ange jurisdiktionen och skälet, så sparas båda." };
+  /// RetentionLimitRefusal · text on the page
+  /// shown through RetentionLimitRefusal()
+  text "A period is a number of months, 0 or more." => "En period är ett antal månader, 0 eller fler.";
+
+  // ── Osysharp.Privacy · RetentionSentence ──
+  /// RetentionSentence · text on the page
+  text "Erased on request" => "Raderas på begäran";
+
+  // ── Osysharp.Privacy · StandsFor ──
+  /// StandsFor · a label (a field, a list item, a menu entry) · at most ~40 characters
+  /// shown through StandsFor()
+  label "Partly done — the rest waits" => "Delvis klart, resten väntar";
+  /// StandsFor · a label (a field, a list item, a menu entry) · at most ~34 characters
+  /// shown through StandsFor()
+  label "Received — being handled" => "Mottagen, hanteras";
+
+  // ── Osysharp.Privacy · TitleOf ──
+  /// TitleOf · text on the page
+  /// shown through TitleOf()
+  text "Access request — a copy of their data" => "Begäran om tillgång: en kopia av uppgifterna";
+  /// TitleOf · text on the page
+  /// shown through TitleOf()
+  text "Erasure request" => "Begäran om radering";
+  /// TitleOf · text on the page
+  /// shown through TitleOf()
+  text "Portability request — their data to take elsewhere" => "Begäran om dataportabilitet: uppgifterna att ta med till en annan tjänst";
+  /// TitleOf · text on the page
+  /// shown through TitleOf()
+  text "Restriction request" => "Begäran om begränsning";
+}

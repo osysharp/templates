@@ -1,0 +1,481 @@
+// THE CUSTOMER'S SIDE — a help page anyone can write to, and a portal where a signed-in customer reads and answers
+// their own requests (and their company's, when it shares them). It is the same conversation the desk works: the
+// customer sees every reply and none of the notes, because the kit's rules decide that, not this page.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Conversations;
+using Osysharp.Storage;
+using Osysharp.Privacy;
+using Osysharp.Feedback;
+using Osysharp.Knowledge;
+using Osysharp.Fields;
+
+/// What a customer reads for where their request stands — in their words, not the team's statuses.
+string CustomerStatus(StatusCategory c) {
+  if (c == StatusCategory.Pending) { return "Waiting for your reply"; }
+  if (c == StatusCategory.Solved) { return "Solved"; }
+  if (c == StatusCategory.Closed) { return "Closed"; }
+  if (c == StatusCategory.New) { return "Received"; }
+  return "In progress";
+}
+
+Tone CustomerTone(StatusCategory c) {
+  if (c == StatusCategory.Pending) { return Tone.Warning; }
+  if (c == StatusCategory.Solved || c == StatusCategory.Closed) { return Tone.Success; }
+  return Tone.Primary;
+}
+
+/// The portal's frame: the brand, the customer's places, and their account. Open to a signed-out visitor — the help
+/// page is. Its chrome is `PortalChrome`, which the help centre's pages wear too (knowledge.osy).
+[Layout]
+[AllowAnonymous]
+component PortalFrame() {
+  render { PortalChrome { Outlet(); } }
+}
+
+/// The portal's chrome around a page (`Slot`): the brand, the help centre, the help form, the customer's requests and
+/// privacy, their account, the language switch — and the chat, with a search of the help centre above its first message:
+/// in the corner on a wider screen, and on a phone a Chat tab in the bottom bar (a button floating over a phone's page
+/// covers what the page says last, and a tab is where a phone's reader looks for a place to go).
+[Composable]
+[AllowAnonymous]
+component PortalChrome() {
+  live var me = Session.CurrentUser;
+  live var myName = me == null ? "" : me.DisplayName;
+  action SignOut() { Session.SignOut(); }
+  action GoAccount() { Navigation.Go("/account"); }
+  action GoPrivacy() { Navigation.Go("/privacy"); }
+  render {
+    TabbedShell(new AppChrome {
+      Product = "Harbour Support",
+      Mark = Icons.Messages,
+      Home = "/help",
+      User = me == null ? null : new ShellUser {
+        Name = myName, Secondary = "Customer", Initials = Initials(myName),
+        Menu = [
+          new MenuAction { Label = "Your account", Icon = Icons.User, OnPress = GoAccount },
+          new MenuAction { Label = "Your privacy", Icon = Icons.Lock, OnPress = GoPrivacy },
+          new MenuAction { Label = "Sign out", Icon = Icons.Logout, OnPress = SignOut, Tone = Tone.Danger, Divided = true },
+        ],
+      },
+      Nav = PortalNav(chatTab: !Layout.AtLeast(Tablet)),
+    }) {
+      Slot;
+      slot actions { LanguageChoice(compact: !Layout.AtLeast(Tablet)); }
+    }
+    // The chat, on every page of the portal and the help centre — the help centre's articles searched above the first
+    // message, so a customer finds the answer before they ask; an answer they leave unread is mailed to them. In the
+    // corner on a wider screen; on a phone it is the Chat tab's page (`PortalChatPage`).
+    if (Layout.AtLeast(Tablet)) {
+      ConversationLauncher(title: "Chat with us", intro: "Ask us anything — a person on the team reads every message.") {
+        slot help { PortalChatHelp(); }
+      }
+    }
+  }
+}
+
+/// The portal's places — and, on a phone, the Chat tab.
+NavItem[] PortalNav(bool chatTab) {
+  var items = new List<NavItem> {
+    new NavItem { Label = "Help centre", To = "/help-centre", Icon = Icons.File },
+    new NavItem { Label = "Get help", To = "/help", Icon = Icons.Send, Exact = true },
+    new NavItem { Label = "Your requests", To = "/my", Icon = Icons.Inbox },
+    new NavItem { Label = "Your privacy", To = "/privacy", Icon = Icons.Lock },
+  };
+  if (chatTab) { items.Add(new NavItem { Label = "Chat", To = "/chat", Icon = Icons.Messages }); }
+  return items.ToArray();
+}
+
+/// What the chat offers above its first message: the help centre's articles, searched as the customer types.
+[Composable]
+[AllowAnonymous]
+component PortalChatHelp() {
+  render { KnowledgeQuickSearch(take: 4, fallback: "Nothing found — write to us below and a person answers."); }
+}
+
+/// The chat as a page of the portal — where the Chat tab goes on a phone: the same conversation the corner opens on a wider
+/// screen, with the help centre searched above its first message.
+[Route("/chat")]
+[Layout(PortalFrame)]
+[AllowAnonymous]
+[Render(CSR)]
+[Title("Chat with us")]
+component PortalChatPage() {
+  render {
+    Stack(gap: 4, w: "100%", maxW: "40rem", mx: "auto", px: 4, py: 5) {
+      ConversationWidget(title: "Chat with us", intro: "Ask us anything — a person on the team reads every message.") {
+        slot help { PortalChatHelp(); }
+      }
+    }
+  }
+}
+
+/// A customer's own privacy page — the privacy kit's (what the desk keeps about people and why, how much of it about
+/// THEM, asking for a copy or an erasure, and their requests), inside the portal's frame. Taken over by name.
+[Route("/privacy")]
+[Layout(PortalFrame)]
+[Authorize]
+[Render(CSR)]
+[Title("Your privacy")]
+component MyPrivacyPage() { render { MyPrivacy(); } }
+
+/// Asking about your data with no account — the privacy kit's page, inside the portal's frame.
+[Route("/privacy/ask")]
+[Layout(PortalFrame)]
+[AllowAnonymous]
+[Render(CSR)]
+[Title("Ask about your data")]
+component AskWithoutAnAccountPage() { render { AskWithoutAnAccount(); } }
+
+/// Where everyone lands: the team goes to its desk; everyone else to the help page.
+[Route("/")]
+[AllowAnonymous]
+[Render(CSR)]
+[Title("Harbour Support")]
+component Front() {
+  live var me = Session.CurrentUser;
+  live var meId = me == null ? Guid.Empty : me.Id;
+  live var staff = RoleGrant.Count(g => g.Member.Id == meId
+    && (g.Role == AppRole.Agent || g.Role == AppRole.Lead || g.Role == AppRole.Admin));
+  on change { Navigation.Go(staff > 0 ? "/v/mine" : "/help"); }
+  render { Box(p: 6) { Text("Opening…", color: Colors.TextMuted); } }
+}
+
+/// The help page — a request from anyone, signed in or not. It asks what the desk's forms ask (Settings › Fields and
+/// forms): the kind of request when there is more than one, then that form's questions, each shown once its condition
+/// is met, checked as they are answered and again by the server, which keeps only what the form shows.
+[Route("/help")]
+[Layout(PortalFrame)]
+[AllowAnonymous]
+[Render(CSR)]
+[Title("Get help")]
+component HelpPage() {
+  live var me = Session.CurrentUser;
+  // The forms in use and every field on them — two small reads, whatever the customer picks.
+  live var forms = TicketForm.Where(f => f.Active).OrderByDescending(f => f.IsDefault).ThenBy(f => f.Position).ThenBy(f => f.Name).ToList();
+  // (The projection `FormSpecs()` reads — a page binds the read itself, so it is read again when an admin changes a form.)
+  live var asked = FormField.OrderBy(x => x.Position).ThenBy(x => x.Field.Position)
+    .Select(x => new FieldSpec { Id = x.Field.Id, Name = x.Field.Name, Kind = x.Field.Kind, Options = x.Field.Options,
+                                 Hint = x.Field.Hint, Public = x.Field.Public, Required = x.Field.Required,
+                                 Active = x.Field.Active, Form = x.Form.Id, Position = x.Position,
+                                 ShowWhen = x.ShowWhen.Id, ShowValue = x.ShowValue }).ToList();
+  int sent = 0;
+  action Sent(int number) { sent = number; }
+  action Another() { sent = 0; }
+
+  skeleton {
+    Stack(gap: 4, w: "100%", maxW: "640px", mx: "auto", py: 6) {
+      Skeleton(shape: SkeletonShape.HalfLine);
+      Skeleton(shape: SkeletonShape.Block);
+    }
+  }
+
+  render {
+    Stack(gap: 6, w: "100%", maxW: "640px", mx: "auto", py: 6) {
+      Stack(gap: 2) {
+        Text("How can we help?", fontSize: FontSize.Title, fontWeight: FontWeight.Semibold, letterSpacing: "-0.015em");
+        Text("Tell us what happened. A person on the team answers, usually within a working day and sooner for anything urgent.",
+             color: Colors.TextSecondary);
+      }
+      if (sent > 0) {
+        Card() {
+          Stack(gap: 3, animation: KitArrive) {
+            Row(gap: 2, align: Align.Center) {
+              Box(animation: KitDraw) { Done("We have your request"); }
+            }
+            Text("Your reference is #" + sent + ". We'll answer by mail" + (me != null ? ", and you can follow it under Your requests." : "."),
+                 color: Colors.TextSecondary);
+            Row(gap: 2) {
+              if (me != null) { Link(href: "/my/" + sent) { Text("Open #" + sent, color: Colors.Primary, fontWeight: FontWeight.Medium); } }
+              Button("Write another", onPress: Another, tone: Tone.Ghost);
+            }
+          }
+        }
+      }
+      if (sent == 0) { RequestForm(me != null, forms, asked, Sent); }
+    }
+  }
+}
+
+/// THE REQUEST ITSELF — who (signed out), the kind of request, the subject and what happened, and the form's questions.
+/// Made once the forms are read, so it holds one answer per field the desk asks on ANY form (`slots`): choosing another
+/// kind of request keeps an answer to a question both ask.
+[Composable]
+component RequestForm(bool signedIn, List<TicketForm> forms, List<FieldSpec> asked, Action<int> onSent) {
+  live var choosable = forms.Where(f => IsChoosable(f, asked)).ToList();
+  live var defaultId = forms.Select(f => f.Id).FirstOrDefault();
+  live var slots = SlotsOf(asked);
+  string name = "";
+  string email = "";
+  string subject = "";
+  string text = "";
+  string problem = "";
+  /// The kind of request chosen; none: the default form.
+  TicketForm? kindOf = null;
+  /// One answer per field the desk asks, in `slots` order — bound element by element.
+  List<string> values = Padded(new List<string>(), SlotsOf(asked).Count);
+  /// Set once a send was tried, so a question says what is wrong only after somebody meant to send it.
+  bool tried = false;
+  live var formId = kindOf != null ? kindOf.Id : defaultId;
+  live var onForm = asked.Where(x => x.Form == formId).ToList();
+  live var answers = AnswersBySlot(onForm, slots, values);
+  live var shown = ShownFields(onForm, answers, true);
+
+  action Submit() {
+    problem = "";
+    tried = true;
+    if (onForm.Any(x => shown.Contains(x.Id) && SlotProblem(x, slots, values, true) != "")) {
+      problem = "Some answers need another look — each says what, above.";
+      return;
+    }
+    try {
+      var number = SubmitRequest(subject, text, name, email, formId: formId == Guid.Empty ? null : formId,
+                                 answers: answers.Where(a => shown.Contains(a.Field)).ToList());
+      subject = ""; text = ""; tried = false;
+      values = Padded(new List<string>(), slots.Count);
+      onSent(number);
+    } catch (Exception ex) { problem = ex.Message; }
+  }
+
+  render {
+    Card() {
+      Stack(gap: 4, label: "Your request") {
+        if (!signedIn) {
+          Row(gap: 3, wrap: Wrapping.Wrap) {
+            Box(grow: 1, minW: "220px") { Field("Your name", value: name); }
+            Box(grow: 1, minW: "220px") { Field("Your email", value: email, type: "email", placeholder: "name@company.com"); }
+          }
+        }
+        if (choosable.Count > 1) {
+          Stack(gap: 1) {
+            Dropdown("What is it about?", value: kindOf, options: choosable.ToArray(), placeholder: "Choose the closest") { f => Text(f.Name); }
+            if (kindOf != null && kindOf.Description != "") {
+              Text(kindOf.Description, fontSize: FontSize.Caption, color: Colors.TextMuted);
+            }
+          }
+        }
+        // Articles that might answer it appear under the subject as the customer types (Osysharp.Knowledge).
+        KnowledgeSuggestingField("Subject", value: subject, placeholder: "One line saying what is wrong");
+        TextAreaField("What happened", value: text, rows: 6,
+                      placeholder: "What you were doing, what you expected, and what happened instead.");
+        // The form's own questions, each where its condition puts it — one that appears because of an answer
+        // ARRIVES, so the eye sees where it came from.
+        foreach (var x in onForm) {
+          if (shown.Contains(x.Id) && slots.IndexOf(x.Id) < values.Count) {
+            if (x.ShowWhen != null) {
+              Box(animation: KitArrive) {
+                Question(x, value: values[slots.IndexOf(x.Id)], optional: !x.Required,
+                         error: tried ? SlotProblem(x, slots, values, true) : "");
+              }
+            } else {
+              Question(x, value: values[slots.IndexOf(x.Id)], optional: !x.Required,
+                       error: tried ? SlotProblem(x, slots, values, true) : "");
+            }
+          }
+        }
+        if (problem != "") { Alert(problem, tone: Tone.Danger); }
+        Row(gap: 3, align: Align.Center, wrap: Wrapping.Wrap) {
+          Button("Send request", onPress: Submit, tone: Tone.Primary, shortcut: KeySend);
+          if (!signedIn) {
+            Text("Have an account?", color: Colors.TextMuted, fontSize: FontSize.Label);
+            Link(href: "/login") { Text("Sign in to follow your requests", color: Colors.Primary, fontSize: FontSize.Label); }
+          }
+        }
+      }
+      // Asking about your data is a right, not a support request: it has its own page, no account needed (the privacy
+      // kit's `/privacy/ask` — prove the address you wrote from), and a signed-in customer has theirs at `/privacy`.
+      Row(gap: 2, wrap: Wrapping.Wrap) {
+        Text("Your data:", color: Colors.TextMuted, fontSize: FontSize.Label);
+        Link(href: signedIn ? "/privacy" : "/privacy/ask") {
+          Text("see what we keep, ask for a copy or have it erased", color: Colors.Primary, fontSize: FontSize.Label);
+        }
+      }
+    }
+  }
+}
+
+/// A customer's requests — their own, and their colleagues' when their company shares them.
+[Route("/my")]
+[Layout(PortalFrame)]
+[Render(CSR)]
+[Title("Your requests")]
+component MyRequestsPage() {
+  // The newest requests first, a window of them — a company that shares its tickets may have thousands; the database
+  // counts the rest, and "Show more" reads the next ones.
+  int limit = 50;
+  live var mine = Ticket.OrderByDescending(t => t.Number).Take(limit)
+    .Select(t => new PortalRow { Number = t.Number, Subject = t.Title, Category = t.Category,
+                                 Requester = t.Customer.DisplayName, UpdatedAt = t.Conversation.LastEntryAt }).ToList();
+  live var total = Ticket.Count();
+  live var supportSet = DeskAddress.Select(a => a.SupportAddress).Take(1).ToList();
+  action ShowMore() { limit = limit + 50; }
+  DateTime now = DateTime.UtcNow;
+  render {
+    Stack(gap: 5, w: "100%", maxW: "860px", mx: "auto", py: 6) {
+      Row(gap: 3, align: Align.Center) {
+        Text("Your requests", fontSize: FontSize.Title, fontWeight: FontWeight.Semibold, letterSpacing: "-0.015em");
+        Spacer();
+        Link(href: "/help") { Text("New request", color: Colors.Primary, fontWeight: FontWeight.Medium); }
+      }
+      if (mine.Count == 0) {
+        var support = supportSet.Count > 0 ? supportSet[0] : DemoSupportAddress();
+        EmptyState("Nothing yet", body: $"Requests you send from the help page, or by mail to {support}, appear here.");
+      } else {
+        // The list's card holds the requests; with none, the empty state is the whole answer — an empty card under it
+        // read as a list that failed to load.
+        Card() {
+          Stack(gap: 0, role: UiRole.List, label: "Your requests") {
+            foreach (var r in mine) {
+              Link(href: "/my/" + r.Number, color: Colors.OnSurface) {
+                Row(gap: 3, align: Align.Center, py: 3, borderBW: 1, border: Colors.Border, role: UiRole.ListItem, label: r.Subject) {
+                  Text("#" + r.Number, fontFamily: Font.Mono, fontSize: FontSize.Caption, color: Colors.TextMuted, w: "56px");
+                  Stack(gap: 0, grow: 1, minW: "0") {
+                    Text(r.Subject, fontWeight: FontWeight.Medium, whiteSpace: WhiteSpace.Nowrap, overflow: Overflow.Hidden,
+                         textOverflow: TextOverflow.Ellipsis);
+                    Text(r.Requester + " · updated " + Osysharp.Inbox.Ago(r.UpdatedAt, now) + " ago", fontSize: FontSize.Caption, color: Colors.TextMuted);
+                  }
+                  Badge(CustomerStatus(r.Category), tone: CustomerTone(r.Category));
+                }
+              }
+            }
+          }
+        }
+        if (total > mine.Count) {
+          Row(justify: Justify.Center) {
+            Button("Show " + Math.Min(50, total - mine.Count) + " more", onPress: ShowMore, tone: Tone.Ghost, size: Size.Sm);
+          }
+        }
+      }
+    }
+  }
+}
+
+class PortalRow {
+  public int Number;
+  public string Subject;
+  public StatusCategory Category;
+  public string Requester;
+  public DateTime? UpdatedAt;
+}
+
+/// One request, as its customer sees it: the replies, never the notes — and a box to answer.
+[Route("/my/{number}")]
+[Layout(PortalFrame)]
+[Render(CSR)]
+[Title("Your request")]
+component MyRequestPage(int number) {
+  live var tickets = Ticket.Where(t => t.Number == number).Include(t => t.Conversation).ToList();
+  string text = "";
+  string problem = "";
+  // A screenshot pasted into the reply, or a file dropped on it, goes with it.
+  List<PendingFile> files = [];
+  action Took(UploadedFile upload) {
+    problem = "";
+    try {
+      var next = files.ToList();
+      next.Add(KeepUpload(upload));
+      files = next;
+    } catch (Exception ex) { problem = ex.Message; }
+  }
+  action Untake(Guid id) { files = files.Where(f => f.Id != id).ToList(); }
+  action Send(Guid id) {
+    problem = "";
+    try { CustomerReply(id, text, files.Select(f => f.Id).ToList()); text = ""; files = []; }
+    catch (Exception ex) { problem = ex.Message; }
+  }
+  render {
+    Stack(gap: 5, w: "100%", maxW: "860px", mx: "auto", py: 6) {
+      if (tickets.Count == 0) { EmptyState("Not one of yours", body: "There is no request #" + number + " you can see."); }
+      foreach (var t in tickets) {
+        Stack(gap: 2) {
+          Link(href: "/my") { Text("Your requests", color: Colors.Primary, fontSize: FontSize.Label); }
+          Row(gap: 3, align: Align.Center, wrap: Wrapping.Wrap) {
+            Text("#" + t.Number, fontFamily: Font.Mono, color: Colors.TextMuted);
+            Text(t.Title, fontSize: FontSize.Heading, fontWeight: FontWeight.Semibold, letterSpacing: "-0.015em", grow: 1);
+            Badge(CustomerStatus(t.Category), tone: CustomerTone(t.Category));
+          }
+        }
+        if (t.Category == StatusCategory.Solved || t.Category == StatusCategory.Closed) { SolvedNotice(t); }
+        ToldUs(t.Id);
+        ConversationThread(t.Conversation.Id, desk: false);
+        if (t.Category != StatusCategory.Closed) {
+          Card() {
+            Stack(gap: 3, onFile: Took) {
+              TextAreaField(t.Category == StatusCategory.Solved ? "Not solved after all? Tell us" : "Your reply", value: text, rows: 4);
+              if (files.Count > 0) { PendingFiles(files, onRemove: Untake); }
+              if (problem != "") { Alert(problem, tone: Tone.Danger); }
+              Row(gap: 2, align: Align.Center) {
+                Button("Send reply", onPress: () => Send(t.Id), tone: Tone.Primary, shortcut: KeySend);
+                Upload("Attach files", accept: "*/*", privately: true, multiple: true, onUploaded: Took, label: "Attach files",
+                       color: Colors.Primary, fontWeight: FontWeight.Semibold, fontSize: FontSize.Caption, cursor: Cursor.Pointer);
+              }
+            }
+          }
+        }
+        if (t.Category == StatusCategory.Closed) {
+          Text("This request is closed. Write a new one from Get help and mention #" + t.Number + ".", color: Colors.TextMuted);
+        }
+      }
+    }
+  }
+}
+
+/// A solved request, as its customer reads it: that it is solved, what was done, and — when they were asked — how it went.
+[Composable]
+component SolvedNotice(Ticket t) {
+  render {
+    Stack(gap: 3) {
+      Card() {
+        Stack(gap: 2) {
+          Row(gap: 2, align: Align.Center) {
+            Icon(Icons.CheckCircle, size: 20, color: Colors.Success);
+            Text(t.Category == StatusCategory.Closed ? "This request is closed" : "We have solved this request",
+                 fontSize: FontSize.Subhead, fontWeight: FontWeight.Semibold);
+          }
+          if (t.Resolution != null && t.Resolution != "") {
+            Text("What we did", fontSize: FontSize.Label, fontWeight: FontWeight.Semibold, color: Colors.TextMuted);
+            Text(t.Resolution!, whiteSpace: WhiteSpace.PreWrap);
+          }
+          if (t.Category == StatusCategory.Solved) {
+            Text("If anything is still not right, write below — it opens your request again.", fontSize: FontSize.Label,
+                 color: Colors.TextSecondary);
+          }
+        }
+      }
+      FeedbackPrompt(t.Id);
+    }
+  }
+}
+
+/// The question a solve mail's link opens — in the portal's frame, for a customer who is not signed in.
+[Route("/feedback/{link}")] [Layout(PortalFrame)] [AllowAnonymous] [Render(CSR)] [Title("How did we do?")]
+component FeedbackByLinkPage(FeedbackLink link) {
+  render { Box(w: "100%", maxW: "640px", mx: "auto", py: 6) { FeedbackByLinkPanel(link, "", showName: false); } }
+}
+
+/// The solve mail's "Good" or "Bad" — recorded as the page opens, in the portal's frame.
+[Route("/feedback/{link}/{choice}")] [Layout(PortalFrame)] [AllowAnonymous] [Render(CSR)] [Title("Thank you")]
+component FeedbackChoicePage(FeedbackLink link, string choice) {
+  render { Box(w: "100%", maxW: "640px", mx: "auto", py: 6) { FeedbackByLinkPanel(link, choice, showName: false); } }
+}
+
+/// A link from one of our mails that has run out, or was never one of ours — said the same way whichever it was.
+[Route("/link-gone")]
+[Layout(PortalFrame)]
+[AllowAnonymous]
+[Render(CSR)]
+[Title("This link has run out")]
+component LinkGonePage() {
+  render {
+    Box(w: "100%", maxW: "640px", mx: "auto", py: 6) {
+      Card() {
+        EmptyState("This link has run out",
+                   body: "Links in our mails work for a while, and some only once. To reach us, write from Get help — or sign in to see your requests.") {
+          slot icon { Icon(Icons.Link, size: 28, color: Colors.TextMuted); }
+        }
+      }
+    }
+  }
+}
+
+app.Ui = new AppUi { InvalidLinkSurface = LinkGonePage };

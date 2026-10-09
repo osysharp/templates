@@ -1,0 +1,215 @@
+// A PORTAL CUSTOMER'S OWN PRIVACY PAGE, IN HARBOUR'S SHELL — what the desk keeps about people and why, and beside each
+// kind how much of it the desk holds about HER right now (counts, never contents); then a copy of her data, asked for,
+// approved by an admin, and downloaded — the readable copy she opens in a browser, and the data file beside it.
+// Mira manages privacy; Petra (Larkspur) has a portal account; the Office desk is in team.test.osy.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Mail;
+using Osysharp.Privacy;
+using Osysharp.Workflow;
+
+/// Petra writes twice from the portal's address and the desk answers once; Ines Berg — no account — writes three times.
+void PetraWithHistory() {
+  runas (Mira) {
+    var first = OpenTicket("petra@larkspur.test", "Petra Holm", "Invoice 4471 shows the wrong VAT number",
+                           "Our VAT number on invoice 4471 is SE556677889901, not the one printed.");
+    OpenTicket("petra@larkspur.test", "Petra Holm", "Add two seats from November", "Can we add two seats from the 1st?");
+    ReplyToTicket(first, "Thanks Petra — a corrected invoice is on its way.", false);
+    for (var i = 1; i <= 3; i++) {
+      OpenTicket("ines.b@kestrel.test", "Ines Berg", "Order " + i + " has not arrived", "Order " + i + " has not arrived yet.");
+    }
+  }
+}
+
+/// How many of `key` a person's page says are held about them.
+int HeldOn(List<KeptCategory> page, string key) {
+  var row = page.FirstOrDefault(c => c.Key == key);
+  Assert.NotNull(row);
+  Assert.True(row!.Counted);
+  return row!.Held;
+}
+
+[Test(Office)]
+void her_page_counts_what_the_desk_holds_about_her_exactly_as_a_request_about_her_would() {
+  PetraWithHistory();
+  // A mail the app sent her (a sign-in code) — a row of hers she cannot read herself, and still hers to be told of.
+  runas (Petra) {
+    var proof = ProveItIsMe();
+    Workflow.Settle(StepUp.Single(s => s.Id == proof.Id));
+  }
+  List<KeptCategory> page = [];
+  runas (Petra) { page = WhatWeKeepAboutMe(); }
+  // What a request about her finds — planned by an admin from her own account and address.
+  runas (Mira) {
+    var party = Customer.Single(c => c.Account != null && c.Account.Email == "petra@larkspur.test");
+    var r = StartPrivacyRequestFor(party.Id, RequestKind.Access, IdentityCheck.CodeToKnownAddress, "A code to her address came back.");
+    foreach (var l in PlanLine.Where(l => l.Request.Id == r.Id).ToList()) {
+      var row = page.FirstOrDefault(c => c.Key == l.Category);
+      Assert.NotNull(row);
+      if (row!.Counted && l.Category != "privacy.records") { Assert.Equal(l.Items, row!.Held); }
+    }
+  }
+  Assert.Equal(2, HeldOn(page, "conversations.service"));
+  Assert.Equal(2, HeldOn(page, "harbour.tickets"));
+  Assert.True(HeldOn(page, "conversations.contact-points") >= 2);   // who she is, and the address she writes from
+  Assert.Equal(0, HeldOn(page, "conversations.claims"));
+  Assert.Equal(1, HeldOn(page, "mail.sent"));
+  // A copy the platform clears by itself is not counted by person — the page says so instead of "none".
+  Assert.False(page.Single(c => c.Key == "platform.model-calls").Counted);
+}
+
+[Test(Office)]
+void her_page_counts_only_her_own_never_another_customers() {
+  PetraWithHistory();
+  runas (Petra) {
+    var page = WhatWeKeepAboutMe();
+    // Ines wrote three times; none of it is Petra's, and none of it is counted for her.
+    Assert.Equal(2, HeldOn(page, "conversations.service"));
+    Assert.Equal(2, HeldOn(page, "harbour.tickets"));
+  }
+  // Jonas has an account and has never written: the desk holds none of his conversations or tickets.
+  runas (Jonas) {
+    var page = WhatWeKeepAboutMe();
+    Assert.Equal(0, HeldOn(page, "conversations.service"));
+    Assert.Equal(0, HeldOn(page, "harbour.tickets"));
+    Assert.Equal(0, HeldOn(page, "mail.sent"));
+  }
+}
+
+principal Impostor => User.Single(u => u.Email == "ines.b@kestrel.test");
+
+[Test(Office)]
+void an_account_that_never_proved_its_address_is_counted_by_the_account_alone() {
+  PetraWithHistory();
+  // Somebody signs up with Ines's address and never proves it: the three conversations from that address are Ines's, and
+  // nothing on the page counts them for whoever typed it.
+  runas (AuthBootstrap) {
+    new User { Email = "ines.b@kestrel.test", DisplayName = "Not Ines", PasswordHash = Security.HashPassword("impostor-password-1") };
+    UnitOfWork.Commit();
+  }
+  runas (Impostor) {
+    Assert.Equal(0, MySubject().Emails.Count);
+    var page = WhatWeKeepAboutMe();
+    Assert.Equal(0, HeldOn(page, "conversations.service"));
+    Assert.Equal(0, HeldOn(page, "conversations.contact-points"));
+    Assert.Equal(0, HeldOn(page, "harbour.tickets"));
+  }
+}
+
+/// The six-digit code in the newest mail to `to`, read as the sign-in flow reads the outbox.
+string CodeTo(string to) {
+  var code = "";
+  runas (AuthBootstrap) {
+    var m = OutgoingMail.Where(x => x.To == to && x.Text != null && x.Text.Contains("Type this code where you were asked for it: "))
+      .OrderByDescending(x => x.CreatedAt).FirstOrDefault();
+    if (m != null) {
+      var text = m.Text ?? "";
+      var at = text.IndexOf("Type this code where you were asked for it: ") + "Type this code where you were asked for it: ".Length;
+      code = text.Substring(at, 6);
+    }
+  }
+  return code;
+}
+
+/// Petra asks for a copy of her data — proving it is her by the code to her account's address — and Mira approves it.
+/// Answers the request.
+Guid PetraAskedForACopyAndMiraApproved(string language = "") {
+  ProofStarted? proof = null;
+  runas (Petra) {
+    proof = ProveItIsMe();
+    Workflow.Settle(StepUp.Single(s => s.Id == proof!.Id));
+  }
+  var code = CodeTo("petra@larkspur.test");
+  var id = Guid.Empty;
+  runas (Petra) {
+    Assert.Equal("", ConfirmItIsMe(proof!.Id, code));
+    if (language != "") { Session.SetLanguage(language); }
+    var ask = AskAboutMe(RequestKind.Access, proof!.Id);
+    Workflow.Settle(ask);
+    id = PrivacyAsk.Single(a => a.Id == ask.Id).Request!.Id;
+  }
+  runas (Mira) {
+    ApproveRequest(PrivacyRequest.Single(r => r.Id == id));
+    Assert.Equal(RequestState.Done, PrivacyRequest.Single(r => r.Id == id).State);
+  }
+  return id;
+}
+
+[Test(Office)]
+void her_copy_holds_her_own_data_and_reads_as_a_page_beside_the_data_file() {
+  PetraWithHistory();
+  var id = PetraAskedForACopyAndMiraApproved();
+  runas (Mira) {
+    var r = PrivacyRequest.Single(x => x.Id == id);
+    var data = ExportOf(r);
+    var page = ReadableExportOf(r);
+    // Her words, in both — and in the page under what they are, with why they are kept.
+    Assert.Contains("SE556677889901", data);
+    Assert.Contains("SE556677889901", page);
+    Assert.Contains("Your other conversations with us", page);
+    Assert.Contains("Why we keep it: Answering you, and improving our own support", page);
+    Assert.Contains("You wrote", page);
+    Assert.Contains("We wrote to you", page);
+    // The desk's own rows (written by the platform from `[PersonalData]`): each ticket, its fields by name — and a field
+    // that holds nothing is left out rather than shown blank.
+    Assert.Contains("Title: Invoice 4471 shows the wrong VAT number", page);
+    Assert.DoesNotContain("Root cause:", page);
+    // Nothing of Ines's, who wrote three times from another address.
+    Assert.DoesNotContain("has not arrived", data);
+    Assert.DoesNotContain("has not arrived", page);
+    Assert.DoesNotContain("kestrel", page);
+  }
+}
+
+/// ⭐ PETRA'S PRIVACY PAGE IN THE PORTAL — reached from the portal's own tabs, in the portal's frame: what the desk keeps about
+/// people and why, and how much of each about her; what a copy will hold before she asks; the copy fetched, and its
+/// readable page. Photographed by `osy test --pixels` at a desk's width and a phone's, light and dark.
+[Test(Office)]
+void petra_sees_what_the_desk_holds_about_her_asks_for_a_copy_and_reads_it() {
+  PetraWithHistory();
+  Ui.Viewport(1280, 900);
+  Ui.SignInAs(Petra);
+  Ui.Visit("/my");
+  Ui.Click("Your privacy");                                           // the portal's tab (and her account menu)
+  Assert.Visible("Harbour Support");                                   // the portal's own frame
+  Assert.Visible("What we keep about people, and why");
+  Assert.Visible("Your other conversations with us");
+  Assert.Visible("We hold 2 of these about you.");
+  Assert.Visible("We hold none of these about you.");
+  Assert.Visible("We cannot count these by person.");
+  Assert.Hidden("SE556677889901");                                     // counts, never contents
+  Assert.NoOverflow();
+  Ui.Shot("harbour-your-privacy-wide");
+  Ui.Theme("dark");
+  Ui.Shot("harbour-your-privacy-wide-dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Assert.NoOverflow();
+  Ui.Shot("harbour-your-privacy-phone");
+  Ui.Theme("dark");
+  Ui.Shot("harbour-your-privacy-phone-dark");
+  Ui.Theme("light");
+
+  Ui.Viewport(1280, 900);
+  Ui.Click("A copy of your data");
+  Assert.Visible("You get one download, once, for seven days");
+  Assert.Visible("In your copy: 2 of these, each with its date — and why we keep them, and for how long.");
+  Assert.Visible("Not in a copy, because nobody can find it by person: Text sent to an AI model on your behalf.");
+  Ui.Shot("harbour-your-privacy-what-a-copy-holds");
+
+  var id = PetraAskedForACopyAndMiraApproved();
+  Ui.Visit("/privacy");
+  Assert.Visible("Answered");
+  Ui.Click("Download your data");
+  Assert.Visible("Your copy is downloading");
+  Assert.Visible("Download the data file another service can read (JSON)");
+  Ui.Shot("harbour-your-privacy-downloaded");
+
+  var readable = "";
+  runas (Mira) { readable = ReadableExportOf(PrivacyRequest.Single(r => r.Id == id)); }
+  Ui.Shot("harbour-your-data-readable-wide", new RenderedEmail("Your data", "") { Html = readable });
+  Ui.Viewport(390, 844);
+  Ui.Shot("harbour-your-data-readable-phone", new RenderedEmail("Your data", "") { Html = readable });
+}

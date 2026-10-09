@@ -1,0 +1,73 @@
+// SETTINGS → MAILBOXES (D-PUSHMAIL1; the page is Osysharp.Mail.Receiving's since 2026-10-02) — an admin sees every inbox
+// the desk reads: watched or not, pushed or polled, when it was last asked, and what is wrong; starts and stops watching;
+// and connects an inbox that is connected with the provider's consent. Admins only — the kit's `ManagesMailboxes`,
+// which the desk leaves at its default (the desk's own `IsAdmin`), on the page and on every function behind it.
+using Osysharp.Identity;
+using Osysharp.Mail;
+using Osysharp.Mail.Receiving;
+using Osysharp.Workflow;
+
+[Test(Office)]
+void an_admin_sees_each_inbox_and_how_its_mail_arrives_and_starts_watching_it() {
+  runas (Mira) {
+    var before = MailboxViews().Single(v => v.Address == "support@helpdesk.test");
+    Assert.Equal("Not watched", before.State);
+    Assert.Equal("Demo", before.Provider);
+    Assert.Equal("Polled once watched", before.Delivery);
+    Assert.False(before.CanConnect);
+    StartWatchingMailbox("support@helpdesk.test");
+    UnitOfWork.Commit();
+    Workflow.Settle(MailboxWatch.Single(w => w.Address == "support@helpdesk.test"));
+  }
+  runas (Mira) {
+    var after = MailboxViews().Single(v => v.Address == "support@helpdesk.test");
+    Assert.Equal("Watching", after.State);
+    Assert.Equal("Polled", after.Delivery);
+    Assert.True(after.Watched);
+    Assert.NotEqual("never", after.LastAsked);
+    StopWatchingMailboxAt("support@helpdesk.test");
+    UnitOfWork.Commit();
+  }
+  runas (Mira) { Assert.Equal("Stopped", MailboxViews().Single(v => v.Address == "support@helpdesk.test").State); }
+}
+
+[Test(Office)]
+void an_inbox_that_is_not_connected_from_here_says_so_rather_than_offering_a_consent_page() {
+  runas (Mira) {
+    var refused = Assert.Throws<ValidationException>(() => MailboxConnectUrl("support@helpdesk.test"));
+    Assert.Contains("is not connected from here", refused.Message);
+  }
+}
+
+[Test(Office)]
+void an_agent_can_neither_read_the_mailboxes_nor_connect_or_watch_one() {
+  runas (Theo) {
+    Assert.Throws(() => MailboxViews());
+    Assert.Throws(() => MailboxConnectUrl("support@helpdesk.test"));
+    Assert.Throws(() => { StartWatchingMailbox("support@helpdesk.test"); UnitOfWork.Commit(); });
+  }
+  runas (Mira) { Assert.False(MailboxWatch.Any()); }
+  Ui.SignInAs(Theo);
+  Ui.Visit("/settings");
+  Assert.Hidden("Mailboxes", within: "Settings sections");
+  Ui.Visit("/settings/mailboxes");
+  Assert.Hidden("Start watching");
+  Assert.Hidden("support@helpdesk.test");
+}
+
+[Test(Office)]
+void the_mailboxes_page_starts_and_stops_watching_an_inbox() {
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings");
+  Ui.Click("Mailboxes", within: "Settings sections");
+  Assert.Visible("support@helpdesk.test");
+  Assert.Visible("Demo · Not watched · Polled once watched");
+  Assert.Visible("Nothing is waiting.");
+  Ui.Click("Start watching");
+  Assert.Visible("Stop watching");
+  Assert.Visible("Demo · Watching · Polled");
+  Ui.Shot("settings-mailboxes");
+  Ui.Click("Stop watching");
+  Assert.Visible("Start watching");
+}

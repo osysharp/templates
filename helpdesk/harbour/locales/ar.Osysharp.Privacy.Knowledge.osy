@@ -1,0 +1,22 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Privacy.Knowledge, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Privacy.Knowledge · Osysharp.Privacy.Knowledge.KnowledgePersonalData.Categories ──
+  /// Osysharp.Privacy.Knowledge.KnowledgePersonalData.Categories · text on the page
+  text "Knowing who wrote and who checked what our readers are told" => "معرفة من كتب ومن راجع ما يُقال لقرائنا";
+  /// Osysharp.Privacy.Knowledge.KnowledgePersonalData.Categories · text on the page
+  text "The articles you wrote or reviewed, and what you said in reviews" => "المقالات التي كتبتها أو راجعتها، وما قلته في المراجعات";
+
+  // ── Osysharp.Privacy.Knowledge · Osysharp.Privacy.Knowledge.KnowledgePersonalData.Export ──
+  /// Osysharp.Privacy.Knowledge.KnowledgePersonalData.Export · text on the page
+  text "You published it" => "أنت نشرته";
+  /// Osysharp.Privacy.Knowledge.KnowledgePersonalData.Export · text on the page
+  text "You wrote it" => "أنت كتبته";
+  /// Osysharp.Privacy.Knowledge.KnowledgePersonalData.Export · text on the page
+  /// placeholders: {what} = what (string), {r.Language} = r.Language (string), {r.Number} = r.Number (int) — {r.Number} is a count: give one text per plural form
+  /// shown through ExportItem.Body
+  text "{what} — {r.Language}, version {r.Number}" => { zero: "{what} — {r.Language}، النسخة {r.Number}", one: "{what} — {r.Language}، النسخة {r.Number}", two: "{what} — {r.Language}، النسخة {r.Number}", few: "{what} — {r.Language}، النسخة {r.Number}", many: "{what} — {r.Language}، النسخة {r.Number}", other: "{what} — {r.Language}، النسخة {r.Number}" };
+}

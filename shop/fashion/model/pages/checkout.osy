@@ -1,0 +1,267 @@
+using Osysharp.Shop.Discounts;
+using Osysharp.Shop;
+using Osysharp.Shop.Looks;
+using Osysharp.Storage;
+
+// Checkout: who you are, how it reaches you, how you pay — and then the reservation, with its reference.
+
+[Title("Checkout — Vall")]
+[Route("/checkout")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component Checkout() {
+  string visitId = Visitor.Id;
+  live var bag = Bag.Include(b => b.Lines.Variant.Product).SingleOrDefault(b => b.VisitId == visitId);
+
+  live var covers = ProductImage.Where(i => i.Rank == 0).ToList();
+  live var specs = ProductSpec.Where(x => x.Name == "Year" || x.Name == "Frame size").ToList();
+  string name = "";
+  string email = "";
+  string phone = "";
+  string delivery = "";
+  string payment = "";
+  List<DeliveryChoice> ways = [];
+  List<PaymentChoice> pays = [];
+  string street = "";
+  string postCode = "";
+  string city = "";
+  string country = "";
+  string problem = "";
+  Receipt receipt = null;
+  CheckoutTotals totals = null;
+
+  on mount { Offer(); }
+
+  // What this shop offers for this bag — the providers the app lists, priced by the shop. Asked again when a choice
+  // changes what else is on offer (paying on collection needs a collection).
+  action Offer() {
+    ways = DeliveryChoices(country);
+    if (!ways.Any(w => w.Id == delivery)) { delivery = ways.Count > 0 ? ways[0].Id : ""; }
+    pays = PaymentChoices(!ways.Any(w => w.Id == delivery && w.NeedsAddress));
+    if (!pays.Any(x => x.Key == payment)) { payment = pays.Count > 0 ? pays[0].Key : ""; }
+    totals = CheckoutQuote(delivery, country);
+  }
+  action ChooseDelivery(string id) { delivery = id; Offer(); }
+  action ChoosePayment(string key) { payment = key; }
+
+  action Reserve() {
+    problem = "";
+    // Priced once more for where it goes: an order is never placed at a total the customer has not seen.
+    var shown = totals == null ? -1m : totals.Total;
+    Offer();
+    if (totals != null && totals.Total != shown) {
+      problem = $"The total is now {PriceText(totals.Total)} — look it over, then order again.";
+      return;
+    }
+    try {
+      receipt = PlaceOrder(name, email, phone, delivery, payment, street, postCode, city, country);
+      // A payment that leaves the shop goes on to its provider's page; it comes back to /paid/{link}/… when done.
+      if (receipt.PayUrl != "") { Navigation.Open(receipt.PayUrl, sameTab: true); }
+    } catch (Exception ex) {
+      problem = ex.Message;
+    }
+  }
+
+  render {
+    ShopSection {
+      if (receipt != null) {
+        Confirmation(receipt, email);
+      } else if (bag == null || bag.Lines.Count() == 0) {
+        Stack(gap: 4, py: 20, maxW: "640px") {
+          Text("Your bag is empty.", fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Bold,
+               lineHeight: "0.9");
+          Text("Find something you love — it waits in the bag while you decide.",
+               fontSize: FontSize.Lead, color: Colors.TextSecondary);
+          Row { Link(href: "/shop", label: "Shop new in") { Text("Shop new in →", color: Colors.Primary); } }
+        }
+      } else {
+        Stack(gap: 0, pt: 12, pb: 20) {
+          Text("Checkout", fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Headline, lineHeight: "0.9", pb: 10, animation: RiseIn);
+          Box(display: Display.Grid, cols: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16, align: Align.Start) {
+            Stack(gap: 12, maxW: "640px") {
+              CheckoutStep("01", "You") {
+                Field("Name", value: name, placeholder: "Anna Lindqvist");
+                Field("Email", value: email, type: "email", placeholder: "anna@example.com",
+                      hint: "Your confirmation and the reference go here.");
+                Field("Phone", value: phone, type: "tel", placeholder: "+46 70 123 45 67",
+                      hint: "Optional — for arranging a collection time.");
+              }
+              CheckoutStep("02", "How it reaches you") {
+                Stack(role: UiRole.RadioGroup, label: "How it reaches you", gap: 3) {
+                  foreach (var w in ways) {
+                    ChoiceCard(w.Label, DeliveryLine(w), delivery == w.Id, () => ChooseDelivery(w.Id));
+                  }
+                }
+                if (ways.Any(w => w.Id == delivery && w.NeedsAddress)) {
+                  Stack(gap: 4, pt: 2) {
+                    Field("Street", value: street, placeholder: "Storgatan 12");
+                    Box(display: Display.Grid, cols: "minmax(0, 1fr) minmax(0, 2fr)", gap: 4) {
+                      Field("Postcode", value: postCode, placeholder: "118 20");
+                      Field("City", value: city, placeholder: "Stockholm");
+                    }
+                    Field("Country", value: country, placeholder: "Sweden", onEnter: Offer);
+                    CheckoutBusiness(Offer);
+                  }
+                }
+              }
+              CheckoutStep("03", "Payment") {
+                Stack(role: UiRole.RadioGroup, label: "Payment", gap: 3) {
+                  foreach (var x in pays) {
+                    ChoiceCard(x.Label, x.Description, payment == x.Key, () => ChoosePayment(x.Key));
+                  }
+                }
+              }
+            }
+            Summary(bag, covers, specs, problem, pays.FirstOrDefault(x => x.Key == payment), Reserve, totals, Offer);
+          }
+        }
+      }
+    }
+  }
+}
+
+/// A numbered step of the checkout: its number in the mono, its name in the display face, then its fields.
+[Composable]
+component CheckoutStep(string number, string title) {
+  render {
+    Stack(gap: 5, borderTW: 1, border: Colors.Border, pt: 6, label: title) {
+      Row(gap: 3, align: Align.Baseline) {
+        Text(number, fontSize: FontSize.Body, color: Colors.Primary);
+        Text(title, fontFamily: Font.Display, fontSize: "34px", fontWeight: FontWeight.Bold, lineHeight: "1");
+      }
+      Stack(gap: 4) { Slot; }
+    }
+  }
+}
+
+/// One option of a choice, as a card you press: its name, a line under it, and a ring when it is the one chosen.
+[Composable]
+component ChoiceCard(string title, string line, bool selected, Action onPress) {
+  variants {
+    base { Display = Display.Block; W = "100%"; TextAlign = TextAlign.Left; P = 5; Bg = Colors.Surface; Color = Colors.OnBg;
+           BorderW = 1; Border = Colors.Border; Transition = Motion.Lift;
+           Hover { Border = Colors.TextMuted; }
+           Focus { OutlineW = 2; OutlineColor = Colors.Primary; OutlineOffset = "2px"; OutlineStyle = OutlineStyle.Solid; } }
+  }
+  render {
+    Pressable(onClick: onPress, label: title, role: UiRole.Radio, checked: selected,
+              border: selected ? Colors.Primary : Colors.Border) {
+      Row(gap: 4, align: Align.Start) {
+        Box(w: "18px", h: "18px", mt: "3px", rounded: Radius.Pill, borderW: 2, shrink: 0,
+            border: selected ? Colors.Primary : Colors.TextMuted, bg: selected ? Colors.Primary : "transparent",
+            shadow: selected ? "inset 0 0 0 3px #FFFFFF" : "none");
+        Stack(gap: 1) {
+          Text(title, fontWeight: FontWeight.Semibold);
+          Text(line, fontSize: FontSize.Label, color: Colors.TextMuted);
+        }
+      }
+    }
+  }
+}
+
+/// The order as it stands, beside the form and following it down the page: the machines, the total, and the button.
+[Composable]
+component Summary(Bag bag, List<ProductImage> covers, List<ProductSpec> specs, string problem, PaymentChoice? pay, Action onReserve,
+                  CheckoutTotals? totals, Action onCode) {
+  render {
+    Stack(gap: 5, p: 6, bg: Colors.Surface, position: Position.Sticky, top: "120px", label: "Your order") {
+      Text("Your order", fontSize: FontSize.Label, color: Colors.TextMuted, letterSpacing: "0.04em");
+      Stack(gap: 0) {
+        foreach (var line in bag.Lines) {
+          Row(gap: 4, py: 3, borderBW: 1, border: Colors.Border, align: Align.Center) {
+            Image(src: File.Url(CoverPhotoFor(covers, line.Variant.Product.Id)), alt: line.Variant.Product.Name, w: "72px", aspectRatio: "4 / 5", objectFit: ObjectFit.Cover);
+            Stack(gap: 1, grow: 1, minW: "0") {
+              Text(line.Variant.Product.Name, fontFamily: Font.Display, fontSize: "22px");
+              Text($"{LookSizeName(line.Variant)} · {line.Quantity} ×", fontSize: FontSize.Label, color: Colors.TextMuted);
+            }
+            Text(PriceText((line.Variant.Price ?? line.Variant.Product.Price) * line.Quantity));
+          }
+        }
+      }
+      // A discount code, when the shop has one running; applying it prices the checkout again.
+      CheckoutCode(onCode);
+      // The whole price before the customer commits: what comes off, delivery, the total and the VAT in it.
+      if (totals != null) {
+        foreach (var a in totals.Adjustments.Where(x => x.Amount > 0)) {
+          Row(justify: Justify.Between) { Text(a.Label, color: Colors.TextMuted); Text("−" + PriceText(a.Amount), color: Colors.TextMuted); }
+        }
+        if (totals.DeliveryLabel != "") {
+          Row(justify: Justify.Between) {
+            Text(totals.DeliveryLabel, color: Colors.TextMuted);
+            Text(totals.Delivery == 0 ? "Free" : PriceText(totals.Delivery), color: Colors.TextMuted);
+          }
+        }
+      }
+      Row(justify: Justify.Between, align: Align.Baseline) {
+        Text("Total", color: Colors.TextMuted);
+        Text(PriceText(totals == null ? bag.Lines.Sum(l => (l.Variant.Price ?? l.Variant.Product.Price) * l.Quantity) : totals.Total), fontFamily: Font.Display, fontSize: "40px", fontWeight: FontWeight.Bold);
+      }
+      if (totals != null && totals.Vat > 0) { Text($"VAT {PriceText(totals.Vat)} included", fontSize: FontSize.Label, color: Colors.TextMuted); }
+      if (totals != null && totals.VatNote != "") { Text(totals.VatNote, fontSize: FontSize.Label, color: Colors.TextMuted); }
+      if (problem != "") {
+        Box(role: UiRole.Alert, p: 4, borderLW: 3, border: Colors.Primary, bg: Colors.Surface) {
+          Text(problem, color: Colors.Primary);
+        }
+      }
+      CheckoutTerms();
+      Button("Order and pay", onPress: onReserve, tone: Tone.Primary, size: Size.Lg);
+      Text(pay != null && pay.LeavesTheShop
+             ? $"You pay on {pay.Label}'s page next. What you chose is held under your name from this moment."
+             : "Nothing is charged now. Your order is held for two days while you pay.",
+           fontSize: FontSize.Label, color: Colors.TextMuted);
+    }
+  }
+}
+
+/// What the visitor sees once the order is placed: the reference, what to do next, and the way back.
+[Composable]
+component Confirmation(Receipt receipt, string email) {
+  render {
+    Stack(gap: 8, py: 20, maxW: "760px", animation: RiseIn) {
+      Stack(gap: 3) {
+        Text($"Order {receipt.Reference}", fontSize: FontSize.Body, color: Colors.Primary);
+        Text("Reserved.", fontFamily: Font.Display, fontSize: FontSize.Mega, fontWeight: FontWeight.Headline, lineHeight: "0.84");
+        Text($"It is held under your name. We will write to {email} within a day.",
+             fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary);
+      }
+      if (receipt.PayProblem != "") {
+        Box(role: UiRole.Alert, p: 4, borderLW: 3, border: Colors.Primary, bg: Colors.Surface) {
+          Text(receipt.PayProblem, color: Colors.Primary);
+        }
+      }
+      Stack(gap: 0, borderTW: 1, border: Colors.Border) {
+        if (receipt.PayInstructions != "") {
+          SpecLine("Pay", PriceText(receipt.Total));
+          SpecLine("How", receipt.PayInstructions);
+          SpecLine("Reference", receipt.Reference);
+        } else {
+          SpecLine("Pay with", receipt.PaymentLabel);
+        }
+        SpecLine("Handover", receipt.DeliveryLabel == "" ? receipt.Fulfilment.Label : receipt.DeliveryLabel);
+      }
+      Row(gap: 6) {
+        Link(href: $"/order/{receipt.Link}", label: "See your order") { Text("See your order →", color: Colors.Primary); }
+        Link(href: "/shop", label: "Back to the shop") { Text("Back to the shop →", color: Colors.Primary); }
+      }
+    }
+  }
+}
+
+/// A delivery option's line: what it says, what it costs and how long it takes.
+string DeliveryLine(DeliveryChoice w) {
+  var price = w.Price == 0 ? "free" : PriceText(w.Price);
+  return w.Description == "" ? (w.Days == "" ? price : $"{price} · {w.Days}")
+       : (w.Days == "" ? $"{w.Description} · {price}" : $"{w.Description} · {price} · {w.Days}");
+}
+
+/// One line of a receipt: what, and how much or how.
+[Composable]
+component SpecLine(string label, string value) {
+  render {
+    Row(justify: Justify.Between, gap: 4, py: 3, borderBW: 1, border: Colors.Border) {
+      Text(label, color: Colors.TextMuted, fontSize: FontSize.Body);
+      Text(value, fontSize: FontSize.Body, textAlign: TextAlign.Right);
+    }
+  }
+}

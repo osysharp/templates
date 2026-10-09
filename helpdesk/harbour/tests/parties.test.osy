@@ -1,0 +1,104 @@
+// ONE PERSON, TWO RECORDS — AND A PERSON WHO ASKS ABOUT THEIR DATA. A mailed request and a chat from the same address
+// are two parties until the desk merges them; any teammate may (it is undoable). A request to see or erase a customer's
+// data is a privacy request (Osysharp.Privacy): only an admin starts one, it is planned before anything happens, and it
+// runs once an admin approves it on the Inbox.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Conversations;
+using Osysharp.Privacy;
+
+/// Petra's ticket, and a second record of her — she wrote once from a chat that made its own party for her address.
+Guid PetraWithADuplicate() {
+  var id = OpenTicket("petra@larkspur.test", "Petra Holm", "Invoices to the new address",
+                      "Please send invoices to our new office from next month.");
+  var twin = new Customer { DisplayName = "Petra H.", CreatedByVisit = null };
+  new ContactPoint { Party = twin, Kind = ContactPointKind.Email, Value = "petra@larkspur.test" };
+  UnitOfWork.Commit();
+  return id;
+}
+
+[Test(Office)]
+void a_teammate_merges_a_duplicate_record_and_can_undo_it() {
+  Guid twin = Guid.Empty;
+  Guid petra = Guid.Empty;
+  runas (Mira) {
+    PetraWithADuplicate();
+    twin = Customer.Single(c => c.DisplayName == "Petra H.").Id;
+    petra = Customer.Single(c => c.DisplayName == "Petra Holm").Id;
+  }
+  // Theo is an agent, not an admin: merging is his to do.
+  runas (Theo) {
+    MergeIntoParty(petra, twin);
+    Assert.Equal(MergeState.Merged, PartyMerge.Single().State);
+    UnmergeParties(PartyMerge.Single().Id);
+    Assert.Equal(MergeState.Undone, PartyMerge.Single().State);
+  }
+}
+
+[Test(Office)]
+void only_an_admin_starts_a_privacy_request_and_nothing_is_erased_until_its_plan_is_approved() {
+  runas (Mira) { PetraWithADuplicate(); }
+  Guid petra = Guid.Empty;
+  runas (Mira) { petra = Customer.Single(c => c.DisplayName == "Petra Holm").Id; }
+  // An agent may not.
+  runas (Theo) {
+    Assert.Throws(() => StartPrivacyRequestFor(petra, RequestKind.Erasure, IdentityCheck.CodeToKnownAddress, "She asked by phone."));
+  }
+  runas (Mira) {
+    // Saying how she was checked is required — a request in somebody else's name is a way to steal their data.
+    Assert.Throws<ValidationException>(() => StartPrivacyRequestFor(petra, RequestKind.Erasure, IdentityCheck.CodeToKnownAddress, " "));
+    var r = StartPrivacyRequestFor(petra, RequestKind.Erasure, IdentityCheck.CodeToKnownAddress, "A code to her address came back.");
+    // Planned, waiting for approval — nothing has happened to her words yet.
+    Assert.Equal(RequestState.Review, PrivacyRequest.Single(x => x.Id == r.Id).State);
+    Assert.True(Message.Any(m => m.Text.Contains("new office")));
+    Assert.Equal(0, PartyErasure.Count());
+    ApproveRequest(PrivacyRequest.Single(x => x.Id == r.Id));
+    Assert.Equal(RequestState.Done, PrivacyRequest.Single(x => x.Id == r.Id).State);
+    Assert.False(Message.Any(m => m.Text.Contains("new office")));
+    Assert.True(PartyErasure.Count() > 0);
+  }
+}
+
+[Test(Office)]
+void the_ticket_offers_the_merge_and_an_admin_a_privacy_request_that_shows_its_plan_first() {
+  var number = 0;
+  runas (Mira) {
+    var id = PetraWithADuplicate();
+    number = Ticket.Single(t => t.Id == id).Number;
+  }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/open/t/" + number);
+  Assert.Visible("Probably the same person", within: "Customer");
+  Assert.Hidden("Start a privacy request…");             // an agent is not offered it
+  Ui.Shot("ticket-customer-same-person");
+  Ui.Click("Merge in", within: "Petra H.");
+  Assert.Visible("Petra H. is merged into this record.");
+  Assert.Visible("Undo", within: "The customer's record");
+  Ui.Shot("ticket-customer-merged");
+  Ui.SignOut();
+  Ui.SignInAs(Mira);
+  // No second `Ui.Viewport`: the 1600 set above holds across a sign-out and back in (F-POLISH2(6)) — under --pixels
+  // the customer panel this test presses in is the third pane, which a 1280 screen does not have.
+  Ui.Visit("/v/open/t/" + number);
+  // At the FOOT of the customer panel — after their tickets, tags and the ticket's details — never beside the
+  // customer's name, where the eye lands first. (Geometry: checked by `osy test --pixels`.)
+  Assert.Below("Start a privacy request…", "Their other tickets");
+  Assert.Below("Start a privacy request…", "Follow");
+  Ui.Click("Start a privacy request…");
+  Assert.Dialog("A privacy request for Petra Holm");
+  Ui.Fill("In your words", "A code to the address she writes from came back on 3 Oct.");
+  Ui.Shot("ticket-privacy-request");
+  Ui.Click("Plan the request");
+  // The plan, for her, before anything happens.
+  Assert.Dialog("Planned — nothing has happened yet");
+  Assert.Visible("Your other conversations with us", within: "The plan");
+  Ui.Shot("ticket-privacy-request-planned");
+  runas (Mira) { Assert.True(Message.Any(m => m.Text.Contains("new office"))); }
+  Ui.Click("Open it on the Inbox");
+  Assert.Visible("Approve and run the plan");
+  Assert.Visible("A code to the address she writes from came back on 3 Oct.");
+  Ui.Shot("privacy-request-on-the-desk");
+}

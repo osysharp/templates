@@ -1,0 +1,16 @@
+{
+  "entity": "ShopSettings",
+  "key": "Name",
+  "rows": [
+    {
+      "Name": "Second Round",
+      "Currency": "SEK",
+      "CurrencySymbol": "kr",
+      "SymbolAfter": true,
+      "OrderPrefix": "AV-",
+      "HoldDays": 3,
+      "DeliveryFee": 49,
+      "FreeDeliveryFrom": 0
+    }
+  ]
+}

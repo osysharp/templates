@@ -1,0 +1,22 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Privacy.Knowledge, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Privacy.Knowledge · Osysharp.Privacy.Knowledge.KnowledgePersonalData.Categories ──
+  /// Osysharp.Privacy.Knowledge.KnowledgePersonalData.Categories · text on the page
+  text "Knowing who wrote and who checked what our readers are told" => "Att veta vem som skrev och vem som kontrollerade det våra läsare får veta";
+  /// Osysharp.Privacy.Knowledge.KnowledgePersonalData.Categories · text on the page
+  text "The articles you wrote or reviewed, and what you said in reviews" => "Artiklarna du skrev eller granskade, och vad du sa i granskningar";
+
+  // ── Osysharp.Privacy.Knowledge · Osysharp.Privacy.Knowledge.KnowledgePersonalData.Export ──
+  /// Osysharp.Privacy.Knowledge.KnowledgePersonalData.Export · text on the page
+  text "You published it" => "Du publicerade den";
+  /// Osysharp.Privacy.Knowledge.KnowledgePersonalData.Export · text on the page
+  text "You wrote it" => "Du skrev den";
+  /// Osysharp.Privacy.Knowledge.KnowledgePersonalData.Export · text on the page
+  /// placeholders: {what} = what (string), {r.Language} = r.Language (string), {r.Number} = r.Number (int) — {r.Number} is a count: give one text per plural form
+  /// shown through ExportItem.Body
+  text "{what} — {r.Language}, version {r.Number}" => { one: "{what} — {r.Language}, version {r.Number}", other: "{what} — {r.Language}, version {r.Number}" };
+}

@@ -1,0 +1,693 @@
+// ONE TICKET — its head (where it stands, how urgent, whose, how long is left), its one timeline, the composer, and
+// the customer beside it. Each ticket is its own retained route, so its draft survives working other tickets.
+//
+// ⚑ THE HEAD MIXES THE DESK'S AND THE INBOX'S, AND SAYS WHICH IS WHICH ONLY BY WHAT IT DOES: the status is the desk's
+//   (its own menu, inside the six categories); who has it is the inbox's `AssignControl` (only who may hold it, with
+//   their load), its queue and priority are the inbox's, and its promises are the inbox's `ItemClocks` — each counting
+//   down live, in the policy's hours, paused while it waits on the customer.
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Identity;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Storage;
+using Osysharp.Collaboration;
+using Osysharp.Inbox;
+using Osysharp.Composer;
+using Osysharp.Fields;
+using Osysharp.Privacy;
+
+[Route("/v/{view}/t/{number}")]
+[Opens(Ticket, view = "mine")]
+[Layout(DeskFrame)]
+[Authorize(IsAgent)]
+[Render(CSR)]
+[Title("Ticket")]
+component TicketPage(string view, int number) {
+  live var tickets = Ticket.Where(t => t.Number == number)
+    .Include(t => t.Customer).Include(t => t.Customer.Company).Include(t => t.Conversation)
+    .Include(t => t.Assignee).Include(t => t.Status).Include(t => t.Queue).ToList();
+  // The top bar says WHERE you are — the queue, and which ticket in it — and the ticket's own head says what it is.
+  // Saying the subject in both put it on screen twice, a hand apart (looked at 2026-10-01).
+  live var queueId = IdAfter(view, "q-");
+  live var queueNames = Queue.Where(q => q.Id == queueId).Select(q => q.Name).ToList();
+  live var where = queueNames.Count > 0 ? queueNames[0] : (view.StartsWith("v-") ? "Saved view" : BuiltInNamed(view).Label);
+  on change { Navigation.SetTitle(where + " · #" + number); }
+
+  skeleton {
+    Stack(gap: 4, p: 5) {
+      Skeleton(shape: SkeletonShape.HalfLine);
+      Skeleton(shape: SkeletonShape.Line);
+      Skeleton(shape: SkeletonShape.Block);
+    }
+  }
+
+  render {
+    if (tickets.Count == 0) {
+      Box(p: 6) { EmptyState("No ticket #" + number, body: "It may have been merged, or the number is not one of ours."); }
+    }
+    foreach (var t in tickets) {
+      TicketView(t, "/v/" + view);
+    }
+  }
+}
+
+[Composable]
+component TicketView(Ticket t, string here) {
+  live var statuses = TicketStatus.Where(s => s.Active).OrderBy(s => s.Category).ThenBy(s => s.Position).ToList();
+  live var queueName = t.Queue == null ? "None" : t.Queue.Name + (t.EscalationLevel > 1 ? " · L" + t.EscalationLevel : "");
+  // How many of its fields are answered — what the phone's Fields chip says, where the panel is not on screen.
+  live var answered = TicketFieldValue.Count(v => v.Ticket.Id == t.Id && v.Value != "");
+  // Its conversation is kept restricted (Osysharp.Privacy): out of use, so neither it nor the composer is drawn.
+  live var kept = t.KeptFor != "";
+  // …and the customer kept with it reads as nobody: their record is out of use too (on this ticket and their others).
+  live var customerKept = t.Customer.DisplayName == null;
+  // How many other tickets it is linked to, and people copied — what the phone's Links chip says.
+  live var ticketId = t.Id;
+  live var conversationId = t.Conversation.Id;
+  live var linkCount = WorkLink.Count(l => l.From.Id == ticketId || l.To.Id == ticketId);
+  live var ccCount = Participant.Count(p => p.Conversation.Id == conversationId && p.Role == ParticipantRole.Cc && p.LeftAt == null);
+  // WHAT ITS PARTS ASK THE SERVER AS IT OPENS, IN ONE CALL — the thread's event lines and the read mark, the inbox's
+  // trail and words, the composer's draft, the customer's record, the legal hold — handed to each part, so opening a
+  // ticket (and moving to the next one) is one call to the server, not one per part. The rest are reads the page batches.
+  // If that call fails, the head says why (`problem`) rather than leaving its parts waiting in silence.
+  TicketOpening opened = new TicketOpening();
+
+  string menu = "";
+  string problem = "";
+  on mount {
+    try { opened = OpenTicketView(t.Id); } catch (Exception ex) { problem = ex.Message; }
+  }
+  // Solving a problem with incidents still open asks first: they are solved with it, and each customer is told so.
+  Guid solvingWith = Guid.Empty;
+  int incidents = 0;
+  string howSolved = "";
+  string solveProblem = "";
+  // A customer's message split off into a ticket of its own — which one, and the new ticket's subject.
+  Guid splitting = Guid.Empty;
+  string splitSubject = "";
+  bool splitTried = false;
+  string splitProblem = "";
+  live var splitMessages = Message.Where(m => m.Id == splitting).ToList();
+  // A side conversation being started — mail to somebody outside, or a thread inside the team.
+  bool siding = false;
+  action StartSide() { siding = true; }
+  action StopSide() { siding = false; }
+  action SideStarted(Guid sideId) { siding = false; }
+  action Open(string which) { menu = menu == which ? "" : which; }
+  action Close() { menu = ""; }
+  action StatusTo(Guid statusId) {
+    menu = ""; problem = "";
+    var to = TicketStatus.Single(s => s.Id == statusId);
+    if (to.Category == StatusCategory.Solved && t.Category != StatusCategory.Solved) {
+      var open = OpenIncidentCount(t.Id);
+      if (open > 0) { solvingWith = statusId; incidents = open; howSolved = ""; solveProblem = ""; return; }
+    }
+    try { SetStatus(t.Id, statusId, t.Status == null ? null : t.Status.Id); }
+    catch (Exception ex) { problem = ex.Message; }
+  }
+  action StopSolving() { solvingWith = Guid.Empty; }
+  action SolveAll() {
+    solveProblem = "";
+    try { SolveProblem(t.Id, solvingWith, howSolved); solvingWith = Guid.Empty; }
+    catch (Exception ex) { solveProblem = ex.Message; }
+  }
+  // The new ticket's subject starts as the message's first line — the team shortens it, rather than writing one.
+  action StartSplit(Guid messageId) {
+    splitting = messageId;
+    splitProblem = "";
+    splitTried = false;
+    var said = Message.Where(m => m.Id == messageId).Select(m => m.Text).FirstOrDefault() ?? "";
+    splitSubject = FirstLine(said);
+  }
+  action StopSplit() { splitting = Guid.Empty; }
+  action Split() {
+    splitProblem = "";
+    // Said under the field as it is tried, and gone as soon as there is a subject — the server says it too.
+    if (splitSubject.Trim() == "") { splitTried = true; return; }
+    try {
+      var n = SplitTicket(t.Id, splitting, splitSubject);
+      splitting = Guid.Empty;
+      Navigation.Go(here + "/t/" + n);
+    } catch (Exception ex) { splitProblem = ex.Message; }
+  }
+  action PriorityTo(WorkPriority p) {
+    menu = ""; problem = "";
+    try { SetPriority(t.Id, p); } catch (Exception ex) { problem = ex.Message; }
+  }
+
+  render {
+    Stack(gap: 0, grow: 1, minH: "0", h: "100%") {
+      // ── the head ────────────────────────────────────────────────────────────────────────────────────────────
+      Stack(gap: 2, px: 5, pt: 3, pb: 3, bg: Colors.Surface, borderBW: 1, border: Colors.Border, label: "Ticket") {
+        Row(gap: 3, align: Align.Center, wrap: Wrapping.Wrap) {
+          if (!Layout.AtLeast(Laptop)) {
+            Link(href: here, label: "Back to the list") { Icon(Icons.ChevronLeft); }
+          }
+          Text("#" + t.Number, fontFamily: Font.Mono, fontSize: FontSize.Label, color: Colors.TextMuted);
+          Text(t.Title, fontSize: FontSize.Heading, fontWeight: FontWeight.Semibold, letterSpacing: "-0.015em",
+               grow: 1, minW: "0");
+          // Ask somebody else about it — a supplier by mail, or the team in a thread of its own — beside the ticket. In
+          // the title's row, with who is here: the chips below already fill a wide head, and it sat alone on a line of
+          // its own under them.
+          if (!kept && t.ClosedFor == null && t.MergedInto == null) {
+            Button("Side conversation", onPress: StartSide, tone: Tone.Ghost, size: Size.Sm);
+          }
+          if (!kept) { ConversationDeskSeats(t.Conversation.Id); }
+        }
+        Row(gap: 2, align: Align.Center, wrap: Wrapping.Wrap) {
+          // Status — the team's name for it, inside its category.
+          Box(position: Position.Relative) {
+            HeadChip("Status", StatusName(t), CategoryLamp(t.Category), () => Open("status"), KeyStatus,
+                     waiting: t.Category == StatusCategory.OnHold || t.Category == StatusCategory.Pending);
+            if (menu == "status") {
+              Backdrop(Close);
+              Menu(from: MenuFrom.BelowStart, label: "Set status") {
+                foreach (var s in statuses) {
+                  if (s.Category != StatusCategory.New) {
+                    MenuItem(s.Name, () => StatusTo(s.Id), checked: t.Status != null && t.Status.Id == s.Id);
+                  }
+                }
+              }
+            }
+          }
+          Box(position: Position.Relative) {
+            HeadChip("Priority", t.Priority.Label, PriorityTone(t.Priority), () => Open("priority"), "");
+            if (menu == "priority") {
+              Backdrop(Close);
+              Menu(from: MenuFrom.BelowStart, label: "Set priority") {
+                foreach (var p in WorkPriority.Members) { MenuItem(p.Label, () => PriorityTo(p), checked: t.Priority == p); }
+              }
+            }
+          }
+          // Who has it — the inbox's: only who may hold it, with their load; Take, Release; the collision sentence. A
+          // closed ticket offers nothing to take — the inbox's control says who had it.
+          AssignControl(t, opened: opened.Item);
+          if (Layout.AtLeast(Tablet)) { HeadFact("Queue", queueName); }
+          // On a phone there is no panel beside the thread: the ticket's fields open in a sheet from the head, and its
+          // queue says where it waits — pressed, how it got there (the inbox's trail).
+          if (!Layout.AtLeast(Tablet)) {
+            HeadChip("Fields", answered == 0 ? "None yet" : answered + " answered", Tone.Ghost, () => Open("fields"), "");
+            HeadChip("Queue", queueName, Tone.Ghost, () => Open("trail"), "");
+            HeadChip("Links", linkCount + ccCount == 0 ? "None yet" : (linkCount + ccCount).ToString(), Tone.Ghost, () => Open("links"), "");
+            // What the desk has seen like it — beside the ticket on a wider screen, a sheet here.
+            HeadChip("Seen before", "Tickets like it", Tone.Ghost, () => Open("seen"), "");
+          }
+        }
+        // Its promises — first reply, next reply, resolution — counting down in the policy's hours.
+        ItemClocks(t, opened: opened.Item);
+        // Closed by the customer's privacy request: why, in one line — its promises ended with it.
+        if (t.ClosedFor != null) {
+          Row(gap: 2, align: Align.Start, label: "Why it is closed") {
+            Icon(Icons.Lock, size: 14, color: Colors.TextMuted);
+            Text(PrivacyWords(t.ClosedFor.Value, null), fontSize: FontSize.Label, color: Colors.TextMuted, minW: "0");
+          }
+        }
+        if (t.FollowUpOf != null) {
+          Text("Follows #" + t.FollowUpOf!.Number + ", which was closed.", fontSize: FontSize.Label, color: Colors.TextMuted);
+        }
+        if (problem != "") { Alert(problem, tone: Tone.Warning); }
+      }
+
+      // ── the timeline and the composer, beside the customer ──────────────────────────────────────────────────
+      Row(gap: 0, align: Align.Stretch, grow: 1, minH: "0") {
+        // A TICKET READS TOP-DOWN, like a letter: the request under the head, the replies after it, and the composer
+        // straight after the last of them — so a short thread leaves its air BELOW the reply box, never as a void
+        // between the head and the first message (polish slice 2; slice 1 had the thread sitting on a bottom-pinned
+        // composer, chat-style, and a two-message ticket opened on a blank band). A long thread scrolls with the
+        // composer held at the foot of the pane (sticky) and opens on its newest message (`stickToBottom`).
+        if (kept) {
+          Stack(gap: 0, grow: 1, minW: "0", minH: "0", overflowY: Overflow.Auto, bg: Colors.Bg) { KeptConversation(t); }
+        } else {
+        Stack(gap: 0, grow: 1, minW: "0", minH: "0", overflowY: Overflow.Auto, stickToBottom: true, bg: Colors.Bg,
+              label: "Conversation") {
+          Stack(gap: 3, px: 5, pt: 4, pb: 3) {
+            // Translation off (the model key is missing), or messages here not translated — said above the thread, with
+            // the way to try again (Osysharp.Conversations; nothing when all is well).
+            ConversationLanguageNotice(t.Conversation.Id, opened: opened.Conversation);
+            // A second question in one thread: any message the customer wrote can be split into a ticket of its own.
+            if (t.Category == StatusCategory.Closed || t.ClosedFor != null) {
+              ConversationThread(t.Conversation.Id, desk: true, opened: opened.Conversation);
+            } else {
+              ConversationThread(t.Conversation.Id, desk: true, onSplit: StartSplit, splitLabel: "Split into a new ticket",
+                                 opened: opened.Conversation);
+            }
+          }
+          // The composer (Osysharp.Composer): reply or note, saved replies, macros, markdown, files, the agent's
+          // signature, "send and set…" — and the draft kept per ticket, so it survives a reload or another ticket.
+          // …unless the customer's privacy request closed it: their words are gone, and there is nobody left to reply to
+          // on it. Their next message opens a follow-up.
+          if (t.ClosedFor == null) {
+            Box(position: Position.Sticky, bottom: "0", z: ZIndex.Sticky, px: 5, pt: 3, pb: 4, bg: Colors.Surface,
+                borderTW: 1, border: Colors.Border) {
+              // Drawn once the ticket's one call has answered, with the draft it brought.
+              if (opened.Loaded) {
+                TicketComposer(t.Id, t.Conversation.Id, t.Customer.DisplayName, t.Conversation.ReplyChannel, opened.Composer);
+              } else {
+                Skeleton(shape: SkeletonShape.Line);
+              }
+            }
+          } else {
+            Box(px: 5, pt: 3, pb: 4, bg: Colors.Surface, borderTW: 1, border: Colors.Border) {
+              Text("Nothing more is sent on this ticket. If the customer writes to us again, that opens a new one.",
+                   fontSize: FontSize.Label, color: Colors.TextMuted);
+            }
+          }
+        }
+        }
+        if (Layout.AtLeast(Tablet)) {
+          if (customerKept) { KeptCustomer(); }
+          else { CustomerPanel(t, t.Customer.Id, t.Customer.Company == null ? Guid.Empty : t.Customer.Company.Id, here, opened); }
+        }
+      }
+    }
+    if (menu == "fields") {
+      ShellSheet("Fields of #" + t.Number, onDismiss: Close) {
+        Box(px: 4, pb: 4) { TicketFields(t.Id, t.Form == null ? null : t.Form.Id, titled: false); }
+      }
+    }
+    if (menu == "trail") {
+      ShellSheet("How #" + t.Number + " got here", onDismiss: Close) {
+        Box(px: 4, pb: 4) { WhyHere(t, opened: opened.Item); }
+      }
+    }
+    if (menu == "seen") {
+      ShellSheet("Seen before #" + t.Number, onDismiss: Close) {
+        Box(px: 4, pb: 4) { SeenBeforePanel(t.Id, titled: false); }
+      }
+    }
+    if (menu == "links") {
+      ShellSheet("Links of #" + t.Number, onDismiss: Close) {
+        Stack(gap: 5, px: 4, pb: 4) {
+          TicketLinks(t, here, opened.Item);
+          CopiedOnTicket(t);
+        }
+      }
+    }
+    if (solvingWith != Guid.Empty) {
+      Dialog($"Solve #{t.Number} and its {incidents} incidents", onDismiss: StopSolving,
+             subtitle: "Each incident still open is solved with it, and its timeline says which problem solved it.") {
+        Stack(gap: 3) {
+          TextAreaField("How it was solved", value: howSolved, rows: 4,
+                        hint: "Each incident's customer is mailed that their request is solved, with this, and asked how we did. Leave it empty to say only that it is solved.");
+          if (solveProblem != "") { Alert(solveProblem, tone: Tone.Danger); }
+          Row(gap: 2, justify: Justify.End) {
+            Button("Cancel", onPress: StopSolving, tone: Tone.Ghost);
+            Button("Solve all " + (incidents + 1), onPress: SolveAll, tone: Tone.Primary);
+          }
+        }
+      }
+    }
+    if (siding) {
+      Dialog("Start a side conversation", onDismiss: StopSide,
+             subtitle: "Mail somebody outside about this ticket — they read only what you write them, never the ticket — or start a thread inside the team. It sits on the ticket's timeline, and their answer lands there.") {
+        SideConversationStarter(t.Conversation.Id, onStarted: SideStarted, onCancel: StopSide);
+      }
+    }
+    if (splitting != Guid.Empty) {
+      Dialog("Split into a new ticket", onDismiss: StopSplit,
+             subtitle: "The message moves to a ticket of its own for the same customer, with its files. Their reply to it lands there, and both tickets stay linked.") {
+        Stack(gap: 3) {
+          foreach (var m in splitMessages) {
+            Stack(gap: 1, p: 3, rounded: Radius.Md, bg: Colors.Sunken, borderW: 1, border: Colors.Border, label: "The message") {
+              Text(m.ByName + " · " + m.At.ToString("d MMM, HH:mm"), fontSize: FontSize.Caption, color: Colors.TextMuted);
+              Text(m.Text.Length > 300 ? m.Text.Substring(0, 297) + "…" : m.Text, fontSize: FontSize.Label);
+            }
+          }
+          Field("Subject of the new ticket", value: splitSubject, placeholder: "One line saying what this part is about",
+                onEnter: Split,
+                error: splitTried && splitSubject.Trim() == "" ? "Give the new ticket a subject: one line saying what this part is about." : "");
+          if (splitProblem != "") { Alert(splitProblem, tone: Tone.Danger); }
+          Row(gap: 2, justify: Justify.End) {
+            Button("Cancel", onPress: StopSplit, tone: Tone.Ghost);
+            Button("Split it off", onPress: Split, tone: Tone.Primary);
+          }
+        }
+      }
+    }
+  }
+}
+
+/// One field of the ticket's head — what it is, what it holds, and a lamp in the colour of its state; pressing it opens
+/// the field's menu. `key` is the binding that presses it too ("" for none) — the chip shows it, derived from the
+/// binding by the platform.
+[Composable]
+component HeadChip(string label, string value, Tone tone, Action onPress, string key, bool waiting = false) {
+  render {
+    Pressable(onClick: onPress, label: label + ": " + value, shortcut: key,
+              px: 2, py: 1, rounded: Radius.Md, bg: Colors.Sunken, borderW: 1, border: Colors.Border,
+              transition: Motion.Fast) {
+      Row(gap: 2, align: Align.Center) {
+        if (waiting) { Lamp(lit: false, waiting: true); }
+        else if (tone != Tone.Ghost) { Lamp(tone: tone); }
+        Text(label, fontSize: FontSize.Caption, color: Colors.TextMuted);
+        Text(value, fontSize: FontSize.Label, fontWeight: FontWeight.Medium);
+        KeyHintOf(onPress);
+        Icon(Icons.ChevronDown, size: 12, color: Colors.TextMuted);
+      }
+    }
+  }
+}
+
+/// The lamp a category is drawn with — live for what needs the team, quiet for what waits on somebody else.
+Tone CategoryLamp(StatusCategory c) {
+  if (c == StatusCategory.New || c == StatusCategory.Open) { return Tone.Primary; }
+  if (c == StatusCategory.Solved || c == StatusCategory.Closed) { return Tone.Success; }
+  return Tone.Default;
+}
+
+/// What a ticket's parts open with, asked of the server in ONE call (`OpenTicketView`) — each part takes its piece.
+/// Every piece starts empty and not `Loaded`, so a part handed one waits for it instead of asking for itself.
+class TicketOpening {
+  public bool Loaded;
+  public ConversationOpening Conversation = new ConversationOpening();
+  public ItemOpening Item = new ItemOpening();
+  public ComposerOpening Composer = new ComposerOpening();
+  public PartyCardFacts Party = new PartyCardFacts();
+  public CaseHoldFacts Hold = new CaseHoldFacts();
+}
+
+/// What ticket `ticketId` opens with — its conversation (and the reader's mark moved to its newest entry, committed only
+/// when it moved), the inbox's view of it, the reader's draft, the customer's record and any legal hold. What a part is
+/// not drawn for is not asked: a conversation kept restricted, a customer kept with it, a ticket closed by a privacy
+/// request (it has no composer).
+[Authorize(IsAgent)]
+public TicketOpening OpenTicketView(Guid ticketId) {
+  var t = Ticket.Single(x => x.Id == ticketId);
+  var opening = new TicketOpening { Loaded = true, Item = OpenItem(t) };
+  if (t.KeptFor == "") {
+    opening.Conversation = OpenThread(t.Conversation.Id);
+    if (t.ClosedFor == null) { opening.Composer = OpenComposer("", t.Id); }
+    opening.Hold = CaseHoldShown(t.Conversation.Id);
+  }
+  if (t.Customer.DisplayName != null) { opening.Party = PartyCardOf(t.Customer.Id); }
+  return opening;
+}
+
+/// The composer on a ticket (Osysharp.Composer), with what the desk tells it: who reads a reply, and the timeline's last
+/// place — remembered as the agent starts writing, so a colleague's reply that lands meanwhile stops theirs with the
+/// colleague's name (`ReplyToTicket`'s `seen`).
+[Composable]
+component TicketComposer(Guid ticketId, Guid conversationId, string customer, string channel, ComposerOpening opened) {
+  live var newest = ConversationEntry.Where(e => e.Conversation.Id == conversationId).Max(e => e.Sequence);
+  live var latest = newest ?? -1;
+  render {
+    Composer(ticketId, audience: "To " + customer + " · " + channel, seen: latest, replyLabel: "Reply to " + customer,
+             keymap: DeskComposerKeys(), manageAt: "/settings/replies", opened: opened);
+  }
+}
+
+/// The customer beside the conversation: who they are, their company and its plan, what else they have asked, and the
+/// ticket's own labels.
+[Composable]
+component CustomerPanel(Ticket t, Guid requesterId, Guid companyId, string here, TicketOpening opened) {
+  live var ticketId = t.Id;
+  live var me = Session.CurrentUser;
+  live var meId = me == null ? Guid.Empty : me.Id;
+  live var address = ContactPoint.Where(p => p.Party.Id == requesterId && p.Kind == ContactPointKind.Email)
+    .Select(p => p.Value).ToList();
+  live var companies = Company.Where(c => c.Id == companyId).Include(c => c.Tier).ToList();
+  live var team = AccountTeamMember.Where(m => m.Organization.Id == companyId).Include(m => m.Member).OrderBy(m => m.Role).ToList();
+  live var tierId = companies.Count > 0 && companies[0].Tier != null ? companies[0].Tier.Id : Guid.Empty;
+  live var entitled = Entitlement.Where(e => (e.Organization != null && e.Organization.Id == companyId)
+    || (e.Organization == null && e.Tier != null && e.Tier.Id == tierId)).OrderBy(e => e.Name).ToList();
+  live var others = Ticket.Where(x => x.Customer.Id == requesterId && x.Id != ticketId)
+    .OrderByDescending(x => x.Number).Take(6).ToList();
+  live var tags = TicketTag.Where(x => x.Ticket.Id == ticketId).Select(x => x.Tag.Name).ToList();
+  live var follows = Follower.Count(f => f.Ticket.Id == ticketId && f.Agent.Id == meId);
+  live var following = follows > 0;
+  string newTag = "";
+  bool tagging = false;
+
+  action Tag() { if (newTag.Trim() != "") { AddTag(t.Id, newTag); newTag = ""; } }
+  action StartTag() { tagging = true; }
+  action StopTag() { tagging = false; }
+  action Untag(string name) { RemoveTag(t.Id, name); }
+  action ToggleFollow() { Follow(t.Id, !following); }
+
+  render {
+    Stack(gap: 5, w: Length.ContextW, shrink: 0, px: 4, py: 4, bg: Colors.Surface, borderLW: 1, border: Colors.Border,
+          overflowY: Overflow.Auto, role: UiRole.Region, label: "Customer") {
+      Stack(gap: 2) {
+        Row(gap: 3, align: Align.Center) {
+          Avatar(Initials(t.Customer.DisplayName), size: Size.Md);
+          Stack(gap: 0, minW: "0") {
+            Text(t.Customer.DisplayName, fontWeight: FontWeight.Semibold);
+            foreach (var a in address) { Text(a, fontSize: FontSize.Caption, color: Colors.TextMuted); }
+          }
+        }
+        foreach (var c in companies) {
+          Row(gap: 2, align: Align.Center) {
+            Text(c.Name, fontSize: FontSize.Label);
+            if (c.Tier != null) { Badge(c.Tier.Name, tone: c.Tier.Rank > 1 ? Tone.Primary : Tone.Ghost); }
+          }
+          foreach (var m in team) {
+            Text((m.Role == AccountTeamRole.Owner ? "Account owner: " : m.Role == AccountTeamRole.Backup ? "Backup: " : "On the account: ")
+                 + m.Member.DisplayName, fontSize: FontSize.Caption, color: Colors.TextSecondary);
+          }
+          if (entitled.Count > 0) {
+            Text(string.Join(" · ", entitled.Select(e => e.Name).ToList()), fontSize: FontSize.Caption, color: Colors.TextMuted);
+          }
+          if (c.Notes != null) { Text(c.Notes, fontSize: FontSize.Caption, color: Colors.TextSecondary); }
+        }
+      }
+
+      // What the desk keeps about them and their company, in its own fields — edited here (H1b).
+      PartyFields(requesterId, companyId);
+
+      CustomerRecord(requesterId, opened.Party);
+
+      // Tickets like this one — any customer, any channel, any language — how each was solved, and the articles that
+      // may answer it (pages/search.osy). Looked for when asked: it searches by meaning, which the desk pays for, so
+      // moving from ticket to ticket does not.
+      SeenBeforePanel(t.Id, whenAsked: true);
+
+      Stack(gap: 2) {
+        SectionLabel("Their other tickets");
+        if (others.Count == 0) { Text("This is their first.", fontSize: FontSize.Caption, color: Colors.TextMuted); }
+        foreach (var o in others) {
+          Link(href: here + "/t/" + o.Number, color: Colors.OnSurface) {
+            Row(gap: 2, align: Align.Center, minW: "0") {
+              Text("#" + o.Number, fontFamily: Font.Mono, fontSize: FontSize.Caption, color: Colors.TextMuted);
+              Text(o.Title, fontSize: FontSize.Label, whiteSpace: WhiteSpace.Nowrap, overflow: Overflow.Hidden,
+                   textOverflow: TextOverflow.Ellipsis, minW: "0", grow: 1);
+              Text(o.Category.Label, fontSize: FontSize.Caption, color: Colors.TextMuted, whiteSpace: WhiteSpace.Nowrap);
+            }
+          }
+        }
+      }
+
+      Stack(gap: 2) {
+        Row(gap: 2, align: Align.Center) {
+          SectionLabel("Tags");
+          Spacer();
+          IconButton("Add a tag", StartTag, size: Size.Sm, tone: Tone.Ghost, shortcut: KeyTag) { Icon(Icons.Plus, size: 12); }
+        }
+        Row(gap: 1, wrap: Wrapping.Wrap) {
+          foreach (var g in tags) {
+            Row(gap: 1, align: Align.Center, pl: 2, pr: 1, rounded: Radius.Pill, bg: Colors.Muted) {
+              Text(g, fontSize: FontSize.Caption);
+              IconButton("Remove tag " + g, () => Untag(g), size: Size.Sm, tone: Tone.Ghost) { Icon(Icons.Close, size: 10); }
+            }
+          }
+        }
+        // A tag is a word: a compact box at the size of the chips it makes, not a full-height form field.
+        Input(value: newTag, label: "New tag", placeholder: "Add a tag…", onEnter: Tag, autoFocus: tagging, onBlur: StopTag,
+              w: "100%", h: Length.ControlSm,
+              px: 2, rounded: Radius.Sm, borderW: 1, border: Colors.Border, bg: Colors.Bg, fontSize: FontSize.Label);
+      }
+
+      // Who else is sent its replies, and how it relates to other tickets — a duplicate, a cause, the problem it is an
+      // incident of (relations.osy).
+      CopiedOnTicket(t);
+      TicketLinks(t, here, opened.Item);
+
+      // What the ticket was asked and what the team added — its form's fields, each edited in place, each change on the
+      // timeline.
+      TicketFields(t.Id, t.Form == null ? null : t.Form.Id);
+
+      Stack(gap: 2) {
+        SectionLabel("Details");
+        // Label over value — a fixed label column put the date a hand away. (Its type is the menu above, on its fields.)
+        Stack(gap: 0) {
+          Text("Opened", fontSize: FontSize.Caption, color: Colors.TextMuted);
+          Text(t.Conversation.StartedAt.ToString("d MMM yyyy, HH:mm"), fontSize: FontSize.Label,
+               fontVariant: FontVariant.TabularNums);
+        }
+        if (t.ReopenCount > 0) { Text("Reopened " + t.ReopenCount + "×", fontSize: FontSize.Caption, color: Colors.Warning); }
+        Button(following ? "Following" : "Follow", onPress: ToggleFollow, size: Size.Sm, tone: Tone.Ghost);
+      }
+
+      // HOW IT GOT HERE — the inbox's own trail: where it arrived and by which rule, who was offered it and why that fell
+      // through, who was given it and why, every hand-on, move and escalation. Said in the reader's language from the
+      // trail's facts (Osysharp.Inbox `WhyHere`); the timeline carries only the moves a person reads twice.
+      Stack(gap: 2) {
+        SectionLabel("How it got here");
+        WhyHere(t, opened: opened.Item);
+      }
+
+      // LAST, and quiet: a request about the person's data sits where nobody reaches it on the way to anything else —
+      // never beside the name, where the eye lands first (model/pages/privacy.osy).
+      StartPrivacyRequest(requesterId, t.Customer.DisplayName);
+      // …and, for the people who place legal holds, keeping THIS conversation for a dispute (Osysharp.Privacy): nothing on
+      // it is erased or purged while the hold stands — the customer's own erasure waits for it.
+      HoldControl("Conversation", t.Conversation.Id, "ticket #" + t.Number, opened: opened.Hold);
+    }
+  }
+}
+
+/// THE PERSON BEHIND THE TICKET, as a record — who they are probably the same as (a mailed request and a chat from one
+/// address are two records until somebody merges them; undoable) and the merges made. Erasing their data on request is
+/// `StartPrivacyRequest`, at the foot of the panel. The kit's functions do the work (Osysharp.Conversations: `PartyCardOf`, `MergeIntoParty`,
+/// `UnmergeParties`); this is the desk's compact way of showing it beside a ticket. `opened`: the record as the ticket
+/// opened with it (`OpenTicketView`); asked again after a merge or an undo.
+[Composable]
+component CustomerRecord(Guid partyId, PartyCardFacts opened) {
+  PartyCardFacts since = new PartyCardFacts();
+  bool changed = false;
+  string problem = "";
+  string done = "";
+  live var facts = changed ? since : opened;
+
+  action MergeIn(Guid other, string name) {
+    problem = ""; done = "";
+    try { MergeIntoParty(partyId, other); done = name + " is merged into this record."; } catch (Exception ex) { problem = ex.Message; }
+    since = PartyCardOf(partyId);
+    changed = true;
+  }
+  action Undo(Guid merge) {
+    problem = ""; done = "";
+    try { UnmergeParties(merge); done = "Separated again."; } catch (Exception ex) { problem = ex.Message; }
+    since = PartyCardOf(partyId);
+    changed = true;
+  }
+  render {
+    Stack(gap: 2, label: "The customer's record") {
+      if (facts.Suggestions.Count > 0) {
+        SectionLabel("Probably the same person");
+        foreach (var s in facts.Suggestions) {
+          Row(gap: 2, align: Align.Center, label: s.Name) {
+            Avatar(Initials(s.Name), size: Size.Sm);
+            Stack(gap: 0, grow: 1, minW: "0") {
+              Text(s.Name, fontSize: FontSize.Label, fontWeight: FontWeight.Medium);
+              Text("Also writes from " + s.Shares, fontSize: FontSize.Caption, color: Colors.TextMuted,
+                   whiteSpace: WhiteSpace.Nowrap, overflow: Overflow.Hidden, textOverflow: TextOverflow.Ellipsis, minW: "0");
+            }
+            Button("Merge in", onPress: () => MergeIn(s.Party, s.Name), size: Size.Sm, tone: Tone.Ghost);
+          }
+        }
+      }
+      foreach (var m in facts.Merges) {
+        Row(gap: 2, align: Align.Center) {
+          Text(m.Sentence, fontSize: FontSize.Caption, color: Colors.TextMuted, grow: 1, minW: "0");
+          if (m.CanUndo) { Button("Undo", onPress: () => Undo(m.Merge), size: Size.Sm, tone: Tone.Ghost); }
+        }
+      }
+      if (done != "") { Text(done, fontSize: FontSize.Caption, color: Colors.Success); }
+      if (problem != "") { Alert(problem, tone: Tone.Warning); }
+    }
+  }
+}
+
+
+
+/// The first line of what somebody wrote, cut to a subject's length — "Also, the export is stuck…".
+string FirstLine(string text) {
+  var line = text.Trim().Split("\n")[0].Trim();
+  return line.Length > 80 ? line.Substring(0, 79).Trim() + "…" : line;
+}
+
+/// Where another ticket opens, from the view this one is in — its number is its reference without the "#".
+string TicketHref(string here, WorkItem other) {
+  return here + "/t/" + (other.Reference.StartsWith("#") ? other.Reference.Substring(1) : other.Reference);
+}
+
+/// HOW IT RELATES TO OTHER TICKETS — the inbox's links, of the desk's kinds (relations.osy): related, a duplicate, a
+/// cause, the problem an incident is of (solving it solves them), and where a split went. Each opens the other ticket,
+/// and a duplicate's link merges it into the ticket it repeats ("Merge into #1042").
+[Composable]
+component TicketLinks(Ticket t, string here, ItemOpening opened) {
+  string problem = "";
+  action Merge(WorkLink l) {
+    problem = "";
+    try { MergeInto(t.Id, l.To.Id); } catch (Exception ex) { problem = ex.Message; }
+  }
+  render {
+    Stack(gap: 2) {
+      ItemLinks(t, other => TicketHref(here, other), shortcut: KeyLink, empty: "Not linked to another ticket.", opened: opened,
+                onAct: Merge);
+      if (problem != "") { Alert(problem, tone: Tone.Danger); }
+    }
+  }
+}
+
+/// WHO ELSE IS SENT ITS REPLIES — the people copied on its conversation, each taken off with one press, and copying
+/// somebody in by their address. Live: a colleague's change appears. Each change is on the timeline.
+[Composable]
+component CopiedOnTicket(Ticket t) {
+  live var conversationId = t.Conversation.Id;
+  live var seats = Participant.Where(p => p.Conversation.Id == conversationId && p.Role == ParticipantRole.Cc && p.LeftAt == null)
+    .Include(p => p.Party).OrderBy(p => p.JoinedAt).ToList();
+  live var partyIds = seats.Select(s => s.Party.Id).ToList();
+  live var mails = ContactPoint.Where(p => partyIds.Contains(p.Party.Id) && p.Kind == ContactPointKind.Email).ToList();
+  live var closed = t.Category == StatusCategory.Closed || t.KeptFor != "";
+  string address = "";
+  bool adding = false;
+  string problem = "";
+
+  action Start() { adding = true; problem = ""; }
+  action Stop() { adding = false; address = ""; problem = ""; }
+  action Add() {
+    problem = "";
+    try { AddCc(t.Id, address); address = ""; adding = false; } catch (Exception ex) { problem = ex.Message; }
+  }
+  action Remove(Guid seat) {
+    problem = "";
+    try { RemoveCc(t.Id, seat); } catch (Exception ex) { problem = ex.Message; }
+  }
+
+  render {
+    Stack(gap: 2, label: "Copied") {
+      Row(gap: 2, align: Align.Center) {
+        SectionLabel("Copied");
+        Spacer();
+        if (!closed) { Button("Copy someone in", onPress: Start, size: Size.Sm, tone: Tone.Ghost); }
+      }
+      if (seats.Count == 0 && !adding) {
+        Text(closed ? "Nobody else was sent its replies." : "Only the customer is sent its replies.",
+             fontSize: FontSize.Caption, color: Colors.TextMuted);
+      }
+      foreach (var s in seats) {
+        Row(gap: 2, align: Align.Center, minW: "0", label: s.Party.DisplayName, animation: KitArrive) {
+          Avatar(Initials(s.Party.DisplayName), size: Size.Sm);
+          Stack(gap: 0, grow: 1, minW: "0") {
+            Text(s.Party.DisplayName, fontSize: FontSize.Label, fontWeight: FontWeight.Medium, whiteSpace: WhiteSpace.Nowrap,
+                 overflow: Overflow.Hidden, textOverflow: TextOverflow.Ellipsis, minW: "0");
+            // Their address — unless it is what they are called (somebody the desk knows only by it).
+            if (!mails.Any(m => m.Party.Id == s.Party.Id && m.Value == s.Party.DisplayName)) {
+              Text(string.Join(", ", mails.Where(m => m.Party.Id == s.Party.Id).Select(m => m.Value).ToList()),
+                   fontSize: FontSize.Caption, color: Colors.TextMuted, whiteSpace: WhiteSpace.Nowrap, overflow: Overflow.Hidden,
+                   textOverflow: TextOverflow.Ellipsis, minW: "0");
+            }
+          }
+          if (!closed) {
+            IconButton("Take " + s.Party.DisplayName + " off", () => Remove(s.Id), size: Size.Sm, tone: Tone.Ghost) {
+              Icon(Icons.Close, size: 10);
+            }
+          }
+        }
+      }
+      if (adding) {
+        Stack(gap: 2, p: 3, rounded: Radius.Md, bg: Colors.Sunken, borderW: 1, border: Colors.Border) {
+          Field("Their address", value: address, placeholder: "name@company.com", type: "email", onEnter: Add,
+                hint: "They are sent every reply from now on, and read this ticket when they sign in.");
+          Row(gap: 2) {
+            Button("Copy in", onPress: Add, size: Size.Sm, tone: Tone.Primary);
+            Button("Cancel", onPress: Stop, size: Size.Sm, tone: Tone.Ghost);
+          }
+        }
+      }
+      if (problem != "") { Alert(problem, tone: Tone.Warning); }
+    }
+  }
+}

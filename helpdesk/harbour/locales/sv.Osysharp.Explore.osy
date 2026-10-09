@@ -1,0 +1,107 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Explore, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Explore · Osysharp.Explore.CollectionUse ──
+  /// Osysharp.Explore.CollectionUse · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Explore.CollectionUse.Any
+  /// beside: "has none that", "has only ones that"
+  label "has any that" => "har någon som";
+  /// Osysharp.Explore.CollectionUse · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.Explore.CollectionUse.None
+  /// beside: "has any that", "has only ones that"
+  label "has none that" => "har ingen som";
+  /// Osysharp.Explore.CollectionUse · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Osysharp.Explore.CollectionUse.All
+  /// beside: "has any that", "has none that"
+  label "has only ones that" => "har bara sådana som";
+
+  // ── Osysharp.Explore · Osysharp.Explore.FilterMatch ──
+  /// Osysharp.Explore.FilterMatch · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Explore.FilterMatch.All
+  /// beside: "Any of"
+  label "All of" => "Alla";
+  /// Osysharp.Explore.FilterMatch · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Explore.FilterMatch.Any
+  /// beside: "All of"
+  label "Any of" => "Någon";
+
+  // ── Osysharp.Explore · Osysharp.Explore.FilterOp ──
+  /// Osysharp.Explore.FilterOp · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Explore.FilterOp.AtLeast
+  /// beside: "is", "is not", "is one of", "contains", "starts with", "more than"
+  label "at least" => "minst";
+  /// Osysharp.Explore.FilterOp · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Explore.FilterOp.AtMost
+  /// beside: "is", "is not", "is one of", "contains", "starts with", "more than"
+  label "at most" => "högst";
+  /// Osysharp.Explore.FilterOp · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Explore.FilterOp.Between
+  /// beside: "is", "is not", "is one of", "contains", "starts with", "more than"
+  label "between" => "mellan";
+  /// Osysharp.Explore.FilterOp · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Explore.FilterOp.HasValue
+  /// beside: "is", "is not", "is one of", "contains", "starts with", "more than"
+  label "has a value" => "har ett värde";
+  /// Osysharp.Explore.FilterOp · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Explore.FilterOp.IsEmpty
+  /// beside: "is", "is not", "is one of", "contains", "starts with", "more than"
+  label "is empty" => "är tomt";
+  /// Osysharp.Explore.FilterOp · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Explore.FilterOp.IsAnyOf
+  /// beside: "is", "is not", "contains", "starts with", "more than", "at least"
+  label "is one of" => "är en av";
+  /// Osysharp.Explore.FilterOp · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Explore.FilterOp.Below
+  /// beside: "is", "is not", "is one of", "contains", "starts with", "more than"
+  label "less than" => "mindre än";
+  /// Osysharp.Explore.FilterOp · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Explore.FilterOp.Above
+  /// beside: "is", "is not", "is one of", "contains", "starts with", "at least"
+  label "more than" => "mer än";
+  /// Osysharp.Explore.FilterOp · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Explore.FilterOp.StartsWith
+  /// beside: "is", "is not", "is one of", "contains", "more than", "at least"
+  label "starts with" => "börjar med";
+
+  // ── Osysharp.Explore · Osysharp.Explore.MeasureKind ──
+  /// Osysharp.Explore.MeasureKind · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Explore.MeasureKind.Average
+  /// beside: "Count", "Total", "Lowest", "Highest", "Median", "Percentile"
+  label "Average" => "Medelvärde";
+  /// Osysharp.Explore.MeasureKind · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Explore.MeasureKind.Count
+  /// beside: "Total", "Average", "Lowest", "Highest", "Median", "Percentile"
+  /// also in Osysharp.Reports.FigureFormat
+  label "Count" => "Antal";
+  /// Osysharp.Explore.MeasureKind · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Osysharp.Explore.MeasureKind.Distinct
+  /// beside: "Count", "Total", "Average", "Lowest", "Highest", "Median"
+  label "Count of different" => "Antal olika";
+  /// Osysharp.Explore.MeasureKind · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Explore.MeasureKind.Maximum
+  /// beside: "Count", "Total", "Average", "Lowest", "Median", "Percentile"
+  label "Highest" => "Högsta";
+  /// Osysharp.Explore.MeasureKind · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Explore.MeasureKind.Minimum
+  /// beside: "Count", "Total", "Average", "Highest", "Median", "Percentile"
+  label "Lowest" => "Lägsta";
+  /// Osysharp.Explore.MeasureKind · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Explore.MeasureKind.Median
+  /// beside: "Count", "Total", "Average", "Lowest", "Highest", "Percentile"
+  label "Median" => "Median";
+  /// Osysharp.Explore.MeasureKind · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Explore.MeasureKind.Percentile
+  /// beside: "Count", "Total", "Average", "Lowest", "Highest", "Median"
+  label "Percentile" => "Percentil";
+  /// Osysharp.Explore.MeasureKind · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Explore.MeasureKind.Ratio
+  /// beside: "Count", "Total", "Average", "Lowest", "Highest", "Median"
+  label "Share" => "Andel";
+  /// Osysharp.Explore.MeasureKind · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Explore.MeasureKind.Sum
+  /// beside: "Count", "Average", "Lowest", "Highest", "Median", "Percentile"
+  label "Total" => "Summa";
+}

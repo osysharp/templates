@@ -1,0 +1,598 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Reports, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Reports · BucketWords ──
+  /// BucketWords · text on the page
+  /// placeholders: {name} = name (string), {ToLower} = bucket.Value.Label.ToLower(…) (string)
+  /// shown through BucketWords()
+  text "{name}, by {ToLower}" => "{name}, per {ToLower}";
+
+  // ── Osysharp.Reports · CheckedSpecs ──
+  /// CheckedSpecs · message
+  /// placeholders: {m.Label} = m.Label (string), {s.Title} = s.Title (string)
+  /// shown through CheckedSpecs()
+  message "'{m.Label}' is not one of the measures of {s.Title}." => "'{m.Label}' är inte ett av måtten i {s.Title}.";
+  /// CheckedSpecs · message
+  /// placeholders: {key} = key (string)
+  /// shown through CheckedSpecs()
+  /// also in OverviewFor
+  message "This app has no report called '{key}'." => "Appen har ingen rapport som heter '{key}'.";
+
+  // ── Osysharp.Reports · DurationWords ──
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {sign} = sign (string), {days} = days (int) — {days} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{sign}{days} d" => { one: "{sign}{days} d", other: "{sign}{days} d" };
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {sign} = sign (string), {days} = days (int), {h} = h (int) — {days} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{sign}{days} d {h} h" => { one: "{sign}{days} d {h} h", other: "{sign}{days} d {h} h" };
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {sign} = sign (string), {hours} = hours (int) — {hours} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{sign}{hours} h" => { one: "{sign}{hours} h", other: "{sign}{hours} h" };
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {sign} = sign (string), {hours} = hours (int), {rest} = rest (int) — {hours} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{sign}{hours} h {rest} min" => { one: "{sign}{hours} h {rest} min", other: "{sign}{hours} h {rest} min" };
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {sign} = sign (string), {minutes} = minutes (int) — {minutes} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{sign}{minutes} min" => { one: "{sign}{minutes} min", other: "{sign}{minutes} min" };
+
+  // ── Osysharp.Reports · FieldList ──
+  /// FieldList · a control's name for screen readers
+  /// placeholders: {listed.Count} = listed.Count
+  accessibleName "Fields through lists ({listed.Count})" => "Fält genom listor ({listed.Count})";
+  /// FieldList · a control's name for screen readers
+  accessibleName "Hide fields through lists" => "Dölj fält genom listor";
+  /// FieldList · text on the page
+  /// shown through FieldHeading.text
+  /// beside: "Suggested"
+  text "Every field" => "Alla fält";
+  /// FieldList · text on the page
+  text "Fields through lists" => "Fält genom listor";
+  /// FieldList · text on the page
+  /// placeholders: {listed.Count} = listed.Count
+  text "Fields through lists ({listed.Count})" => "Fält genom listor ({listed.Count})";
+  /// FieldList · text on the page
+  /// placeholders: {search} = search
+  text "No field is called \"{search}\"." => "Inget fält heter \"{search}\".";
+  /// FieldList · text on the page
+  /// shown through FieldHeading.text
+  /// beside: "Every field"
+  text "Suggested" => "Förslag";
+
+  // ── Osysharp.Reports · FieldRow ──
+  /// FieldRow · a control's name for screen readers
+  /// placeholders: {f.Label} = f.Label
+  accessibleName "What to do with {f.Label}" => "Vad du kan göra med {f.Label}";
+  /// FieldRow · a button's label · at most ~21 characters
+  /// shown through Button.label
+  /// beside: "Median"
+  button "90th percentile" => "90:e percentilen";
+  /// FieldRow · a button's label · at most ~13 characters
+  /// shown through Button.label
+  /// beside: "Total"
+  button "Average" => "Medelvärde";
+  /// FieldRow · a button's label · at most ~21 characters
+  /// shown through Button.label
+  button "Count different" => "Räkna olika";
+  /// FieldRow · a button's label · at most ~14 characters
+  /// shown through Button.label
+  /// beside: "Latest"
+  button "Earliest" => "Tidigast";
+  /// FieldRow · a button's label · at most ~12 characters
+  /// shown through Button.label
+  button "Filter" => "Filtrera";
+  /// FieldRow · a button's label · at most ~14 characters
+  /// shown through Button.label
+  button "Group by" => "Gruppera efter";
+  /// FieldRow · a button's label · at most ~27 characters
+  /// shown through Button.label
+  button "Group, one row each" => "Gruppera, en rad var";
+  /// FieldRow · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Earliest"
+  button "Latest" => "Senast";
+  /// FieldRow · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "90th percentile"
+  button "Median" => "Median";
+  /// FieldRow · a button's label · at most ~11 characters
+  /// shown through Button.label
+  /// beside: "Average"
+  button "Total" => "Summa";
+  /// FieldRow · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Badge.label
+  label "Personal" => "Personligt";
+  /// FieldRow · text on the page
+  text "Aa" => "Aa";
+  /// FieldRow · text on the page
+  /// placeholders: {where} = where, {ToLower} = f.Through.ToLower(…)
+  text "{where} · one per {ToLower}" => "{where} · en per {ToLower}";
+
+  // ── Osysharp.Reports · FilterEditor ──
+  /// FilterEditor · a control's name for screen readers
+  accessibleName "Empty or not" => "Tomt eller inte";
+  /// FilterEditor · a control's name for screen readers
+  /// placeholders: {field.Label} = field.Label
+  accessibleName "Filter {field.Label}" => "Filtrera {field.Label}";
+  /// FilterEditor · a control's name for screen readers
+  /// beside: "200px"
+  accessibleName "Records" => "Poster";
+  /// FilterEditor · a control's name for screen readers
+  accessibleName "Values" => "Värden";
+  /// FilterEditor · a control's name for screen readers
+  accessibleName "When" => "När";
+  /// FilterEditor · a control's name for screen readers
+  /// placeholders: {ToLower} = field.Through.ToLower(…)
+  accessibleName "Which {ToLower}" => "Vilka {ToLower}";
+  /// FilterEditor · a button's label · at most ~18 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Apply filter" => "Använd filtret";
+  /// FilterEditor · a button's label · at most ~8 characters
+  /// shown through Tab.label
+  /// beside: "Yes"
+  button "No" => "Nej";
+  /// FilterEditor · a button's label · at most ~9 characters
+  /// shown through Tab.label
+  /// beside: "No"
+  button "Yes" => "Ja";
+  /// FilterEditor · a button's label · at most ~17 characters
+  /// shown through Tab.label
+  /// beside: "is empty"
+  button "has a value" => "har ett värde";
+  /// FilterEditor · a button's label · at most ~14 characters
+  /// shown through Tab.label
+  /// beside: "has a value"
+  button "is empty" => "är tomt";
+  /// FilterEditor · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// placeholders: {ToLower} = field.Label.ToLower(…)
+  /// shown through Field.label
+  label "Find a {ToLower}" => "Hitta {ToLower}";
+  /// FilterEditor · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Field.label
+  /// beside: "Compare"
+  label "Words" => "Ord";
+  /// FilterEditor · placeholder text inside an empty field · at most ~13 characters
+  /// shown through Field.placeholder
+  placeholder "A name…" => "Ett namn…";
+  /// FilterEditor · text on the page
+  /// shown through problem
+  text "Choose the first and the last day." => "Välj första och sista dagen.";
+  /// FilterEditor · text on the page
+  text "Nothing by that name that you may read." => "Inget med det namnet som du får läsa.";
+  /// FilterEditor · text on the page
+  /// placeholders: {ToLower} = ….ToLower(…)
+  text "Only where {ToLower}…" => "Bara där {ToLower}…";
+  /// FilterEditor · text on the page
+  /// shown through problem
+  text "Pick at least one." => "Välj minst en.";
+  /// FilterEditor · text on the page
+  /// shown through problem
+  text "Tick at least one." => "Kryssa i minst en.";
+  /// FilterEditor · text on the page
+  /// shown through problem
+  text "Type the words to look for." => "Skriv orden att leta efter.";
+
+  // ── Osysharp.Reports · FilterTree ──
+  /// FilterTree · a control's name for screen readers
+  accessibleName "Only rows where" => "Bara rader där";
+  /// FilterTree · a control's name for screen readers
+  /// placeholders: {group.Match.Label} = group.Match.Label
+  accessibleName "{group.Match.Label} these" => "{group.Match.Label} av dessa";
+  /// FilterTree · a control's name for screen readers
+  /// placeholders: {group.Match.Label} = group.Match.Label
+  accessibleName "{group.Match.Label} — press to switch" => "{group.Match.Label}: tryck för att byta";
+  /// FilterTree · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Add condition" => "Lägg till villkor";
+  /// FilterTree · a button's label · at most ~15 characters
+  /// shown through Button.label
+  button "Add group" => "Lägg till grupp";
+  /// FilterTree · a button's label · at most ~24 characters
+  /// shown through IconButton.label
+  button "Remove this group" => "Ta bort gruppen";
+  /// FilterTree · text on the page
+  text "Every row in the period. Pick a field and Filter to narrow it." => "Varje rad i perioden. Välj ett fält och Filtrera för att begränsa.";
+  /// FilterTree · text on the page
+  /// beside: "Add condition"
+  text "Only" => "Bara";
+
+  // ── Osysharp.Reports · FilterWords ──
+  /// FilterWords · text on the page
+  /// placeholders: {name} = name (string), {value} = … (string), {value2} = … (string), {through} = through (string)
+  /// shown through FilterWords()
+  text "{name} between {value} and {value2}{through}" => "{name} mellan {value} och {value2}{through}";
+  /// FilterWords · text on the page
+  /// placeholders: {name} = name (string), {through} = through (string)
+  /// shown through FilterWords()
+  text "{name} has a value{through}" => "{name} har ett värde{through}";
+  /// FilterWords · text on the page
+  /// placeholders: {name} = name (string), {through} = through (string)
+  /// shown through FilterWords()
+  text "{name} is empty{through}" => "{name} är tomt{through}";
+  /// FilterWords · text on the page
+  /// placeholders: {name} = name (string), {head} = head (string), {value} = … (string), {through} = through (string)
+  /// shown through FilterWords()
+  text "{name} is {head} or {value}{through}" => "{name} är {head} eller {value}{through}";
+  /// FilterWords · text on the page
+  /// placeholders: {name} = name (string), {value} = … (string), {through} = through (string)
+  /// shown through FilterWords()
+  text "{name} is {value}{through}" => "{name} är {value}{through}";
+
+  // ── Osysharp.Reports · HavingEditor ──
+  /// HavingEditor · a control's name for screen readers
+  /// beside: "Measure", "Show these groups"
+  /// also in FilterEditor
+  accessibleName "Compare" => "Jämför";
+  /// HavingEditor · a control's name for screen readers
+  /// beside: "Compare", "Show these groups"
+  accessibleName "Measure" => "Mått";
+  /// HavingEditor · a button's label · at most ~24 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Show these groups" => "Visa de här grupperna";
+  /// HavingEditor · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through DurationField.label
+  /// also in FilterEditor
+  label "Length" => "Längd";
+
+  // ── Osysharp.Reports · HavingLine ──
+  /// HavingLine · a control's name for screen readers
+  /// also in HavingEditor
+  accessibleName "Show groups where" => "Visa grupper där";
+  /// HavingLine · text on the page
+  text "(all groups shown)" => "(alla grupper visas)";
+  /// HavingLine · text on the page
+  text "Show groups where…" => "Visa grupper där…";
+
+  // ── Osysharp.Reports · HavingWords ──
+  /// HavingWords · text on the page
+  /// placeholders: {what} = what (string), {value} = … (string), {value2} = … (string)
+  /// shown through HavingWords()
+  text "{what} between {value} and {value2}" => "{what} mellan {value} och {value2}";
+
+  // ── Osysharp.Reports · MeasureWords ──
+  /// MeasureWords · a button's label · at most ~23 characters
+  /// placeholders: {what} = what (string)
+  /// shown through MeasureWords()
+  button "Different {what}" => "Olika {what}";
+  /// MeasureWords · a button's label · at most ~42 characters
+  /// placeholders: {Round} = Math.Round(…) (decimal), {what} = what (string)
+  /// shown through MeasureWords()
+  button "{Round}th percentile of {what}" => "{Round}:e percentilen av {what}";
+
+  // ── Osysharp.Reports · NameHint ──
+  /// NameHint · placeholder text inside an empty field · at most ~38 characters
+  /// placeholders: {source.Title} = source.Title (string), {ToLower} = ….ToLower(…) (string)
+  /// shown through NameHint()
+  placeholder "{source.Title} by {ToLower}" => "{source.Title} per {ToLower}";
+
+  // ── Osysharp.Reports · Osysharp.Reports.FigureFormat ──
+  /// Osysharp.Reports.FigureFormat · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Reports.FigureFormat.Percent
+  /// beside: "Count", "Number", "Duration", "Date"
+  label "Percent" => "Procent";
+
+  // ── Osysharp.Reports · Osysharp.Reports.PeriodPreset ──
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Reports.PeriodPreset.Custom
+  /// beside: "Today", "Last 7 days", "Last 30 days", "Last 90 days", "This week", "This month"
+  label "Custom" => "Anpassad";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Reports.PeriodPreset.LastMonth
+  /// beside: "Today", "Last 7 days", "Last 30 days", "Last 90 days", "This week", "This month"
+  label "Last month" => "Förra månaden";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Reports.PeriodPreset.ThisMonth
+  /// beside: "Today", "Last 7 days", "Last 30 days", "Last 90 days", "This week", "Last month"
+  label "This month" => "Den här månaden";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Reports.PeriodPreset.ThisQuarter
+  /// beside: "Today", "Last 7 days", "Last 30 days", "Last 90 days", "This week", "This month"
+  label "This quarter" => "Det här kvartalet";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Reports.PeriodPreset.ThisWeek
+  /// beside: "Today", "Last 7 days", "Last 30 days", "Last 90 days", "This month", "Last month"
+  label "This week" => "Den här veckan";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Reports.PeriodPreset.ThisYear
+  /// beside: "Today", "Last 7 days", "Last 30 days", "Last 90 days", "This week", "This month"
+  label "This year" => "Det här året";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Reports.PeriodPreset.Today
+  /// beside: "Last 7 days", "Last 30 days", "Last 90 days", "This week", "This month", "Last month"
+  label "Today" => "Idag";
+
+  // ── Osysharp.Reports · Osysharp.Reports.SavedReport ──
+  /// Osysharp.Reports.SavedReport · validation
+  /// shown through Osysharp.Reports.SavedReport.Name [Required]
+  validation "Name the report." => "Ge rapporten ett namn.";
+
+  // ── Osysharp.Reports · PeriodTabs ──
+  /// PeriodTabs · a control's name for screen readers
+  accessibleName "Choose the dates" => "Välj datumen";
+  /// PeriodTabs · a button's label · at most ~12 characters
+  /// shown through Tab.label
+  button "Dates…" => "Datum…";
+  /// PeriodTabs · a button's label · at most ~21 characters
+  /// shown through Button.label
+  /// beside: "First day", "Last day"
+  button "Show these days" => "Visa de här dagarna";
+  /// PeriodTabs · text on the page
+  /// shown through problem
+  text "Choose both days." => "Välj båda dagarna.";
+  /// PeriodTabs · text on the page
+  /// shown through problem
+  text "The last day is before the first." => "Den sista dagen är före den första.";
+
+  // ── Osysharp.Reports · PresetShort ──
+  /// PresetShort · a button's label · at most ~13 characters
+  /// shown through PresetShort()
+  button "30 days" => "30 dagar";
+  /// PresetShort · a button's label · at most ~12 characters
+  /// shown through PresetShort()
+  button "7 days" => "7 dagar";
+  /// PresetShort · a button's label · at most ~13 characters
+  /// shown through PresetShort()
+  button "90 days" => "90 dagar";
+  /// PresetShort · a button's label · at most ~12 characters
+  /// shown through PresetShort()
+  button "Custom" => "Anpassad";
+  /// PresetShort · a button's label · at most ~16 characters
+  /// shown through PresetShort()
+  button "Last month" => "Förra månaden";
+  /// PresetShort · a button's label · at most ~16 characters
+  /// shown through PresetShort()
+  button "This month" => "Den här månaden";
+  /// PresetShort · a button's label · at most ~18 characters
+  /// shown through PresetShort()
+  button "This quarter" => "Det här kvartalet";
+  /// PresetShort · a button's label · at most ~15 characters
+  /// shown through PresetShort()
+  button "This week" => "Den här veckan";
+  /// PresetShort · a button's label · at most ~15 characters
+  /// shown through PresetShort()
+  button "This year" => "Det här året";
+  /// PresetShort · a button's label · at most ~11 characters
+  /// shown through PresetShort()
+  button "Today" => "Idag";
+
+  // ── Osysharp.Reports · ReportBuilder ──
+  /// ReportBuilder · a control's name for screen readers
+  accessibleName "Conditions" => "Villkor";
+  /// ReportBuilder · a control's name for screen readers
+  accessibleName "Report" => "Rapport";
+  /// ReportBuilder · a button's label · at most ~17 characters
+  /// shown through Button.label
+  button "Hide fields" => "Dölj fält";
+  /// ReportBuilder · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Field.label
+  label "Find a field" => "Hitta ett fält";
+  /// ReportBuilder · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Field.label
+  /// beside: "Share with everybody who reads reports"
+  label "Report name" => "Rapportens namn";
+  /// ReportBuilder · a label (a field, a list item, a menu entry) · at most ~54 characters
+  /// shown through Checkbox.label
+  /// beside: "Report name"
+  label "Share with everybody who reads reports" => "Dela med alla som läser rapporter";
+  /// ReportBuilder · message
+  /// shown through Alert.message
+  /// also in OverviewFor
+  message "This app has no report by that name." => "Appen har ingen rapport med det namnet.";
+  /// ReportBuilder · text on the page
+  /// shown through problem
+  text "That report is not one you may open." => "Den rapporten får du inte öppna.";
+
+  // ── Osysharp.Reports · ReportChip ──
+  /// ReportChip · a button's label · at most ~19 characters
+  /// placeholders: {text} = text
+  /// shown through IconButton.label
+  button "Remove {text}" => "Ta bort {text}";
+  /// ReportChip · text on the page
+  /// placeholders: {text} = text
+  text "{text} — you cannot read this field" => "{text}: du kan inte läsa det här fältet";
+
+  // ── Osysharp.Reports · ReportChips ──
+  /// ReportChips · a control's name for screen readers
+  /// placeholders: {ToLower} = b.Label.ToLower(…)
+  accessibleName "By {ToLower}" => "Per {ToLower}";
+  /// ReportChips · a control's name for screen readers
+  accessibleName "What the report shows" => "Vad rapporten visar";
+  /// ReportChips · text on the page
+  text "Pick a field and Group by to break it down; pick Total, Average or a percentile to measure it." => "Välj ett fält och Gruppera efter för att dela upp; välj Summa, Medelvärde eller en percentil för att mäta det.";
+  /// ReportChips · text on the page
+  text "by" => "per";
+  /// ReportChips · text on the page
+  text "for the whole period" => "för hela perioden";
+
+  // ── Osysharp.Reports · ReportFigure ──
+  /// ReportFigure · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Show the rows" => "Visa raderna";
+  /// ReportFigure · a button's label · at most ~40 characters
+  /// placeholders: {label} = label
+  /// shown through Button.announceAs
+  button "Show the rows behind {label}" => "Visa raderna bakom {label}";
+
+  // ── Osysharp.Reports · ReportHead ──
+  /// ReportHead · a control's name for screen readers
+  /// also in ReportOverview
+  accessibleName "Download the CSV" => "Ladda ner CSV-filen";
+  /// ReportHead · a button's label · at most ~16 characters
+  /// shown through Button.label
+  /// also in ReportOverview
+  button "Export CSV" => "Exportera CSV";
+  /// ReportHead · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Saved reports" => "Sparade rapporter";
+  /// ReportHead · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Menu.label
+  label "Saved reports" => "Sparade rapporter";
+  /// ReportHead · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// placeholders: {s.Name} = s.Name
+  /// shown through MenuItem.label
+  label "{s.Name} · shared" => "{s.Name} · delad";
+  /// ReportHead · text on the page
+  /// also in ReportOverview
+  text "Download CSV" => "Ladda ner CSV";
+
+  // ── Osysharp.Reports · ReportOverview ──
+  /// ReportOverview · a control's name for screen readers
+  accessibleName "Build a report" => "Skapa en rapport";
+  /// ReportOverview · a control's name for screen readers
+  accessibleName "Loading the overview" => "Läser in översikten";
+  /// ReportOverview · a control's name for screen readers
+  accessibleName "Overview" => "Översikt";
+  /// ReportOverview · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through ReportFigures.label
+  /// also in ReportFigures
+  label "Figures" => "Siffror";
+  /// ReportOverview · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// placeholders: {answer.Title} = answer.Title, {value} = …
+  /// shown through ReportTable.label
+  label "{answer.Title} by {value}" => "{answer.Title} per {value}";
+  /// ReportOverview · text on the page
+  text "Build a report" => "Skapa en rapport";
+  /// ReportOverview · text on the page
+  /// placeholders: {answer.Nouns} = answer.Nouns
+  text "No {answer.Nouns} in this period." => "Inga {answer.Nouns} under perioden.";
+  /// ReportOverview · text on the page
+  /// shown through problem
+  text "The export could not be made. Try again in a moment." => "Exporten kunde inte göras. Försök igen om en stund.";
+  /// ReportOverview · text on the page
+  /// placeholders: {answer.Breakdown.Rows.Count} = answer.Breakdown.Rows.Count
+  text "The {answer.Breakdown.Rows.Count} largest. Build a report to see every one." => "De {answer.Breakdown.Rows.Count} största. Skapa en rapport för att se alla.";
+  /// ReportOverview · text on the page
+  /// placeholders: {answer.Period} = answer.Period, {answer.PeriodBefore} = answer.PeriodBefore
+  text "{answer.Period} · against {answer.PeriodBefore}" => "{answer.Period} · jämfört med {answer.PeriodBefore}";
+  /// ReportOverview · a title
+  /// shown through OverviewCard.title
+  title "Breakdown" => "Uppdelning";
+  /// ReportOverview · a title
+  /// shown through Alert.title
+  title "This overview could not run" => "Översikten kunde inte köras";
+
+  // ── Osysharp.Reports · ReportRows ──
+  /// ReportRows · a control's name for screen readers
+  /// placeholders: {of} = of
+  accessibleName "The rows behind {of}" => "Raderna bakom {of}";
+  /// ReportRows · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through ReportTable.label
+  label "Rows" => "Rader";
+  /// ReportRows · text on the page
+  text "No rows." => "Inga rader.";
+  /// ReportRows · text on the page
+  /// placeholders: {rows.Result.Rows.Count} = rows.Result.Rows.Count
+  text "The first {rows.Result.Rows.Count} — narrow the report to see the rest." => "De första {rows.Result.Rows.Count}. Smalna av rapporten för att se resten.";
+  /// ReportRows · text on the page
+  /// placeholders: {of} = of
+  /// beside: "Close"
+  text "The rows behind {of}" => "Raderna bakom {of}";
+
+  // ── Osysharp.Reports · ReportStatus ──
+  /// ReportStatus · a control's name for screen readers
+  accessibleName "Loading the report" => "Läser in rapporten";
+  /// ReportStatus · text on the page
+  /// placeholders: {nouns} = nouns
+  /// shown through EmptyState.body
+  text "No {nouns} in this period match. Widen the period, or take a filter off." => "Inga {nouns} under perioden matchar. Vidga perioden eller ta bort ett filter.";
+  /// ReportStatus · text on the page
+  /// placeholders: {result.Rows.Count} = result.Rows.Count
+  text "Showing the first {result.Rows.Count} groups. Add a filter or a coarser grouping to see them all." => "Visar de första {result.Rows.Count} grupperna. Lägg till ett filter eller en grövre gruppering för att se alla.";
+  /// ReportStatus · text on the page
+  /// shown through ReportStatus.nouns
+  text "rows" => "rader";
+  /// ReportStatus · a title
+  /// shown through Alert.title
+  title "This report could not run" => "Rapporten kunde inte köras";
+
+  // ── Osysharp.Reports · ReportTable ──
+  /// ReportTable · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through ReportTable.label
+  label "Report" => "Rapport";
+
+  // ── Osysharp.Reports · ReportTableRow ──
+  /// ReportTableRow · a control's name for screen readers
+  /// placeholders: {CellText} = CellText(…)
+  accessibleName "Show the rows of {CellText}" => "Visa raderna för {CellText}";
+
+  // ── Osysharp.Reports · ReportTotals ──
+  /// ReportTotals · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through ReportFigures.label
+  label "Totals" => "Totalt";
+  /// ReportTotals · text on the page
+  /// placeholders: {answer.PeriodBefore} = answer.PeriodBefore
+  text "Change against {answer.PeriodBefore}" => "Förändring jämfört med {answer.PeriodBefore}";
+
+  // ── Osysharp.Reports · RunReport ──
+  /// RunReport · message
+  /// shown through ExploreResult.Problem
+  message "This app does not report on that. Choose one of its reports." => "Appen rapporterar inte om det. Välj en av dess rapporter.";
+
+  // ── Osysharp.Reports · RunSourceReport ──
+  /// RunSourceReport · message
+  /// shown through ExploreResult.Problem
+  /// also in RunSourceRows
+  /// also in RunSourceNow
+  message "This app does not report on that." => "Appen rapporterar inte om det.";
+
+  // ── Osysharp.Reports · RunSourceRows ──
+  /// RunSourceRows · message
+  /// shown through ExploreResult.Problem
+  message "This report does not list the rows it counts." => "Den här rapporten listar inte raderna den räknar.";
+
+  // ── Osysharp.Reports · SaveReport ──
+  /// SaveReport · an error message
+  /// shown through ValidationException
+  error "Name the report." => "Ge rapporten ett namn.";
+  /// SaveReport · an error message
+  /// shown through ValidationException
+  error "Sign in to save a report." => "Logga in för att spara en rapport.";
+  /// SaveReport · an error message
+  /// shown through ValidationException
+  error "This app does not report on that." => "Appen rapporterar inte om det.";
+
+  // ── Osysharp.Reports · SaveReportBar ──
+  /// SaveReportBar · a control's name for screen readers
+  accessibleName "Save the report" => "Spara rapporten";
+  /// SaveReportBar · a button's label · at most ~17 characters
+  /// shown through Button.label
+  /// beside: "240px", "Cancel"
+  button "Save report" => "Spara rapport";
+  /// SaveReportBar · text on the page
+  /// beside: "240px"
+  text "A saved report keeps the question, not the numbers: whoever opens it sees the rows they may read, as they are then." => "En sparad rapport behåller frågan, inte siffrorna: den som öppnar den ser de rader hen får läsa, som de är då.";
+
+  // ── Osysharp.Reports · SearchHint ──
+  /// SearchHint · placeholder text inside an empty field · at most ~26 characters
+  /// shown through SearchHint()
+  placeholder "Search the fields…" => "Sök bland fälten…";
+
+  // ── Osysharp.Reports · TrendWords ──
+  /// TrendWords · text on the page
+  /// placeholders: {what} = what (string)
+  text "{what} per day" key "report-trend-day" => "{what} per dag";
+  /// TrendWords · text on the page
+  /// placeholders: {what} = what (string)
+  text "{what} per hour" key "report-trend-hour" => "{what} per timme";
+  /// TrendWords · text on the page
+  /// placeholders: {what} = what (string)
+  text "{what} per month" key "report-trend-month" => "{what} per månad";
+  /// TrendWords · text on the page
+  /// placeholders: {what} = what (string)
+  text "{what} per quarter" key "report-trend-quarter" => "{what} per kvartal";
+  /// TrendWords · text on the page
+  /// placeholders: {what} = what (string)
+  text "{what} per week" key "report-trend-week" => "{what} per vecka";
+  /// TrendWords · text on the page
+  /// placeholders: {what} = what (string)
+  text "{what} per year" key "report-trend-year" => "{what} per år";
+}

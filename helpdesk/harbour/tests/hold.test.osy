@@ -1,0 +1,24 @@
+// A FILLED DESK TO CLICK THROUGH YOURSELF — the one test to HOLD:
+//
+//   osy test --test 'tests/hold.test.osy::CaughtUpDesk::a_filled_desk_to_click_through' --hold
+//
+// It starts from a month of a support team's work (500 tickets — `CaughtUpDesk` in workspace.test.osy, seeded as Ines,
+// who runs the desk, and caught up), checks it is all there, and passes. `--hold` then keeps that branch serving and opens it in your
+// browser signed in as Ines — no password, no second step. Ctrl-C discards it. To feel the desk at a distance, start the
+// local platform with a delay in front of every request:
+//
+//   osy stop && OSY_SIMULATED_LATENCY_MS=40 osy test --test 'tests/hold.test.osy::CaughtUpDesk::a_filled_desk_to_click_through' --hold
+//
+// ⚑ STILL UNDER `tests/`, like the seed it calls: this desk exists only in a test's throwaway branch, never in what
+//   `osy compile` deploys (HarbourShipsNoSampleDataTests).
+//
+// ⚑ The desk is built ONCE per run (it is a fixture) and this test holds its own copy — so holding it costs a clone,
+//   not a seed, when the run has built the desk already. Its clock is the fixture's: 10:00 on a Tuesday, pinned.
+
+/// The whole desk, as Ines sees it on a Tuesday: seeded, caught up, and handed to you.
+[Test(CaughtUpDesk)]
+void a_filled_desk_to_click_through() {
+  runas (Ines) {
+    Assert.Equal(500, Ticket.Count());
+  }
+}

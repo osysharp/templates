@@ -1,0 +1,27 @@
+// WHAT HAPPENS TO A TICKET — the desk's events, raised where it happens (workflow.osy, desk.osy, fields.osy). Nothing
+// here names who listens: the automations run on them (automations.osy), an admin may subscribe a webhook to each
+// (webhooks.osy) under its own name — "ticket-arrived", "customer-wrote-again" — and the desk tells people of some
+// (notifications.osy). Each says itself, in the reader's words when it is read. Who has a ticket, where it waits and
+// what its promises did are the inbox's own events (Osysharp.Inbox) — `HolderChanged`, `PromiseAtRisk`, … — heard alike.
+
+/// A ticket arrived — on the web, by mail, or opened by the team.
+[Event("A ticket arrives")]
+public sealed class TicketArrived { public Ticket Ticket; }
+
+/// Something the desk keeps about a ticket changed — its tags, its fields, its type.
+[Event("A ticket changes")]
+public sealed class TicketChanged { public Ticket Ticket; }
+
+/// The customer wrote again — told to whoever holds the ticket and whoever follows it.
+[Event("The customer writes")]
+public sealed class CustomerWroteAgain {
+  public Ticket Ticket;
+  public override string Sentence() {
+    var who = Ticket.Customer.DisplayName ?? "";
+    return who != "" ? $"{who} wrote again." : "The customer wrote again.";
+  }
+}
+
+/// Its status changed — inside its category, or to another.
+[Event("Its status changes")]
+public sealed class TicketStatusChanged { public Ticket Ticket; }

@@ -1,0 +1,121 @@
+// REPORTS — the overview a lead opens every morning, and a builder for every other question.
+//
+// Two sources, both in the desk's words (Osysharp.Inbox.Reports): TICKETS, counted by when they arrived — how many,
+// how many solved, how soon the first reply came and how long solving took (calendar time: what the customer waited),
+// what stands open now, and how customers rated it — and PROMISES, the service levels kept on them, in business hours.
+// Both group by the same words (Agent, Queue, Channel, Company, Tier, Priority), so the overview puts a figure from each
+// in one breakdown. Every number is one statement run as its reader: an agent outside a restricted queue counts none of
+// what is in it.
+//
+// The report clock (Settings › Reports) says which time zone a day and a week are counted in, and the day a week
+// starts. A saved report keeps the question, never the numbers; a lead may share one with the whole team.
+using Osysharp.Identity;
+using Osysharp.Inbox;
+using Osysharp.Inbox.Reports;
+using Osysharp.Reports;
+using Osysharp.Explore;
+using Osysharp.Feedback;
+using Osysharp.Fields;
+
+// The whole team reads how the desk is doing; leads and admins share reports and set the report clock.
+policy ReadsReports => IsAgent;
+policy SharesReports => IsLead;
+
+/// The desk's words for its reports.
+public InboxReportWords DeskReportWords() {
+  // Each said in the reader's language — they are put into the figures' own sentences ("Of those, solved by now.").
+  return new InboxReportWords { Title = Translate("Tickets"), Noun = Translate("ticket"), Nouns = Translate("tickets"),
+                                Done = Translate("Solved"), Finish = Translate("solve", key: "report-finish-verb"),
+                                Agent = Translate("Agent"), Queue = Translate("Queue"), Channel = Translate("Channel"),
+                                Organization = Translate("Company"), Tier = Translate("Tier"), Priority = Translate("Priority") };
+}
+
+/// TICKETS — the inbox's work measures, with satisfaction and the ticket's own type beside them; each a member, so the
+/// overview names them by reference.
+public class TicketReport {
+  public InboxWorkReport Work = new InboxWorkReport();
+  public ReportMeasure Rated = new ReportMeasure();
+  public ReportMeasure RatedGood = new ReportMeasure();
+  public ReportMeasure Satisfaction = new ReportMeasure();
+  public ReportSource Source { get { return Work.Source; } }
+}
+
+public TicketReport DeskTickets() {
+  var r = new TicketReport { Work = InboxWork("tickets", Explore.Root<Ticket>(), DeskReportWords()) };
+  var rating = Explore.Path<Ticket>(t => t.Rating);
+  r.Rated = new ReportMeasure { Label = "Rated", Hint = "Tickets whose customer said how it went.", Format = FigureFormat.Count,
+                                Source = "tickets", Measure = new ExploreMeasure { Name = "rated",
+                                  Where = [new ExploreFilter { Field = rating, Op = FilterOp.HasValue }] } };
+  r.RatedGood = new ReportMeasure { Label = "Rated good", Hint = "Tickets whose customer said it went well.", Format = FigureFormat.Count,
+                                    Source = "tickets", Measure = new ExploreMeasure { Name = "good",
+                                      Where = [new ExploreFilter { Field = rating, Op = FilterOp.Is, Values = ["Good"] }] } };
+  r.Satisfaction = new ReportMeasure { Label = "Satisfaction", Format = FigureFormat.Percent, Source = "tickets",
+                                       Hint = "Of the customers who answered, the share who said it went well.",
+                                       Measure = new ExploreMeasure { Name = "csat", Kind = MeasureKind.Ratio, Numerator = "good", Denominator = "rated" } };
+  var source = r.Work.Source;
+  source.Measures.Add(r.Rated);
+  source.Measures.Add(r.RatedGood);
+  source.Measures.Add(r.Satisfaction);
+  source.Dimensions.Add(new ReportDimension { Field = Explore.Path<Ticket>(t => t.Form), Label = "Type" });
+  // The desk's words for fields the model names otherwise (a report says them in the reader's language).
+  source.FieldWords = [
+    new ReportDimension { Field = Explore.Path<Ticket>(t => t.Requester), Label = Translate("Requester") },
+    new ReportDimension { Field = Explore.Path<Ticket>(t => t.Customer), Label = Translate("Customer") },
+    new ReportDimension { Field = Explore.Path<Ticket>(t => t.ArrivedAt), Label = Translate("Arrived") },
+    new ReportDimension { Field = Explore.Path<Ticket>(t => t.DoneAt), Label = Translate("Solved at") },
+    new ReportDimension { Field = Explore.Path<Ticket>(t => t.FirstRespondedAt), Label = Translate("First reply at") },
+    new ReportDimension { Field = Explore.Path<Ticket>(t => t.Handling), Label = Translate("Where it stands") },
+  ];
+  source.RowFields = [Explore.Path<Ticket>(t => t.Number), Explore.Path<Ticket>(t => t.Title), Explore.Path<Ticket>(t => t.ArrivedAt)];
+  return r;
+}
+
+/// PROMISES — every service level promised on a ticket, kept or missed, in business hours.
+public InboxPromiseReport DeskPromises() { return InboxPromises("promises", DeskReportWords()); }
+
+public class TicketReports : IReportSource {
+  public ReportSource Describe() { return DeskTickets().Source; }
+}
+
+public class TicketPromiseReports : IReportSource {
+  public ReportSource Describe() { return DeskPromises().Source; }
+}
+
+/// THE OVERVIEW — tickets over the period: new, solved, first reply, time to solve, promises kept and satisfaction,
+/// with what stands open now; how many arrived day by day; and all of it by agent, queue, channel, company, tier,
+/// priority or type.
+[Route("/reports")]
+[Nav("Reports", Icon = Icons.Chart, Order = 40)]
+[Layout(DeskFrame)]
+[Authorize(ReadsReports)]
+[Render(CSR)]
+[Title("Reports")]
+component ReportsPage() {
+  render {
+    var t = DeskTickets();
+    var p = DeskPromises();
+    var figures = [t.Work.Arrived, t.Work.Done, t.Work.FirstReply, t.Work.ToDone, p.KeptShare, t.Satisfaction];
+    ReportOverview(t.Source, figures, now: [t.Work.Open], columns: figures, build: "/reports/build", title: "Overview");
+  }
+}
+
+/// THE BUILDER — any question about tickets: pick fields by following a ticket's relations (Ticket › Company › Tier),
+/// group, measure, filter; save it for yourself or, as a lead, for the team.
+[Route("/reports/build")]
+[Layout(DeskFrame)]
+[Authorize(ReadsReports)]
+[Render(CSR)]
+[Title("Build a report")]
+component ReportBuilderPage() {
+  render { ReportBuilder(DeskTickets().Source); }
+}
+
+/// A saved report, opened by its id.
+[Route("/reports/saved/{id}")]
+[Layout(DeskFrame)]
+[Authorize(ReadsReports)]
+[Render(CSR)]
+[Title("Report")]
+component SavedReportPage(Guid id) {
+  render { ReportBuilder(DeskTickets().Source, open: id); }
+}

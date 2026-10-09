@@ -1,0 +1,58 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Ui, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Ui · DurationWords ──
+  /// DurationWords · a control's name for screen readers
+  /// shown through DurationWords()
+  accessibleName "1 day" => "1 dag";
+  /// DurationWords · a control's name for screen readers
+  /// shown through DurationWords()
+  accessibleName "1 hour" => "1 timme";
+  /// DurationWords · a control's name for screen readers
+  /// shown through DurationWords()
+  /// also in Spoken
+  accessibleName "1 minute" => "1 minut";
+  /// DurationWords · a control's name for screen readers
+  /// shown through DurationWords()
+  accessibleName "No time" => "Ingen tid";
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {n} = n (int) — {n} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{n} days" => { one: "{n} dag", other: "{n} dagar" };
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {n} = n (int) — {n} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{n} hours" => { one: "{n} timme", other: "{n} timmar" };
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {n} = n (int) — {n} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{n} minutes" => { one: "{n} minut", other: "{n} minuter" };
+
+  // ── Osysharp.Ui · Osysharp.Ui.ShellPresence ──
+  /// Osysharp.Ui.ShellPresence · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Ui.ShellPresence.None
+  /// beside: "Online", "Away", "Do not disturb"
+  /// also in Osysharp.Conversations.FollowUpState
+  label "None" => "Ingen";
+
+  // ── Osysharp.Ui · TimeAgo ──
+  /// TimeAgo · text on the page
+  /// shown through TimeAgo()
+  /// also in Ago
+  text "just now" => "just nu";
+  /// TimeAgo · text on the page
+  /// shown through TimeAgo()
+  /// also in Ago
+  text "yesterday" => "i går";
+  /// TimeAgo · text on the page
+  /// placeholders: {ToInt} = Convert.ToInt(…) (int) — {ToInt} is a count: give one text per plural form
+  /// shown through TimeAgo()
+  text "{ToInt} h ago" => { one: "för 1 h sedan", other: "för {ToInt} h sedan" };
+  /// TimeAgo · text on the page
+  /// placeholders: {ToInt} = Convert.ToInt(…) (int) — {ToInt} is a count: give one text per plural form
+  /// shown through TimeAgo()
+  text "{ToInt} min ago" => { one: "för 1 min sedan", other: "för {ToInt} min sedan" };
+}

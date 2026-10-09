@@ -1,0 +1,147 @@
+// THE DESK'S COMPOSER — what writing on a ticket means, told once to the Composer kit (Osysharp.Composer): a reply or
+// a note is the desk's `ReplyToTicket` (which refuses a reply over a colleague's that landed meanwhile, and answers a
+// ticket nobody holds by taking it); "send and set…" is a status; a saved reply's placeholders are the ticket's
+// customer, company and number and the writer's own name; a macro's steps are the desk's own actions (actions.osy) — status, priority,
+// tag, type, take, assign, queue — so a macro can do exactly what an agent could by hand, and nothing else.
+//
+// ⚑ THE KIT KEEPS THE REST: saved replies and macros (the settings pages), drafts per ticket and per agent that survive
+//   a reload, markdown and its bar, files, the signature line. `Agent.Signature` goes under every reply an agent sends.
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Collaboration;
+using Osysharp.Inbox;
+using Osysharp.Composer;
+using Osysharp.Storage;
+
+/// Who writes with the composer: anybody who works tickets. Who keeps the TEAM's replies and macros: admins.
+policy ComposesReplies => IsAgent;
+policy ManagesSavedReplies => IsAdmin;
+
+app.Composer = new ComposerSetup { Targets = [new DeskReplies()] };
+
+public class DeskReplies : ComposerTarget {
+  public override string Send(ComposerSend s) {
+    Guid? status = s.After == "" ? null : Guid.Parse(s.After);
+    ReplyToTicket(s.Item, s.Text, s.Note, status, Convert.ToInt(s.Seen), s.Files, markdown: true);
+    // A note that names a teammate seats them on the ticket and tells them — the kit has already refused a name that
+    // may not be named here.
+    if (s.Note && s.Mentions.Count > 0) { SeatAndTell(s.Item, s.Mentions); }
+    if (status == null) { return s.Note && s.Mentions.Count > 0 ? Told(s.Mentions.Count) : ""; }
+    return "Sent, and set to " + TicketStatus.Single(x => x.Id == status).Name + ".";
+  }
+
+  /// A note may name anybody on the team who may open this ticket; one who may not is offered with why — the note would
+  /// name them on something they cannot see.
+  public override List<MentionChoice> Mentionable(Guid item) {
+    var t = Ticket.FirstOrDefault(x => x.Id == item);
+    if (t == null) { return []; }
+    var me = Session.CurrentUser!.Id;
+    List<MentionChoice> people = [];
+    foreach (var a in Agent.Where(x => x.IsActive && x.Id != me).OrderBy(x => x.DisplayName).ToList()) {
+      var name = a.DisplayName != "" ? a.DisplayName : a.Email;
+      people.Add(new MentionChoice { Key = a.Id.ToString(), Name = name, Hint = a.Email,
+        Refusal = Security.MayRead(a, t) ? "" : $"{name} cannot open this ticket, so a note cannot name them. Ask a lead to add them to its queue, or write it without their name." });
+    }
+    return people;
+  }
+
+  /// "Send and set Pending" — every status a reply can move a ticket to (never back to New, never straight to Closed).
+  public override List<ComposerAfter> After(Guid item) {
+    return TicketStatus.Where(x => x.Active && x.Category != StatusCategory.New && x.Category != StatusCategory.Closed)
+      .OrderBy(x => x.Category).ThenBy(x => x.Position).ToList()
+      .Select(x => new ComposerAfter { Key = x.Id.ToString(), Label = x.Name }).ToList();
+  }
+
+  public override List<ReplyPlaceholder> Placeholders() {
+    return [
+      new CustomerFirstName { Key = "customer.first_name", Label = "Customer's first name", Fallback = "there" },
+      new CustomerName { Key = "customer.name", Label = "Customer's full name" },
+      new CompanyName { Key = "company.name", Label = "Customer's company" },
+      new TicketNumber { Key = "ticket.number", Label = "Ticket number" },
+      new TicketSubject { Key = "ticket.subject", Label = "Ticket subject" },
+      new AgentFirstName { Key = "agent.first_name", Label = "Your first name" },
+      new AgentName { Key = "agent.name", Label = "Your full name" },
+    ];
+  }
+
+  /// A macro's steps are the desk's own actions on a ticket (actions.osy) — everything an agent could do by hand, and
+  /// nothing else. Telling a teammate or mailing the customer is not a macro's: the reply it writes is.
+  public override string Record { get { return typeof(Ticket).FullName; } }
+  public override bool Offers(ActionInfo action) {
+    return action.Name != Actions.Of(TellHolder).Name && action.Name != Actions.Of(TellLeads).Name
+        && action.Name != Actions.Of(MailCustomer).Name;
+  }
+
+  public override string Signature() {
+    var me = Agent.FirstOrDefault(a => a.Id == Session.CurrentUser!.Id);
+    return me == null || me.Signature == null ? "" : me.Signature;
+  }
+
+  /// A file is checked for what it REALLY is now — its bytes against its name, the size limit as a sentence — by the
+  /// conversation kit that will carry it, while the agent can still do something about it.
+  public override ComposerFile Keep(UploadedFile upload) {
+    var kept = KeepUpload(upload);
+    return new ComposerFile { Id = kept.Id, Name = kept.Name, Size = kept.Size, Picture = kept.Kind == AttachmentKind.Image };
+  }
+
+  /// Colleagues on the ticket see "Ines is replying" — on the ticket's conversation, the seat the desk shares.
+  public override void Writing(Guid item, string doing) {
+    var t = Ticket.FirstOrDefault(x => x.Id == item);
+    if (t != null) { SeatActivity(t.Conversation.Id, doing); }
+  }
+}
+
+// ── mentions ───────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// Each teammate a note named (their account ids) sits on the ticket's conversation, follows the ticket (so the
+/// customer's next message reaches them too), and is told — once, as the one who named them.
+void SeatAndTell(Guid item, List<string> mentions) {
+  var t = Ticket.Single(x => x.Id == item);
+  var me = Session.CurrentUser!;
+  foreach (var key in mentions) {
+    var id = Guid.Parse(key);
+    var a = Agent.Single(x => x.Id == id);
+    Seat(t.Conversation, a);
+    if (!Follower.Any(f => f.Ticket == t && f.Agent == a) && (t.Assignee == null || t.Assignee.Id != a.Id)) {
+      new Follower { Ticket = t, Agent = a };
+    }
+    Notify(a, new MentionedInNote { Ticket = t, By = me }, by: me, mention: true);
+  }
+  UnitOfWork.Commit();
+}
+
+/// What the writer is told after a note that names somebody.
+string Told(int count) => count == 1 ? "Note added — they are told." : $"Note added — {count} people are told.";
+
+// ── placeholders ───────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// The first word of a name — "" for none.
+string FirstWord(string? name) {
+  var n = (name ?? "").Trim();
+  return n.Contains(" ") ? n.Substring(0, n.IndexOf(" ")) : n;
+}
+
+public class CustomerFirstName : ReplyPlaceholder {
+  public override string Fill(Guid item) { return FirstWord(Ticket.Single(t => t.Id == item).Customer.DisplayName); }
+}
+public class CustomerName : ReplyPlaceholder {
+  public override string Fill(Guid item) { return Ticket.Single(t => t.Id == item).Customer.DisplayName ?? ""; }
+}
+public class CompanyName : ReplyPlaceholder {
+  public override string Fill(Guid item) {
+    var c = Ticket.Single(t => t.Id == item).Customer.Company;
+    return c == null ? "" : c.Name;
+  }
+}
+public class TicketNumber : ReplyPlaceholder {
+  public override string Fill(Guid item) { return "#" + Ticket.Single(t => t.Id == item).Number; }
+}
+public class TicketSubject : ReplyPlaceholder {
+  public override string Fill(Guid item) { return Ticket.Single(t => t.Id == item).Title; }
+}
+public class AgentFirstName : ReplyPlaceholder {
+  public override string Fill(Guid item) { return FirstWord(Session.CurrentUser!.DisplayName); }
+}
+public class AgentName : ReplyPlaceholder {
+  public override string Fill(Guid item) { return Session.CurrentUser!.DisplayName ?? ""; }
+}

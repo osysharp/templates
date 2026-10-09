@@ -1,0 +1,138 @@
+// THE CUSTOMER'S SIDE, DRIVEN AS A CUSTOMER DRIVES IT — the help page signed out, and the portal signed in: their
+// requests, a reply, and the team's notes never reaching their screen.
+using Osysharp.Identity;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Accounts;
+using Osysharp.Conversations;
+
+/// Ines works the desk; Olivia (Larkspur) has a portal account.
+[TestFixture]
+void Portal() {
+  SetUpTestDesk();
+  var ines = new Agent { Email = "ines@helpdesk.test", DisplayName = "Ines Moreau" };
+  new RoleGrant { Member = ines, Role = AppRole.Agent };
+  JoinTheDesk(ines);
+  var larkspur = new Company { Name = "Larkspur Freight" };
+  new OrganizationDomain { Organization = larkspur, Domain = "larkspur.test" };
+  var olivia = new User { Email = "olivia@larkspur.test", DisplayName = "Olivia Brandt", EmailVerifiedAt = DateTime.UtcNow };
+  new RoleGrant { Member = olivia, Role = AppRole.Customer };
+  var party = new Customer { DisplayName = "Olivia Brandt", Company = larkspur, Account = olivia, CreatedByVisit = null };
+  new ContactPoint { Party = party, Kind = ContactPointKind.Email, Value = "olivia@larkspur.test", IsPreferred = true };
+}
+
+principal Desk   => Agent.Single(a => a.Email == "ines@helpdesk.test");
+
+/// On a phone the chat is a TAB in the portal's bottom bar, not a button floating over the page's last lines: the tab opens
+/// the chat as a page, with the help centre searched above its first message (in Arabic in tests/languages/). On a wider
+/// screen it stays in the corner.
+[Test(Portal)]
+void on_a_phone_the_chat_is_a_tab_in_the_bottom_bar() {
+  Ui.Viewport(390, 844);
+  Ui.Visit("/help");
+  Assert.Visible("How can we help?");
+  Ui.Shot("phone-help-with-chat-tab-en");
+  Ui.Click("Chat");
+  Assert.OnPage("/chat");   // the tab's page, not a panel floating over this one
+  Assert.Visible("Search our help articles");
+  Assert.Visible("Ask us anything — a person on the team reads every message.");
+  Ui.Shot("phone-chat-tab-en");
+  // A wider screen keeps the chat in the corner, and its bar has no Chat tab.
+  Ui.Viewport(1280, 900);
+  Ui.Visit("/help");
+  Assert.Hidden("Search our help articles");
+  Ui.Click("Chat with us");
+  Assert.Visible("Search our help articles");
+}
+
+[Test(Portal)]
+void a_signed_out_visitor_sends_a_request_from_the_help_page() {
+  Ui.Viewport(1280, 900);
+  Ui.Visit("/help");
+  Assert.Visible("How can we help?");
+  Ui.Shot("help-page");
+  Ui.Fill("Your name", "Pierre Laurent");
+  Ui.Fill("Your email", "pierre@example.test");
+  Ui.Fill("Subject", "Password reset mail never arrives");
+  Ui.Fill("What happened", "I asked for a reset three times today and nothing arrived.");
+  Ui.Click("Send request");
+  Assert.Visible("We have your request");
+  Assert.Visible("Your reference is #");
+  Ui.Shot("help-page-sent");
+  runas (Desk) {
+    var t = Ticket.Single(x => x.Title == "Password reset mail never arrives");
+    Assert.Equal("Pierre Laurent", t.Customer.DisplayName);
+    Assert.Equal(StatusCategory.New, t.Category);
+  }
+}
+
+[Test(Portal)]
+void a_customer_reads_and_answers_their_request_and_never_sees_a_note() {
+  var number = 0;
+  runas (Desk) {
+    var id = OpenTicket("olivia@larkspur.test", "Olivia Brandt", "Refund charged twice for order 88213",
+                        "The refund shows twice on the customer's card statement.");
+    number = Ticket.Single(t => t.Id == id).Number;
+    ReplyToTicket(id, "One of the two is a pending authorisation that drops off within five days.", false,
+                  TicketStatus.Single(s => s.Name == "Pending").Id);
+    ReplyToTicket(id, "Finance confirmed only one refund settled.", true);
+  }
+  Ui.SignInAs(Olivia);
+  Ui.Visit("/my");
+  Assert.Visible("Refund charged twice for order 88213");
+  Assert.Visible("Waiting for your reply");
+  Ui.Shot("portal-requests");
+  Ui.Click("Refund charged twice for order 88213");
+  Assert.Visible("pending authorisation that drops off");
+  Assert.Hidden("Finance confirmed");
+  Assert.Hidden("internal note");
+  Ui.Fill("Your reply", "Thanks — I can see it dropped off this morning.");
+  Ui.Click("Send reply");
+  Assert.Visible("I can see it dropped off");
+  Ui.Shot("portal-request");
+  runas (Desk) {
+    var t = Ticket.Single(x => x.Number == number);
+    Assert.Equal(StatusCategory.Open, t.Category);   // the customer's answer reopened it
+  }
+}
+
+[Test(Portal)]
+void the_portal_on_a_phone() {
+  runas (Desk) {
+    OpenTicket("olivia@larkspur.test", "Olivia Brandt", "Two seats from next month", "Can we add two seats from the 1st?");
+  }
+  Ui.Viewport(390, 844);
+  Ui.SignInAs(Olivia);
+  Ui.Visit("/my");
+  Assert.Visible("Two seats from next month");
+  Ui.Shot("portal-phone");
+}
+
+[Test(Portal)]
+void a_new_customer_proves_their_address_with_the_mailed_code_before_the_portal_opens() {
+  Ui.Viewport(1280, 900);
+  Ui.Visit("/sign-up");
+  Ui.Fill("Your name", "Maya Lind");
+  Ui.Fill("Email", "maya@kestrel.test");
+  Ui.Fill("Password", "maya-password-1");
+  Ui.Click("Create account");
+  // Not in yet: the address is proven first, with the code the mail carried.
+  Assert.Visible("Check your mail at maya@kestrel.test.");
+  Ui.Shot("prove-address-wide");
+  Ui.Viewport(390, 844);
+  Ui.Shot("prove-address-phone");
+  // A wrong (or expired) code says so, and offers a new one.
+  Ui.Fill("Code from the mail", "000000");
+  Ui.Click("Confirm");
+  Assert.Visible("That code is not right, or it has expired — check the newest message, or ask for a new code.");
+  Assert.Visible("Send a new code");
+  Ui.Shot("prove-address-wrong-code-phone");
+  Ui.Fill("Code from the mail", MailedCode("maya@kestrel.test"));
+  Ui.Click("Confirm");
+  // In — on the help page, and their requests are theirs to read.
+  Assert.Visible("How can we help?");
+  Ui.Visit("/my");
+  Assert.OnPage("/my");
+  Assert.Visible("Nothing yet");
+  Ui.Shot("portal-after-proof-phone");
+}

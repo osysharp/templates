@@ -1,0 +1,388 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Webhooks, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Webhooks · AddWebhook ──
+  /// AddWebhook · an error message
+  /// shown through ValidationException
+  /// also in ChangeWebhook
+  error "Give the subscription a name — it is how you will recognise it in the list." => "أعطِ الاشتراك اسمًا، فبه ستتعرف عليه في القائمة.";
+
+  // ── Osysharp.Webhooks · CheckedEvents ──
+  /// CheckedEvents · an error message
+  /// placeholders: {name} = name (string), {Join} = string.Join(…) (string)
+  /// shown through ValidationException
+  error "'{name}' is not an event this app sends. It sends: {Join}." => "'{name}' ليس حدثًا يرسله هذا التطبيق. يرسل: {Join}.";
+  /// CheckedEvents · an error message
+  /// shown through ValidationException
+  error "Choose at least one event to send." => "اختر حدثًا واحدًا على الأقل لإرساله.";
+
+  // ── Osysharp.Webhooks · CheckedUrl ──
+  /// CheckedUrl · an error message
+  /// placeholders: {host} = host (string)
+  /// shown through ValidationException
+  error "'{host}' is not a host that can be reached from the internet." => "'{host}' ليس مضيفًا يمكن الوصول إليه من الإنترنت.";
+  /// CheckedUrl · an error message
+  /// shown through ValidationException
+  error "A webhook goes to an https:// address — what it carries is signed, and must not be read on the way." => "يُرسل الويب هوك إلى عنوان https://، فما يحمله موقّع ويجب ألا يُقرأ في الطريق.";
+  /// CheckedUrl · an error message
+  /// shown through ValidationException
+  error "Give the endpoint's address — like https://example.com/hooks/orders." => "أدخل عنوان نقطة الاستقبال، مثل https://example.com/hooks/orders.";
+  /// CheckedUrl · an error message
+  /// shown through ValidationException
+  error "That address has a space in it — copy it again from the receiving system." => "يحتوي هذا العنوان على مسافة. انسخه مرة أخرى من النظام المستقبِل.";
+  /// CheckedUrl · an error message
+  /// shown through ValidationException
+  error "That address is longer than 2,000 characters." => "هذا العنوان أطول من 2,000 حرف.";
+
+  // ── Osysharp.Webhooks · Days ──
+  /// Days · a description
+  /// shown through Days()
+  description "1 day" => "يوم واحد";
+  /// Days · a description
+  /// shown through Days()
+  description "1 hour" => "ساعة واحدة";
+  /// Days · a description
+  /// placeholders: {d} = d (int) — {d} is a count: give one text per plural form
+  /// shown through Days()
+  description "{d} days" => { zero: "{d} يوم", one: "يوم واحد", two: "يومين", few: "{d} أيام", many: "{d} يومًا", other: "{d} يوم" };
+  /// Days · a description
+  /// placeholders: {h} = h (int) — {h} is a count: give one text per plural form
+  /// shown through Days()
+  description "{h} hours" => { zero: "{h} ساعة", one: "ساعة واحدة", two: "ساعتين", few: "{h} ساعات", many: "{h} ساعة", other: "{h} ساعة" };
+
+  // ── Osysharp.Webhooks · HealthOf ──
+  /// HealthOf · text on the page
+  /// placeholders: {s.LastDeliveredAt} = s.LastDeliveredAt (DateTime)
+  /// shown through HealthOf()
+  text "Last delivered {s.LastDeliveredAt}." => "آخر تسليم {s.LastDeliveredAt}.";
+  /// HealthOf · text on the page
+  /// placeholders: {s.LastFailedAt} = s.LastFailedAt (DateTime), {Sentence} = Sentence(…) (string)
+  /// shown through HealthOf()
+  text "Last try refused {s.LastFailedAt} — {Sentence} It is tried again until it is taken or given up on." => "رُفضت آخر محاولة {s.LastFailedAt}: {Sentence} تُعاد المحاولة حتى يُستلم أو يُتخلى عنه.";
+  /// HealthOf · text on the page
+  /// shown through HealthOf()
+  text "Nothing sent yet." => "لم يُرسل شيء بعد.";
+  /// HealthOf · text on the page
+  /// placeholders: {s.PausedAt} = s.PausedAt (DateTime), {s.FailingInARow} = s.FailingInARow (int), {Sentence} = Sentence(…) (string) — {s.FailingInARow} is a count: give one text per plural form
+  /// shown through HealthOf()
+  text "Paused {s.PausedAt} after {s.FailingInARow} deliveries in a row were given up on — the last: {Sentence} Fix the endpoint, then resume it." => { zero: "أُوقف مؤقتًا {s.PausedAt} بعد التخلي عن {s.FailingInARow} عملية تسليم متتالية. آخرها: {Sentence} أصلح نقطة الاستقبال، ثم استأنفه.", one: "أُوقف مؤقتًا {s.PausedAt} بعد التخلي عن عملية تسليم واحدة. السبب: {Sentence} أصلح نقطة الاستقبال، ثم استأنفه.", two: "أُوقف مؤقتًا {s.PausedAt} بعد التخلي عن عمليتي تسليم متتاليتين. آخرهما: {Sentence} أصلح نقطة الاستقبال، ثم استأنفه.", few: "أُوقف مؤقتًا {s.PausedAt} بعد التخلي عن {s.FailingInARow} عمليات تسليم متتالية. آخرها: {Sentence} أصلح نقطة الاستقبال، ثم استأنفه.", many: "أُوقف مؤقتًا {s.PausedAt} بعد التخلي عن {s.FailingInARow} عملية تسليم متتالية. آخرها: {Sentence} أصلح نقطة الاستقبال، ثم استأنفه.", other: "أُوقف مؤقتًا {s.PausedAt} بعد التخلي عن {s.FailingInARow} عملية تسليم متتالية. آخرها: {Sentence} أصلح نقطة الاستقبال، ثم استأنفه." };
+  /// HealthOf · text on the page
+  /// placeholders: {s.PausedAt} = s.PausedAt (DateTime)
+  /// shown through HealthOf()
+  text "Paused {s.PausedAt} — its endpoint answered that it is gone (HTTP 410). Point it at the right address, then resume it." => "أُوقف مؤقتًا {s.PausedAt}، فقد ردّت نقطة الاستقبال بأنها لم تعد موجودة (HTTP 410). وجّهه إلى العنوان الصحيح، ثم استأنفه.";
+  /// HealthOf · text on the page
+  /// placeholders: {s.PausedAt} = s.PausedAt (DateTime)
+  /// shown through HealthOf()
+  text "Paused {s.PausedAt} — nothing is sent until it is resumed." => "أُوقف مؤقتًا {s.PausedAt}. لن يُرسل شيء حتى يُستأنف.";
+
+  // ── Osysharp.Webhooks · NewWebhookSecret ──
+  /// NewWebhookSecret · text on the page
+  /// placeholders: {ToBase64String} = Convert.ToBase64String(…) (string)
+  /// shown through NewWebhookSecret()
+  text "whsec_{ToBase64String}" => "whsec_{ToBase64String}";
+
+  // ── Osysharp.Webhooks · Osysharp.Webhooks.WebhookDeliveryState ──
+  /// Osysharp.Webhooks.WebhookDeliveryState · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Osysharp.Webhooks.WebhookDeliveryState.Retrying
+  /// beside: "Sending", "Delivered", "Failed", "Done", "Not sent"
+  label "Waiting to try again" => "بانتظار محاولة جديدة";
+
+  // ── Osysharp.Webhooks · Osysharp.Webhooks.WebhookOutcome ──
+  /// Osysharp.Webhooks.WebhookOutcome · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Webhooks.WebhookOutcome.GaveUp
+  /// beside: "Delivered", "Not sent"
+  label "Gave up" => "تم التخلي";
+
+  // ── Osysharp.Webhooks · Osysharp.Webhooks.WebhookPause ──
+  /// Osysharp.Webhooks.WebhookPause · a label (a field, a list item, a menu entry) · at most ~48 characters
+  /// shown through Osysharp.Webhooks.WebhookPause.Failing
+  /// beside: "Paused"
+  label "Paused — its endpoint kept failing" => "متوقف مؤقتًا، فشلت نقطة الاستقبال مرارًا";
+
+  // ── Osysharp.Webhooks · Osysharp.Webhooks.WebhookPaused.Sentence ──
+  /// Osysharp.Webhooks.WebhookPaused.Sentence · text on the page
+  /// placeholders: {Why} = Why (string)
+  /// shown through Sentence()
+  text "Paused: its endpoint kept failing — {Why}" => null;
+  /// Osysharp.Webhooks.WebhookPaused.Sentence · text on the page
+  /// shown through Sentence()
+  text "Paused: its endpoint kept failing." => "متوقف مؤقتًا: فشلت نقطة الاستقبال مرارًا.";
+
+  // ── Osysharp.Webhooks · Osysharp.Webhooks.WebhookSettingsSections.Sections ──
+  /// Osysharp.Webhooks.WebhookSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  heading "Integrations" => "التكاملات";
+  /// Osysharp.Webhooks.WebhookSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Tell other systems when something happens here." => "أخبر الأنظمة الأخرى عندما يحدث شيء هنا.";
+  /// Osysharp.Webhooks.WebhookSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through SettingsLink.Label
+  label "Webhooks" => "ويب هوك";
+
+  // ── Osysharp.Webhooks · Osysharp.Webhooks.WebhookSubscription ──
+  /// Osysharp.Webhooks.WebhookSubscription · validation
+  /// shown through Osysharp.Webhooks.WebhookSubscription.Name [Required]
+  validation "A subscription needs a name." => "يحتاج الاشتراك إلى اسم.";
+
+  // ── Osysharp.Webhooks · SendTestWebhook ──
+  /// SendTestWebhook · an error message
+  /// shown through ValidationException
+  error "Choose an event to send a sample of." => "اختر حدثًا لإرسال نموذج منه.";
+
+  // ── Osysharp.Webhooks · SendWebhookAgain ──
+  /// SendWebhookAgain · an error message
+  /// shown through ValidationException
+  error "Its document has been removed — it was kept for a short while only, so it cannot be sent again." => "حُذف مستنده، فقد كان يُحتفظ به لفترة قصيرة فقط، لذا لا يمكن إرساله مرة أخرى.";
+  /// SendWebhookAgain · an error message
+  /// shown through ValidationException
+  error "Its subscription was removed." => "حُذف اشتراكه.";
+  /// SendWebhookAgain · an error message
+  /// shown through ValidationException
+  error "Only a delivery that failed is sent again." => "لا يُعاد إرسال إلا التسليم الذي فشل.";
+  /// SendWebhookAgain · an error message
+  /// shown through NotFoundException
+  error "That delivery is no longer in the log." => "لم يعد هذا التسليم موجودًا في السجل.";
+
+  // ── Osysharp.Webhooks · SubscriptionById ──
+  /// SubscriptionById · an error message
+  /// shown through NotFoundException
+  error "That subscription is gone — it may have been removed." => "لم يعد هذا الاشتراك موجودًا، ربما حُذف.";
+
+  // ── Osysharp.Webhooks · WebhookDeliveryRow ──
+  /// WebhookDeliveryRow · a control's name for screen readers
+  accessibleName "The document" => "المستند";
+  /// WebhookDeliveryRow · a control's name for screen readers
+  accessibleName "What was sent" => "ما أُرسل";
+  /// WebhookDeliveryRow · a control's name for screen readers
+  /// placeholders: {value} = …, {d.SubscriptionName} = d.SubscriptionName
+  accessibleName "{value} to {d.SubscriptionName}" => "{value} إلى {d.SubscriptionName}";
+  /// WebhookDeliveryRow · a button's label · at most ~23 characters
+  /// shown through IconButton.label
+  button "Hide the details" => "إخفاء التفاصيل";
+  /// WebhookDeliveryRow · a button's label · at most ~24 characters
+  /// shown through Button.label
+  button "Hide the document" => "إخفاء المستند";
+  /// WebhookDeliveryRow · a button's label · at most ~16 characters
+  /// shown through Button.label
+  button "Send again" => "إعادة الإرسال";
+  /// WebhookDeliveryRow · a button's label · at most ~23 characters
+  /// shown through IconButton.label
+  button "Show the details" => "عرض التفاصيل";
+  /// WebhookDeliveryRow · a button's label · at most ~24 characters
+  /// shown through Button.label
+  button "Show the document" => "عرض المستند";
+  /// WebhookDeliveryRow · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Badge.label
+  label "Test" => "اختبار";
+  /// WebhookDeliveryRow · text on the page
+  /// placeholders: {d.NextAttemptAt} = d.NextAttemptAt
+  text "Next try at {d.NextAttemptAt}." => "المحاولة التالية {d.NextAttemptAt}.";
+  /// WebhookDeliveryRow · text on the page
+  text "No document." => "لا يوجد مستند.";
+  /// WebhookDeliveryRow · text on the page
+  /// shown through said
+  text "Sent again — it is being tried." => "أُعيد الإرسال، وجارٍ المحاولة.";
+  /// WebhookDeliveryRow · text on the page
+  /// placeholders: {d.BodyRemovedAt} = d.BodyRemovedAt
+  text "The document was removed {d.BodyRemovedAt} — it is kept only a short while." => "حُذف المستند {d.BodyRemovedAt}، فهو يُحتفظ به لفترة قصيرة فقط.";
+  /// WebhookDeliveryRow · text on the page
+  /// beside: "pre-wrap"
+  text "The endpoint answered:" => "ردّت نقطة الاستقبال:";
+  /// WebhookDeliveryRow · text on the page
+  /// placeholders: {d.SubscriptionName} = d.SubscriptionName
+  text "to {d.SubscriptionName}" => "إلى {d.SubscriptionName}";
+
+  // ── Osysharp.Webhooks · WebhookRetentionWords ──
+  /// WebhookRetentionWords · a description
+  /// placeholders: {Days} = Days(…) (string), {Days2} = Days(…) (string)
+  /// shown through WebhookRetentionWords()
+  description "Every document sent and every try, newest first. A document is kept {Days} after it is delivered or given up on, then removed; its line stays {Days2}." => "كل مستند أُرسل وكل محاولة، الأحدث أولًا. يُحتفظ بالمستند لمدة {Days} بعد تسليمه أو التخلي عنه، ثم يُحذف، ويبقى سطره لمدة {Days2}.";
+
+  // ── Osysharp.Webhooks · WebhookRow ──
+  /// WebhookRow · a button's label · at most ~20 characters
+  /// shown through Button.label
+  /// beside: "Edit", "Send a test", "Roll the secret", "Remove"
+  button "Its deliveries" => "عمليات تسليمه";
+  /// WebhookRow · a button's label · at most ~11 characters
+  /// shown through Button.label
+  /// beside: "Edit", "Send a test", "Roll the secret", "Its deliveries"
+  button "Pause" => "إيقاف مؤقت";
+  /// WebhookRow · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Edit", "Send a test", "Roll the secret", "Its deliveries"
+  button "Resume" => "استئناف";
+  /// WebhookRow · a button's label · at most ~21 characters
+  /// shown through Button.label
+  /// beside: "Edit", "Send a test", "Its deliveries", "Remove"
+  button "Roll the secret" => "تجديد السر";
+  /// WebhookRow · a button's label · at most ~17 characters
+  /// shown through Button.label
+  /// beside: "Edit", "Roll the secret", "Its deliveries", "Remove"
+  button "Send a test" => "إرسال اختبار";
+  /// WebhookRow · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Badge.label
+  label "Paused — failing" => "متوقف، يفشل";
+  /// WebhookRow · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Badge.label
+  label "Retrying" => "إعادة المحاولة";
+  /// WebhookRow · text on the page
+  /// placeholders: {line.SecretEnding} = line.SecretEnding
+  /// beside: "Edit"
+  text "Signing secret {line.SecretEnding}" => "سر التوقيع {line.SecretEnding}";
+
+  // ── Osysharp.Webhooks · WebhookSubscriptions ──
+  /// WebhookSubscriptions · a control's name for screen readers
+  accessibleName "Delivery log" => "سجل التسليم";
+  /// WebhookSubscriptions · a control's name for screen readers
+  /// beside: "Add a webhook"
+  accessibleName "Endpoints" => "نقاط الاستقبال";
+  /// WebhookSubscriptions · a control's name for screen readers
+  /// beside: "Name", "Cancel"
+  accessibleName "Events" => "الأحداث";
+  /// WebhookSubscriptions · a control's name for screen readers
+  accessibleName "Signing secret" => "سر التوقيع";
+  /// WebhookSubscriptions · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Add a webhook" => "إضافة ويب هوك";
+  /// WebhookSubscriptions · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Add it" => "إضافة";
+  /// WebhookSubscriptions · a button's label · at most ~27 characters
+  /// shown through Button.label
+  button "Change the endpoint" => "تغيير نقطة الاستقبال";
+  /// WebhookSubscriptions · a button's label · at most ~15 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Remove it" => "حذف";
+  /// WebhookSubscriptions · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Show 25 more" => "عرض 25 أخرى";
+  /// WebhookSubscriptions · a button's label · at most ~27 characters
+  /// shown through Button.label
+  /// beside: "One endpoint"
+  button "Show every endpoint" => "عرض كل نقاط الاستقبال";
+  /// WebhookSubscriptions · a description
+  /// shown through SettingsSection.description
+  /// beside: "Delivery log"
+  description "Each gets the events it takes, signed with its own secret. One that keeps failing is paused, and says why." => "تحصل كل نقطة استقبال على الأحداث التي تستقبلها، موقّعة بسرّها الخاص. والتي تفشل مرارًا تُوقف مؤقتًا وتوضح السبب.";
+  /// WebhookSubscriptions · a description
+  /// shown through SettingsPage.description
+  description "Tell other systems when something happens here. Each event is sent to the endpoints that take it as a signed JSON document, and tried again while an endpoint is down." => "أخبر الأنظمة الأخرى عندما يحدث شيء هنا. يُرسل كل حدث إلى نقاط الاستقبال التي تستقبله كمستند JSON موقّع، ويُعاد إرساله ما دامت نقطة الاستقبال متعطلة.";
+  /// WebhookSubscriptions · a hint under a field
+  /// shown through Field.hint
+  hint "An https:// address that answers 2xx when it has the document." => "عنوان https:// يرد بـ 2xx عندما يستلم المستند.";
+  /// WebhookSubscriptions · a hint under a field
+  /// shown through Field.hint
+  hint "It keeps its secret." => "يحتفظ بسرّه.";
+  /// WebhookSubscriptions · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Field.label
+  label "Endpoint" => "نقطة الاستقبال";
+  /// WebhookSubscriptions · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Dropdown.label
+  /// beside: "Cancel"
+  label "Event" => "الحدث";
+  /// WebhookSubscriptions · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Field.label
+  label "New endpoint" => "نقطة استقبال جديدة";
+  /// WebhookSubscriptions · a label (a field, a list item, a menu entry) · at most ~33 characters
+  /// placeholders: {value} = …
+  /// shown through Switch.label
+  label "Only what failed{value}" => "الفاشلة فقط{value}";
+  /// WebhookSubscriptions · placeholder text inside an empty field · at most ~16 characters
+  /// shown through Field.placeholder
+  /// beside: "Events", "Cancel"
+  placeholder "Order sync" => "مزامنة الطلبات";
+  /// WebhookSubscriptions · placeholder text inside an empty field · at most ~45 characters
+  /// shown through Field.placeholder
+  placeholder "https://example.com/hooks/orders" => "https://example.com/hooks/orders";
+  /// WebhookSubscriptions · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "A made-up document of the event you choose, signed like any other, tried once." => "مستند مصطنع للحدث الذي تختاره، موقّع مثل أي مستند آخر، ويُرسل مرة واحدة.";
+  /// WebhookSubscriptions · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Nothing more is sent to it, and anything still waiting is not sent. Its lines stay in the log until they age out." => "لن يُرسل إليه شيء بعد الآن، ولن يُرسل ما زال ينتظر. تبقى أسطره في السجل حتى تتقادم.";
+  /// WebhookSubscriptions · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "The endpoint gets a signed JSON document each time one of the events you choose happens." => "تتلقى نقطة الاستقبال مستند JSON موقّعًا في كل مرة يقع فيها أحد الأحداث التي تختارها.";
+  /// WebhookSubscriptions · text on the page
+  /// shown through notice
+  text "A sample was sent — its line is at the top of the log." => "أُرسل نموذج. سطره في أعلى السجل.";
+  /// WebhookSubscriptions · text on the page
+  /// shown through EmptyState.body
+  text "Add one to send this app's events to another system — your own service, an automation tool, a data warehouse." => "أضف واحدًا لإرسال أحداث هذا التطبيق إلى نظام آخر: خدمتك الخاصة، أو أداة أتمتة، أو مستودع بيانات.";
+  /// WebhookSubscriptions · text on the page
+  /// beside: "I have copied it"
+  text "Copy it into the receiving system now — it is not shown again. The receiver checks every document's webhook-signature header with it." => "انسخه إلى النظام المستقبِل الآن، فلن يُعرض مرة أخرى. يتحقق المستقبِل به من ترويسة webhook-signature في كل مستند.";
+  /// WebhookSubscriptions · text on the page
+  /// shown through FieldLabel.text
+  text "Events it takes" => "الأحداث التي يستقبلها";
+  /// WebhookSubscriptions · text on the page
+  /// shown through EmptyState.body
+  text "Every document was taken by its endpoint." => "استقبلت نقطة الاستقبال كل مستند أُرسل إليها.";
+  /// WebhookSubscriptions · text on the page
+  /// beside: "Show every endpoint"
+  text "One endpoint" => "نقطة استقبال واحدة";
+  /// WebhookSubscriptions · text on the page
+  /// shown through Hint.text
+  text "This app sends no events yet." => "لا يرسل هذا التطبيق أي أحداث بعد.";
+  /// WebhookSubscriptions · text on the page
+  /// shown through EmptyState.body
+  text "When an event happens, each document sent for it is listed here." => "عند وقوع حدث، يظهر هنا كل مستند أُرسل بسببه.";
+  /// WebhookSubscriptions · text on the page
+  /// placeholders: {Trim} = name.Trim(…)
+  /// shown through notice
+  text "“{Trim}” added." => "أُضيف “{Trim}”.";
+  /// WebhookSubscriptions · text on the page
+  /// placeholders: {line.Name} = line.Name
+  /// shown through notice
+  text "“{line.Name}” paused — nothing is sent to it until it is resumed." => "أُوقف “{line.Name}” مؤقتًا. لن يُرسل إليه شيء حتى يُستأنف.";
+  /// WebhookSubscriptions · text on the page
+  /// placeholders: {line.Name} = line.Name
+  /// shown through notice
+  text "“{line.Name}” resumed — events from now on are sent to it." => "استُؤنف “{line.Name}”. تُرسل إليه الأحداث من الآن فصاعدًا.";
+  /// WebhookSubscriptions · text on the page
+  /// placeholders: {removingName} = removingName
+  /// shown through notice
+  text "“{removingName}” removed." => "حُذف “{removingName}”.";
+  /// WebhookSubscriptions · a title
+  /// shown through Dialog.title
+  title "Add a webhook" => "إضافة ويب هوك";
+  /// WebhookSubscriptions · a title
+  /// shown through SettingsSection.title
+  /// beside: "Endpoints"
+  title "Delivery log" => "سجل التسليم";
+  /// WebhookSubscriptions · a title
+  /// shown through SettingsSection.title
+  /// beside: "Delivery log"
+  title "Endpoints" => "نقاط الاستقبال";
+  /// WebhookSubscriptions · a title
+  /// shown through EmptyState.title
+  title "No webhooks yet" => "لا يوجد ويب هوك بعد";
+  /// WebhookSubscriptions · a title
+  /// shown through EmptyState.title
+  title "Nothing has failed" => "لم يفشل شيء";
+  /// WebhookSubscriptions · a title
+  /// shown through EmptyState.title
+  title "Nothing sent yet" => "لم يُرسل شيء بعد";
+  /// WebhookSubscriptions · a title
+  /// placeholders: {removingName} = removingName
+  /// shown through Dialog.title
+  title "Remove “{removingName}”?" => "حذف “{removingName}”؟";
+  /// WebhookSubscriptions · a title
+  /// shown through Dialog.title
+  title "Send a test" => "إرسال اختبار";
+  /// WebhookSubscriptions · a title
+  /// placeholders: {secretFor} = secretFor
+  /// shown through Card.title
+  title "The signing secret for “{secretFor}”" => "سر التوقيع لـ “{secretFor}”";
+
+  // ── Osysharp.Webhooks · WebhooksSettings (/settings/webhooks) ──
+  /// WebhooksSettings · /settings/webhooks · a title
+  /// shown through [Title]
+  /// also in WebhookSubscriptions
+  title "Webhooks" => "ويب هوك";
+}

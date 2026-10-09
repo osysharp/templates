@@ -1,0 +1,48 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Clock, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Clock · ClockSettingsEditor ──
+  /// ClockSettingsEditor · a description
+  /// shown through SettingsPage.description
+  description "A day here is a day where the team works: \"today\", a week and a month start at midnight in this time zone, and follow its summer time. Reports count on it, and daily mail goes out by it." => "En dag här är en dag där teamet arbetar: \"i dag\", en vecka och en månad börjar vid midnatt i den här tidszonen och följer dess sommartid. Rapporter räknar efter den, och den dagliga e-posten skickas efter den.";
+  /// ClockSettingsEditor · text on the page
+  /// shown through SaveBar.saved
+  text "Time and date saved." => "Tid och datum har sparats.";
+  /// ClockSettingsEditor · a title
+  /// shown through SettingsPage.title
+  /// also in ClockSettingsPage /settings/clock
+  title "Time and date" => "Tid och datum";
+
+  // ── Osysharp.Clock · ClockSettingsFields ──
+  /// ClockSettingsFields · a description
+  /// shown through SettingsSection.description
+  description "Where the team's day starts and ends, and the first day of a week." => "Var teamets dag börjar och slutar, och veckans första dag.";
+  /// ClockSettingsFields · a hint under a field
+  /// shown through SettingRow.hint
+  /// beside: "Monday in most of Europe; Sunday or Saturday elsewhere."
+  hint "Days, weeks and months start at midnight here." => "Dagar, veckor och månader börjar vid midnatt här.";
+  /// ClockSettingsFields · a hint under a field
+  /// shown through SettingRow.hint
+  /// beside: "Days, weeks and months start at midnight here."
+  hint "Monday in most of Europe; Sunday or Saturday elsewhere." => "Måndag i större delen av Europa; söndag eller lördag på andra håll.";
+  /// ClockSettingsFields · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through ZonePicker.label
+  label "Time zone" => "Tidszon";
+  /// ClockSettingsFields · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Dropdown.label
+  label "Weeks start on" => "Veckan börjar på";
+  /// ClockSettingsFields · a title
+  /// shown through SettingsSection.title
+  title "Clock" => "Klocka";
+
+  // ── Osysharp.Clock · Osysharp.Clock.__Settings_ClockSettings_Section.Sections ──
+  /// Osysharp.Clock.__Settings_ClockSettings_Section.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "The time zone the team's days start in, and the day a week starts." => "Tidszonen som teamets dagar börjar i, och dagen veckan börjar.";
+  /// Osysharp.Clock.__Settings_ClockSettings_Section.Sections · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through SettingsLink.Label
+  label "Time and date" => "Tid och datum";
+}

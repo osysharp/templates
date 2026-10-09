@@ -1,0 +1,75 @@
+// WHAT A PAGE IN THE DESK'S FRAME COSTS — the inbox, the knowledge base (a kit's page standing in the desk's shell), the
+// settings area and the reports, each opened by a lead who has just signed in: the requests the reader waits for, the
+// server calls among them, and the statements behind them. Held as budgets, so placing a kit's page in the desk (its
+// frame, its nav row) can never quietly add a request to a page.
+using Osysharp.Identity;
+using Osysharp.Inbox;
+
+void Said(string page, string mark) {
+  Log.Information(page + ": " + Cost.RequestsSince(mark) + " requests, " + Cost.ServerCallsSince(mark) + " server calls, "
+    + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips");
+}
+
+// ⚑ MEASURED 2026-10-07 (D-COMPOSE1 S5), twice each, BEFORE and AFTER the knowledge base's pages and the settings area moved
+//   into the desk's shell by `WorkspaceShell` and the rail started listing `[Nav]` pages (`Nav.Pages()`) — the requests and
+//   server calls were identical, and the statements moved inside the runs' own spread:
+//     inbox 3 requests · 1 call · 44–45 statements (after 44–45)      knowledge 2 · 0 · 18–19 (after 17–19)
+//     settings 1 · 0 · 11–12 (after 11–12)                            reports 4 · 2 · 48–49 (after 47–49)
+//   Requests and calls are held EXACTLY — a slot or a nav row that adds one is the failure this file exists to catch — and
+//   statements with 5%.
+
+/// The inbox — the desk's own frame, its rail and its list.
+[Test(Desk)]
+void the_inbox_page_stays_within_its_request_budget() {
+  runas (Ines) { OpenTicket("olivia@larkspur.test", "", "Export stuck at 99%", "Since this morning."); }
+  Ui.SignInAs(Lena);
+  var mark = Cost.Mark();
+  Ui.Visit("/v/open");
+  Assert.Visible("Export stuck at 99%");
+  Said("inbox", mark);
+  Assert.AtMost(3, Cost.RequestsSince(mark));
+  Assert.AtMost(1, Cost.ServerCallsSince(mark));
+  Assert.AtMost(47, Cost.StatementsSince(mark));
+}
+
+/// The knowledge base — a kit's page, in the desk's shell.
+[Test(Desk)]
+void the_knowledge_base_stays_within_its_request_budget() {
+  Ui.SignInAs(Lena);
+  var mark = Cost.Mark();
+  Ui.Visit("/knowledge");
+  Assert.Visible("New article");
+  // The kit's page in the desk's own shell: the desk's rail and its rows (Companies is only ever a nav row).
+  Assert.Visible("Companies");
+  Ui.Shot("knowledge-in-the-desk-shell");
+  Said("knowledge", mark);
+  Assert.AtMost(2, Cost.RequestsSince(mark));
+  Assert.AtMost(0, Cost.ServerCallsSince(mark));
+  Assert.AtMost(20, Cost.StatementsSince(mark));
+}
+
+/// The settings area — every kit's sections, in the desk's shell.
+[Test(Desk)]
+void the_settings_area_stays_within_its_request_budget() {
+  Ui.SignInAs(Lena);
+  var mark = Cost.Mark();
+  Ui.Visit("/settings");
+  Assert.Visible("Queues", within: "Settings sections");
+  Said("settings", mark);
+  Assert.AtMost(1, Cost.RequestsSince(mark));
+  Assert.AtMost(0, Cost.ServerCallsSince(mark));
+  Assert.AtMost(13, Cost.StatementsSince(mark));
+}
+
+/// The reports overview — in the desk's own frame.
+[Test(Desk)]
+void the_reports_page_stays_within_its_request_budget() {
+  Ui.SignInAs(Lena);
+  var mark = Cost.Mark();
+  Ui.Visit("/reports");
+  Assert.Visible("Overview");
+  Said("reports", mark);
+  Assert.AtMost(4, Cost.RequestsSince(mark));
+  Assert.AtMost(2, Cost.ServerCallsSince(mark));
+  Assert.AtMost(52, Cost.StatementsSince(mark));
+}

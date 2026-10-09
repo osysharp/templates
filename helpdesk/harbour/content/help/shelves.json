@@ -1,0 +1,58 @@
+[
+  {
+    "slug": "getting-started",
+    "position": 1,
+    "name": { "en": "Getting started", "sv": "Kom igång", "ar": "البدء" },
+    "description": {
+      "en": "Install Osy#, run your first app, and reach us when you are stuck.",
+      "sv": "Installera Osy#, kör din första app och nå oss när du kör fast.",
+      "ar": "ثبّت Osy# وشغّل تطبيقك الأول وتواصل معنا عندما تتعثر."
+    },
+    "sections": [
+      { "slug": "install-and-run", "position": 1, "name": { "en": "Install and run", "sv": "Installera och kör", "ar": "التثبيت والتشغيل" } },
+      { "slug": "getting-help", "position": 2, "name": { "en": "Getting help", "sv": "Få hjälp", "ar": "الحصول على المساعدة" } }
+    ]
+  },
+  {
+    "slug": "building-your-app",
+    "position": 2,
+    "name": { "en": "Building your app", "sv": "Bygga din app", "ar": "بناء تطبيقك" },
+    "description": {
+      "en": "Sign-in, security rules, kits, privacy and reading the compiler.",
+      "sv": "Inloggning, säkerhetsregler, kit, integritet och att läsa kompilatorn.",
+      "ar": "تسجيل الدخول وقواعد الأمان والحزم والخصوصية وقراءة رسائل المُصرّف."
+    },
+    "sections": [
+      { "slug": "the-compiler", "position": 1, "name": { "en": "The compiler", "sv": "Kompilatorn", "ar": "المُصرّف" } },
+      { "slug": "sign-in-and-security", "position": 2, "name": { "en": "Sign-in and security", "sv": "Inloggning och säkerhet", "ar": "تسجيل الدخول والأمان" } },
+      { "slug": "kits-and-privacy", "position": 3, "name": { "en": "Kits and privacy", "sv": "Kit och integritet", "ar": "الحزم والخصوصية" } }
+    ]
+  },
+  {
+    "slug": "deploying",
+    "position": 3,
+    "name": { "en": "Deploying", "sv": "Driftsätta", "ar": "النشر" },
+    "description": {
+      "en": "Put your app on Osyrin Cloud and give it your own address.",
+      "sv": "Lägg din app på Osyrin Cloud och ge den din egen adress.",
+      "ar": "انشر تطبيقك على Osyrin Cloud وامنحه عنوانك الخاص."
+    },
+    "sections": [
+      { "slug": "osyrin-cloud", "position": 1, "name": { "en": "Osyrin Cloud", "sv": "Osyrin Cloud", "ar": "Osyrin Cloud" } },
+      { "slug": "domains", "position": 2, "name": { "en": "Domains", "sv": "Domäner", "ar": "النطاقات" } }
+    ]
+  },
+  {
+    "slug": "account-and-billing",
+    "position": 4,
+    "name": { "en": "Account & billing", "sv": "Konto och fakturering", "ar": "الحساب والفوترة" },
+    "description": {
+      "en": "What Osyrin Cloud costs and how billing works.",
+      "sv": "Vad Osyrin Cloud kostar och hur faktureringen fungerar.",
+      "ar": "تكلفة Osyrin Cloud وكيف تعمل الفوترة."
+    },
+    "sections": [
+      { "slug": "plans-and-billing", "position": 1, "name": { "en": "Plans and billing", "sv": "Planer och fakturering", "ar": "الخطط والفوترة" } }
+    ]
+  }
+]

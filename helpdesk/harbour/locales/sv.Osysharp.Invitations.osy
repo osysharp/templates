@@ -1,0 +1,224 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Invitations, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Invitations · InvitationAnswer ──
+  /// InvitationAnswer · a control's name for screen readers
+  accessibleName "How to answer" => "Hur du svarar";
+  /// InvitationAnswer · a control's name for screen readers
+  accessibleName "Your invitations" => "Dina inbjudningar";
+  /// InvitationAnswer · a button's label · at most ~12 characters
+  /// shown through Button.label
+  button "Accept" => "Acceptera";
+  /// InvitationAnswer · a button's label · at most ~24 characters
+  /// shown through Button.label
+  /// beside: "I'm new here"
+  button "I have an account" => "Jag har ett konto";
+  /// InvitationAnswer · a button's label · at most ~18 characters
+  /// shown through Button.label
+  /// beside: "I have an account"
+  button "I'm new here" => "Jag är ny här";
+  /// InvitationAnswer · a button's label · at most ~10 characters
+  /// shown through Button.label
+  /// beside: "Make your account — for the address this invitation was sent to.", "Your name", "Email", "Password"
+  button "Join" => "Gå med";
+  /// InvitationAnswer · a hint under a field
+  /// shown through Field.hint
+  /// beside: "Make your account — for the address this invitation was sent to.", "Your name", "Email", "Join"
+  hint "At least ten characters." => "Minst tio tecken.";
+  /// InvitationAnswer · a link · at most ~26 characters
+  /// shown through TextLink.label
+  link "Go to your account" => "Gå till ditt konto";
+  /// InvitationAnswer · message
+  /// placeholders: {me.Email} = me.Email
+  /// shown through Alert.message
+  /// beside: "Go to your account"
+  message "Confirm your address ({me.Email}) first — an invitation is accepted only by the address it was sent to, once it is proven." => "Bekräfta din adress ({me.Email}) först. En inbjudan kan bara accepteras av adressen den skickades till, när den är bekräftad.";
+  /// InvitationAnswer · message
+  /// placeholders: {accepted} = accepted
+  /// shown through Alert.message
+  message "Welcome to {accepted}." => "Välkommen till {accepted}.";
+  /// InvitationAnswer · message
+  /// shown through Alert.message
+  message "Your account is ready. Sign in — and you are in." => "Ditt konto är klart. Logga in, så är du inne.";
+  /// InvitationAnswer · placeholder text inside an empty field · at most ~48 characters
+  /// shown through Field.placeholder
+  /// beside: "Make your account — for the address this invitation was sent to.", "Your name", "Password", "Join"
+  placeholder "The address the invitation came to" => "Adressen som inbjudan kom till";
+  /// InvitationAnswer · text on the page
+  /// placeholders: {i.RoleName} = i.RoleName
+  text " · as {i.RoleName}" => " · som {i.RoleName}";
+  /// InvitationAnswer · text on the page
+  /// placeholders: {i.From} = i.From, {value} = …
+  text "From {i.From}{value}" => "Från {i.From}{value}";
+  /// InvitationAnswer · text on the page
+  /// beside: "Your name", "Email", "Password", "Join"
+  text "Make your account — for the address this invitation was sent to." => "Skapa ditt konto, för adressen som inbjudan skickades till.";
+  /// InvitationAnswer · text on the page
+  text "Sign in, and accept the invitation here." => "Logga in och acceptera inbjudan här.";
+  /// InvitationAnswer · text on the page
+  /// placeholders: {me.Email} = me.Email
+  /// shown through EmptyState.body
+  text "There is no open invitation for {me.Email}. It may have been accepted, withdrawn, or sent to another address." => "Det finns ingen öppen inbjudan för {me.Email}. Den kan ha accepterats, dragits tillbaka eller skickats till en annan adress.";
+  /// InvitationAnswer · a title
+  /// shown through EmptyState.title
+  title "Nothing waiting for you" => "Inget väntar på dig";
+
+  // ── Osysharp.Invitations · InvitationFlow ──
+  /// InvitationFlow · an error message
+  /// shown through ValidationException
+  error "Choose a password to make your account." => "Välj ett lösenord för att skapa ditt konto.";
+  /// InvitationFlow · an error message
+  /// shown through ValidationException
+  error "That address already has an account. Sign in, and accept the invitation there." => "Den adressen har redan ett konto. Logga in och tacka ja till inbjudan där.";
+  /// InvitationFlow · an error message
+  /// shown through ValidationException
+  error "This invitation was sent to another address. Type the address it came to." => "Inbjudan skickades till en annan adress. Skriv in adressen den kom till.";
+
+  // ── Osysharp.Invitations · InvitationList ──
+  /// InvitationList · a control's name for screen readers
+  accessibleName "Waiting invitations" => "Väntande inbjudningar";
+  /// InvitationList · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Revoke"
+  button "Resend" => "Skicka igen";
+  /// InvitationList · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Resend"
+  /// also in ApiKeyRow
+  button "Revoke" => "Återkalla";
+  /// InvitationList · text on the page
+  /// placeholders: {ToString} = i.ExpiresAt.Value.ToString(…)
+  text " · lapses {ToString}" => " · går ut {ToString}";
+  /// InvitationList · text on the page
+  text "No invitations waiting." => "Inga väntande inbjudningar.";
+  /// InvitationList · text on the page
+  /// placeholders: {value} = …, {i.InvitedBy.DisplayName} = i.InvitedBy.DisplayName, {value2} = …
+  text "{value}invited by {i.InvitedBy.DisplayName}{value2}" => "{value}inbjuden av {i.InvitedBy.DisplayName}{value2}";
+
+  // ── Osysharp.Invitations · InvitationMail ──
+  /// InvitationMail · a button's label · at most ~30 characters
+  /// shown through EmailButton.label
+  /// beside: "The link works once, and only for this address. If you already have an account, sign in and accept it there. If you did not expect this, ignore it — nothing happens until you answer."
+  button "Accept the invitation" => "Tacka ja till inbjudan";
+  /// InvitationMail · the preview line an inbox shows beside an email's subject
+  /// placeholders: {invitation.InvitedBy.DisplayName} = invitation.InvitedBy.DisplayName (string), {InvitedInto} = InvitedInto(…) (string)
+  /// shown through EmailLayout.preview
+  mailPreview "{invitation.InvitedBy.DisplayName} invited you to {InvitedInto}." => "{invitation.InvitedBy.DisplayName} har bjudit in dig till {InvitedInto}.";
+  /// InvitationMail · an email's subject line
+  /// placeholders: {InvitedInto} = InvitedInto(…) (string)
+  mailSubject "Reminder: you are invited to {InvitedInto}" => "Påminnelse: du är inbjuden till {InvitedInto}";
+  /// InvitationMail · an email's subject line
+  /// placeholders: {InvitedInto} = InvitedInto(…) (string)
+  mailSubject "You are invited to {InvitedInto}" => "Du är inbjuden till {InvitedInto}";
+  /// InvitationMail · text on the page
+  /// placeholders: {InvitedInto} = InvitedInto(…) (string)
+  /// shown through EmailHeading.text
+  /// beside: "Accept the invitation", "The link works once, and only for this address. If you already have an account, sign in and accept it there. If you did not expect this, ignore it — nothing happens until you answer."
+  text "Join {InvitedInto}" => "Gå med i {InvitedInto}";
+  /// InvitationMail · text on the page
+  /// shown through EmailNote.text
+  /// beside: "Accept the invitation"
+  text "The link works once, and only for this address. If you already have an account, sign in and accept it there. If you did not expect this, ignore it — nothing happens until you answer." => "Länken fungerar en gång, och bara för den här adressen. Om du redan har ett konto, logga in och tacka ja där. Om du inte väntade dig det här kan du strunta i det, ingenting händer förrän du svarar.";
+  /// InvitationMail · text on the page
+  /// shown through EmailHeading.text
+  /// beside: "Accept the invitation", "The link works once, and only for this address. If you already have an account, sign in and accept it there. If you did not expect this, ignore it — nothing happens until you answer."
+  text "Your invitation is still waiting" => "Din inbjudan väntar fortfarande";
+  /// InvitationMail · text on the page
+  /// placeholders: {invitation.InvitedBy.DisplayName} = invitation.InvitedBy.DisplayName (string), {invitation.Email} = invitation.Email (string), {InvitedInto} = InvitedInto(…) (string)
+  /// shown through EmailText.text
+  /// beside: "Accept the invitation", "The link works once, and only for this address. If you already have an account, sign in and accept it there. If you did not expect this, ignore it — nothing happens until you answer."
+  text "{invitation.InvitedBy.DisplayName} invited {invitation.Email} to join {InvitedInto}." => "{invitation.InvitedBy.DisplayName} har bjudit in {invitation.Email} att gå med i {InvitedInto}.";
+
+  // ── Osysharp.Invitations · InvitationPage (/invite/{token}) ──
+  /// InvitationPage · /invite/{token} · a title
+  /// shown through [Title]
+  title "You are invited" => "Du är inbjuden";
+
+  // ── Osysharp.Invitations · InvitationScreen ──
+  /// InvitationScreen · a heading
+  /// shown through AccountsFrame.heading
+  heading "You are invited" => "Du är inbjuden";
+  /// InvitationScreen · text on the page
+  /// shown through AccountsFrame.sub
+  text "Answer it with the address it was sent to." => "Svara med adressen den skickades till.";
+
+  // ── Osysharp.Invitations · Invite ──
+  /// Invite · an error message
+  /// placeholders: {address} = address (string)
+  /// shown through ValidationException
+  error "{address} already has that — there is nothing to invite them to." => "{address} har redan det, så det finns inget att bjuda in till.";
+
+  // ── Osysharp.Invitations · InviteForm ──
+  /// InviteForm · a control's name for screen readers
+  accessibleName "Role" => "Roll";
+  /// InviteForm · a button's label · at most ~21 characters
+  /// shown through Button.label
+  /// beside: "Email", "A note (optional)"
+  button "Send invitation" => "Skicka inbjudan";
+  /// InviteForm · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Field.label
+  /// beside: "Email", "Send invitation"
+  label "A note (optional)" => "Meddelande (valfritt)";
+  /// InviteForm · placeholder text inside an empty field · at most ~41 characters
+  /// shown through Field.placeholder
+  /// beside: "Email", "Send invitation"
+  placeholder "Quoted in the invitation mail" => "Citeras i inbjudningsmejlet";
+  /// InviteForm · text on the page
+  /// placeholders: {ToLower} = ….ToLower(…)
+  /// shown through sent
+  text "Invitation sent to {ToLower}." => "Inbjudan skickad till {ToLower}.";
+  /// InviteForm · text on the page
+  text "Role" => "Roll";
+
+  // ── Osysharp.Invitations · JoinByInvitation ──
+  /// JoinByInvitation · message
+  /// shown through JoinByInvitation()
+  /// also in SendAddressCode
+  message "That does not look like an email address." => "Det ser inte ut som en e-postadress.";
+  /// JoinByInvitation · message
+  /// shown through JoinByInvitation()
+  message "This invitation is no longer open — it may have been withdrawn, or it expired." => "Inbjudan är inte längre öppen. Den kan ha dragits tillbaka eller gått ut.";
+  /// JoinByInvitation · message
+  /// shown through JoinByInvitation()
+  message "This invitation link is not valid, or it has already been used." => "Inbjudningslänken är inte giltig, eller så har den redan använts.";
+
+  // ── Osysharp.Invitations · NewInvitedAccount ──
+  /// NewInvitedAccount · an error message
+  /// shown through ValidationException
+  error "The app's InvitationAccounts.New made an account for another address — it must use the one it was given." => "Appens InvitationAccounts.New skapade ett konto för en annan adress. Den måste använda den adress den fick.";
+
+  // ── Osysharp.Invitations · Osysharp.Invitations.Invitation ──
+  /// Osysharp.Invitations.Invitation · validation
+  /// shown through Osysharp.Invitations.Invitation.Email [Required]
+  validation "Say who to invite — an address." => "Ange vem som ska bjudas in, en adress.";
+
+  // ── Osysharp.Invitations · Osysharp.Invitations.InvitationStatus ──
+  /// Osysharp.Invitations.InvitationStatus · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Invitations.InvitationStatus.Accepted
+  /// beside: "Waiting", "Revoked", "Expired"
+  /// also in Osysharp.Inbox.OfferState
+  label "Accepted" => "Accepterad";
+  /// Osysharp.Invitations.InvitationStatus · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Invitations.InvitationStatus.Expired
+  /// beside: "Waiting", "Accepted", "Revoked"
+  /// also in Osysharp.Privacy.HoldState
+  label "Expired" => "Utgången";
+  /// Osysharp.Invitations.InvitationStatus · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Invitations.InvitationStatus.Revoked
+  /// beside: "Waiting", "Accepted", "Expired"
+  /// also in ApiKeyRow
+  label "Revoked" => "Återkallad";
+
+  // ── Osysharp.Invitations · ResendInvitation ──
+  /// ResendInvitation · an error message
+  /// shown through ValidationException
+  error "Only a waiting invitation can be sent again — invite them afresh." => "Bara en väntande inbjudan kan skickas igen. Bjud in dem på nytt.";
+
+  // ── Osysharp.Invitations · RevokeInvitation ──
+  /// RevokeInvitation · an error message
+  /// shown through ValidationException
+  error "Only a waiting invitation can be revoked." => "Bara en väntande inbjudan kan dras tillbaka.";
+}

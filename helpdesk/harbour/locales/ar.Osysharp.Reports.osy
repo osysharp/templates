@@ -1,0 +1,598 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Reports, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Reports · BucketWords ──
+  /// BucketWords · text on the page
+  /// placeholders: {name} = name (string), {ToLower} = bucket.Value.Label.ToLower(…) (string)
+  /// shown through BucketWords()
+  text "{name}, by {ToLower}" => "{name}، حسب {ToLower}";
+
+  // ── Osysharp.Reports · CheckedSpecs ──
+  /// CheckedSpecs · message
+  /// placeholders: {m.Label} = m.Label (string), {s.Title} = s.Title (string)
+  /// shown through CheckedSpecs()
+  message "'{m.Label}' is not one of the measures of {s.Title}." => "'{m.Label}' ليس من مقاييس {s.Title}.";
+  /// CheckedSpecs · message
+  /// placeholders: {key} = key (string)
+  /// shown through CheckedSpecs()
+  /// also in OverviewFor
+  message "This app has no report called '{key}'." => "لا يوجد في هذا التطبيق تقرير باسم '{key}'.";
+
+  // ── Osysharp.Reports · DurationWords ──
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {sign} = sign (string), {days} = days (int) — {days} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{sign}{days} d" => { zero: "{sign}{days} ي", one: "{sign}{days} ي", two: "{sign}{days} ي", few: "{sign}{days} ي", many: "{sign}{days} ي", other: "{sign}{days} ي" };
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {sign} = sign (string), {days} = days (int), {h} = h (int) — {days} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{sign}{days} d {h} h" => { zero: "{sign}{days} ي {h} س", one: "{sign}{days} ي {h} س", two: "{sign}{days} ي {h} س", few: "{sign}{days} ي {h} س", many: "{sign}{days} ي {h} س", other: "{sign}{days} ي {h} س" };
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {sign} = sign (string), {hours} = hours (int) — {hours} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{sign}{hours} h" => { zero: "{sign}{hours} س", one: "{sign}{hours} س", two: "{sign}{hours} س", few: "{sign}{hours} س", many: "{sign}{hours} س", other: "{sign}{hours} س" };
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {sign} = sign (string), {hours} = hours (int), {rest} = rest (int) — {hours} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{sign}{hours} h {rest} min" => { zero: "{sign}{hours} س {rest} د", one: "{sign}{hours} س {rest} د", two: "{sign}{hours} س {rest} د", few: "{sign}{hours} س {rest} د", many: "{sign}{hours} س {rest} د", other: "{sign}{hours} س {rest} د" };
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {sign} = sign (string), {minutes} = minutes (int) — {minutes} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{sign}{minutes} min" => { zero: "{sign}{minutes} د", one: "{sign}{minutes} د", two: "{sign}{minutes} د", few: "{sign}{minutes} د", many: "{sign}{minutes} د", other: "{sign}{minutes} د" };
+
+  // ── Osysharp.Reports · FieldList ──
+  /// FieldList · a control's name for screen readers
+  /// placeholders: {listed.Count} = listed.Count
+  accessibleName "Fields through lists ({listed.Count})" => "حقول عبر القوائم ({listed.Count})";
+  /// FieldList · a control's name for screen readers
+  accessibleName "Hide fields through lists" => "إخفاء الحقول عبر القوائم";
+  /// FieldList · text on the page
+  /// shown through FieldHeading.text
+  /// beside: "Suggested"
+  text "Every field" => "كل الحقول";
+  /// FieldList · text on the page
+  text "Fields through lists" => "حقول عبر القوائم";
+  /// FieldList · text on the page
+  /// placeholders: {listed.Count} = listed.Count
+  text "Fields through lists ({listed.Count})" => "حقول عبر القوائم ({listed.Count})";
+  /// FieldList · text on the page
+  /// placeholders: {search} = search
+  text "No field is called \"{search}\"." => "لا يوجد حقل باسم \"{search}\".";
+  /// FieldList · text on the page
+  /// shown through FieldHeading.text
+  /// beside: "Every field"
+  text "Suggested" => "مقترحة";
+
+  // ── Osysharp.Reports · FieldRow ──
+  /// FieldRow · a control's name for screen readers
+  /// placeholders: {f.Label} = f.Label
+  accessibleName "What to do with {f.Label}" => "ما يمكن فعله بـ {f.Label}";
+  /// FieldRow · a button's label · at most ~21 characters
+  /// shown through Button.label
+  /// beside: "Median"
+  button "90th percentile" => "المئين 90";
+  /// FieldRow · a button's label · at most ~13 characters
+  /// shown through Button.label
+  /// beside: "Total"
+  button "Average" => "المتوسط";
+  /// FieldRow · a button's label · at most ~21 characters
+  /// shown through Button.label
+  button "Count different" => "عدّ المختلف";
+  /// FieldRow · a button's label · at most ~14 characters
+  /// shown through Button.label
+  /// beside: "Latest"
+  button "Earliest" => "الأقدم";
+  /// FieldRow · a button's label · at most ~12 characters
+  /// shown through Button.label
+  button "Filter" => "تصفية";
+  /// FieldRow · a button's label · at most ~14 characters
+  /// shown through Button.label
+  button "Group by" => "تجميع حسب";
+  /// FieldRow · a button's label · at most ~27 characters
+  /// shown through Button.label
+  button "Group, one row each" => "تجميع، صف لكل منها";
+  /// FieldRow · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Earliest"
+  button "Latest" => "الأحدث";
+  /// FieldRow · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "90th percentile"
+  button "Median" => "الوسيط";
+  /// FieldRow · a button's label · at most ~11 characters
+  /// shown through Button.label
+  /// beside: "Average"
+  button "Total" => "المجموع";
+  /// FieldRow · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Badge.label
+  label "Personal" => "شخصي";
+  /// FieldRow · text on the page
+  text "Aa" => "أب";
+  /// FieldRow · text on the page
+  /// placeholders: {where} = where, {ToLower} = f.Through.ToLower(…)
+  text "{where} · one per {ToLower}" => "{where} · واحد لكل {ToLower}";
+
+  // ── Osysharp.Reports · FilterEditor ──
+  /// FilterEditor · a control's name for screen readers
+  accessibleName "Empty or not" => "فارغ أم لا";
+  /// FilterEditor · a control's name for screen readers
+  /// placeholders: {field.Label} = field.Label
+  accessibleName "Filter {field.Label}" => "تصفية {field.Label}";
+  /// FilterEditor · a control's name for screen readers
+  /// beside: "200px"
+  accessibleName "Records" => "السجلات";
+  /// FilterEditor · a control's name for screen readers
+  accessibleName "Values" => "القيم";
+  /// FilterEditor · a control's name for screen readers
+  accessibleName "When" => "متى";
+  /// FilterEditor · a control's name for screen readers
+  /// placeholders: {ToLower} = field.Through.ToLower(…)
+  accessibleName "Which {ToLower}" => "أي {ToLower}";
+  /// FilterEditor · a button's label · at most ~18 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Apply filter" => "تطبيق التصفية";
+  /// FilterEditor · a button's label · at most ~8 characters
+  /// shown through Tab.label
+  /// beside: "Yes"
+  button "No" => "لا";
+  /// FilterEditor · a button's label · at most ~9 characters
+  /// shown through Tab.label
+  /// beside: "No"
+  button "Yes" => "نعم";
+  /// FilterEditor · a button's label · at most ~17 characters
+  /// shown through Tab.label
+  /// beside: "is empty"
+  button "has a value" => "له قيمة";
+  /// FilterEditor · a button's label · at most ~14 characters
+  /// shown through Tab.label
+  /// beside: "has a value"
+  button "is empty" => "فارغ";
+  /// FilterEditor · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// placeholders: {ToLower} = field.Label.ToLower(…)
+  /// shown through Field.label
+  label "Find a {ToLower}" => "ابحث عن {ToLower}";
+  /// FilterEditor · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Field.label
+  /// beside: "Compare"
+  label "Words" => "الكلمات";
+  /// FilterEditor · placeholder text inside an empty field · at most ~13 characters
+  /// shown through Field.placeholder
+  placeholder "A name…" => "اسم…";
+  /// FilterEditor · text on the page
+  /// shown through problem
+  text "Choose the first and the last day." => "اختر اليوم الأول واليوم الأخير.";
+  /// FilterEditor · text on the page
+  text "Nothing by that name that you may read." => "لا شيء بهذا الاسم يُسمح لك بقراءته.";
+  /// FilterEditor · text on the page
+  /// placeholders: {ToLower} = ….ToLower(…)
+  text "Only where {ToLower}…" => "فقط حيث {ToLower}…";
+  /// FilterEditor · text on the page
+  /// shown through problem
+  text "Pick at least one." => "اختر واحدًا على الأقل.";
+  /// FilterEditor · text on the page
+  /// shown through problem
+  text "Tick at least one." => "حدّد واحدًا على الأقل.";
+  /// FilterEditor · text on the page
+  /// shown through problem
+  text "Type the words to look for." => "اكتب الكلمات المراد البحث عنها.";
+
+  // ── Osysharp.Reports · FilterTree ──
+  /// FilterTree · a control's name for screen readers
+  accessibleName "Only rows where" => "فقط الصفوف التي";
+  /// FilterTree · a control's name for screen readers
+  /// placeholders: {group.Match.Label} = group.Match.Label
+  accessibleName "{group.Match.Label} these" => "{group.Match.Label} من هذه";
+  /// FilterTree · a control's name for screen readers
+  /// placeholders: {group.Match.Label} = group.Match.Label
+  accessibleName "{group.Match.Label} — press to switch" => "{group.Match.Label}: اضغط للتبديل";
+  /// FilterTree · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Add condition" => "إضافة شرط";
+  /// FilterTree · a button's label · at most ~15 characters
+  /// shown through Button.label
+  button "Add group" => "إضافة مجموعة";
+  /// FilterTree · a button's label · at most ~24 characters
+  /// shown through IconButton.label
+  button "Remove this group" => "إزالة هذه المجموعة";
+  /// FilterTree · text on the page
+  text "Every row in the period. Pick a field and Filter to narrow it." => "كل صف في الفترة. اختر حقلًا ثم تصفية لتضييقها.";
+  /// FilterTree · text on the page
+  /// beside: "Add condition"
+  text "Only" => "فقط";
+
+  // ── Osysharp.Reports · FilterWords ──
+  /// FilterWords · text on the page
+  /// placeholders: {name} = name (string), {value} = … (string), {value2} = … (string), {through} = through (string)
+  /// shown through FilterWords()
+  text "{name} between {value} and {value2}{through}" => "{name} بين {value} و{value2}{through}";
+  /// FilterWords · text on the page
+  /// placeholders: {name} = name (string), {through} = through (string)
+  /// shown through FilterWords()
+  text "{name} has a value{through}" => "{name} له قيمة{through}";
+  /// FilterWords · text on the page
+  /// placeholders: {name} = name (string), {through} = through (string)
+  /// shown through FilterWords()
+  text "{name} is empty{through}" => "{name} فارغ{through}";
+  /// FilterWords · text on the page
+  /// placeholders: {name} = name (string), {head} = head (string), {value} = … (string), {through} = through (string)
+  /// shown through FilterWords()
+  text "{name} is {head} or {value}{through}" => "{name} هو {head} أو {value}{through}";
+  /// FilterWords · text on the page
+  /// placeholders: {name} = name (string), {value} = … (string), {through} = through (string)
+  /// shown through FilterWords()
+  text "{name} is {value}{through}" => "{name} هو {value}{through}";
+
+  // ── Osysharp.Reports · HavingEditor ──
+  /// HavingEditor · a control's name for screen readers
+  /// beside: "Measure", "Show these groups"
+  /// also in FilterEditor
+  accessibleName "Compare" => "المقارنة";
+  /// HavingEditor · a control's name for screen readers
+  /// beside: "Compare", "Show these groups"
+  accessibleName "Measure" => "المقياس";
+  /// HavingEditor · a button's label · at most ~24 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Show these groups" => "إظهار هذه المجموعات";
+  /// HavingEditor · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through DurationField.label
+  /// also in FilterEditor
+  label "Length" => "المدة";
+
+  // ── Osysharp.Reports · HavingLine ──
+  /// HavingLine · a control's name for screen readers
+  /// also in HavingEditor
+  accessibleName "Show groups where" => "إظهار المجموعات التي";
+  /// HavingLine · text on the page
+  text "(all groups shown)" => "(تظهر كل المجموعات)";
+  /// HavingLine · text on the page
+  text "Show groups where…" => "إظهار المجموعات التي…";
+
+  // ── Osysharp.Reports · HavingWords ──
+  /// HavingWords · text on the page
+  /// placeholders: {what} = what (string), {value} = … (string), {value2} = … (string)
+  /// shown through HavingWords()
+  text "{what} between {value} and {value2}" => "{what} بين {value} و{value2}";
+
+  // ── Osysharp.Reports · MeasureWords ──
+  /// MeasureWords · a button's label · at most ~23 characters
+  /// placeholders: {what} = what (string)
+  /// shown through MeasureWords()
+  button "Different {what}" => "{what} المختلفة";
+  /// MeasureWords · a button's label · at most ~42 characters
+  /// placeholders: {Round} = Math.Round(…) (decimal), {what} = what (string)
+  /// shown through MeasureWords()
+  button "{Round}th percentile of {what}" => "المئين {Round} لـ {what}";
+
+  // ── Osysharp.Reports · NameHint ──
+  /// NameHint · placeholder text inside an empty field · at most ~38 characters
+  /// placeholders: {source.Title} = source.Title (string), {ToLower} = ….ToLower(…) (string)
+  /// shown through NameHint()
+  placeholder "{source.Title} by {ToLower}" => "{source.Title} حسب {ToLower}";
+
+  // ── Osysharp.Reports · Osysharp.Reports.FigureFormat ──
+  /// Osysharp.Reports.FigureFormat · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Reports.FigureFormat.Percent
+  /// beside: "Count", "Number", "Duration", "Date"
+  label "Percent" => "نسبة مئوية";
+
+  // ── Osysharp.Reports · Osysharp.Reports.PeriodPreset ──
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Reports.PeriodPreset.Custom
+  /// beside: "Today", "Last 7 days", "Last 30 days", "Last 90 days", "This week", "This month"
+  label "Custom" => "مخصّص";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Reports.PeriodPreset.LastMonth
+  /// beside: "Today", "Last 7 days", "Last 30 days", "Last 90 days", "This week", "This month"
+  label "Last month" => "الشهر الماضي";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Reports.PeriodPreset.ThisMonth
+  /// beside: "Today", "Last 7 days", "Last 30 days", "Last 90 days", "This week", "Last month"
+  label "This month" => "هذا الشهر";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Reports.PeriodPreset.ThisQuarter
+  /// beside: "Today", "Last 7 days", "Last 30 days", "Last 90 days", "This week", "This month"
+  label "This quarter" => "هذا الربع";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Reports.PeriodPreset.ThisWeek
+  /// beside: "Today", "Last 7 days", "Last 30 days", "Last 90 days", "This month", "Last month"
+  label "This week" => "هذا الأسبوع";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Reports.PeriodPreset.ThisYear
+  /// beside: "Today", "Last 7 days", "Last 30 days", "Last 90 days", "This week", "This month"
+  label "This year" => "هذه السنة";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Reports.PeriodPreset.Today
+  /// beside: "Last 7 days", "Last 30 days", "Last 90 days", "This week", "This month", "Last month"
+  label "Today" => "اليوم";
+
+  // ── Osysharp.Reports · Osysharp.Reports.SavedReport ──
+  /// Osysharp.Reports.SavedReport · validation
+  /// shown through Osysharp.Reports.SavedReport.Name [Required]
+  validation "Name the report." => "سمِّ التقرير.";
+
+  // ── Osysharp.Reports · PeriodTabs ──
+  /// PeriodTabs · a control's name for screen readers
+  accessibleName "Choose the dates" => "اختر التواريخ";
+  /// PeriodTabs · a button's label · at most ~12 characters
+  /// shown through Tab.label
+  button "Dates…" => "تواريخ…";
+  /// PeriodTabs · a button's label · at most ~21 characters
+  /// shown through Button.label
+  /// beside: "First day", "Last day"
+  button "Show these days" => "اعرض هذه الأيام";
+  /// PeriodTabs · text on the page
+  /// shown through problem
+  text "Choose both days." => "اختر اليومين كليهما.";
+  /// PeriodTabs · text on the page
+  /// shown through problem
+  text "The last day is before the first." => "اليوم الأخير قبل الأول.";
+
+  // ── Osysharp.Reports · PresetShort ──
+  /// PresetShort · a button's label · at most ~13 characters
+  /// shown through PresetShort()
+  button "30 days" => "30 يومًا";
+  /// PresetShort · a button's label · at most ~12 characters
+  /// shown through PresetShort()
+  button "7 days" => "7 أيام";
+  /// PresetShort · a button's label · at most ~13 characters
+  /// shown through PresetShort()
+  button "90 days" => "90 يومًا";
+  /// PresetShort · a button's label · at most ~12 characters
+  /// shown through PresetShort()
+  button "Custom" => "مخصّص";
+  /// PresetShort · a button's label · at most ~16 characters
+  /// shown through PresetShort()
+  button "Last month" => "الشهر الماضي";
+  /// PresetShort · a button's label · at most ~16 characters
+  /// shown through PresetShort()
+  button "This month" => "هذا الشهر";
+  /// PresetShort · a button's label · at most ~18 characters
+  /// shown through PresetShort()
+  button "This quarter" => "هذا الربع";
+  /// PresetShort · a button's label · at most ~15 characters
+  /// shown through PresetShort()
+  button "This week" => "هذا الأسبوع";
+  /// PresetShort · a button's label · at most ~15 characters
+  /// shown through PresetShort()
+  button "This year" => "هذه السنة";
+  /// PresetShort · a button's label · at most ~11 characters
+  /// shown through PresetShort()
+  button "Today" => "اليوم";
+
+  // ── Osysharp.Reports · ReportBuilder ──
+  /// ReportBuilder · a control's name for screen readers
+  accessibleName "Conditions" => "الشروط";
+  /// ReportBuilder · a control's name for screen readers
+  accessibleName "Report" => "تقرير";
+  /// ReportBuilder · a button's label · at most ~17 characters
+  /// shown through Button.label
+  button "Hide fields" => "إخفاء الحقول";
+  /// ReportBuilder · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Field.label
+  label "Find a field" => "ابحث عن حقل";
+  /// ReportBuilder · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Field.label
+  /// beside: "Share with everybody who reads reports"
+  label "Report name" => "اسم التقرير";
+  /// ReportBuilder · a label (a field, a list item, a menu entry) · at most ~54 characters
+  /// shown through Checkbox.label
+  /// beside: "Report name"
+  label "Share with everybody who reads reports" => "مشاركة مع كل من يقرأ التقارير";
+  /// ReportBuilder · message
+  /// shown through Alert.message
+  /// also in OverviewFor
+  message "This app has no report by that name." => "لا يوجد في هذا التطبيق تقرير بهذا الاسم.";
+  /// ReportBuilder · text on the page
+  /// shown through problem
+  text "That report is not one you may open." => "لا يمكنك فتح هذا التقرير.";
+
+  // ── Osysharp.Reports · ReportChip ──
+  /// ReportChip · a button's label · at most ~19 characters
+  /// placeholders: {text} = text
+  /// shown through IconButton.label
+  button "Remove {text}" => "إزالة {text}";
+  /// ReportChip · text on the page
+  /// placeholders: {text} = text
+  text "{text} — you cannot read this field" => "{text}: لا يمكنك قراءة هذا الحقل";
+
+  // ── Osysharp.Reports · ReportChips ──
+  /// ReportChips · a control's name for screen readers
+  /// placeholders: {ToLower} = b.Label.ToLower(…)
+  accessibleName "By {ToLower}" => "حسب {ToLower}";
+  /// ReportChips · a control's name for screen readers
+  accessibleName "What the report shows" => "ما يعرضه التقرير";
+  /// ReportChips · text on the page
+  text "Pick a field and Group by to break it down; pick Total, Average or a percentile to measure it." => "اختر حقلًا ثم تجميع حسب لتفصيله، أو المجموع أو المتوسط أو مئينًا لقياسه.";
+  /// ReportChips · text on the page
+  text "by" => "حسب";
+  /// ReportChips · text on the page
+  text "for the whole period" => "للفترة كلها";
+
+  // ── Osysharp.Reports · ReportFigure ──
+  /// ReportFigure · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Show the rows" => "اعرض الصفوف";
+  /// ReportFigure · a button's label · at most ~40 characters
+  /// placeholders: {label} = label
+  /// shown through Button.announceAs
+  button "Show the rows behind {label}" => "اعرض الصفوف وراء {label}";
+
+  // ── Osysharp.Reports · ReportHead ──
+  /// ReportHead · a control's name for screen readers
+  /// also in ReportOverview
+  accessibleName "Download the CSV" => "تنزيل ملف CSV";
+  /// ReportHead · a button's label · at most ~16 characters
+  /// shown through Button.label
+  /// also in ReportOverview
+  button "Export CSV" => "تصدير CSV";
+  /// ReportHead · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Saved reports" => "التقارير المحفوظة";
+  /// ReportHead · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Menu.label
+  label "Saved reports" => "التقارير المحفوظة";
+  /// ReportHead · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// placeholders: {s.Name} = s.Name
+  /// shown through MenuItem.label
+  label "{s.Name} · shared" => "{s.Name} · مشترك";
+  /// ReportHead · text on the page
+  /// also in ReportOverview
+  text "Download CSV" => "تنزيل CSV";
+
+  // ── Osysharp.Reports · ReportOverview ──
+  /// ReportOverview · a control's name for screen readers
+  accessibleName "Build a report" => "إنشاء تقرير";
+  /// ReportOverview · a control's name for screen readers
+  accessibleName "Loading the overview" => "جارٍ تحميل النظرة العامة";
+  /// ReportOverview · a control's name for screen readers
+  accessibleName "Overview" => "نظرة عامة";
+  /// ReportOverview · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through ReportFigures.label
+  /// also in ReportFigures
+  label "Figures" => "الأرقام";
+  /// ReportOverview · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// placeholders: {answer.Title} = answer.Title, {value} = …
+  /// shown through ReportTable.label
+  label "{answer.Title} by {value}" => "{answer.Title} حسب {value}";
+  /// ReportOverview · text on the page
+  text "Build a report" => "إنشاء تقرير";
+  /// ReportOverview · text on the page
+  /// placeholders: {answer.Nouns} = answer.Nouns
+  text "No {answer.Nouns} in this period." => "لا توجد {answer.Nouns} في هذه الفترة.";
+  /// ReportOverview · text on the page
+  /// shown through problem
+  text "The export could not be made. Try again in a moment." => "تعذّر إنشاء الملف المصدَّر. حاول مرة أخرى بعد قليل.";
+  /// ReportOverview · text on the page
+  /// placeholders: {answer.Breakdown.Rows.Count} = answer.Breakdown.Rows.Count
+  text "The {answer.Breakdown.Rows.Count} largest. Build a report to see every one." => "أكبر {answer.Breakdown.Rows.Count}. أنشئ تقريرًا لرؤيتها كلها.";
+  /// ReportOverview · text on the page
+  /// placeholders: {answer.Period} = answer.Period, {answer.PeriodBefore} = answer.PeriodBefore
+  text "{answer.Period} · against {answer.PeriodBefore}" => "{answer.Period} · مقارنة بـ {answer.PeriodBefore}";
+  /// ReportOverview · a title
+  /// shown through OverviewCard.title
+  title "Breakdown" => "التفصيل";
+  /// ReportOverview · a title
+  /// shown through Alert.title
+  title "This overview could not run" => "تعذّر تشغيل النظرة العامة";
+
+  // ── Osysharp.Reports · ReportRows ──
+  /// ReportRows · a control's name for screen readers
+  /// placeholders: {of} = of
+  accessibleName "The rows behind {of}" => "الصفوف وراء {of}";
+  /// ReportRows · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through ReportTable.label
+  label "Rows" => "الصفوف";
+  /// ReportRows · text on the page
+  text "No rows." => "لا توجد صفوف.";
+  /// ReportRows · text on the page
+  /// placeholders: {rows.Result.Rows.Count} = rows.Result.Rows.Count
+  text "The first {rows.Result.Rows.Count} — narrow the report to see the rest." => "أول {rows.Result.Rows.Count}. ضيّق التقرير لترى الباقي.";
+  /// ReportRows · text on the page
+  /// placeholders: {of} = of
+  /// beside: "Close"
+  text "The rows behind {of}" => "الصفوف وراء {of}";
+
+  // ── Osysharp.Reports · ReportStatus ──
+  /// ReportStatus · a control's name for screen readers
+  accessibleName "Loading the report" => "جارٍ تحميل التقرير";
+  /// ReportStatus · text on the page
+  /// placeholders: {nouns} = nouns
+  /// shown through EmptyState.body
+  text "No {nouns} in this period match. Widen the period, or take a filter off." => "لا توجد {nouns} مطابقة في هذه الفترة. وسّع الفترة أو أزل أحد عوامل التصفية.";
+  /// ReportStatus · text on the page
+  /// placeholders: {result.Rows.Count} = result.Rows.Count
+  text "Showing the first {result.Rows.Count} groups. Add a filter or a coarser grouping to see them all." => "يعرض أول {result.Rows.Count} مجموعة. أضف تصفية أو تجميعًا أوسع لرؤيتها كلها.";
+  /// ReportStatus · text on the page
+  /// shown through ReportStatus.nouns
+  text "rows" => "صفوف";
+  /// ReportStatus · a title
+  /// shown through Alert.title
+  title "This report could not run" => "تعذّر تشغيل هذا التقرير";
+
+  // ── Osysharp.Reports · ReportTable ──
+  /// ReportTable · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through ReportTable.label
+  label "Report" => "تقرير";
+
+  // ── Osysharp.Reports · ReportTableRow ──
+  /// ReportTableRow · a control's name for screen readers
+  /// placeholders: {CellText} = CellText(…)
+  accessibleName "Show the rows of {CellText}" => "اعرض صفوف {CellText}";
+
+  // ── Osysharp.Reports · ReportTotals ──
+  /// ReportTotals · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through ReportFigures.label
+  label "Totals" => "الإجماليات";
+  /// ReportTotals · text on the page
+  /// placeholders: {answer.PeriodBefore} = answer.PeriodBefore
+  text "Change against {answer.PeriodBefore}" => "التغيّر مقارنة بـ {answer.PeriodBefore}";
+
+  // ── Osysharp.Reports · RunReport ──
+  /// RunReport · message
+  /// shown through ExploreResult.Problem
+  message "This app does not report on that. Choose one of its reports." => "لا يقدّم هذا التطبيق تقارير عن ذلك. اختر أحد تقاريره.";
+
+  // ── Osysharp.Reports · RunSourceReport ──
+  /// RunSourceReport · message
+  /// shown through ExploreResult.Problem
+  /// also in RunSourceRows
+  /// also in RunSourceNow
+  message "This app does not report on that." => "لا يقدّم هذا التطبيق تقارير عن ذلك.";
+
+  // ── Osysharp.Reports · RunSourceRows ──
+  /// RunSourceRows · message
+  /// shown through ExploreResult.Problem
+  message "This report does not list the rows it counts." => "هذا التقرير لا يعرض الصفوف التي يعدّها.";
+
+  // ── Osysharp.Reports · SaveReport ──
+  /// SaveReport · an error message
+  /// shown through ValidationException
+  error "Name the report." => "سمِّ التقرير.";
+  /// SaveReport · an error message
+  /// shown through ValidationException
+  error "Sign in to save a report." => "سجّل الدخول لحفظ التقرير.";
+  /// SaveReport · an error message
+  /// shown through ValidationException
+  error "This app does not report on that." => "لا يقدّم هذا التطبيق تقارير عن ذلك.";
+
+  // ── Osysharp.Reports · SaveReportBar ──
+  /// SaveReportBar · a control's name for screen readers
+  accessibleName "Save the report" => "حفظ التقرير";
+  /// SaveReportBar · a button's label · at most ~17 characters
+  /// shown through Button.label
+  /// beside: "240px", "Cancel"
+  button "Save report" => "حفظ التقرير";
+  /// SaveReportBar · text on the page
+  /// beside: "240px"
+  text "A saved report keeps the question, not the numbers: whoever opens it sees the rows they may read, as they are then." => "يحتفظ التقرير المحفوظ بالسؤال لا بالأرقام: من يفتحه يرى الصفوف التي يُسمح له بقراءتها، كما هي حينها.";
+
+  // ── Osysharp.Reports · SearchHint ──
+  /// SearchHint · placeholder text inside an empty field · at most ~26 characters
+  /// shown through SearchHint()
+  placeholder "Search the fields…" => "ابحث في الحقول…";
+
+  // ── Osysharp.Reports · TrendWords ──
+  /// TrendWords · text on the page
+  /// placeholders: {what} = what (string)
+  text "{what} per day" key "report-trend-day" => "{what} لكل يوم";
+  /// TrendWords · text on the page
+  /// placeholders: {what} = what (string)
+  text "{what} per hour" key "report-trend-hour" => "{what} لكل ساعة";
+  /// TrendWords · text on the page
+  /// placeholders: {what} = what (string)
+  text "{what} per month" key "report-trend-month" => "{what} لكل شهر";
+  /// TrendWords · text on the page
+  /// placeholders: {what} = what (string)
+  text "{what} per quarter" key "report-trend-quarter" => "{what} لكل ربع سنة";
+  /// TrendWords · text on the page
+  /// placeholders: {what} = what (string)
+  text "{what} per week" key "report-trend-week" => "{what} لكل أسبوع";
+  /// TrendWords · text on the page
+  /// placeholders: {what} = what (string)
+  text "{what} per year" key "report-trend-year" => "{what} لكل سنة";
+}

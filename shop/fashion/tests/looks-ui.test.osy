@@ -1,0 +1,176 @@
+// Vall in each of its five LOOKS, and what a switch does. `osy test --pixels` photographs every page of every look at a
+// phone's width and a wide screen's into osy-shots/ — the front, a shelf, a piece, the bag and the checkout — so the five
+// designs are compared over the same pieces (the Window fixture: the store's whole catalogue).
+
+using Osysharp.Shop;
+using Osysharp.Blocks;
+
+/// The store as `look` draws it: every page a customer walks through, at a phone's width and then a wide screen's.
+void WalkThrough(string look, string front) {
+  runas (Staff) { Assert.Equal("", SetLook(MainVersion().Id, look)); }
+  Visit(look, front, 390, 844, "phone");
+  Visit(look, front, 1440, 900, "wide");
+}
+
+void Visit(string look, string front, int width, int height, string called) {
+  Ui.Viewport(width, height);
+  Ui.Visit("/");
+  Assert.Visible(front);
+  Ui.Shot($"{look} — the front, {called}");
+  Ui.Visit("/shop/clothing");
+  Assert.Visible("Satin cowl slip dress");
+  Ui.Shot($"{look} — a shelf, {called}");
+  Ui.Visit("/p/cotton-trench-coat");
+  Assert.Visible("Cotton trench coat");
+  Ui.Click("M");
+  Ui.Click("Add to bag");
+  Ui.Shot($"{look} — a piece, {called}");
+  Ui.Visit("/bag");
+  Assert.Visible("Your bag");
+  Ui.Shot($"{look} — the bag, {called}");
+  Ui.Visit("/checkout");
+  Assert.Visible("Checkout");
+  Ui.Shot($"{look} — the checkout, {called}");
+}
+
+/// The store as `look` draws it for a visitor whose browser is set to dark mode. A look is one design and does not
+/// follow the visitor's system, so every colour a kit paints with is the look's own — a menu, a field's well, a
+/// refusal — rather than the floor's dark ones (`osy test --pixels` photographs it).
+void InTheDark(string look, string front) {
+  runas (Staff) { Assert.Equal("", SetLook(MainVersion().Id, look)); }
+  Ui.Theme("dark");
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/");
+  Assert.Visible(front);
+  Ui.Shot($"{look} in a dark-mode browser — the front");
+  Ui.Visit("/account/sign-in");
+  Ui.Fill("Email", "nobody@example.test");
+  Ui.Fill("Password", "not-the-password");
+  Ui.Click("Sign in", within: "Page");
+  Assert.Visible("That email and password do not match an account.");
+  Ui.Shot($"{look} in a dark-mode browser — a refusal");
+  Ui.Visit("/p/cotton-trench-coat");
+  Ui.Click("M");
+  Ui.Click("Add to bag");
+  Ui.Visit("/checkout");
+  Assert.Visible("Checkout");
+  Ui.Shot($"{look} in a dark-mode browser — the checkout");
+  Ui.Theme("light");
+}
+
+[Test(Window)]
+void two_looks_in_a_dark_mode_browser() {
+  InTheDark("atelier", "Autumn, slowly.");
+  InTheDark("boutique", "Hej! Knit season is here.");
+}
+
+[Test(Window)]
+void the_store_in_atelier() { WalkThrough("atelier", "Autumn, slowly."); }
+
+[Test(Window)]
+void the_store_in_boutique() { WalkThrough("boutique", "Hej! Knit season is here."); }
+
+[Test(Window)]
+void the_store_in_drop() { WalkThrough("drop", "Drop 04"); }
+
+[Test(Window)]
+void the_store_in_index() { WalkThrough("index", "Autumn / Winter"); }
+
+[Test(Window)]
+void the_store_in_studio() { WalkThrough("studio", "The season, in camel and cream."); }
+
+[Test(Window)]
+void switching_a_versions_look_redraws_the_same_arranged_content() {
+  // Staff arrange the front in Atelier: their own headline over the hero.
+  runas (Staff) {
+    var main = MainVersion().Id;
+    var draft = EditRegion(main, "front", "");
+    var hero = PlacedBlock.Where(b => b.Arrangement.Id == draft).OrderBy(b => b.Position).First();
+    Assert.Equal("Osysharp.Site.Looks.Hero", hero.Block);
+    SaveBlockValue(hero.Id, "en", new BlockValue { Name = "title", Text = "Wool, at last." });
+    Assert.Equal("", PublishRegion(draft));
+  }
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/");
+  Assert.Visible("Wool, at last.");
+  Assert.Visible("Shop new in");
+  Ui.Shot("the arranged front in Atelier");
+  // The same version switched to Boutique: the same words and photographs, in Boutique's hero, its menu and its bag.
+  runas (Staff) { Assert.Equal("", SetLook(MainVersion().Id, "boutique")); }
+  Ui.Visit("/");
+  Assert.Visible("Wool, at last.");
+  Assert.Visible("Shop new in");
+  Assert.Hidden("Hej! Knit season is here.");
+  Assert.Visible("All clothing");                                // Boutique's own menu, with its sub-shelves
+  Ui.Shot("the same arrangement in Boutique");
+  // …and the store behind it did not move: the same pieces, the same bag.
+  Ui.Visit("/p/satin-cowl-slip-dress");
+  Ui.Click("S");
+  Ui.Click("Add to bag");
+  Ui.Visit("/bag");
+  Assert.Visible("Satin cowl slip dress");
+}
+
+[Test(Window)]
+void a_block_only_one_look_draws_is_listed_before_the_switch() {
+  runas (Staff) {
+    var main = MainVersion().Id;
+    SetLook(main, "drop");
+    // Drop's front places "Every piece" — Drop's own block — beside the hero.
+    var draft = EditRegion(main, "front", "");
+    Assert.Equal("", PublishRegion(draft));
+    var behind = LookLeavesBehind(main, "atelier");
+    Assert.Equal(1, behind.Count);
+    Assert.Equal("Every piece in front — this look has no design for it.", behind[0]);
+  }
+  // At the desk: choosing Atelier lists it first, and nothing moves until staff say so.
+  Ui.Viewport(1440, 900);
+  SignIn("/staff/pages");
+  Assert.Visible("Versions of the site");
+  Ui.Click("Atelier", within: "Look");
+  Assert.Visible("Every piece in front — this look has no design for it.");
+  Assert.Visible("Keep Drop");
+  Ui.Shot("the desk: what will not come along to Atelier");
+  runas (Staff) { Assert.Equal("drop", SiteLook().Look); }
+  Ui.Click("Switch to Atelier");
+  Assert.Visible("Everyday wears Atelier — the same words and photographs, drawn in its design.");
+  runas (Staff) { Assert.Equal("atelier", SiteLook().Look); }
+  Ui.SignOut();
+  Ui.Visit("/");
+  Assert.Visible("Drop 04");                                     // the hero came along, in Atelier's design
+  Assert.Hidden("Satin cowl slip dress");                        // Drop's own "Every piece" did not
+}
+
+/// D-LOOKSDOC1 (a) — the gallery had no design anywhere, so the desk never offered it. The shop kit now draws it plainly
+/// (`ShopPhotoGallery`), in whichever look the store wears: offered in every look, and drawn in the look's own tokens.
+[Test(Window)]
+void a_gallery_is_offered_in_every_look_and_drawn_in_the_shops_plain_design() {
+  runas (Staff) {
+    var gallery = BlockTypes().Single(b => b.Name == "Osysharp.Site.Looks.PhotoGallery");
+    Assert.True(gallery.EveryLook);
+    var main = MainVersion().Id;
+    Assert.Equal("", SetLook(main, "atelier"));
+    var draft = EditRegion(main, "front", "");
+    var placed = AddBlock(draft, "Osysharp.Site.Looks.PhotoGallery", 1);
+    Assert.Equal("", SaveBlockValue(placed, "en", new BlockValue { Name = "title", Text = "In the workroom" }));
+    Assert.Equal("", SaveBlockValue(placed, "en", new BlockValue { Name = "first", Text = "/_osy/files/public/products/cotton_trench_coat_1.jpg" }));
+    Assert.Equal("", SaveBlockValue(placed, "en", new BlockValue { Name = "second", Text = "/_osy/files/public/products/rib_knit_cardigan_1.jpg" }));
+    Assert.Equal("", SaveBlockValue(placed, "en", new BlockValue { Name = "third", Text = "/_osy/files/public/products/check_blazer_1.jpg" }));
+    Assert.Equal("", SaveBlockValue(placed, "en", new BlockValue { Name = "fourth", Text = "/_osy/files/public/products/buckle_boot_1.jpg" }));
+    Assert.Equal("", PublishRegion(draft));
+  }
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/");
+  Assert.Visible("In the workroom");
+  Ui.Shot("a gallery in Atelier, wide");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/");
+  Assert.Visible("In the workroom");
+  Ui.Shot("a gallery in Atelier, phone");
+  // …and the same gallery when the store wears Drop: still drawn, in Drop's palette and type.
+  runas (Staff) { Assert.Equal("", SetLook(MainVersion().Id, "drop")); }
+  Ui.Viewport(1440, 900);
+  Ui.Visit("/");
+  Assert.Visible("In the workroom");
+  Ui.Shot("the same gallery in Drop, wide");
+}

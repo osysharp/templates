@@ -1,94 +1,28 @@
 {
+  "format": "osy-templates/1",
+  "tag": "v0.2.0",
   "templates": [
     {
       "category": "shop",
-      "style": "atelier",
+      "style": "fashion",
       "shop": "Vall",
-      "look": "Editorial",
-      "summary": "A fashion label in a quiet editorial layout — large photographs, a thin header, room to breathe.",
-      "path": "shop/atelier",
-      "screenshot": "docs/fashion-store-atelier.jpg"
+      "look": "Five looks",
+      "summary": "A fashion label in five looks — Atelier, Boutique, Drop, Index and Studio — picked per version of the site.",
+      "path": "shop/fashion",
+      "screenshot": "docs/fashion-store-atelier.jpg",
+      "asset": "shop-fashion.zip",
+      "hash": "sha256:b9e16bac0105bf933f791102eb876d008c27cfd04d216aeae4eba67bcf3aed3d"
     },
     {
       "category": "shop",
-      "style": "studio",
-      "shop": "Vall",
-      "look": "Split",
-      "summary": "A fashion label with a split layout — the picture on one side, the words on the other.",
-      "path": "shop/studio",
-      "screenshot": "docs/fashion-store-studio.jpg"
-    },
-    {
-      "category": "shop",
-      "style": "index",
-      "shop": "Vall",
-      "look": "Catalogue",
-      "summary": "A fashion label as a dense catalogue — many products at a glance, sorted and filtered.",
-      "path": "shop/index",
-      "screenshot": "docs/fashion-store-index.jpg"
-    },
-    {
-      "category": "shop",
-      "style": "drop",
-      "shop": "Vall",
-      "look": "Marquee",
-      "summary": "A fashion label for drops — a loud marquee, dark pages, sold in US dollars.",
-      "path": "shop/drop",
-      "screenshot": "docs/fashion-store-drop.jpg"
-    },
-    {
-      "category": "shop",
-      "style": "boutique",
-      "shop": "Vall",
-      "look": "Storefront",
-      "summary": "A fashion boutique with a classic storefront — a hero, featured pieces, the shop's story.",
-      "path": "shop/boutique",
-      "screenshot": "docs/fashion-store-boutique.jpg"
-    },
-    {
-      "category": "shop",
-      "style": "rail",
-      "shop": "Andra Varvet",
-      "look": "Storefront",
-      "summary": "A second-hand shop where every piece is one of one, shown like a rail in the shop.",
-      "path": "shop/rail",
-      "screenshot": "docs/thrift-store-rail.jpg"
-    },
-    {
-      "category": "shop",
-      "style": "kiosk",
-      "shop": "Andra Varvet",
-      "look": "Editorial",
-      "summary": "A second-hand shop as a zine — hand-picked finds with their stories.",
-      "path": "shop/kiosk",
-      "screenshot": "docs/thrift-store-kiosk.jpg"
-    },
-    {
-      "category": "shop",
-      "style": "fitting",
-      "shop": "Andra Varvet",
-      "look": "Split",
-      "summary": "A second-hand shop laid out like a fitting room — one piece at a time, up close.",
-      "path": "shop/fitting",
-      "screenshot": "docs/thrift-store-fitting.jpg"
-    },
-    {
-      "category": "shop",
-      "style": "swap",
-      "shop": "Andra Varvet",
-      "look": "Catalogue",
-      "summary": "A second-hand shop as a swap sheet — everything in one long list with its measurements.",
-      "path": "shop/swap",
-      "screenshot": "docs/thrift-store-swap.jpg"
-    },
-    {
-      "category": "shop",
-      "style": "loud",
-      "shop": "Andra Varvet",
-      "look": "Marquee",
-      "summary": "A second-hand shop with bright colour and big type, sold in US dollars.",
-      "path": "shop/loud",
-      "screenshot": "docs/thrift-store-loud.jpg"
+      "style": "thrift",
+      "shop": "Second Round",
+      "look": "Five looks",
+      "summary": "A second-hand shop in five looks — the Rail, the Kiosk, the Fitting room, the Swap sheet and Loud — picked per version of the site.",
+      "path": "shop/thrift",
+      "screenshot": "docs/thrift-store-rail.jpg",
+      "asset": "shop-thrift.zip",
+      "hash": "sha256:4f6d8597826668d237a4aad7f158e84b90b26538c4647b5ad101727879c91608"
     },
     {
       "category": "shop",
@@ -97,7 +31,20 @@
       "look": "Storefront",
       "summary": "A workshop selling restored vintage bicycles — each one unique, with its spec sheet.",
       "path": "shop/workshop",
-      "screenshot": "docs/rust-and-chrome.jpg"
+      "screenshot": "docs/rust-and-chrome.jpg",
+      "asset": "shop-workshop.zip",
+      "hash": "sha256:81f2e49de310a542def6786533d80ca0d5480b34147b45b2f0189745086d2f92"
+    },
+    {
+      "category": "helpdesk",
+      "style": "harbour",
+      "shop": "Harbour",
+      "look": "Rail",
+      "summary": "A support desk: tickets as conversations, queues and promises, a help centre, reports — in English, Swedish and Arabic.",
+      "path": "helpdesk/harbour",
+      "screenshot": "docs/harbour-desk.jpg",
+      "asset": "helpdesk-harbour.zip",
+      "hash": "sha256:89be5b47c1628e43f91d5951e7706627b657817e1dc4cdc7764e9523f9b4222a"
     }
   ]
 }

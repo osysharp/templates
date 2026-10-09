@@ -1,0 +1,47 @@
+// THE OPEN TICKETS, AS TABS — the desk's own strip above the open ticket. (The list beside it is the inbox's
+// `WorkList`, Osysharp.Inbox: its rows, lamps, countdowns, keys and bulk bar.)
+using Osysharp.Identity;
+using Osysharp.Conversations;
+
+/// The tickets held open, as tabs — each keeps its own half-written reply (its route is retained). Closing one is
+/// refused while it holds unsent work; the platform says so.
+[Composable]
+component OpenTabs(int open, string here) {
+  live var held = Navigation.Routes.Where(r => r.Path.Contains("/t/")).ToList();
+  live var numbers = held.Select(h => TicketInPath(h.Path)).ToList();
+  live var subjects = Ticket.Where(t => numbers.Contains(t.Number))
+    .Select(t => new TabTitle { Number = t.Number, Subject = t.Title }).ToList();
+
+  action Close(string path) { Navigation.Close(path); }
+
+  render {
+    if (held.Count > 1) {
+      Row(gap: 1, px: 3, pt: 2, borderBW: 1, border: Colors.Border, bg: Colors.Sunken, overflowX: Overflow.Auto,
+          role: UiRole.TabList, label: "Open tickets") {
+        foreach (var h in held) {
+          Row(gap: 1, align: Align.Center, pl: 3, pr: 1, py: 1, rounded: Radius.Md, maxW: "220px",
+              bg: TicketInPath(h.Path) == open ? Colors.Surface : Colors.Transparent,
+              borderW: 1, border: TicketInPath(h.Path) == open ? Colors.Border : Colors.Transparent,
+              role: UiRole.Tab, selected: TicketInPath(h.Path) == open) {
+            Link(href: h.Path, minW: "0", color: Colors.OnSurface) {
+              Row(gap: 1, align: Align.Center, minW: "0") {
+                Text("#" + TicketInPath(h.Path), fontFamily: Font.Mono, fontSize: FontSize.Caption, color: Colors.TextMuted);
+                Text(TitleOf(subjects, TicketInPath(h.Path)), fontSize: FontSize.Caption, whiteSpace: WhiteSpace.Nowrap,
+                     overflow: Overflow.Hidden, textOverflow: TextOverflow.Ellipsis, minW: "0");
+                if (h.IsDirty) { Box(w: "6px", h: "6px", rounded: Radius.Circle, bg: Colors.Primary, label: "unsent reply") { } }
+              }
+            }
+            IconButton("Close #" + TicketInPath(h.Path), () => Close(h.Path), size: Size.Sm, tone: Tone.Ghost) { Icon(Icons.Close, size: 12); }
+          }
+        }
+      }
+    }
+  }
+}
+
+class TabTitle { public int Number; public string Subject; }
+
+string TitleOf(List<TabTitle> titles, int number) {
+  foreach (var t in titles) { if (t.Number == number) { return t.Subject; } }
+  return "";
+}

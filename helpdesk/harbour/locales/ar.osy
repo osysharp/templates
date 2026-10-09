@@ -1,0 +1,2677 @@
+// ar (العربية): the words of Helpdesk, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── (every entity) ──
+  /// (every entity) · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through the time a record was created or last changed
+  /// beside: "Modified at"
+  label "Created at" => "تاريخ الإنشاء";
+  /// (every entity) · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through the time a record was created or last changed
+  /// beside: "Created at"
+  label "Modified at" => "تاريخ التعديل";
+
+  // ── AccessSettings (/settings/access) ──
+  /// AccessSettings · /settings/access · a description
+  /// shown through SettingsPage.description
+  /// also in AccessSettings /settings/access
+  description "Every change to somebody's access — a role, an account switched off, a lost phone, a sign-out — with who made it and why. Nobody edits or deletes these." => "كل تغيير في صلاحيات أي شخص، سواء كان دورًا، أو حسابًا معطَّلًا، أو هاتفًا مفقودًا، أو تسجيل خروج، مع من أجراه ولماذا. لا يمكن لأحد تعديل هذه السجلات أو حذفها.";
+  /// AccessSettings · /settings/access · a title
+  /// shown through SettingsPage.title
+  /// also in AccessSettings /settings/access
+  title "Access changes" => "تغييرات الصلاحيات";
+
+  // ── AccessTrailList ──
+  /// AccessTrailList · a title
+  /// shown through EmptyState.title
+  /// also in AuditList
+  title "No changes yet" => "لا توجد تغييرات بعد";
+
+  // ── AddCc ──
+  /// AddCc · an error message
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ValidationException
+  error "#{t.Number} is closed — nothing more is sent on it." => "#{t.Number} مغلقة، ولن يُرسل عليها شيء بعد الآن.";
+  /// AddCc · an error message
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ValidationException
+  error "#{t.Number} is kept out of use — nobody is added to it." => "#{t.Number} موقوفة عن الاستخدام، ولا يُضاف إليها أحد.";
+
+  // ── Agent ──
+  /// Agent · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Agent.Signature
+  label "Signature" => "التوقيع";
+
+  // ── ApiSetStatus ──
+  /// ApiSetStatus · an error message
+  /// shown through ValidationException
+  error "That is not one of the desk's statuses — GET /statuses lists them." => "هذه ليست إحدى حالات مكتب الدعم. يعرضها GET /statuses.";
+
+  // ── ApiTag ──
+  /// ApiTag · an error message
+  /// shown through ValidationException
+  error "Give the tag — a word or two, like billing." => "أدخل الوسم، كلمة أو كلمتين، مثل billing.";
+
+  // ── AskWithoutAnAccount ──
+  /// AskWithoutAnAccount · a title
+  /// shown through PageHead.title
+  /// also in AskWithoutAnAccountPage /privacy/ask
+  title "Ask about your data" => "اسأل عن بياناتك";
+
+  // ── AssignTicket ──
+  /// AssignTicket · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through [Action] AssignTicket
+  /// beside: "Assign to"
+  label "Teammate" => "عضو الفريق";
+
+  // ── AuditArea ──
+  /// AuditArea · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through AuditArea.Everything
+  /// beside: "Access", "Desk settings"
+  label "All changes" => "كل التغييرات";
+  /// AuditArea · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through AuditArea.Settings
+  /// beside: "All changes", "Access"
+  label "Desk settings" => "إعدادات المكتب";
+
+  // ── AuditList ──
+  /// AuditList · a control's name for screen readers
+  accessibleName "Changes" => "التغييرات";
+  /// AuditList · text on the page
+  text "1 change" => "تغيير واحد";
+  /// AuditList · text on the page
+  /// shown through EmptyState.body
+  text "Nobody made a change of this kind in this period. Try a longer period, or anyone." => "لم يُجرِ أحد تغييرًا من هذا النوع في هذه الفترة. جرّب فترة أطول، أو أي شخص.";
+  /// AuditList · text on the page
+  /// placeholders: {AuditTake} = AuditTake(…) (int) — {AuditTake} is a count: give one text per plural form
+  text "The newest {AuditTake} — narrow the period to see further back" => "أحدث {AuditTake} — اختر فترة أقصر لترى ما قبلها";
+  /// AuditList · text on the page
+  /// shown through EmptyState.body
+  text "When somebody changes the desk's settings or somebody's access, it is listed here — what, who and when." => "عندما يغيّر أحدٌ إعدادات المكتب أو صلاحيات أحد، يظهر ذلك هنا — ماذا، ومن، ومتى.";
+  /// AuditList · text on the page
+  /// placeholders: {value} = … (string), {value2} = … (string)
+  text "by {value}{value2}" => "بواسطة {value}{value2}";
+  /// AuditList · text on the page
+  text "somebody no longer named" => "شخص لم يعد له اسم هنا";
+  /// AuditList · text on the page
+  /// placeholders: {shown.Count} = shown.Count (int) — {shown.Count} is a count: give one text per plural form
+  text "{shown.Count} changes" => "{shown.Count} تغييرات";
+
+  // ── AuditLog ──
+  /// AuditLog · text on the page
+  /// placeholders: {value} = … (string)
+  /// shown through AuditLine.Detail
+  text "Refused: {value}" => "مرفوض: {value}";
+
+  // ── AuditPeriod ──
+  /// AuditPeriod · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through AuditPeriod.Year
+  /// beside: "Last 7 days", "Last 30 days", "Last 90 days"
+  label "Last year" => "آخر سنة";
+
+  // ── AuditSettings (/settings/audit) ──
+  /// AuditSettings · /settings/audit · a description
+  /// shown through SettingsPage.description
+  description "Every change to the desk's settings and to somebody's access — what changed, from what to what, who made it and when. Nobody edits or deletes these." => "كل تغيير في إعدادات المكتب وفي صلاحيات أي شخص — ما الذي تغيّر، ومن ماذا إلى ماذا، ومن أجراه ومتى. لا أحد يعدّل هذه السجلات أو يحذفها.";
+  /// AuditSettings · /settings/audit · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Dropdown.label
+  label "Changed by" => "غيّره";
+  /// AuditSettings · /settings/audit · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Dropdown.label
+  label "Period" => "الفترة";
+  /// AuditSettings · /settings/audit · placeholder text inside an empty field · at most ~12 characters
+  /// shown through Dropdown.placeholder
+  placeholder "Anyone" => "أي شخص";
+  /// AuditSettings · /settings/audit · a title
+  /// shown through SettingsPage.title
+  /// also in AuditSettings /settings/audit
+  title "Audit log" => "سجل التدقيق";
+
+  // ── AutomationSaid.Sentence ──
+  /// AutomationSaid.Sentence · text on the page
+  /// shown through Sentence()
+  text "An automation ran on a ticket." => "نُفّذت أتمتة على تذكرة.";
+
+  // ── ChartTable ──
+  /// ChartTable · text on the page
+  /// also in __PersonalDataExport2
+  text "Category" => "الفئة";
+
+  // ── CompaniesPage (/companies) ──
+  /// CompaniesPage · /companies · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through DataGrid.label
+  /// also in DeskNav
+  label "Companies" => "الشركات";
+  /// CompaniesPage · /companies · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through GridColumn.Label
+  label "Open tickets" => "التذاكر المفتوحة";
+  /// CompaniesPage · /companies · a subtitle
+  /// shown through PageHead.subtitle
+  subtitle "Every customer company, its plan, and what it has open." => "كل شركة عميلة، وخطتها، وما لديها من تذاكر مفتوحة.";
+  /// CompaniesPage · /companies · a title
+  /// shown through PageHead.title
+  /// also in CompaniesPage /companies
+  title "Companies" => "الشركات";
+
+  // ── Company ──
+  /// Company · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Company.Fields
+  /// beside: "Shares tickets", "Notes", "People"
+  /// also in Customer
+  /// also in TicketView
+  /// also in Ticket
+  label "Fields" => "الحقول";
+  /// Company · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Company.Notes
+  /// beside: "Shares tickets", "People", "Fields"
+  label "Notes" => "ملاحظات";
+  /// Company · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Company.SharesTickets
+  /// beside: "Notes", "People", "Fields"
+  label "Shares tickets" => "تشارك التذاكر";
+
+  // ── CompanyFieldValue ──
+  /// CompanyFieldValue · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through CompanyFieldValue.Company
+  /// also in Customer
+  /// also in CompaniesPage /companies
+  label "Company" => "الشركة";
+
+  // ── ConversationBubble ──
+  /// ConversationBubble · text on the page
+  /// also in ThreadMessage
+  /// also in PortalChrome
+  /// also in DeskTickets
+  text "Customer" => "العميل";
+
+  // ── ConversationComposer ──
+  /// ConversationComposer · a control's name for screen readers
+  /// also in Composer
+  /// also in MyRequestPage /my/{number}
+  accessibleName "Attach files" => "إرفاق ملفات";
+  /// ConversationComposer · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through TextAreaField.label
+  /// beside: "Attach files"
+  /// also in Composer
+  /// also in SavedReplySettings
+  /// also in MailCustomer
+  label "Reply" => "رد";
+
+  // ── ConversationPresenceChip ──
+  /// ConversationPresenceChip · text on the page
+  /// also in DeskCopy.EventSentence
+  text "The customer" => "العميل";
+
+  // ── ConversationTranscript ──
+  /// ConversationTranscript · a control's name for screen readers
+  /// also in ConversationThread
+  /// also in TicketView
+  accessibleName "Conversation" => "المحادثة";
+
+  // ── CopiedOnTicket ──
+  /// CopiedOnTicket · a control's name for screen readers
+  accessibleName "Copied" => "النسخ";
+  /// CopiedOnTicket · a button's label · at most ~13 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Copy in" => "أضف";
+  /// CopiedOnTicket · a button's label · at most ~21 characters
+  /// shown through Button.label
+  button "Copy someone in" => "أضف شخصًا في النسخة";
+  /// CopiedOnTicket · a button's label · at most ~42 characters
+  /// placeholders: {s.Party.DisplayName} = s.Party.DisplayName (string)
+  /// shown through IconButton.label
+  button "Take {s.Party.DisplayName} off" => "أزل {s.Party.DisplayName}";
+  /// CopiedOnTicket · a hint under a field
+  /// shown through Field.hint
+  /// beside: "Copy in"
+  hint "They are sent every reply from now on, and read this ticket when they sign in." => "سيتلقى كل رد من الآن، ويقرأ هذه التذكرة عند تسجيل الدخول.";
+  /// CopiedOnTicket · text on the page
+  /// shown through SectionLabel.text
+  text "Copied" => "النسخ";
+  /// CopiedOnTicket · text on the page
+  text "Nobody else was sent its replies." => "لم يُرسل ردّها إلى أي شخص آخر.";
+  /// CopiedOnTicket · text on the page
+  text "Only the customer is sent its replies." => "العميل وحده يتلقى ردودها.";
+
+  // ── CopyInByAddress ──
+  /// CopyInByAddress · an error message
+  /// shown through ValidationException
+  /// also in AddCc
+  error "Give the address to copy in — like ana@example.com." => "أدخل العنوان الذي تريد إضافته في النسخة، مثل ana@example.com.";
+
+  // ── CustomerDetails ──
+  /// CustomerDetails · a label (a field, a list item, a menu entry) · at most ~66 characters
+  /// shown through DataCategory.Label
+  label "What our team noted about you in our own fields" => "ما دوّنه فريقنا عنك في حقولنا الخاصة";
+  /// CustomerDetails · text on the page
+  text "Answering you, knowing who we are talking to" => "للرد عليك ومعرفة من نتحدث إليه";
+  /// CustomerDetails · text on the page
+  text "knowing who we are talking to when you write" => "لمعرفة من نتحدث إليه عندما تراسلنا";
+
+  // ── CustomerPanel ──
+  /// CustomerPanel · a control's name for screen readers
+  /// beside: "Tags"
+  accessibleName "New tag" => "وسم جديد";
+  /// CustomerPanel · a button's label · at most ~15 characters
+  /// shown through IconButton.label
+  /// beside: "Tags"
+  button "Add a tag" => "إضافة وسم";
+  /// CustomerPanel · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Details", "Opened"
+  button "Follow" => "متابعة";
+  /// CustomerPanel · a button's label · at most ~15 characters
+  /// shown through Button.label
+  /// beside: "Details", "Opened"
+  button "Following" => "تتابعها";
+  /// CustomerPanel · a button's label · at most ~20 characters
+  /// placeholders: {g} = g (string)
+  /// shown through IconButton.label
+  button "Remove tag {g}" => "إزالة الوسم {g}";
+  /// CustomerPanel · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through HoldControl.label
+  /// beside: "Their other tickets", "Tags", "Details", "How it got here"
+  label "ticket #{t.Number}" => "التذكرة #{t.Number}";
+  /// CustomerPanel · placeholder text inside an empty field · at most ~16 characters
+  /// beside: "Tags"
+  placeholder "Add a tag…" => "أضف وسمًا…";
+  /// CustomerPanel · text on the page
+  /// shown through SectionLabel.text
+  /// beside: "Opened"
+  text "Details" => "التفاصيل";
+  /// CustomerPanel · text on the page
+  /// shown through SectionLabel.text
+  text "How it got here" => "كيف وصلت إلى هنا";
+  /// CustomerPanel · text on the page
+  text "Opened" => "فُتحت";
+  /// CustomerPanel · text on the page
+  /// placeholders: {t.ReopenCount} = t.ReopenCount (int) — {t.ReopenCount} is a count: give one text per plural form
+  text "Reopened {t.ReopenCount}×" => { zero: "أُعيد فتحها {t.ReopenCount}×", one: "أُعيد فتحها {t.ReopenCount}×", two: "أُعيد فتحها {t.ReopenCount}×", few: "أُعيد فتحها {t.ReopenCount}×", many: "أُعيد فتحها {t.ReopenCount}×", other: "أُعيد فتحها {t.ReopenCount}×" };
+  /// CustomerPanel · text on the page
+  /// shown through SectionLabel.text
+  text "Their other tickets" => "تذاكره الأخرى";
+  /// CustomerPanel · text on the page
+  text "This is their first." => "هذه أول تذكرة له.";
+
+  // ── CustomerRecord ──
+  /// CustomerRecord · a control's name for screen readers
+  accessibleName "The customer's record" => "سجل العميل";
+  /// CustomerRecord · a button's label · at most ~14 characters
+  /// shown through Button.label
+  button "Merge in" => "دمج";
+  /// CustomerRecord · text on the page
+  /// placeholders: {s.Shares} = s.Shares (string)
+  text "Also writes from {s.Shares}" => "يراسل أيضًا من {s.Shares}";
+  /// CustomerRecord · text on the page
+  /// shown through done
+  text "Separated again." => "تم الفصل مجددًا.";
+  /// CustomerRecord · text on the page
+  /// placeholders: {name} = name (string)
+  /// shown through done
+  text "{name} is merged into this record." => "تم دمج {name} في هذا السجل.";
+
+  // ── CustomerStatus ──
+  /// CustomerStatus · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through CustomerStatus()
+  label "In progress" => "قيد المعالجة";
+  /// CustomerStatus · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through CustomerStatus()
+  /// also in StatusCategory
+  /// also in Stage
+  label "Solved" => "محلولة";
+  /// CustomerStatus · a label (a field, a list item, a menu entry) · at most ~31 characters
+  /// shown through CustomerStatus()
+  label "Waiting for your reply" => "بانتظار ردك";
+
+  // ── CustomerWroteAgain.Sentence ──
+  /// CustomerWroteAgain.Sentence · text on the page
+  /// shown through Sentence()
+  text "The customer wrote again." => "كتب العميل مجددًا.";
+  /// CustomerWroteAgain.Sentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through Sentence()
+  text "{who} wrote again." => "رسالة جديدة من {who}.";
+
+  // ── DemoSupportAddress ──
+  /// DemoSupportAddress · text on the page
+  /// shown through DemoSupportAddress()
+  text "support@helpdesk.test" => "support@helpdesk.test";
+
+  // ── DeskAddressEditor ──
+  /// DeskAddressEditor · a description
+  /// shown through SettingsPage.description
+  description "Customers write here, and the desk's replies and notices come from it. The portal tells customers they can write to it too." => "يكتب العملاء إلى هذا العنوان، ومنه تُرسل ردود مكتب الدعم وإشعاراته. وتخبر البوابة العملاء أيضًا أنه يمكنهم الكتابة إليه.";
+  /// DeskAddressEditor · text on the page
+  /// shown through Refusal()
+  text "Support address is at most 200 characters." => "يجب ألا يتجاوز عنوان الدعم 200 حرف.";
+  /// DeskAddressEditor · text on the page
+  /// shown through Refusal()
+  text "Support address is needed." => "عنوان الدعم مطلوب.";
+  /// DeskAddressEditor · text on the page
+  /// shown through SaveBar.saved
+  text "Support address saved." => "تم حفظ عنوان الدعم.";
+  /// DeskAddressEditor · a title
+  /// shown through SettingsPage.title
+  /// also in DeskAddressPage /settings/support-address
+  title "Support address" => "عنوان الدعم";
+
+  // ── DeskAddressFields ──
+  /// DeskAddressFields · a description
+  /// shown through SettingsSection.description
+  description "The address the desk is known by." => "العنوان الذي يُعرف به مكتب الدعم.";
+  /// DeskAddressFields · a hint under a field
+  /// shown through Field.hint
+  hint "For example support@yourcompany.com." => "مثلًا support@yourcompany.com.";
+  /// DeskAddressFields · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Field.label
+  /// also in __Settings_DeskAddress_Section.Sections
+  label "Support address" => "عنوان الدعم";
+
+  // ── DeskCopy.EventSentence ──
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int), {t.Was} = t.Was (string), {who} = who (string)
+  /// shown through EventSentence()
+  text "#{value} ({t.Was}) from {who} was merged into this ticket." => "دُمجت #{value} ({t.Was}) من {who} في هذه التذكرة.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int), {t.Was} = t.Was (string), {who} = who (string), {last} = last (string)
+  /// shown through EventSentence()
+  text "#{value} ({t.Was}) from {who} was merged into this ticket. Their last message: “{last}”" => "دُمجت #{value} ({t.Was}) من {who} في هذه التذكرة. آخر رسالة منه: «{last}»";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int), {who} = who (string)
+  /// shown through EventSentence()
+  text "#{value} from {who} was merged into this ticket." => "دُمجت #{value} من {who} في هذه التذكرة.";
+  /// DeskCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "A field was changed." => "تغيّر أحد الحقول.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int), {t.Name} = t.Name (string)
+  /// shown through EventSentence()
+  text "A message was split into #{value}: {t.Name}." => "فُصلت رسالة إلى #{value}: {t.Name}.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int)
+  /// shown through EventSentence()
+  text "Merged into #{value}." => "دُمجت في #{value}.";
+  /// DeskCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "Reminded the customer we are waiting on them." => "ذكّرنا العميل بأننا ننتظر رده.";
+  /// DeskCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "Reopened: the customer wrote back." => "أُعيد فتحها: كتب العميل من جديد.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int) — {value} is a count: give one text per plural form
+  /// shown through EventSentence()
+  text "Solved after {value} days with no word from the customer." => { zero: "حُلّت بعد {value} يوم دون أي كلمة من العميل.", one: "حُلّت بعد يوم واحد دون أي كلمة من العميل.", two: "حُلّت بعد يومين دون أي كلمة من العميل.", few: "حُلّت بعد {value} أيام دون أي كلمة من العميل.", many: "حُلّت بعد {value} يومًا دون أي كلمة من العميل.", other: "حُلّت بعد {value} يوم دون أي كلمة من العميل." };
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int) — {value} is a count: give one text per plural form
+  /// shown through EventSentence()
+  text "Solved its {value} incidents with it." => { zero: "لم تُحل معها أي حادثة.", one: "حُلّت حادثتها معها.", two: "حُلّت حادثتاها معها.", few: "حُلّت {value} حوادث معها.", many: "حُلّت {value} حادثة معها.", other: "حُلّت {value} حادثة معها." };
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int)
+  /// shown through EventSentence()
+  text "Solved with its problem, #{value}." => "حُلّت مع مشكلتها، #{value}.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int), {t.Name} = t.Name (string)
+  /// shown through EventSentence()
+  text "Split from #{value} ({t.Name}) — the customer's message moved here." => "مفصولة من #{value} ({t.Name}). نُقلت رسالة العميل إلى هنا.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {t.Name} = t.Name (string)
+  /// shown through EventSentence()
+  text "Status set to {t.Name}." => "عُيّنت الحالة: {t.Name}.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {t.Name} = t.Name (string), {t.Rule} = t.Rule (string)
+  /// shown through EventSentence()
+  text "Tagged {t.Name} — rule “{t.Rule}”." => "وُسمت بـ {t.Name} وفق القاعدة «{t.Rule}».";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {t.Name} = t.Name (string)
+  /// shown through EventSentence()
+  text "The automation “{t.Name}” ran." => "نُفّذت الأتمتة «{t.Name}».";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {value} = … (int)
+  /// shown through EventSentence()
+  text "The customer wrote after #{value} was closed — this follows it." => "كتب العميل بعد إغلاق #{value}، وهذه التذكرة تتبعها.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {t.Name} = t.Name (string)
+  /// shown through EventSentence()
+  text "Type set to {t.Name}." => "عُيّن النوع: {t.Name}.";
+  /// DeskCopy.EventSentence · text on the page
+  /// shown through EventSentence()
+  text "a customer" => "عميل";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {said} = said (string)
+  /// shown through EventSentence()
+  text "{who} changed their answer: it did not go well — “{said}”" => "غيّر {who} إجابته: لم يسر الأمر على ما يرام: «{said}»";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through EventSentence()
+  text "{who} changed their answer: it did not go well." => "غيّر {who} إجابته: لم يسر الأمر على ما يرام.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {said} = said (string)
+  /// shown through EventSentence()
+  text "{who} changed their answer: it went well — “{said}”" => "غيّر {who} إجابته: سار الأمر على ما يرام: «{said}»";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through EventSentence()
+  text "{who} changed their answer: it went well." => "غيّر {who} إجابته: سار الأمر على ما يرام.";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {said} = said (string)
+  /// shown through EventSentence()
+  text "{who} said it did not go well — “{said}”" => "أجاب {who} بأن الأمر لم يسر على ما يرام: «{said}»";
+  /// DeskCopy.EventSentence · text on the page
+  /// placeholders: {who} = who (string), {said} = said (string)
+  /// shown through EventSentence()
+  text "{who} said it went well — “{said}”" => "أجاب {who} بأن الأمر سار على ما يرام: «{said}»";
+
+  // ── DeskFeedbackPage (/feedback) ──
+  /// DeskFeedbackPage · /feedback · a subtitle
+  /// shown through PageHead.subtitle
+  subtitle "What customers said when their tickets were solved — the last twelve weeks." => "ما قاله العملاء عند حل تذاكرهم، خلال الأسابيع الاثني عشر الأخيرة.";
+
+  // ── DeskFrame ──
+  /// DeskFrame · a button's label · at most ~58 characters
+  /// shown through Button.label
+  button "Name who is responsible for customer data" => "سمِّ المسؤول عن بيانات العملاء";
+  /// DeskFrame · a button's label · at most ~16 characters
+  /// shown through IconButton.label
+  /// also in EmptyDesk
+  button "New ticket" => "تذكرة جديدة";
+  /// DeskFrame · a heading
+  /// shown through Command.Group
+  heading "Desk" => "المكتب";
+  /// DeskFrame · a heading
+  /// shown through Command.Group
+  heading "Go to ticket" => "الانتقال إلى تذكرة";
+  /// DeskFrame · a heading
+  /// shown through Command.Group
+  heading "This ticket" => "هذه التذكرة";
+  /// DeskFrame · a heading
+  /// shown through Command.Group
+  heading "Views" => "العروض";
+  /// DeskFrame · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Command.Label
+  label "New ticket" => "تذكرة جديدة";
+  /// DeskFrame · a label (a field, a list item, a menu entry) · at most ~52 characters
+  /// shown through Command.Label
+  label "Search tickets, answers and articles…" => "ابحث في التذاكر والإجابات والمقالات…";
+  /// DeskFrame · a label (a field, a list item, a menu entry) · at most ~34 characters
+  /// placeholders: {open} = open (int), {st.Name} = st.Name (string)
+  /// shown through Command.Label
+  label "Set #{open} to {st.Name}" => "ضبط #{open} على {st.Name}";
+  /// DeskFrame · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Command.Label
+  /// also in DeskNav
+  label "Settings" => "الإعدادات";
+  /// DeskFrame · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Command.Label
+  label "Take the open ticket" => "تولّي التذكرة المفتوحة";
+  /// DeskFrame · placeholder text inside an empty field · at most ~47 characters
+  /// shown through ShellSearch.placeholder
+  placeholder "Search tickets, people or #number" => "ابحث عن التذاكر أو الأشخاص أو #الرقم";
+  /// DeskFrame · placeholder text inside an empty field · at most ~59 characters
+  /// shown through CommandMenu.placeholder
+  placeholder "Take a ticket, set a status, go to a view…" => "تولَّ تذكرة، اضبط حالة، انتقل إلى عرض…";
+
+  // ── DeskLinks.Kinds ──
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Back
+  accessibleName "Caused" => "تسببت في";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Says
+  accessibleName "Caused by" => "ناتجة عن";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Says
+  accessibleName "Duplicate of" => "مكررة من";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Back
+  accessibleName "Duplicated by" => "لها نسخة مكررة";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Says
+  accessibleName "Incident of" => "حادثة من";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Back
+  accessibleName "Problem behind" => "المشكلة وراء";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Says
+  accessibleName "Related to" => "مرتبطة بـ";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Says
+  accessibleName "Split from" => "مفصولة من";
+  /// DeskLinks.Kinds · a control's name for screen readers
+  /// shown through LinkKind.Back
+  accessibleName "Split into" => "فُصلت إلى";
+  /// DeskLinks.Kinds · a button's label · at most ~16 characters
+  /// shown through LinkKind.Act
+  button "Merge into" => "دمج في";
+
+  // ── DeskNav ──
+  /// DeskNav · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through NavItem.Label
+  label "Desk" => "المكتب";
+  /// DeskNav · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through NavItem.Label
+  label "Reports" => "التقارير";
+
+  // ── DeskReplies.Mentionable ──
+  /// DeskReplies.Mentionable · text on the page
+  /// placeholders: {name} = name (string)
+  /// shown through MentionChoice.Refusal
+  text "{name} cannot open this ticket, so a note cannot name them. Ask a lead to add them to its queue, or write it without their name." => "لا يستطيع {name} فتح هذه التذكرة، لذا لا يمكن للملاحظة الإشارة إليه. اطلب من قائد الفريق إضافته إلى قائمة انتظارها، أو اكتب الملاحظة دون اسمه.";
+
+  // ── DeskReplies.Send ──
+  /// DeskReplies.Send · text on the page
+  /// placeholders: {Name} = ….Name (string)
+  /// shown through Send()
+  text "Sent, and set to {Name}." => "تم الإرسال، وضُبطت الحالة على {Name}.";
+
+  // ── DeskReportWords ──
+  /// DeskReportWords · text on the page
+  /// also in RoleWord
+  text "Agent" => "وكيل دعم";
+  /// DeskReportWords · text on the page
+  text "Channel" => "القناة";
+  /// DeskReportWords · text on the page
+  text "Company" => "الشركة";
+  /// DeskReportWords · text on the page
+  text "Priority" => "الأولوية";
+  /// DeskReportWords · text on the page
+  text "Queue" => "قائمة الانتظار";
+  /// DeskReportWords · text on the page
+  text "Solved" => "المحلولة";
+  /// DeskReportWords · text on the page
+  text "Tier" => "المستوى";
+  /// DeskReportWords · text on the page
+  text "solve" key "report-finish-verb" => "الحل";
+  /// DeskReportWords · text on the page
+  text "ticket" => "تذكرة";
+  /// DeskReportWords · text on the page
+  text "tickets" => "التذاكر";
+
+  // ── DeskSearchPage (/search) ──
+  /// DeskSearchPage · /search · a control's name for screen readers
+  accessibleName "Search results" => "نتائج البحث";
+  /// DeskSearchPage · /search · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// shown through Field.label
+  label "What are you looking for?" => "عمّ تبحث؟";
+  /// DeskSearchPage · /search · placeholder text inside an empty field · at most ~69 characters
+  /// shown through Field.placeholder
+  placeholder "A problem, a customer's words, or a ticket number" => "مشكلة، أو كلمات العميل، أو رقم تذكرة";
+  /// DeskSearchPage · /search · a subtitle
+  /// shown through PageHead.subtitle
+  /// beside: "What are you looking for?"
+  subtitle "Tickets, past answers and articles — by what they are about, in any language a customer wrote in." => "التذاكر والإجابات السابقة والمقالات، حسب موضوعها، بأي لغة كتب بها العميل.";
+  /// DeskSearchPage · /search · text on the page
+  /// shown through SectionLabel.text
+  text "Articles" => "المقالات";
+  /// DeskSearchPage · /search · text on the page
+  /// shown through SectionLabel.text
+  text "How we solved it before" => "كيف حللناها من قبل";
+  /// DeskSearchPage · /search · text on the page
+  text "Searching…" => "جارٍ البحث…";
+  /// DeskSearchPage · /search · text on the page
+  /// shown through SectionLabel.text
+  /// also in DeskReportWords
+  text "Tickets" => "التذاكر";
+  /// DeskSearchPage · /search · text on the page
+  /// shown through EmptyState.body
+  text "Try the customer's own words, or fewer of them." => "جرّب كلمات العميل نفسه، أو عددًا أقل منها.";
+  /// DeskSearchPage · /search · a title
+  /// placeholders: {found.Query} = found.Query (string)
+  /// shown through EmptyState.title
+  title "Nothing found for “{found.Query}”" => "لم يُعثر على شيء لـ «{found.Query}»";
+
+  // ── DeskSettingsSections.Sections ──
+  /// DeskSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  heading "Tickets" => "التذاكر";
+  /// DeskSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "What a ticket asks beyond its subject." => "ما تطلبه التذكرة إلى جانب موضوعها.";
+  /// DeskSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Who changed the desk's settings or somebody's access, from what to what." => "من غيّر إعدادات المكتب أو صلاحيات أحد، ومن ماذا إلى ماذا.";
+  /// DeskSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Your names for where a ticket is, inside the six fixed categories." => "أسماؤكم الخاصة لموضع التذكرة، ضمن الفئات الست الثابتة.";
+  /// DeskSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through SettingsLink.Label
+  label "Audit log" => "سجل التدقيق";
+  /// DeskSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through SettingsLink.Label
+  label "Fields and forms" => "الحقول والنماذج";
+  /// DeskSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through SettingsLink.Label
+  label "Statuses" => "الحالات";
+
+  // ── DeskTickets ──
+  /// DeskTickets · a hint under a field
+  /// shown through ReportMeasure.Hint
+  hint "Of the customers who answered, the share who said it went well." => "نسبة من قالوا إن الأمر سار على ما يرام من بين العملاء الذين أجابوا.";
+  /// DeskTickets · a hint under a field
+  /// shown through ReportMeasure.Hint
+  hint "Tickets whose customer said how it went." => "تذاكر أخبرنا عملاؤها كيف سارت الأمور.";
+  /// DeskTickets · a hint under a field
+  /// shown through ReportMeasure.Hint
+  hint "Tickets whose customer said it went well." => "تذاكر قال عملاؤها إن الأمر سار على ما يرام.";
+  /// DeskTickets · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through ReportMeasure.Label
+  label "Rated" => "مُقيَّمة";
+  /// DeskTickets · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through ReportMeasure.Label
+  label "Rated good" => "مُقيَّمة بأنها جيدة";
+  /// DeskTickets · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through ReportMeasure.Label
+  label "Satisfaction" => "الرضا";
+  /// DeskTickets · text on the page
+  text "Arrived" => "وصلت";
+  /// DeskTickets · text on the page
+  text "First reply at" => "وقت أول رد";
+  /// DeskTickets · text on the page
+  text "Requester" => "مقدّم الطلب";
+  /// DeskTickets · text on the page
+  text "Solved at" => "وقت الحل";
+  /// DeskTickets · text on the page
+  text "Where it stands" => "الحالة";
+
+  // ── DeskWords.Metric ──
+  /// DeskWords.Metric · text on the page
+  /// shown through Metric()
+  text "first reply" => "الرد الأول";
+  /// DeskWords.Metric · text on the page
+  /// shown through Metric()
+  text "next reply" => "الرد التالي";
+
+  // ── EmptyDesk ──
+  /// EmptyDesk · a control's name for screen readers
+  accessibleName "Empty desk" => "مكتب فارغ";
+  /// EmptyDesk · text on the page
+  /// beside: "They arrive from the help page, from mail to the support address, and from New ticket — and land here, in the queue a rule names or in Support.", "New ticket"
+  text "No tickets yet" => "لا توجد تذاكر بعد";
+  /// EmptyDesk · text on the page
+  /// beside: "No tickets yet", "New ticket"
+  text "They arrive from the help page, from mail to the support address, and from New ticket — and land here, in the queue a rule names or in Support." => "تصل من صفحة المساعدة، ومن البريد المرسل إلى عنوان الدعم، ومن «تذكرة جديدة»، وتستقر هنا، في قائمة الانتظار التي تحددها قاعدة أو في «الدعم».";
+
+  // ── FeedbackByLinkPage (/feedback/{link}) ──
+  /// FeedbackByLinkPage · /feedback/{link} · a title
+  /// shown through [Title]
+  /// also in FeedbackByLinkPage /feedback/{link}
+  title "How did we do?" => "كيف كانت تجربتك؟";
+
+  // ── FeedbackChoicePage (/feedback/{link}/{choice}) ──
+  /// FeedbackChoicePage · /feedback/{link}/{choice} · a title
+  /// shown through [Title]
+  /// also in FeedbackChoicePage /feedback/{link}/{choice}
+  title "Thank you" => "شكراً";
+
+  // ── FeedbackSettingsEditor ──
+  /// FeedbackSettingsEditor · a title
+  /// shown through SettingsPage.title
+  /// also in FeedbackSettingsPage /settings/feedback
+  /// also in DeskFeedbackPage /feedback
+  title "Feedback" => "الآراء";
+
+  // ── FieldChangeWords ──
+  /// FieldChangeWords · text on the page
+  /// placeholders: {field} = field (string), {Quoted} = Quoted(…) (string), {Quoted2} = Quoted(…) (string)
+  /// shown through FieldChangeWords()
+  text "{field} changed from {Quoted} to {Quoted2}." => "تغيّر {field} من {Quoted} إلى {Quoted2}.";
+  /// FieldChangeWords · text on the page
+  /// placeholders: {field} = field (string)
+  /// shown through FieldChangeWords()
+  text "{field} changed." => "تغيّر {field}.";
+  /// FieldChangeWords · text on the page
+  /// placeholders: {field} = field (string), {Quoted} = Quoted(…) (string)
+  /// shown through FieldChangeWords()
+  text "{field} cleared (was {Quoted})." => "مُسح {field} (كان {Quoted}).";
+  /// FieldChangeWords · text on the page
+  /// placeholders: {field} = field (string), {Quoted} = Quoted(…) (string)
+  /// shown through FieldChangeWords()
+  text "{field} set to {Quoted}." => "عُيّن {field} إلى {Quoted}.";
+
+  // ── FieldRow ──
+  /// FieldRow · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Save"
+  /// also in FieldListSection
+  /// also in ApiKeyManager
+  /// also in PersonPanel
+  button "Cancel" => "إلغاء";
+
+  // ── FieldSettings (/settings/fields) ──
+  /// FieldSettings · /settings/fields · a button's label · at most ~16 characters
+  /// shown through Button.label
+  button "Add a type" => "إضافة نوع";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FormLine()
+  description "A type of request the customer chooses on the help page." => "نوع من الطلبات يختاره العميل في صفحة المساعدة.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FormLine()
+  description "A type the team sets on the ticket. The customer is offered it once it asks them something." => "نوع يضبطه الفريق على التذكرة. يُعرض على العميل حين يطرح عليه سؤالًا.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.description
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  description "Every question a form can ask, in the order the ticket shows them. A question asked of the customer is on the help page; the rest are the team's, on the ticket. A field is retired, never deleted: tickets keep their answers." => "كل سؤال يمكن أن يطرحه نموذج، بالترتيب الذي تعرضه به التذكرة. السؤال الموجّه إلى العميل يظهر في صفحة المساعدة، والباقي للفريق في التذكرة. الحقل يُوقف ولا يُحذف أبدًا: تحتفظ التذاكر بإجاباتها.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FormLine()
+  description "The type a request takes when nobody chose another." => "النوع الذي يأخذه الطلب عندما لا يختار أحد نوعًا آخر.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through SettingsPage.description
+  description "What the desk asks about a ticket — the product, a version, an order number — and the forms that ask it, and what it keeps about a customer and a company. A form is a type of request: the customer's choice, the team's to change on the ticket." => "ما يسأل عنه المكتب في التذكرة، مثل المنتج أو الإصدار أو رقم الطلب، والنماذج التي تسأل عنه، وما يحفظه عن العميل والشركة. النموذج نوع من الطلبات: يختاره العميل، ويغيّره الفريق في التذكرة.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.description
+  /// beside: "Ticket fields", "Customer fields", "Add a type", "Fields and forms saved."
+  description "What the team keeps about a customer company — shown and edited beside its people's tickets." => "ما يحفظه الفريق عن شركة عميلة، يُعرض ويُعدَّل بجانب تذاكر موظفيها.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.description
+  /// beside: "Ticket fields", "Company fields", "Add a type", "Fields and forms saved."
+  description "What the team keeps about a person who writes in — shown and edited beside their tickets, never to them." => "ما يحفظه الفريق عن شخص يراسلنا، يُعرض ويُعدَّل بجانب تذاكره، ولا يُعرض له أبدًا.";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.records
+  /// beside: "Ticket fields", "Customer fields", "Add a type", "Fields and forms saved."
+  description "companies" => "شركات";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.record
+  /// beside: "Ticket fields", "Customer fields", "Add a type", "Fields and forms saved."
+  description "company" => "شركة";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.record
+  /// beside: "Ticket fields", "Company fields", "Add a type", "Fields and forms saved."
+  description "customer" => "عميل";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.records
+  /// beside: "Ticket fields", "Company fields", "Add a type", "Fields and forms saved."
+  description "customers" => "عملاء";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.record
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  description "ticket" => "تذكرة";
+  /// FieldSettings · /settings/fields · a description
+  /// shown through FieldListSection.records
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  description "tickets" => "تذاكر";
+  /// FieldSettings · /settings/fields · a hint under a field
+  /// shown through FieldListSection.nameHint
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  hint "A saved view finds it by its name: field:order-number=…" => "يجده العرض المحفوظ باسمه: field:order-number=…";
+  /// FieldSettings · /settings/fields · a hint under a field
+  /// shown through FormSection.keyHint
+  hint "What routing rules, SLA policies and views name it by — lower-case words and hyphens. Fixed once saved." => "الاسم الذي تستخدمه قواعد التوجيه وسياسات مستوى الخدمة والعروض للإشارة إليه: كلمات بأحرف صغيرة وشرطات. لا يتغيّر بعد الحفظ.";
+  /// FieldSettings · /settings/fields · a label (a field, a list item, a menu entry) · at most ~47 characters
+  /// shown through FieldListSection.publicLabel
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  label "Ask the customer on the help page" => "اسأل العميل في صفحة المساعدة";
+  /// FieldSettings · /settings/fields · a label (a field, a list item, a menu entry) · at most ~41 characters
+  /// shown through Switch.label
+  label "Solving it needs a root cause" => "يتطلب الحلّ سببًا جذريًا";
+  /// FieldSettings · /settings/fields · a subtitle
+  /// shown through FieldListSection.about
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  subtitle "Something the desk asks about a ticket." => "شيء يسأل عنه المكتب بخصوص التذكرة.";
+  /// FieldSettings · /settings/fields · a subtitle
+  /// shown through FieldListSection.about
+  /// beside: "Ticket fields", "Customer fields", "Add a type", "Fields and forms saved."
+  subtitle "Something the desk keeps about a company." => "شيء يحفظه المكتب عن الشركة.";
+  /// FieldSettings · /settings/fields · a subtitle
+  /// shown through FieldListSection.about
+  /// beside: "Ticket fields", "Company fields", "Add a type", "Fields and forms saved."
+  subtitle "Something the desk keeps about a customer." => "شيء يحفظه المكتب عن العميل.";
+  /// FieldSettings · /settings/fields · text on the page
+  /// shown through SaveBar.saved
+  /// beside: "Ticket fields", "Customer fields", "Company fields", "Add a type"
+  text "Fields and forms saved." => "تم حفظ الحقول والنماذج.";
+  /// FieldSettings · /settings/fields · a title
+  /// shown through FieldListSection.title
+  /// beside: "Ticket fields", "Customer fields", "Add a type", "Fields and forms saved."
+  title "Company fields" => "حقول الشركة";
+  /// FieldSettings · /settings/fields · a title
+  /// shown through FieldListSection.title
+  /// beside: "Ticket fields", "Company fields", "Add a type", "Fields and forms saved."
+  title "Customer fields" => "حقول العميل";
+  /// FieldSettings · /settings/fields · a title
+  /// shown through SettingsPage.title
+  /// also in FieldSettings /settings/fields
+  title "Fields and forms" => "الحقول والنماذج";
+  /// FieldSettings · /settings/fields · a title
+  /// shown through FieldListSection.title
+  /// beside: "Customer fields", "Company fields", "Add a type", "Fields and forms saved."
+  title "Ticket fields" => "حقول التذكرة";
+
+  // ── FormFor ──
+  /// FormFor · an error message
+  /// shown through ValidationException
+  error "That kind of request is no longer offered. Reload the page and choose again." => "لم يعد هذا النوع من الطلبات متاحًا. أعد تحميل الصفحة واختر مرة أخرى.";
+
+  // ── FormSection ──
+  /// FormSection · a button's label · at most ~27 characters
+  /// shown through Button.label
+  /// also in StatusSettings /settings/statuses
+  button "Make it the default" => "جعلها الافتراضية";
+  /// FormSection · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Switch.label
+  /// beside: "180px"
+  /// also in SlaPolicySettings
+  /// also in RoutingRuleSettings
+  /// also in SharedViewSettings
+  label "In use" => "مستخدمة";
+
+  // ── Front (/) ──
+  /// Front · / · text on the page
+  text "Opening…" => "جارٍ الفتح…";
+  /// Front · / · a title
+  /// shown through [Title]
+  title "Harbour Support" => "Harbour Support";
+
+  // ── HelpCentreSearchPage (/help-centre/search) ──
+  /// HelpCentreSearchPage · /help-centre/search · a title
+  /// shown through [Title]
+  /// also in HelpCentreResultsPage /help-centre/search/{query}
+  /// also in DeskSearchPage /search
+  title "Search" => "ابحث";
+
+  // ── HelpPage (/help) ──
+  /// HelpPage · /help · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Write another" => "كتابة طلب آخر";
+  /// HelpPage · /help · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Done.label
+  label "We have your request" => "استلمنا طلبك";
+  /// HelpPage · /help · text on the page
+  /// beside: "We have your request", "Write another"
+  text ", and you can follow it under Your requests." => "، ويمكنك متابعته من «طلباتك».";
+  /// HelpPage · /help · text on the page
+  /// placeholders: {sent} = sent (int)
+  text "Open #{sent}" => "فتح #{sent}";
+  /// HelpPage · /help · text on the page
+  /// beside: "How can we help?"
+  text "Tell us what happened. A person on the team answers, usually within a working day and sooner for anything urgent." => "أخبرنا بما حدث. سيرد عليك أحد أعضاء الفريق، عادةً خلال يوم عمل، وأسرع من ذلك في الأمور العاجلة.";
+  /// HelpPage · /help · text on the page
+  /// placeholders: {sent} = sent (int), {value} = … (string)
+  /// beside: "We have your request", "Write another"
+  text "Your reference is #{sent}. We'll answer by mail{value}" => "رقمك المرجعي هو #{sent}. سنرد عليك عبر البريد{value}";
+  /// HelpPage · /help · a title
+  /// shown through [Title]
+  title "Get help" => "احصل على المساعدة";
+
+  // ── HoldReviewPage (/v/{view}/h/{id}) ──
+  /// HoldReviewPage · /v/{view}/h/{id} · text on the page
+  text "This review is not one you may open." => "هذه المراجعة ليست مما يحق لك فتحه.";
+  /// HoldReviewPage · /v/{view}/h/{id} · a title
+  /// shown through [Title]
+  title "Legal hold review" => "مراجعة التجميد القانوني";
+
+  // ── HoursSettings (/settings/hours) ──
+  /// HoursSettings · /settings/hours · a title
+  /// shown through [Title]
+  /// also in BusinessHoursSettings
+  /// also in HoursSettings /settings/hours
+  title "Business hours" => "ساعات العمل";
+
+  // ── InviteForm ──
+  /// InviteForm · placeholder text inside an empty field · at most ~23 characters
+  /// shown through Field.placeholder
+  /// beside: "A note (optional)", "Send invitation"
+  /// also in QueueSettings
+  /// also in NewTicketForm
+  /// also in RequestForm
+  placeholder "name@company.com" => "name@company.com";
+
+  // ── KeptBody ──
+  /// KeptBody · text on the page
+  /// shown through KeptBody()
+  text "A legal hold keeps it as long as the hold stands. When the hold is lifted it is kept for the rest of its period, then erased." => "يحفظها التجميد القانوني ما دام قائمًا. وعند رفعه تُحفظ بقية مدتها، ثم تُمحى.";
+  /// KeptBody · text on the page
+  /// shown through KeptBody()
+  text "It is erased when its period ends." => "تُمحى عند انتهاء مدتها.";
+  /// KeptBody · text on the page
+  /// placeholders: {next} = next (string)
+  /// shown through KeptBody()
+  text "The customer asked to be erased, and this conversation concerns a claim, so it is kept — out of use. The ticket is closed and its promises stopped. Nobody reads it on the desk; it is read only for the claim, and every read is recorded. {next}" => "طلب العميل محو بياناته، وهذه المحادثة تخص مطالبة، لذا تُحفظ خارج الاستخدام. التذكرة مغلقة وتوقفت وعودها. لا يقرؤها أحد في المكتب؛ تُقرأ لأجل المطالبة فقط، وتُسجَّل كل قراءة. {next}";
+  /// KeptBody · text on the page
+  /// shown through KeptBody()
+  text "The customer asked us to stop using their data until they say otherwise. Nothing is erased, and nothing is read. The ticket is closed; if they write to us again, that opens a new one." => "طلب العميل منا التوقف عن استخدام بياناته حتى يقول غير ذلك. لا يُمحى شيء، ولا يُقرأ شيء. التذكرة مغلقة؛ وإن كتب إلينا من جديد فُتحت تذكرة جديدة.";
+
+  // ── KeptConversation ──
+  /// KeptConversation · a control's name for screen readers
+  accessibleName "Kept conversation" => "محادثة محفوظة";
+  /// KeptConversation · a button's label · at most ~30 characters
+  /// shown through Button.label
+  button "Read it for the claim" => "اقرأها لأجل المطالبة";
+  /// KeptConversation · text on the page
+  text "This read is recorded, with your name." => "تُسجَّل هذه القراءة باسمك.";
+  /// KeptConversation · a title
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ShellSheet.title
+  title "Kept conversation · #{t.Number}" => "محادثة محفوظة · #{t.Number}";
+
+  // ── KeptCustomer ──
+  /// KeptCustomer · a control's name for screen readers
+  /// also in CustomerPanel
+  accessibleName "Customer" => "العميل";
+  /// KeptCustomer · text on the page
+  /// beside: "Who they are is out of use with the conversation it belongs to."
+  text "Customer kept for legal claims" => "عميل محفوظة بياناته لأجل مطالبات قانونية";
+  /// KeptCustomer · text on the page
+  /// beside: "Customer kept for legal claims"
+  text "Who they are is out of use with the conversation it belongs to." => "هويته خارج الاستخدام مع المحادثة التي تخصّها.";
+
+  // ── KeptHeadline ──
+  /// KeptHeadline · text on the page
+  /// placeholders: {ToString} = ….ToString(…) (DateTime)
+  /// shown through KeptHeadline()
+  text "Kept for legal claims until {ToString}" => "محفوظة لأجل مطالبات قانونية حتى {ToString}";
+  /// KeptHeadline · text on the page
+  /// shown through KeptHeadline()
+  text "Kept for legal claims while a legal hold stands" => "محفوظة لأجل مطالبات قانونية ما دام حجز قانوني قائمًا";
+  /// KeptHeadline · text on the page
+  /// shown through KeptHeadline()
+  text "Restricted at the customer's request" => "مقيّدة بطلب من العميل";
+
+  // ── KnowledgeArticleDeskPage (/knowledge/a/{id}) ──
+  /// KnowledgeArticleDeskPage · /knowledge/a/{id} · a title
+  /// shown through [Title]
+  /// also in KnowledgeArticleLanguagePage /knowledge/a/{id}/{language}
+  /// also in KnowledgeArticleDeskPage /knowledge/a/{id}
+  title "Article" => "مقال";
+
+  // ── KnowledgeCategoriesPage (/knowledge/categories) ──
+  /// KnowledgeCategoriesPage · /knowledge/categories · a title
+  /// shown through [Title]
+  /// also in KnowledgeShelvesDesk
+  /// also in KnowledgeCategoriesPage /knowledge/categories
+  title "Categories" => "الفئات";
+
+  // ── KnowledgeDeskLine ──
+  /// KnowledgeDeskLine · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Badge.label
+  /// also in KnowledgeArticleDesk
+  /// also in KnowledgeCategoryCard
+  /// also in KnowledgeShelfCard
+  label "Team only" => "للفريق فقط";
+
+  // ── KnowledgeDeskPage (/knowledge) ──
+  /// KnowledgeDeskPage · /knowledge · a title
+  /// shown through [Title]
+  /// also in KnowledgeDesk
+  /// also in KnowledgeSettingsEditor
+  /// also in KnowledgeSettingsPage /settings/knowledge
+  title "Knowledge base" => "قاعدة المعرفة";
+
+  // ── KnowledgeFrame ──
+  /// KnowledgeFrame · a control's name for screen readers
+  /// shown through AppChrome.Product
+  /// also in DeskFrame
+  /// also in SettingsFrame
+  accessibleName "Harbour Desk" => "Harbour Desk";
+  /// KnowledgeFrame · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through MenuAction.Label
+  /// also in DeskFrame
+  /// also in SettingsFrame
+  label "Appearance" => "المظهر";
+  /// KnowledgeFrame · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through MenuAction.Label
+  /// also in DeskFrame
+  /// also in PortalChrome
+  /// also in SettingsFrame
+  label "Sign out" => "تسجيل الخروج";
+  /// KnowledgeFrame · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through MenuAction.Label
+  /// also in DeskFrame
+  /// also in PortalChrome
+  /// also in SettingsFrame
+  label "Your account" => "حسابك";
+  /// KnowledgeFrame · tagline
+  /// shown through AppChrome.Tagline
+  /// also in DeskFrame
+  /// also in SettingsFrame
+  tagline "Support" => "الدعم";
+
+  // ── KnowledgeFront ──
+  /// KnowledgeFront · text on the page
+  /// shown through KnowledgeHero.question
+  /// beside: "1080px"
+  /// also in HelpPage /help
+  text "How can we help?" => "كيف يمكننا مساعدتك؟";
+
+  // ── KnowledgeReviewPage (/knowledge/review) ──
+  /// KnowledgeReviewPage · /knowledge/review · a title
+  /// shown through [Title]
+  /// also in KnowledgeReviewQueue
+  /// also in KnowledgeReviewPage /knowledge/review
+  title "Waiting for review" => "بانتظار المراجعة";
+
+  // ── KnowledgeSearchBox ──
+  /// KnowledgeSearchBox · a button's label · at most ~12 characters
+  /// shown through Button.label
+  /// beside: "Search the help centre"
+  /// also in FilterEditor
+  /// also in DeskSearchPage /search
+  button "Search" => "ابحث";
+
+  // ── LanguageChoice ──
+  /// LanguageChoice · a control's name for screen readers
+  accessibleName "Language" => "اللغة";
+
+  // ── LanguageName ──
+  /// LanguageName · text on the page
+  text "Dansk" key "endonym" => "Dansk";
+  /// LanguageName · text on the page
+  text "Deutsch" key "endonym" => "Deutsch";
+  /// LanguageName · text on the page
+  text "English" key "endonym" => "English";
+  /// LanguageName · text on the page
+  text "Español" key "endonym" => "Español";
+  /// LanguageName · text on the page
+  text "Français" key "endonym" => "Français";
+  /// LanguageName · text on the page
+  text "Italiano" key "endonym" => "Italiano";
+  /// LanguageName · text on the page
+  text "Nederlands" key "endonym" => "Nederlands";
+  /// LanguageName · text on the page
+  text "Norsk" key "endonym" => "Norsk";
+  /// LanguageName · text on the page
+  text "Polski" key "endonym" => "Polski";
+  /// LanguageName · text on the page
+  text "Português" key "endonym" => "Português";
+  /// LanguageName · text on the page
+  text "Suomi" key "endonym" => "Suomi";
+  /// LanguageName · text on the page
+  text "Svenska" key "endonym" => "Svenska";
+  /// LanguageName · text on the page
+  text "العربية" key "endonym" => "العربية";
+  /// LanguageName · text on the page
+  text "中文" key "endonym" => "中文";
+  /// LanguageName · text on the page
+  text "日本語" key "endonym" => "日本語";
+
+  // ── LinkAsIncidentOf ──
+  /// LinkAsIncidentOf · an error message
+  /// placeholders: {problem} = problem (int)
+  /// shown through ValidationException
+  error "There is no ticket #{problem}." => "لا توجد تذكرة برقم #{problem}.";
+
+  // ── LinkGonePage (/link-gone) ──
+  /// LinkGonePage · /link-gone · text on the page
+  /// shown through EmptyState.body
+  text "Links in our mails work for a while, and some only once. To reach us, write from Get help — or sign in to see your requests." => "تعمل الروابط في رسائلنا لفترة، وبعضها مرة واحدة فقط. للتواصل معنا اكتب من صفحة المساعدة، أو سجّل الدخول لرؤية طلباتك.";
+  /// LinkGonePage · /link-gone · a title
+  /// shown through EmptyState.title
+  /// also in LinkGonePage /link-gone
+  title "This link has run out" => "انتهت صلاحية هذا الرابط";
+
+  // ── MailCustomer ──
+  /// MailCustomer · an error message
+  /// placeholders: {reply.Title} = reply.Title (string), {Join} = string.Join(…) (string)
+  /// shown through ValidationException
+  error "“{reply.Title}” has a placeholder this ticket cannot fill: {Join}." => "«{reply.Title}» يحتوي على عنصر نائب لا تستطيع هذه التذكرة ملأه: {Join}.";
+  /// MailCustomer · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through [Action] MailCustomer
+  /// beside: "Reply"
+  label "Mail the customer" => "مراسلة العميل بالبريد";
+
+  // ── MailboxViews ──
+  /// MailboxViews · text on the page
+  /// placeholders: {ToString} = w.LastPolledAt.Value.ToString(…) (DateTime)
+  /// shown through LastAsked
+  /// also in AuditList
+  text "{ToString} UTC" => "{ToString} UTC";
+
+  // ── MeaningOffSentence ──
+  /// MeaningOffSentence · message
+  /// shown through MeaningOffSentence()
+  message "Search by meaning is off until the embedding key is set — these are matches by words." => "البحث بالمعنى متوقف حتى يُضبط مفتاح التضمين، وهذه نتائج مطابقة بالكلمات.";
+
+  // ── MentionedInNote.Sentence ──
+  /// MentionedInNote.Sentence · text on the page
+  /// shown through Sentence()
+  text "You were mentioned in a note." => "تمت الإشارة إليك في ملاحظة.";
+  /// MentionedInNote.Sentence · text on the page
+  /// placeholders: {by} = by (string)
+  /// shown through Sentence()
+  text "{by} mentioned you in a note." => "إشارة إليك من {by} في ملاحظة.";
+
+  // ── MergeInto ──
+  /// MergeInto · an error message
+  /// placeholders: {dup.Number} = dup.Number (int)
+  /// shown through ValidationException
+  error "#{dup.Number} is already closed." => "#{dup.Number} مغلقة بالفعل.";
+  /// MergeInto · an error message
+  /// placeholders: {into.Number} = into.Number (int)
+  /// shown through ValidationException
+  error "#{into.Number} is closed. Merge into an open ticket." => "#{into.Number} مغلقة. ادمج في تذكرة مفتوحة.";
+  /// MergeInto · an error message
+  /// shown through ValidationException
+  error "A ticket cannot be merged into itself." => "لا يمكن دمج تذكرة في نفسها.";
+
+  // ── MoveTicketTo ──
+  /// MoveTicketTo · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through [Action] MoveTicketTo
+  /// beside: "Queue"
+  label "Move to queue" => "نقل إلى قائمة انتظار";
+
+  // ── MoveTo ──
+  /// MoveTo · an error message
+  /// shown through ValidationException
+  error "A ticket cannot go back to New. Set it Open instead." => "لا يمكن إعادة التذكرة إلى «جديدة». اجعلها «مفتوحة» بدلًا من ذلك.";
+  /// MoveTo · an error message
+  /// shown through ValidationException
+  error "Solve the ticket first; it closes when the customer has had their answer." => "حُلّ التذكرة أولًا؛ فهي تُغلق عندما يتلقى العميل إجابته.";
+
+  // ── MyPrivacy ──
+  /// MyPrivacy · a control's name for screen readers
+  /// beside: "Your privacy", "Ask us", "What we keep"
+  /// also in MyRequestsPage /my
+  accessibleName "Your requests" => "طلباتك";
+  /// MyPrivacy · text on the page
+  /// shown through SectionLabel.text
+  /// also in MyRequestsPage /my
+  /// also in MyRequestPage /my/{number}
+  text "Your requests" => "طلباتك";
+  /// MyPrivacy · a title
+  /// shown through PageHead.title
+  /// beside: "Ask us", "Your requests", "What we keep"
+  /// also in MyPrivacyPage /privacy
+  title "Your privacy" => "خصوصيتك";
+
+  // ── MyRequestPage (/my/{number}) ──
+  /// MyRequestPage · /my/{number} · a button's label · at most ~16 characters
+  /// shown through Button.label
+  /// beside: "Attach files"
+  button "Send reply" => "إرسال الرد";
+  /// MyRequestPage · /my/{number} · a label (a field, a list item, a menu entry) · at most ~41 characters
+  /// shown through TextAreaField.label
+  /// beside: "Send reply"
+  label "Not solved after all? Tell us" => "لم تُحل المشكلة بعد؟ أخبرنا";
+  /// MyRequestPage · /my/{number} · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through TextAreaField.label
+  /// beside: "Send reply"
+  label "Your reply" => "ردك";
+  /// MyRequestPage · /my/{number} · text on the page
+  /// placeholders: {number} = number (int)
+  /// shown through EmptyState.body
+  text "There is no request #{number} you can see." => "لا يوجد طلب برقم #{number} يمكنك رؤيته.";
+  /// MyRequestPage · /my/{number} · text on the page
+  /// placeholders: {t.Number} = t.Number (int)
+  text "This request is closed. Write a new one from Get help and mention #{t.Number}." => "هذا الطلب مغلق. اكتب طلبًا جديدًا من «احصل على المساعدة» واذكر #{t.Number}.";
+  /// MyRequestPage · /my/{number} · a title
+  /// shown through EmptyState.title
+  title "Not one of yours" => "ليس من طلباتك";
+  /// MyRequestPage · /my/{number} · a title
+  /// shown through [Title]
+  title "Your request" => "طلبك";
+
+  // ── MyRequestsPage (/my) ──
+  /// MyRequestsPage · /my · text on the page
+  text "New request" => "طلب جديد";
+  /// MyRequestsPage · /my · text on the page
+  /// placeholders: {support} = support (string)
+  /// shown through EmptyState.body
+  text "Requests you send from the help page, or by mail to {support}, appear here." => "تظهر هنا الطلبات التي ترسلها من صفحة المساعدة، أو عبر البريد إلى {support}.";
+  /// MyRequestsPage · /my · text on the page
+  /// placeholders: {r.Requester} = r.Requester (string), {Ago} = Osysharp.Inbox.Ago(…) (string)
+  text "{r.Requester} · updated {Ago} ago" => "{r.Requester} · حُدّث قبل {Ago}";
+  /// MyRequestsPage · /my · a title
+  /// shown through EmptyState.title
+  title "Nothing yet" => "لا شيء بعد";
+  /// MyRequestsPage · /my · a title
+  /// shown through [Title]
+  title "Your requests" => "طلباتك";
+
+  // ── NewTicketForm ──
+  /// NewTicketForm · a control's name for screen readers
+  accessibleName "New ticket" => "تذكرة جديدة";
+  /// NewTicketForm · a button's label · at most ~21 characters
+  /// shown through Button.label
+  button "Open the ticket" => "فتح التذكرة";
+  /// NewTicketForm · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Field.label
+  label "Customer's address" => "عنوان العميل";
+  /// NewTicketForm · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through TextAreaField.label
+  /// beside: "220px", "Subject", "180px", "Open the ticket"
+  label "What they said" => "ما قاله العميل";
+  /// NewTicketForm · placeholder text inside an empty field · at most ~41 characters
+  /// shown through Field.placeholder
+  /// beside: "220px", "What they said", "180px", "Open the ticket"
+  /// also in RequestForm
+  placeholder "One line saying what is wrong" => "سطر واحد يوضح المشكلة";
+  /// NewTicketForm · text on the page
+  /// shown through problem
+  /// also in RequestForm
+  text "Some answers need another look — each says what, above." => "بعض الإجابات تحتاج إلى مراجعة، وكل منها يوضح السبب أعلاه.";
+
+  // ── NewTicketPage (/new) ──
+  /// NewTicketPage · /new · a subtitle
+  /// shown through PageHead.subtitle
+  subtitle "For a request that reached you some other way: a call, a chat, a mail forwarded by hand." => "لطلب وصلك بطريقة أخرى: مكالمة، أو محادثة، أو رسالة أُعيد توجيهها يدويًا.";
+  /// NewTicketPage · /new · a title
+  /// shown through PageHead.title
+  /// also in NewTicketPage /new
+  title "New ticket" => "تذكرة جديدة";
+
+  // ── NotificationPreferencesFields ──
+  /// NotificationPreferencesFields · a title
+  /// shown through SettingsSection.title
+  /// also in DeskAddressFields
+  title "Mail" => "البريد";
+
+  // ── OpenTabs ──
+  /// OpenTabs · a control's name for screen readers
+  accessibleName "Open tickets" => "التذاكر المفتوحة";
+  /// OpenTabs · a control's name for screen readers
+  accessibleName "unsent reply" => "رد غير مُرسَل";
+  /// OpenTabs · a button's label · at most ~30 characters
+  /// placeholders: {TicketInPath} = TicketInPath(…) (int)
+  /// shown through IconButton.label
+  button "Close #{TicketInPath}" => "إغلاق #{TicketInPath}";
+
+  // ── OpenTicket ──
+  /// OpenTicket · an error message
+  /// shown through ValidationException
+  error "Give the ticket a subject." => "اكتب موضوعًا للتذكرة.";
+  /// OpenTicket · an error message
+  /// shown through ValidationException
+  error "Whose ticket is it? Give their address." => "لمن هذه التذكرة؟ أدخل عنوانه.";
+
+  // ── Osysharp.ActionOutcome ──
+  /// Osysharp.ActionOutcome · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.ActionOutcome.Invalid
+  /// beside: "Done", "Not allowed", "Gone", "Failed"
+  /// also in Osysharp.Conversations.MergeState
+  /// also in Osysharp.Conversations.SplitState
+  /// also in Osysharp.Automations.FireOutcome
+  label "Refused" => "مرفوض";
+
+  // ── Osysharp.ActionParameterKind ──
+  /// Osysharp.ActionParameterKind · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.ActionParameterKind.Number
+  /// beside: "Text", "Decimal", "Yes or no", "Date", "Date and time", "Time of day"
+  /// also in Osysharp.RecordFieldKind
+  /// also in Osysharp.Fields.FieldKind
+  /// also in Osysharp.Automations.ConditionKind
+  label "Number" => "رقم";
+
+  // ── Osysharp.Conversations.Conversation ──
+  /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Conversations.Conversation.Subject
+  /// beside: "Started at", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint", "Started by visit"
+  /// also in SideConversationStarter
+  /// also in NewTicketForm
+  /// also in RequestForm
+  label "Subject" => "الموضوع";
+
+  // ── Osysharp.Conversations.ConversationCopy.WidgetAttach ──
+  /// Osysharp.Conversations.ConversationCopy.WidgetAttach · a button's label · at most ~18 characters
+  /// shown through WidgetAttach()
+  /// also in ConversationComposer
+  /// also in Composer
+  /// also in MyRequestPage /my/{number}
+  button "Attach files" => "إرفاق ملفات";
+
+  // ── Osysharp.Conversations.ConversationCopy.WidgetEmailLabel ──
+  /// Osysharp.Conversations.ConversationCopy.WidgetEmailLabel · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through WidgetEmailLabel()
+  /// also in ConversationProveAddress
+  /// also in RequestForm
+  label "Your email" => "بريدك الإلكتروني";
+
+  // ── Osysharp.Conversations.ConversationCopy.WidgetTitle ──
+  /// Osysharp.Conversations.ConversationCopy.WidgetTitle · a title
+  /// shown through WidgetTitle()
+  /// also in PortalChrome
+  /// also in PortalChatPage /chat
+  title "Chat with us" => "تحدّث معنا";
+
+  // ── Osysharp.Conversations.Participant ──
+  /// Osysharp.Conversations.Participant · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Conversations.Participant.Conversation
+  /// beside: "Party", "Member", "Agent name", "Role", "Joined at", "Left at"
+  /// also in Osysharp.Conversations.ConversationEntry
+  /// also in Ticket
+  label "Conversation" => "المحادثة";
+
+  // ── Osysharp.Conversations.ParticipantRole ──
+  /// Osysharp.Conversations.ParticipantRole · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Conversations.ParticipantRole.Customer
+  /// beside: "Copied", "Staff", "AI agent", "Observer"
+  /// also in Osysharp.Conversations.EntryVisibility
+  /// also in CustomerFieldValue
+  /// also in Ticket
+  label "Customer" => "العميل";
+
+  // ── Osysharp.Conversations.Party ──
+  /// Osysharp.Conversations.Party · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Conversations.Party.Language
+  /// beside: "Display name", "Account", "Created by visit", "Merged into", "Erased at", "Points"
+  /// also in Osysharp.Inbox.WorkItem
+  /// also in Osysharp.Inbox.RoutingRule
+  /// also in Osysharp.Inbox.SkillKind
+  label "Language" => "لغة";
+  /// Osysharp.Conversations.Party · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Conversations.Party.MergedInto
+  /// beside: "Display name", "Language", "Account", "Created by visit", "Erased at", "Points"
+  /// also in Ticket
+  label "Merged into" => "مدمجة في";
+
+  // ── Osysharp.Feedback.FeedbackAnswered.Sentence ──
+  /// Osysharp.Feedback.FeedbackAnswered.Sentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through Sentence()
+  /// also in DeskCopy.EventSentence
+  text "{who} said it did not go well." => "أجاب {who} بأن الأمر لم يسر على ما يرام.";
+  /// Osysharp.Feedback.FeedbackAnswered.Sentence · text on the page
+  /// placeholders: {who} = who (string)
+  /// shown through Sentence()
+  /// also in DeskCopy.EventSentence
+  text "{who} said it went well." => "أجاب {who} بأن الأمر سار على ما يرام.";
+
+  // ── Osysharp.Feedback.FeedbackStage ──
+  /// Osysharp.Feedback.FeedbackStage · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Feedback.FeedbackStage.Open
+  /// beside: "Answered", "Settled", "Closed", "No longer asked"
+  /// also in WorkSourceOf
+  /// also in StatusCategory
+  /// also in Stage
+  label "Open" => "مفتوح";
+
+  // ── Osysharp.Feedback.__Settings_FeedbackSettings_Section.Sections ──
+  /// Osysharp.Feedback.__Settings_FeedbackSettings_Section.Sections · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through SettingsLink.Label
+  /// also in DeskNav
+  label "Feedback" => "الآراء";
+
+  // ── Osysharp.Fields.CustomField ──
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Fields.CustomField.Active
+  /// beside: "Name", "Kind", "Options", "Hint", "Public", "Required"
+  /// also in Osysharp.Fields.FieldForm
+  /// also in PersonPanel
+  /// also in Osysharp.Inbox.Queue
+  label "Active" => "نشط";
+  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Fields.CustomField.Position
+  /// beside: "Name", "Kind", "Options", "Hint", "Public", "Required"
+  /// also in Osysharp.Fields.FieldForm
+  /// also in Osysharp.Inbox.Queue
+  /// also in Osysharp.Inbox.RoutingRule
+  label "Position" => "الترتيب";
+
+  // ── Osysharp.Fields.FieldForm ──
+  /// Osysharp.Fields.FieldForm · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Fields.FieldForm.Description
+  /// beside: "Name", "Key", "Is default", "Position", "Active"
+  /// also in Osysharp.Organizations.Accounts.OrganizationTier
+  /// also in Osysharp.Inbox.Queue
+  /// also in TicketStatus
+  label "Description" => "الوصف";
+  /// Osysharp.Fields.FieldForm · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Fields.FieldForm.IsDefault
+  /// beside: "Name", "Description", "Key", "Position", "Active"
+  /// also in Osysharp.Organizations.Accounts.OrganizationTier
+  /// also in TicketStatus
+  label "Is default" => "افتراضي";
+
+  // ── Osysharp.Inbox.AssignReason ──
+  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.Inbox.AssignReason.AccountOwner
+  /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
+  /// also in CompaniesPage /companies
+  label "Account owner" => "مسؤول الحساب";
+
+  // ── Osysharp.Inbox.Handling ──
+  /// Osysharp.Inbox.Handling · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Inbox.Handling.Closed
+  /// beside: "New", "Owed a response", "Answered", "Waiting on the requester", "Waiting on others", "Paused"
+  /// also in Osysharp.Feedback.FeedbackStage
+  /// also in CustomerStatus
+  /// also in StatusCategory
+  label "Closed" => "مغلقة";
+  /// Osysharp.Inbox.Handling · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.Inbox.Handling.New
+  /// beside: "Owed a response", "Answered", "Waiting on the requester", "Waiting on others", "Paused", "Done"
+  /// also in StatusCategory
+  /// also in Stage
+  label "New" => "جديدة";
+
+  // ── Osysharp.Inbox.InboxWords.Metric ──
+  /// Osysharp.Inbox.InboxWords.Metric · text on the page
+  /// shown through Metric()
+  /// also in DeskWords.Metric
+  text "resolution" => "الحل";
+
+  // ── Osysharp.Inbox.RoutingRule ──
+  /// Osysharp.Inbox.RoutingRule · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.Inbox.RoutingRule.AssignTo
+  /// beside: "Name", "Position", "Active", "Continue after", "Channel", "Title contains"
+  /// also in AssignTicket
+  label "Assign to" => "إسناد إلى";
+  /// Osysharp.Inbox.RoutingRule · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Inbox.RoutingRule.SetPriority
+  /// beside: "Name", "Position", "Active", "Continue after", "Channel", "Title contains"
+  /// also in SetTicketPriority
+  /// also in TicketView
+  label "Set priority" => "ضبط الأولوية";
+
+  // ── Osysharp.Inbox.SlaAction ──
+  /// Osysharp.Inbox.SlaAction · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.Inbox.SlaAction.TellLeads
+  /// beside: "Tell the holder", "Raise the priority", "Escalate", "Move to a queue"
+  /// also in TellLeads
+  label "Tell the leads" => "إبلاغ قادة الفريق";
+
+  // ── Osysharp.Inbox.SlaMetric ──
+  /// Osysharp.Inbox.SlaMetric · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Inbox.SlaMetric.Resolution
+  /// beside: "First response", "Next response"
+  /// also in SlaPolicySettings
+  /// also in Ticket
+  label "Resolution" => "الحل";
+
+  // ── Osysharp.Inbox.WaitFor ──
+  /// Osysharp.Inbox.WaitFor · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.Inbox.WaitFor.Pause
+  /// beside: "The requester", "Somebody else"
+  /// also in StatusCategory
+  /// also in Stage
+  label "On hold" => "معلّقة";
+
+  // ── Osysharp.Inbox.WorkItem ──
+  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Inbox.WorkItem.Priority
+  /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Handling"
+  /// also in Osysharp.Inbox.SlaPolicy
+  /// also in WorkItemHead
+  /// also in Osysharp.Inbox.WorkSort
+  label "Priority" => "الأولوية";
+  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Inbox.WorkItem.Queue
+  /// beside: "Title", "Reference", "Assignee", "Offered to", "Priority", "Handling"
+  /// also in Osysharp.Inbox.QueueMember
+  /// also in Osysharp.Inbox.SlaPolicy
+  /// also in WorkItemHead
+  label "Queue" => "قائمة الانتظار";
+  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Inbox.WorkItem.Title
+  /// beside: "Reference", "Queue", "Assignee", "Offered to", "Priority", "Handling"
+  /// also in SavedReplySettings
+  /// also in MacroSettings
+  /// also in KnowledgeStartDialog
+  label "Title" => "العنوان";
+
+  // ── Osysharp.Knowledge.__Settings_KnowledgeSettings_Section.Sections ──
+  /// Osysharp.Knowledge.__Settings_KnowledgeSettings_Section.Sections · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through SettingsLink.Label
+  /// also in DeskNav
+  label "Knowledge base" => "قاعدة المعرفة";
+
+  // ── Osysharp.Mail.Receiving.MailboxSettingsSections.Sections ──
+  /// Osysharp.Mail.Receiving.MailboxSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  /// also in __Settings_DeskAddress_Section.Sections
+  heading "Channels" => "القنوات";
+
+  // ── Osysharp.Mail.Receiving.ReceivedMailStatus ──
+  /// Osysharp.Mail.Receiving.ReceivedMailStatus · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Mail.Receiving.ReceivedMailStatus.Accepted
+  /// beside: "Handled", "Failed"
+  /// also in Osysharp.Conversations.MessageDirection
+  /// also in Osysharp.Privacy.RequestState
+  /// also in CustomerStatus
+  label "Received" => "مستلَمة";
+
+  // ── Osysharp.Organizations.Accounts.CustomerAccount ──
+  /// Osysharp.Organizations.Accounts.CustomerAccount · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Organizations.Accounts.CustomerAccount.Tier
+  /// also in Osysharp.Inbox.RoutingRule
+  /// also in Osysharp.Inbox.SlaPolicy
+  /// also in SlaPolicySettings
+  label "Tier" => "الفئة";
+
+  // ── Osysharp.Organizations.MembershipSource ──
+  /// Osysharp.Organizations.MembershipSource · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Organizations.MembershipSource.Domain
+  /// beside: "Added here", "Invitation", "Single sign-on", "Directory (SCIM)"
+  /// also in CompaniesPage /companies
+  label "Mail domain" => "نطاق البريد";
+
+  // ── Osysharp.People.PeopleSettingsSections.Sections ──
+  /// Osysharp.People.PeopleSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  /// also in DeskSettingsSections.Sections
+  heading "Team" => "الفريق";
+  /// Osysharp.People.PeopleSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through SettingsLink.Label
+  /// also in Company
+  /// also in CompaniesPage /companies
+  /// also in DeskFrame
+  label "People" => "الأشخاص";
+
+  // ── Osysharp.Privacy.RequestKind ──
+  /// Osysharp.Privacy.RequestKind · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Privacy.RequestKind.Access
+  /// beside: "Portability", "Erasure", "Restriction"
+  /// also in AuditArea
+  label "Access" => "الاطّلاع";
+
+  // ── Osysharp.Reports.PeriodPreset ──
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Reports.PeriodPreset.Last30Days
+  /// beside: "Today", "Last 7 days", "Last 90 days", "This week", "This month", "Last month"
+  /// also in AuditPeriod
+  label "Last 30 days" => "آخر 30 يومًا";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Reports.PeriodPreset.Last7Days
+  /// beside: "Today", "Last 30 days", "Last 90 days", "This week", "This month", "Last month"
+  /// also in AuditPeriod
+  label "Last 7 days" => "آخر 7 أيام";
+  /// Osysharp.Reports.PeriodPreset · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Reports.PeriodPreset.Last90Days
+  /// beside: "Today", "Last 7 days", "Last 30 days", "This week", "This month", "Last month"
+  /// also in AuditPeriod
+  label "Last 90 days" => "آخر 90 يومًا";
+
+  // ── Osysharp.ServiceHours.ServiceHours ──
+  /// Osysharp.ServiceHours.ServiceHours · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.ServiceHours.ServiceHours.Name
+  /// beside: "Zone", "Windows", "Exceptions"
+  /// also in Osysharp.Fields.CustomField
+  /// also in Osysharp.Fields.FieldForm
+  /// also in FieldListSection
+  label "Name" => "الاسم";
+
+  // ── PartyCard ──
+  /// PartyCard · text on the page
+  /// also in CustomerRecord
+  text "Probably the same person" => "على الأرجح الشخص نفسه";
+
+  // ── PartyFields ──
+  /// PartyFields · text on the page
+  /// shown through RecordFields.whereMade
+  text "Settings › Fields and forms" => "الإعدادات › الحقول والنماذج";
+  /// PartyFields · a title
+  /// shown through RecordFields.title
+  title "About the company" => "عن الشركة";
+  /// PartyFields · a title
+  /// shown through RecordFields.title
+  title "About them" => "عن الشخص";
+
+  // ── PeopleManager ──
+  /// PeopleManager · a title
+  /// shown through PageHead.title
+  /// beside: "Search people", "Waiting invitations"
+  /// also in PeopleSettings /settings/people
+  title "People" => "الأشخاص";
+
+  // ── PortalChatHelp ──
+  /// PortalChatHelp · text on the page
+  /// shown through KnowledgeQuickSearch.fallback
+  text "Nothing found — write to us below and a person answers." => "لم يُعثر على شيء — اكتب لنا أدناه وسيرد عليك شخص.";
+
+  // ── PortalChrome ──
+  /// PortalChrome · a control's name for screen readers
+  /// shown through AppChrome.Product
+  accessibleName "Harbour Support" => "Harbour Support";
+  /// PortalChrome · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through MenuAction.Label
+  /// also in PortalNav
+  label "Your privacy" => "خصوصيتك";
+  /// PortalChrome · text on the page
+  /// shown through ConversationLauncher.intro
+  /// also in PortalChatPage /chat
+  text "Ask us anything — a person on the team reads every message." => "اسألنا عن أي شيء — يقرأ شخص من الفريق كل رسالة.";
+
+  // ── PortalNav ──
+  /// PortalNav · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through NavItem.Label
+  label "Chat" => "المحادثة";
+  /// PortalNav · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through NavItem.Label
+  label "Get help" => "احصل على المساعدة";
+  /// PortalNav · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through NavItem.Label
+  label "Help centre" => "مركز المساعدة";
+  /// PortalNav · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through NavItem.Label
+  label "Your requests" => "طلباتك";
+
+  // ── PrivacyLine ──
+  /// PrivacyLine · a label (a field, a list item, a menu entry) · at most ~45 characters
+  /// shown through PrivacyLine.Erased
+  /// beside: "Kept for legal claims, then erased", "Kept for legal claims", "Restricted at the customer's request", "Held", "Hold lifted"
+  label "Erased at the customer's request" => "مُحيت بطلب من العميل";
+  /// PrivacyLine · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through PrivacyLine.HoldPlaced
+  /// beside: "Erased at the customer's request", "Kept for legal claims, then erased", "Kept for legal claims", "Restricted at the customer's request", "Hold lifted"
+  label "Held" => "مجمّدة";
+  /// PrivacyLine · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through PrivacyLine.HoldLifted
+  /// beside: "Erased at the customer's request", "Kept for legal claims, then erased", "Kept for legal claims", "Restricted at the customer's request", "Held"
+  label "Hold lifted" => "رُفع التجميد";
+  /// PrivacyLine · a label (a field, a list item, a menu entry) · at most ~30 characters
+  /// shown through PrivacyLine.KeptForClaims
+  /// beside: "Erased at the customer's request", "Kept for legal claims, then erased", "Restricted at the customer's request", "Held", "Hold lifted"
+  label "Kept for legal claims" => "محفوظة لأجل مطالبات قانونية";
+  /// PrivacyLine · a label (a field, a list item, a menu entry) · at most ~48 characters
+  /// shown through PrivacyLine.KeptPeriodEnded
+  /// beside: "Erased at the customer's request", "Kept for legal claims", "Restricted at the customer's request", "Held", "Hold lifted"
+  label "Kept for legal claims, then erased" => "حُفظت لأجل مطالبات قانونية، ثم مُحيت";
+  /// PrivacyLine · a label (a field, a list item, a menu entry) · at most ~51 characters
+  /// shown through PrivacyLine.Restricted
+  /// beside: "Erased at the customer's request", "Kept for legal claims, then erased", "Kept for legal claims", "Held", "Hold lifted"
+  label "Restricted at the customer's request" => "مقيّدة بطلب من العميل";
+
+  // ── PrivacyRequestPage (/v/{view}/p/{id}) ──
+  /// PrivacyRequestPage · /v/{view}/p/{id} · text on the page
+  text "This request is not one you may open, or it was purged at the end of its period." => "لا يحق لك فتح هذا الطلب، أو أنه حُذف نهائيًا عند انتهاء مدة الاحتفاظ به.";
+  /// PrivacyRequestPage · /v/{view}/p/{id} · a title
+  /// shown through [Title]
+  title "Privacy request" => "طلب خصوصية";
+
+  // ── PrivacyRequestPane ──
+  /// PrivacyRequestPane · a control's name for screen readers
+  /// beside: "Who, and how we know"
+  /// also in StartPrivacyRequest
+  accessibleName "The plan" => "الخطة";
+
+  // ── PrivacyWords ──
+  /// PrivacyWords · text on the page
+  /// shown through PrivacyWords()
+  text "A legal hold now keeps it, until the hold is lifted." => "يحفظها الآن تجميد قانوني، حتى يُرفع.";
+  /// PrivacyWords · text on the page
+  /// shown through PrivacyWords()
+  text "Closed: the conversation was kept for legal claims, and was erased when its period ended." => "أُغلقت: كانت المحادثة محفوظة لأجل مطالبات قانونية، ومُحيت عند انتهاء مدتها.";
+  /// PrivacyWords · text on the page
+  /// shown through PrivacyWords()
+  text "Closed: the customer asked to be erased, and this conversation concerns a claim, so it is kept for legal claims, out of use." => "أُغلقت: طلب العميل محو بياناته، وهذه المحادثة تخص مطالبة، لذا تُحفظ لأجل مطالبات قانونية خارج الاستخدام.";
+  /// PrivacyWords · text on the page
+  /// shown through PrivacyWords()
+  text "Closed: the customer asked us to stop using their data, so this conversation is out of use until they say otherwise." => "أُغلقت: طلب العميل منا التوقف عن استخدام بياناته، لذا هذه المحادثة خارج الاستخدام حتى يقول غير ذلك.";
+  /// PrivacyWords · text on the page
+  /// shown through PrivacyWords()
+  text "Closed: the customer's data in this conversation was erased at their request." => "أُغلقت: مُحيت بيانات العميل في هذه المحادثة بناءً على طلبه.";
+  /// PrivacyWords · text on the page
+  /// shown through PrivacyWords()
+  text "The legal hold was lifted." => "رُفع التجميد القانوني.";
+  /// PrivacyWords · text on the page
+  /// placeholders: {until.Value} = until.Value (DateTime)
+  /// shown through PrivacyWords()
+  text "The legal hold was lifted: it is kept until {until.Value}, then erased." => "رُفع التجميد القانوني: تُحفظ حتى {until.Value}، ثم تُمحى.";
+
+  // ── Question ──
+  /// Question · placeholder text inside an empty field · at most ~14 characters
+  /// shown through Field.placeholder
+  /// also in Osysharp.Conversations.ConversationCopy.WidgetOptional
+  /// also in NewTicketForm
+  placeholder "Optional" => "اختياري";
+
+  // ── QueuesSettings (/settings/queues) ──
+  /// QueuesSettings · /settings/queues · a title
+  /// shown through [Title]
+  /// also in QueueSettings
+  /// also in QueuesSettings /settings/queues
+  title "Queues" => "قوائم الانتظار";
+
+  // ── ReadableTicket ──
+  /// ReadableTicket · an error message
+  /// placeholders: {number} = number (int)
+  /// shown through NotFoundException
+  error "There is no ticket #{number} — or not one you may read." => "لا توجد تذكرة #{number}، أو لا توجد تذكرة يُسمح لك بقراءتها.";
+
+  // ── ReplyToTicket ──
+  /// ReplyToTicket · an error message
+  /// placeholders: {first.ByName} = first.ByName (string), {first.At} = first.At (DateTime)
+  /// shown through ValidationException
+  error "{first.ByName} replied at {first.At} while you were writing. Read their reply. Yours is still here if it needs sending." => "ردّ {first.ByName} في {first.At} أثناء كتابتك. اقرأ ردّه أولًا. ردّك ما زال هنا إن كان يحتاج إلى إرسال.";
+
+  // ── ReportBuilder ──
+  /// ReportBuilder · a control's name for screen readers
+  /// also in FieldList
+  /// also in TicketFields
+  accessibleName "Fields" => "الحقول";
+
+  // ── ReportBuilderPage (/reports/build) ──
+  /// ReportBuilderPage · /reports/build · a title
+  /// shown through [Title]
+  title "Build a report" => "إنشاء تقرير";
+
+  // ── ReportsPage (/reports) ──
+  /// ReportsPage · /reports · a title
+  /// shown through ReportOverview.title
+  title "Overview" => "نظرة عامة";
+  /// ReportsPage · /reports · a title
+  /// shown through [Title]
+  title "Reports" => "التقارير";
+
+  // ── RequestForm ──
+  /// RequestForm · a control's name for screen readers
+  /// beside: "Your data:"
+  accessibleName "Your request" => "طلبك";
+  /// RequestForm · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Send request" => "إرسال الطلب";
+  /// RequestForm · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through TextAreaField.label
+  /// beside: "Subject", "Send request"
+  label "What happened" => "ما الذي حدث";
+  /// RequestForm · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Dropdown.label
+  label "What is it about?" => "بخصوص ماذا؟";
+  /// RequestForm · placeholder text inside an empty field · at most ~26 characters
+  /// shown through Dropdown.placeholder
+  placeholder "Choose the closest" => "اختر الأقرب";
+  /// RequestForm · placeholder text inside an empty field · at most ~93 characters
+  /// shown through TextAreaField.placeholder
+  /// beside: "Subject", "Send request"
+  placeholder "What you were doing, what you expected, and what happened instead." => "ما الذي كنت تفعله، وما الذي توقعته، وما الذي حدث بدلًا من ذلك.";
+  /// RequestForm · text on the page
+  /// beside: "Sign in to follow your requests"
+  text "Have an account?" => "لديك حساب؟";
+  /// RequestForm · text on the page
+  text "Sign in to follow your requests" => "سجّل الدخول لمتابعة طلباتك";
+  /// RequestForm · text on the page
+  /// beside: "see what we keep, ask for a copy or have it erased"
+  text "Your data:" => "بياناتك:";
+  /// RequestForm · text on the page
+  text "see what we keep, ask for a copy or have it erased" => "اطّلع على ما نحتفظ به، أو اطلب نسخة منه، أو اطلب محوه";
+
+  // ── RoleWord ──
+  /// RoleWord · text on the page
+  /// shown through RoleWord()
+  text "Admin" => "مسؤول";
+  /// RoleWord · text on the page
+  /// shown through RoleWord()
+  text "Lead" => "قائد فريق";
+
+  // ── RootCauseRow ──
+  /// RootCauseRow · a control's name for screen readers
+  accessibleName "Edit the root cause" => "تعديل السبب الجذري";
+  /// RootCauseRow · a control's name for screen readers
+  accessibleName "Editing the root cause" => "تحرير السبب الجذري";
+  /// RootCauseRow · a button's label · at most ~27 characters
+  /// shown through Button.announceAs
+  /// beside: "Cancel"
+  button "Save the root cause" => "حفظ السبب الجذري";
+  /// RootCauseRow · a hint under a field
+  /// shown through TextAreaField.hint
+  /// beside: "Cancel"
+  hint "What made it happen — solving this type of request needs it on record." => "ما الذي تسبّب في ذلك: حلّ هذا النوع من الطلبات يتطلب تسجيله.";
+  /// RootCauseRow · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through TextAreaField.label
+  /// beside: "Cancel"
+  /// also in Ticket
+  label "Root cause" => "السبب الجذري";
+  /// RootCauseRow · text on the page
+  text "Not recorded yet — solving needs it" => "لم يُسجَّل بعد، والحلّ يتطلبه";
+
+  // ── RoutingRuleSettings ──
+  /// RoutingRuleSettings · a button's label · at most ~13 characters
+  /// shown through Button.label
+  /// also in RuleRow
+  /// also in KnowledgeCategoryCard
+  /// also in StatusSettings /settings/statuses
+  button "Move up" => "نقل لأعلى";
+
+  // ── RoutingSettings (/settings/routing) ──
+  /// RoutingSettings · /settings/routing · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through RoutingRuleSettings.appAction
+  label "Tag it" => "وسمها";
+  /// RoutingSettings · /settings/routing · placeholder text inside an empty field · at most ~13 characters
+  /// shown through RoutingRuleSettings.appActionHint
+  placeholder "billing" => "الفوترة";
+  /// RoutingSettings · /settings/routing · a title
+  /// shown through [Title]
+  /// also in RoutingSettings /settings/routing
+  title "Routing" => "التوجيه";
+
+  // ── SavedReplySettings ──
+  /// SavedReplySettings · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Field.label
+  /// beside: "Title", "Reply", "Cancel"
+  /// also in MacroSettings
+  /// also in TicketStatus
+  /// also in Ticket
+  label "Category" => "الفئة";
+
+  // ── SavedReportPage (/reports/saved/{id}) ──
+  /// SavedReportPage · /reports/saved/{id} · a title
+  /// shown through [Title]
+  title "Report" => "تقرير";
+
+  // ── SeenBeforeOf ──
+  /// SeenBeforeOf · message
+  /// shown through MeaningOff
+  message "Tickets like this one are found by meaning — that is off until the embedding key is set." => "تُعثر على التذاكر المشابهة بالمعنى، وهذا متوقف حتى يُضبط مفتاح التضمين.";
+
+  // ── SeenBeforePanel ──
+  /// SeenBeforePanel · a control's name for screen readers
+  accessibleName "Seen before" => "شوهد من قبل";
+  /// SeenBeforePanel · a button's label · at most ~28 characters
+  /// shown through Button.label
+  button "Find tickets like it" => "ابحث عن تذاكر مشابهة";
+  /// SeenBeforePanel · a button's label · at most ~48 characters
+  /// placeholders: {f.Number} = f.Number (int)
+  /// shown through Button.label
+  button "Link as an incident of #{f.Number}" => "اربطها كحادثة من #{f.Number}";
+  /// SeenBeforePanel · text on the page
+  /// placeholders: {problemOf} = problemOf (int)
+  text "An incident of #{problemOf}" => "حادثة من المشكلة #{problemOf}";
+  /// SeenBeforePanel · text on the page
+  text "Nothing like it yet." => "لا شيء مشابه بعد.";
+  /// SeenBeforePanel · text on the page
+  /// shown through SectionLabel.text
+  text "Seen before" => "شوهد من قبل";
+
+  // ── SetPriority ──
+  /// SetPriority · an error message
+  /// shown through ValidationException
+  error "A closed ticket keeps the priority it closed with." => "تحتفظ التذكرة المغلقة بالأولوية التي أُغلقت بها.";
+
+  // ── SetStatus ──
+  /// SetStatus · an error message
+  /// placeholders: {NameOfLastChange} = NameOfLastChange(…) (string), {StatusName} = StatusName(…) (string)
+  /// shown through ValidationException
+  error "{NameOfLastChange} changed its status to {StatusName}. Have another look." => "غيّر {NameOfLastChange} حالتها إلى {StatusName}. ألقِ نظرة أخرى.";
+
+  // ── SetStatusOfMany ──
+  /// SetStatusOfMany · message
+  /// placeholders: {left} = left (int) — {left} is a count: give one text per plural form
+  /// shown through SetStatusOfMany()
+  message " {left} could not make that move and were left as they were." => { zero: " التذاكر التي تعذّر نقلها وبقيت كما هي: {left}.", one: " تعذّر نقل تذكرة واحدة فبقيت كما هي.", two: " تعذّر نقل تذكرتين فبقيتا كما هما.", few: " تعذّر نقل {left} تذاكر فبقيت كما هي.", many: " تعذّر نقل {left} تذكرةً فبقيت كما هي.", other: " تعذّر نقل {left} تذكرة فبقيت كما هي." };
+  /// SetStatusOfMany · message
+  /// placeholders: {moved} = moved (int), {status.Name} = status.Name (string), {value} = … (string) — {moved} is a count: give one text per plural form
+  /// shown through SetStatusOfMany()
+  message "{moved} set to {status.Name}.{value}" => { zero: "لم تُضبط أي تذكرة على {status.Name}.{value}", one: "تم ضبط تذكرة واحدة على {status.Name}.{value}", two: "تم ضبط تذكرتين على {status.Name}.{value}", few: "تم ضبط {moved} تذاكر على {status.Name}.{value}", many: "تم ضبط {moved} تذكرةً على {status.Name}.{value}", other: "تم ضبط {moved} تذكرة على {status.Name}.{value}" };
+
+  // ── SetTicketForm ──
+  /// SetTicketForm · an error message
+  /// placeholders: {form.Name} = form.Name (string)
+  /// shown through ValidationException
+  error "“{form.Name}” is no longer in use." => "لم يعد «{form.Name}» مستخدمًا.";
+
+  // ── SetTicketStatus ──
+  /// SetTicketStatus · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through [Action] SetTicketStatus
+  /// beside: "Status"
+  /// also in TicketView
+  label "Set status" => "ضبط الحالة";
+  /// SetTicketStatus · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through [Action] SetTicketStatus
+  /// beside: "Set status"
+  /// also in DeskFrame
+  /// also in TicketView
+  /// also in Ticket
+  label "Status" => "الحالة";
+
+  // ── SetTicketType ──
+  /// SetTicketType · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through [Action] SetTicketType
+  /// beside: "Type"
+  label "Set type" => "تعيين النوع";
+  /// SetTicketType · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through [Action] SetTicketType
+  /// beside: "Set type"
+  /// also in NewTicketForm
+  /// also in DeskTickets
+  label "Type" => "النوع";
+
+  // ── SettingsArea ──
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Business hours" => "ساعات العمل";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Data retention" => "الاحتفاظ بالبيانات";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Fields and forms" => "الحقول والنماذج";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Macros" => "الماكرو";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Mailboxes" => "صناديق البريد";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Queues" => "قوائم الانتظار";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Routing" => "التوجيه";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "SLA policies" => "سياسات اتفاقية مستوى الخدمة (SLA)";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Saved replies" => "الردود المحفوظة";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Skills" => "المهارات";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Statuses" => "الحالات";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Tiers" => "الفئات";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Views" => "العروض";
+  /// SettingsArea · text on the page
+  /// shown through SettingsArea()
+  text "Who is responsible" => "المسؤول عن البيانات";
+
+  // ── SettingsLine ──
+  /// SettingsLine · text on the page
+  /// placeholders: {Spaced} = Spaced(…) (string)
+  /// shown through AuditLine.Detail
+  text "{Spaced} changed" => "تغيّر {Spaced}";
+
+  // ── SideAnsweredWords ──
+  /// SideAnsweredWords · text on the page
+  /// shown through SideAnsweredWords()
+  text "Somebody answered in a side conversation." => "ردّ أحدهم في محادثة جانبية.";
+  /// SideAnsweredWords · text on the page
+  /// placeholders: {line.Subject} = line.Subject (string)
+  /// shown through SideAnsweredWords()
+  text "There is news in the thread “{line.Subject}”." => "هناك جديد في السلسلة “{line.Subject}”.";
+  /// SideAnsweredWords · text on the page
+  /// placeholders: {line.With} = line.With (string), {line.Subject} = line.Subject (string)
+  /// shown through SideAnsweredWords()
+  text "{line.With} answered in the side conversation “{line.Subject}”." => "ردّ {line.With} في المحادثة الجانبية “{line.Subject}”.";
+
+  // ── SideConversationStarter ──
+  /// SideConversationStarter · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Field.label
+  /// beside: "Their name"
+  /// also in CopiedOnTicket
+  label "Their address" => "عنوانه";
+  /// SideConversationStarter · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Field.label
+  /// beside: "Their address"
+  /// also in NewTicketForm
+  label "Their name" => "اسمه";
+
+  // ── SignUpForm ──
+  /// SignUpForm · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Field.label
+  /// beside: "Email", "Password", "Create account", "I already have an account"
+  /// also in InvitationAnswer
+  /// also in Osysharp.Conversations.ConversationCopy.WidgetNameLabel
+  /// also in RequestForm
+  label "Your name" => "اسمك";
+
+  // ── SkillsSettings (/settings/skills) ──
+  /// SkillsSettings · /settings/skills · a title
+  /// shown through [Title]
+  /// also in SkillsSettings /settings/skills
+  title "Skills" => "المهارات";
+
+  // ── SlaSettings (/settings/sla) ──
+  /// SlaSettings · /settings/sla · a title
+  /// shown through [Title]
+  /// also in SlaPolicySettings
+  /// also in SlaSettings /settings/sla
+  title "SLA policies" => "سياسات اتفاقية مستوى الخدمة (SLA)";
+
+  // ── SolveProblem ──
+  /// SolveProblem · an error message
+  /// shown through ValidationException
+  error "Choose a Solved status to solve it with." => "اختر حالة «محلولة» لحلّها بها.";
+
+  // ── SolvedNotice ──
+  /// SolvedNotice · text on the page
+  text "If anything is still not right, write below — it opens your request again." => "إذا كان هناك شيء لا يزال غير صحيح، اكتب أدناه وسيُعاد فتح طلبك.";
+  /// SolvedNotice · text on the page
+  text "This request is closed" => "هذا الطلب مغلق";
+  /// SolvedNotice · text on the page
+  text "We have solved this request" => "لقد حللنا هذا الطلب";
+  /// SolvedNotice · text on the page
+  text "What we did" => "ما فعلناه";
+
+  // ── SplitTicket ──
+  /// SplitTicket · an error message
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ValidationException
+  error "#{t.Number} is closed. Its messages stay with it — if the customer asks again, that opens a new ticket." => "#{t.Number} مغلقة. تبقى رسائلها معها، وإذا سأل العميل مجددًا فستُفتح تذكرة جديدة.";
+  /// SplitTicket · an error message
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ValidationException
+  error "#{t.Number} is kept out of use at the customer's request — nothing on it is moved." => "#{t.Number} موقوفة عن الاستخدام بطلب من العميل، ولا يُنقل منها شيء.";
+  /// SplitTicket · an error message
+  /// shown through ValidationException
+  error "Only something a customer wrote can be split into a ticket of its own." => "لا يمكن فصل إلا ما كتبه عميل في تذكرة مستقلة.";
+  /// SplitTicket · an error message
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ValidationException
+  error "That message is not on #{t.Number} any more — have another look." => "لم تعد تلك الرسالة في #{t.Number}. ألقِ نظرة أخرى.";
+
+  // ── Stage ──
+  /// Stage · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Stage.Answered
+  /// beside: "New", "Open", "Pending", "On hold", "Solved", "Closed"
+  label "Open, answered" => "مفتوحة، تم الرد";
+
+  // ── StartPrivacyRequest ──
+  /// StartPrivacyRequest · a control's name for screen readers
+  accessibleName "Their data" => "بياناته";
+  /// StartPrivacyRequest · a button's label · at most ~28 characters
+  /// shown through Button.label
+  /// beside: "Close"
+  button "Open it on the Inbox" => "فتحه في صندوق الوارد";
+  /// StartPrivacyRequest · a button's label · at most ~23 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Plan the request" => "تخطيط الطلب";
+  /// StartPrivacyRequest · a button's label · at most ~34 characters
+  /// shown through Button.label
+  button "Start a privacy request…" => "بدء طلب خصوصية…";
+  /// StartPrivacyRequest · a hint under a field
+  /// shown through Field.hint
+  /// beside: "What they ask for", "How you checked it is them", "Cancel"
+  hint "Required — a request in somebody else's name is a known way to steal their data." => "مطلوب: تقديم طلب باسم شخص آخر أسلوب معروف لسرقة بياناته.";
+  /// StartPrivacyRequest · a label (a field, a list item, a menu entry) · at most ~37 characters
+  /// shown through Dropdown.label
+  /// beside: "What they ask for", "In your words", "Cancel"
+  label "How you checked it is them" => "كيف تحققت من أنه صاحب الطلب";
+  /// StartPrivacyRequest · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Field.label
+  /// beside: "What they ask for", "How you checked it is them", "Cancel"
+  label "In your words" => "بكلماتك";
+  /// StartPrivacyRequest · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Dropdown.label
+  /// beside: "How you checked it is them", "In your words", "Cancel"
+  label "What they ask for" => "ما الذي يطلبه";
+  /// StartPrivacyRequest · placeholder text inside an empty field · at most ~80 characters
+  /// shown through Field.placeholder
+  /// beside: "What they ask for", "How you checked it is them", "Cancel"
+  placeholder "A code to the address they write from came back on 3 Oct." => "أُرسل رمز إلى العنوان الذي يراسلنا منه وعاد في 3 أكتوبر.";
+  /// StartPrivacyRequest · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Filed on their behalf. You will see what it would do before anything happens — a complaint is kept for legal claims, the rest erased — and it runs only once an admin approves it on the Inbox, within a month of today." => "يُقدَّم نيابةً عنه. سترى ما سيفعله الطلب قبل أن يحدث أي شيء، إذ تُحفظ الشكوى لأغراض المطالبات القانونية ويُمحى الباقي، ولا يُنفَّذ إلا بعد أن يوافق عليه أحد المسؤولين في صندوق الوارد، خلال شهر من اليوم.";
+  /// StartPrivacyRequest · a subtitle
+  /// placeholders: {value} = … (string)
+  /// shown through Dialog.subtitle
+  subtitle "The request is on the Inbox, due {value}. An admin approves the plan there; until then nothing is erased." => "الطلب في صندوق الوارد، وموعد استحقاقه {value}. يوافق أحد المسؤولين على الخطة هناك؛ وحتى ذلك الحين لا يُمحى أي شيء.";
+  /// StartPrivacyRequest · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "within a month" => "خلال شهر";
+  /// StartPrivacyRequest · text on the page
+  text "The desk holds nothing about them — the request will say so." => "لا يحتفظ المكتب بأي شيء عنه، وسيذكر الطلب ذلك.";
+  /// StartPrivacyRequest · a title
+  /// placeholders: {name} = name (string)
+  /// shown through Dialog.title
+  title "A privacy request for {name}" => "طلب خصوصية باسم {name}";
+  /// StartPrivacyRequest · a title
+  /// shown through Dialog.title
+  title "Planned — nothing has happened yet" => "تم التخطيط، ولم يحدث شيء بعد";
+
+  // ── StartPrivacyRequestFor ──
+  /// StartPrivacyRequestFor · an error message
+  /// shown through ValidationException
+  error "This customer has no address, number or account the request could be about — it would reach nothing." => "ليس لدى هذا العميل عنوان أو رقم أو حساب يمكن أن يتعلق به الطلب، فلن يصل إلى أي شيء.";
+
+  // ── StartSideConversationOn ──
+  /// StartSideConversationOn · an error message
+  /// shown through ValidationException
+  error "This ticket is closed by its customer's privacy request — nothing more is written on it." => "أُغلقت هذه التذكرة بناءً على طلب الخصوصية من عميلها، فلا يُكتب فيها شيء بعد الآن.";
+  /// StartSideConversationOn · an error message
+  /// placeholders: {t.MergedInto.Number} = t.MergedInto.Number (int)
+  /// shown through ValidationException
+  error "This ticket was merged into #{t.MergedInto.Number} — start it there." => "دُمجت هذه التذكرة في #{t.MergedInto.Number}. ابدأها هناك.";
+
+  // ── StatusCategory ──
+  /// StatusCategory · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through StatusCategory.Pending
+  /// beside: "New", "Open", "On hold", "Solved", "Closed"
+  /// also in Stage
+  label "Pending" => "قيد الانتظار";
+
+  // ── StatusSettings (/settings/statuses) ──
+  /// StatusSettings · /settings/statuses · a control's name for screen readers
+  /// placeholders: {ToLower} = c.Label.ToLower(…) (string)
+  /// beside: "Add a status"
+  accessibleName "Each {ToLower} status" => "كل حالة من {ToLower}";
+  /// StatusSettings · /settings/statuses · a control's name for screen readers
+  accessibleName "Name" => "الاسم";
+  /// StatusSettings · /settings/statuses · a control's name for screen readers
+  /// placeholders: {c.Label} = c.Label (string)
+  accessibleName "{c.Label} statuses" => "حالات {c.Label}";
+  /// StatusSettings · /settings/statuses · a button's label · at most ~18 characters
+  /// shown through Button.label
+  button "Add a status" => "إضافة حالة";
+  /// StatusSettings · /settings/statuses · a button's label · at most ~35 characters
+  /// placeholders: {c.Label} = c.Label (string)
+  /// shown through Button.announceAs
+  button "Add a status to {c.Label}" => "إضافة حالة إلى {c.Label}";
+  /// StatusSettings · /settings/statuses · a description
+  /// shown through SettingsPage.description
+  description "Every ticket is in one of six fixed categories — the SLA clocks and the views reason about those. Inside each, a status is your team's own name for where it is." => "كل تذكرة تقع في واحدة من ست فئات ثابتة، وعليها تعتمد ساعات اتفاقية مستوى الخدمة (SLA) والعروض. وداخل كل فئة، الحالة هي الاسم الذي يختاره فريقك لموضع التذكرة.";
+  /// StatusSettings · /settings/statuses · a description
+  /// shown through SettingsSection.description
+  description "Waiting on somebody else — resolution time still runs." => "بانتظار طرف آخر: وقت الحل ما زال يُحتسب.";
+  /// StatusSettings · /settings/statuses · a description
+  /// shown through SettingsSection.description
+  description "Waiting on the customer — every clock is paused." => "بانتظار العميل: كل المؤقتات متوقفة.";
+  /// StatusSettings · /settings/statuses · placeholder text inside an empty field · at most ~23 characters
+  placeholder "Name this status" => "سمِّ هذه الحالة";
+  /// StatusSettings · /settings/statuses · text on the page
+  text "Default — given on arrival" => "الافتراضية، تُعطى عند الوصول";
+  /// StatusSettings · /settings/statuses · text on the page
+  /// shown through SaveBar.saved
+  text "Statuses saved." => "تم حفظ الحالات.";
+  /// StatusSettings · /settings/statuses · a title
+  /// shown through SettingsPage.title
+  /// also in StatusSettings /settings/statuses
+  title "Statuses" => "الحالات";
+
+  // ── SubmitRequest ──
+  /// SubmitRequest · an error message
+  /// shown through ValidationException
+  error "Give us an address to answer you at." => "أدخل عنوانًا نرد عليك من خلاله.";
+  /// SubmitRequest · an error message
+  /// shown through ValidationException
+  error "Give your request a subject: one line saying what is wrong." => "اكتب موضوعًا لطلبك: سطرًا واحدًا يوضح المشكلة.";
+  /// SubmitRequest · an error message
+  /// shown through ValidationException
+  error "Tell us what happened, so we can help." => "أخبرنا بما حدث لنتمكن من مساعدتك.";
+
+  // ── Tag ──
+  /// Tag · validation
+  /// shown through Tag.Name [Unique]
+  validation "That tag already exists." => "هذا الوسم موجود بالفعل.";
+
+  // ── TagTicket ──
+  /// TagTicket · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through [Action] TagTicket
+  /// beside: "Tag"
+  label "Add a tag" => "إضافة وسم";
+  /// TagTicket · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through [Action] TagTicket
+  /// beside: "Add a tag"
+  /// also in TicketTag
+  label "Tag" => "الوسم";
+
+  // ── TakeTicket ──
+  /// TakeTicket · an error message
+  /// shown through ValidationException
+  error "You are not in this ticket's queue, so you cannot take it." => "أنت لست ضمن قائمة انتظار هذه التذكرة، لذا لا يمكنك تولّيها.";
+  /// TakeTicket · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through [Action] TakeTicket
+  label "Take it" => "استلامها";
+
+  // ── TellHolder ──
+  /// TellHolder · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through [Action] TellHolder
+  /// beside: "Tell whoever holds it"
+  /// also in TellLeads
+  label "Saying" => "الرسالة";
+  /// TellHolder · a label (a field, a list item, a menu entry) · at most ~30 characters
+  /// shown through [Action] TellHolder
+  /// beside: "Saying"
+  label "Tell whoever holds it" => "إبلاغ من يتولّاها";
+
+  // ── Ticket ──
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Ticket.ChasesSent
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Chases sent" => "التذكيرات المرسلة";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Ticket.ClosedFor
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Closed for" => "مغلقة لمدة";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Ticket.FollowUpOf
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Follow up of" => "متابعة لـ";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Ticket.Followers
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Followers" => "المتابعون";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Ticket.Form
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Form" => "النموذج";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Ticket.HoldChasesSent
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Hold chases sent" => "تذكيرات التعليق المرسلة";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Ticket.KeptFor
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Kept for" => "محفوظة لمدة";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Ticket.KeptUntil
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Kept until" => "محفوظة حتى";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Ticket.Rating
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Rating" => "التقييم";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Ticket.ReopenCount
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Reopen count" => "مرات إعادة الفتح";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Ticket.Stage
+  /// beside: "Number", "Conversation", "Customer", "Category", "Status", "Status since"
+  label "Stage" => "المرحلة";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Ticket.StatusSince
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Status since" => "الحالة منذ";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Ticket.Tags
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Tags" => "الوسوم";
+  /// Ticket · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Ticket.WaitingOn
+  /// beside: "Number", "Conversation", "Customer", "Stage", "Category", "Status"
+  label "Waiting on" => "بانتظار";
+  /// Ticket · validation
+  /// shown through Ticket.Customer [Required]
+  validation "Every ticket is somebody's request." => "كل تذكرة هي طلب لشخص ما.";
+
+  // ── TicketAnswers ──
+  /// TicketAnswers · a label (a field, a list item, a menu entry) · at most ~100 characters
+  /// shown through DataCategory.Label
+  label "Your answers on our forms, and the details we filled in on your tickets" => "إجاباتك في نماذجنا، والتفاصيل التي أضفناها إلى تذاكرك";
+  /// TicketAnswers · text on the page
+  text "Answering you" => "الرد عليك";
+
+  // ── TicketComposer ──
+  /// TicketComposer · a control's name for screen readers
+  /// placeholders: {customer} = customer (string)
+  /// shown through Composer.replyLabel
+  accessibleName "Reply to {customer}" => "الرد على {customer}";
+  /// TicketComposer · text on the page
+  /// placeholders: {customer} = customer (string), {channel} = channel (string)
+  /// shown through Composer.audience
+  text "To {customer} · {channel}" => "إلى {customer} · {channel}";
+
+  // ── TicketDocument.Sample ──
+  /// TicketDocument.Sample · an email's subject line
+  /// shown through TicketData.Subject
+  mailSubject "A sample ticket" => "تذكرة نموذجية";
+
+  // ── TicketFieldValue ──
+  /// TicketFieldValue · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through TicketFieldValue.Ticket
+  /// also in TicketTag
+  /// also in Follower
+  label "Ticket" => "التذكرة";
+
+  // ── TicketFields ──
+  /// TicketFields · a control's name for screen readers
+  /// placeholders: {formName} = formName (string)
+  accessibleName "Type: {formName}" => "النوع: {formName}";
+  /// TicketFields · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Menu.label
+  label "Change the type" => "تغيير النوع";
+  /// TicketFields · text on the page
+  /// shown through SectionLabel.text
+  text "Fields" => "الحقول";
+  /// TicketFields · text on the page
+  text "No fields yet — an admin adds them on Settings › Fields and forms." => "لا توجد حقول بعد. يضيفها المسؤول من الإعدادات › الحقول والنماذج.";
+  /// TicketFields · text on the page
+  /// shown through formName
+  text "No type" => "بلا نوع";
+  /// TicketFields · text on the page
+  text "Type" => "النوع";
+  /// TicketFields · text on the page
+  /// placeholders: {formName} = formName (string)
+  text "{formName} asks nothing more." => "لا يطلب {formName} أي شيء آخر.";
+
+  // ── TicketForm ──
+  /// TicketForm · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through TicketForm.AsksRootCause
+  label "Asks root cause" => "يسأل عن السبب الجذري";
+
+  // ── TicketLinks ──
+  /// TicketLinks · emptyState
+  /// shown through ItemLinks.empty
+  emptyState "Not linked to another ticket." => "غير مرتبطة بتذكرة أخرى.";
+
+  // ── TicketNotes ──
+  /// TicketNotes · a label (a field, a list item, a menu entry) · at most ~105 characters
+  /// shown through DataCategory.Label
+  label "What our team wrote on your tickets: what went wrong, and how it was solved" => "ما كتبه فريقنا على تذاكرك: ما الذي تعطّل، وكيف حُلّ";
+  /// TicketNotes · text on the page
+  text "Answering you, and fixing what went wrong" => "الرد عليك، وإصلاح ما حدث خطأً";
+  /// TicketNotes · text on the page
+  text "answering you, and fixing what went wrong for everyone" => "الرد عليك، وإصلاح ما حدث خطأً للجميع";
+
+  // ── TicketPage (/v/{view}/t/{number}) ──
+  /// TicketPage · /v/{view}/t/{number} · text on the page
+  /// shown through EmptyState.body
+  text "It may have been merged, or the number is not one of ours." => "ربما دُمجت، أو أن الرقم ليس من أرقامنا.";
+  /// TicketPage · /v/{view}/t/{number} · a title
+  /// placeholders: {number} = number (int)
+  /// shown through EmptyState.title
+  title "No ticket #{number}" => "لا توجد تذكرة #{number}";
+  /// TicketPage · /v/{view}/t/{number} · a title
+  /// shown through where
+  title "Saved view" => "عرض محفوظ";
+  /// TicketPage · /v/{view}/t/{number} · a title
+  /// shown through [Title]
+  title "Ticket" => "تذكرة";
+
+  // ── TicketRules.Defaults ──
+  /// TicketRules.Defaults · text on the page
+  text "A promise at risk is told to whoever holds it" => "يُبلَّغ من يتولى التذكرة حين يتعرض وعد للخطر";
+  /// TicketRules.Defaults · text on the page
+  text "Urgent words are tagged and the leads told" => "الكلمات العاجلة تُوسَم ويُبلَّغ القادة";
+  /// TicketRules.Defaults · text on the page
+  text "Waiting on the customer for three days" => "بانتظار العميل منذ ثلاثة أيام";
+
+  // ── TicketRules.Held ──
+  /// TicketRules.Held · text on the page
+  text "Somebody holds it" => "يتولاها أحد";
+
+  // ── TicketRules.InStatus ──
+  /// TicketRules.InStatus · text on the page
+  text "Hours in its status" => "ساعات في حالتها";
+
+  // ── TicketRules.SinceCustomer ──
+  /// TicketRules.SinceCustomer · text on the page
+  text "Hours since the customer wrote" => "ساعات منذ كتب العميل";
+
+  // ── TicketRules.Tags ──
+  /// TicketRules.Tags · text on the page
+  /// also in CustomerPanel
+  text "Tags" => "الوسوم";
+
+  // ── TicketSolvedMail ──
+  /// TicketSolvedMail · an image's description for screen readers
+  /// shown through EmailLayout.brand
+  alt "Harbour Support" => "Harbour Support";
+  /// TicketSolvedMail · the preview line an inbox shows beside an email's subject
+  /// shown through EmailLayout.preview
+  mailPreview "We have solved your request. Reply if anything is still wrong." => "لقد حللنا طلبك. ردّ إذا كان هناك شيء لا يزال غير صحيح.";
+  /// TicketSolvedMail · an email's subject line
+  /// placeholders: {t.Number} = t.Number (int), {t.Title} = t.Title (string)
+  mailSubject "Your request #{t.Number} is solved — {t.Title}" => "تم حل طلبك #{t.Number}: {t.Title}";
+  /// TicketSolvedMail · text in an email
+  mailText "What we did" => "ما فعلناه";
+  /// TicketSolvedMail · text in an email
+  /// shown through EmailLayout.footer
+  mailText "You get this because you asked us for help. Reply to this mail to write to the team." => "تصلك هذه الرسالة لأنك طلبت مساعدتنا. ردّ على هذه الرسالة للكتابة إلى الفريق.";
+  /// TicketSolvedMail · text on the page
+  /// shown through EmailNote.text
+  /// beside: "Your request is solved"
+  text "If anything is still not right, reply to this mail — it opens your request again." => "إذا كان هناك شيء لا يزال غير صحيح، ردّ على هذه الرسالة وسيُعاد فتح طلبك.";
+  /// TicketSolvedMail · text on the page
+  /// shown through EmailText.text
+  text "It was part of a wider problem, which we have now fixed for everyone it affected." => "كان جزءاً من مشكلة أوسع، أصلحناها الآن لكل من تأثر بها.";
+  /// TicketSolvedMail · text on the page
+  /// shown through EmailHeading.text
+  /// beside: "If anything is still not right, reply to this mail — it opens your request again."
+  text "Your request is solved" => "تم حل طلبك";
+
+  // ── TicketStatus ──
+  /// TicketStatus · validation
+  /// shown through TicketStatus.Name [Required]
+  validation "A status needs a name." => "تحتاج الحالة إلى اسم.";
+
+  // ── TicketView ──
+  /// TicketView · a control's name for screen readers
+  accessibleName "Back to the list" => "العودة إلى القائمة";
+  /// TicketView · a control's name for screen readers
+  /// shown through HeadChip.value
+  /// beside: "Queue", "Links", "Seen before"
+  accessibleName "None yet" => "لا شيء بعد";
+  /// TicketView · a control's name for screen readers
+  accessibleName "The message" => "الرسالة";
+  /// TicketView · a control's name for screen readers
+  accessibleName "Ticket" => "التذكرة";
+  /// TicketView · a control's name for screen readers
+  /// shown through HeadChip.value
+  /// beside: "Fields", "Queue", "Links"
+  accessibleName "Tickets like it" => "تذاكر مشابهة";
+  /// TicketView · a control's name for screen readers
+  accessibleName "Why it is closed" => "سبب الإغلاق";
+  /// TicketView · a control's name for screen readers
+  /// placeholders: {answered} = answered (int) — {answered} is a count: give one text per plural form
+  /// shown through HeadChip.value
+  /// beside: "Queue", "Links", "Seen before"
+  accessibleName "{answered} answered" => { zero: "تمت الإجابة: {answered}", one: "تمت الإجابة: {answered}", two: "تمت الإجابة: {answered}", few: "تمت الإجابة: {answered}", many: "تمت الإجابة: {answered}", other: "تمت الإجابة: {answered}" };
+  /// TicketView · a button's label · at most ~24 characters
+  /// shown through Button.label
+  button "Side conversation" => "محادثة جانبية";
+  /// TicketView · a button's label · at most ~24 characters
+  /// placeholders: {value} = … (int) — {value} is a count: give one text per plural form
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Solve all {value}" => { zero: "حلّ الكل ({value})", one: "حلّ الكل ({value})", two: "حلّ الكل ({value})", few: "حلّ الكل ({value})", many: "حلّ الكل ({value})", other: "حلّ الكل ({value})" };
+  /// TicketView · a button's label · at most ~33 characters
+  /// shown through ConversationThread.splitLabel
+  button "Split into a new ticket" => "افصل في تذكرة جديدة";
+  /// TicketView · a button's label · at most ~18 characters
+  /// shown through Button.label
+  /// beside: "Cancel"
+  button "Split it off" => "افصلها";
+  /// TicketView · an error message
+  /// shown through Field.error
+  /// beside: "Cancel"
+  /// also in SplitTicket
+  error "Give the new ticket a subject: one line saying what this part is about." => "أعطِ التذكرة الجديدة موضوعًا: سطرًا واحدًا يوضح موضوع هذا الجزء.";
+  /// TicketView · a hint under a field
+  /// shown through TextAreaField.hint
+  /// beside: "Cancel"
+  hint "Each incident's customer is mailed that their request is solved, with this, and asked how we did. Leave it empty to say only that it is solved." => "يتلقى عميل كل حادثة رسالة بأن طلبه قد حُل مع هذا النص، ويُسأل عن تجربته. اتركه فارغاً لتقول فقط إنه قد حُل.";
+  /// TicketView · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through TextAreaField.label
+  /// beside: "Cancel"
+  label "How it was solved" => "كيف تم الحل";
+  /// TicketView · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through HeadChip.label
+  /// beside: "Fields", "Queue", "Seen before"
+  label "Links" => "الروابط";
+  /// TicketView · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through HeadChip.label
+  /// beside: "Fields", "Queue", "Links"
+  label "Seen before" => "شوهد من قبل";
+  /// TicketView · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// shown through Field.label
+  /// beside: "Cancel"
+  label "Subject of the new ticket" => "موضوع التذكرة الجديدة";
+  /// TicketView · placeholder text inside an empty field · at most ~55 characters
+  /// shown through Field.placeholder
+  /// beside: "Cancel"
+  placeholder "One line saying what this part is about" => "سطر واحد يوضح موضوع هذا الجزء";
+  /// TicketView · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Each incident still open is solved with it, and its timeline says which problem solved it." => "كل حادثة ما زالت مفتوحة تُحل معها، ويذكر سجلها الزمني أي مشكلة حلّتها.";
+  /// TicketView · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Mail somebody outside about this ticket — they read only what you write them, never the ticket — or start a thread inside the team. It sits on the ticket's timeline, and their answer lands there." => "راسل شخصًا من خارج الفريق بشأن هذه التذكرة، فهو يقرأ ما تكتبه له فقط، ولا يرى التذكرة أبدًا. أو ابدأ سلسلة رسائل داخل الفريق. تظهر على المخطط الزمني للتذكرة، ويصل الرد إليه.";
+  /// TicketView · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "The message moves to a ticket of its own for the same customer, with its files. Their reply to it lands there, and both tickets stay linked." => "تنتقل الرسالة إلى تذكرة مستقلة للعميل نفسه، مع ملفاتها. يصل ردّه عليها إلى هناك، وتبقى التذكرتان مرتبطتين.";
+  /// TicketView · text on the page
+  /// placeholders: {t.FollowUpOf.Number} = t.FollowUpOf.Number (int)
+  text "Follows #{t.FollowUpOf.Number}, which was closed." => "تتبع #{t.FollowUpOf.Number}، وقد أُغلقت.";
+  /// TicketView · text on the page
+  /// shown through queueName
+  text "None" => "لا شيء";
+  /// TicketView · text on the page
+  text "Nothing more is sent on this ticket. If the customer writes to us again, that opens a new one." => "لن يُرسل شيء آخر على هذه التذكرة. وإن كتب العميل إلينا من جديد فُتحت تذكرة جديدة.";
+  /// TicketView · a title
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ShellSheet.title
+  title "Fields of #{t.Number}" => "حقول #{t.Number}";
+  /// TicketView · a title
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ShellSheet.title
+  title "How #{t.Number} got here" => "كيف وصلت #{t.Number} إلى هنا";
+  /// TicketView · a title
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ShellSheet.title
+  title "Links of #{t.Number}" => "روابط #{t.Number}";
+  /// TicketView · a title
+  /// placeholders: {t.Number} = t.Number (int)
+  /// shown through ShellSheet.title
+  title "Seen before #{t.Number}" => "شوهد من قبل #{t.Number}";
+  /// TicketView · a title
+  /// placeholders: {t.Number} = t.Number (int), {incidents} = incidents (int) — {incidents} is a count: give one text per plural form
+  /// shown through Dialog.title
+  title "Solve #{t.Number} and its {incidents} incidents" => { zero: "حلّ #{t.Number} دون حوادث", one: "حلّ #{t.Number} وحادثتها", two: "حلّ #{t.Number} وحادثتيها", few: "حلّ #{t.Number} و{incidents} حوادث", many: "حلّ #{t.Number} و{incidents} حادثة", other: "حلّ #{t.Number} و{incidents} حادثة" };
+  /// TicketView · a title
+  /// shown through Dialog.title
+  title "Split into a new ticket" => "افصل في تذكرة جديدة";
+  /// TicketView · a title
+  /// shown through Dialog.title
+  title "Start a side conversation" => "بدء محادثة جانبية";
+
+  // ── TierEditor ──
+  /// TierEditor · a title
+  /// shown through SettingsPage.title
+  /// also in TierSettings /settings/tiers
+  title "Tiers" => "الفئات";
+
+  // ── TierSettings (/settings/tiers) ──
+  /// TierSettings · /settings/tiers · a description
+  /// shown through TierEditor.description
+  description "The levels of service a company can be on. A company's tier chooses its SLA policy and what it is entitled to; a company's own contract can add more (on the company)." => "مستويات الخدمة التي يمكن أن تكون عليها الشركة. تحدد فئة الشركة سياسة اتفاقية مستوى الخدمة (SLA) الخاصة بها وما يحق لها؛ ويمكن لعقد الشركة الخاص أن يضيف المزيد (من صفحة الشركة).";
+
+  // ── Told ──
+  /// Told · text on the page
+  /// shown through Told()
+  text "Note added — they are told." => "أُضيفت الملاحظة، ووصلهم إشعار.";
+  /// Told · text on the page
+  /// placeholders: {count} = count (int) — {count} is a count: give one text per plural form
+  /// shown through Told()
+  text "Note added — {count} people are told." => { zero: "أُضيفت الملاحظة، ولم يُبلَّغ أحد.", one: "أُضيفت الملاحظة، وأُبلغ شخص واحد.", two: "أُضيفت الملاحظة، وأُبلغ شخصان.", few: "أُضيفت الملاحظة، وأُبلغ {count} أشخاص.", many: "أُضيفت الملاحظة، وأُبلغ {count} شخصًا.", other: "أُضيفت الملاحظة، وأُبلغ {count} شخص." };
+
+  // ── ToldUs ──
+  /// ToldUs · a control's name for screen readers
+  accessibleName "What you told us" => "ما أخبرتنا به";
+
+  // ── UncopySeat ──
+  /// UncopySeat · an error message
+  /// shown through ValidationException
+  /// also in RemoveCc
+  error "They were already taken off." => "أُزيلوا بالفعل.";
+
+  // ── ViewPage (/v/{view}) ──
+  /// ViewPage · /v/{view} · a control's name for screen readers
+  /// shown through InboxOverview.noun
+  accessibleName "ticket" => "تذكرة";
+  /// ViewPage · /v/{view} · message
+  /// shown through Alert.message
+  message "You are not in any queue yet, so you cannot take tickets and the inbox hands you none. An admin adds you on Settings › Queues." => "لست في أي قائمة انتظار بعد، لذا لا يمكنك تولّي التذاكر ولن يُسند إليك صندوق الوارد أيًا منها. يضيفك المسؤول من الإعدادات › قوائم الانتظار.";
+  /// ViewPage · /v/{view} · text on the page
+  /// shown through KeyLine.what
+  /// beside: "set a status, go to a ticket"
+  text "send the reply" => "إرسال الرد";
+  /// ViewPage · /v/{view} · text on the page
+  /// shown through KeyLine.what
+  /// beside: "send the reply"
+  text "set a status, go to a ticket" => "ضبط حالة، الانتقال إلى تذكرة";
+  /// ViewPage · /v/{view} · a title
+  /// shown through [Title]
+  title "Helpdesk" => "Helpdesk";
+
+  // ── ViewSettings (/settings/views) ──
+  /// ViewSettings · /settings/views · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// shown through SharedViewSettings.appFilter
+  label "Tagged, status: or field:" => "وسم، أو status: أو field:";
+  /// ViewSettings · /settings/views · placeholder text inside an empty field · at most ~38 characters
+  /// shown through SharedViewSettings.appFilterHint
+  placeholder "refund · field:product=mail" => "استرداد · field:product=mail";
+  /// ViewSettings · /settings/views · a title
+  /// shown through [Title]
+  /// also in SharedViewSettings
+  /// also in ViewSettings /settings/views
+  title "Shared views" => "العروض المشتركة";
+
+  // ── WorkListView ──
+  /// WorkListView · a button's label · at most ~21 characters
+  /// placeholders: {Min} = Math.Min(…) (int) — {Min} is a count: give one text per plural form
+  /// shown through Button.label
+  /// also in MyRequestsPage /my
+  button "Show {Min} more" => { zero: "عرض {Min} إضافية", one: "عرض عنصر آخر", two: "عرض عنصرين آخرين", few: "عرض {Min} أخرى", many: "عرض {Min} أخرى", other: "عرض {Min} أخرى" };
+  /// WorkListView · a title
+  /// shown through EmptyState.title
+  /// also in AuditList
+  title "Nothing matches" => "لا شيء يطابق";
+
+  // ── __AppSettingValue_Osysharp_Identity_RolesSetup ──
+  /// __AppSettingValue_Osysharp_Identity_RolesSetup · a description
+  /// shown through RoleChoice.Description
+  description "An agent who also rebalances the team's work." => "وكيل دعم يعيد أيضًا توزيع عمل الفريق.";
+  /// __AppSettingValue_Osysharp_Identity_RolesSetup · a description
+  /// shown through RoleChoice.Description
+  description "Runs the desk: the team, statuses, SLA policies, settings." => "يدير المكتب: الفريق، والحالات، وسياسات اتفاقية مستوى الخدمة (SLA)، والإعدادات.";
+  /// __AppSettingValue_Osysharp_Identity_RolesSetup · a description
+  /// shown through RoleChoice.Description
+  description "Works tickets: replies, notes, assigns, changes status." => "يعمل على التذاكر: يرد، ويكتب الملاحظات، ويُسند، ويغيّر الحالة.";
+  /// __AppSettingValue_Osysharp_Identity_RolesSetup · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through RoleChoice.Label
+  label "Admin" => "مسؤول";
+  /// __AppSettingValue_Osysharp_Identity_RolesSetup · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through RoleChoice.Label
+  /// also in Follower
+  label "Agent" => "وكيل دعم";
+  /// __AppSettingValue_Osysharp_Identity_RolesSetup · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through RoleChoice.Label
+  label "Lead" => "قائد فريق";
+
+  // ── __AppSettingValue_Osysharp_Knowledge_KnowledgeSetup ──
+  /// __AppSettingValue_Osysharp_Knowledge_KnowledgeSetup · a control's name for screen readers
+  /// shown through KnowledgeSetup.ContactLabel
+  accessibleName "Ask the team" => "اسأل الفريق";
+
+  // ── __AppSettingValue_Osysharp_Privacy_PrivacySetup ──
+  /// __AppSettingValue_Osysharp_Privacy_PrivacySetup · text on the page
+  /// shown through PrivacySetup.SupervisoryAuthority
+  text "IMY (Integritetsskyddsmyndigheten), imy.se" => "IMY (Integritetsskyddsmyndigheten)، imy.se";
+
+  // ── __PersonalDataExport0 ──
+  /// __PersonalDataExport0 · text on the page
+  text "Ticket field value" => "قيمة حقل في التذكرة";
+  /// __PersonalDataExport0 · text on the page
+  /// also in __PersonalDataExport1
+  text "Value" => "القيمة";
+
+  // ── __PersonalDataExport1 ──
+  /// __PersonalDataExport1 · text on the page
+  text "Customer field value" => "قيمة حقل العميل";
+
+  // ── __PersonalDataExport2 ──
+  /// __PersonalDataExport2 · text on the page
+  text "Chases sent" => "التذكيرات المرسلة";
+  /// __PersonalDataExport2 · text on the page
+  text "Closed for" => "مغلقة لأجل";
+  /// __PersonalDataExport2 · text on the page
+  text "Hold chases sent" => "تذكيرات الانتظار المرسلة";
+  /// __PersonalDataExport2 · text on the page
+  text "Kept for" => "محفوظة لأجل";
+  /// __PersonalDataExport2 · text on the page
+  text "Kept until" => "محفوظة حتى";
+  /// __PersonalDataExport2 · text on the page
+  text "Number" => "الرقم";
+  /// __PersonalDataExport2 · text on the page
+  text "Rating" => "التقييم";
+  /// __PersonalDataExport2 · text on the page
+  text "Reopen count" => "عدد مرات إعادة الفتح";
+  /// __PersonalDataExport2 · text on the page
+  text "Resolution" => "الحل";
+  /// __PersonalDataExport2 · text on the page
+  /// also in RootCauseRow
+  text "Root cause" => "السبب الجذري";
+  /// __PersonalDataExport2 · text on the page
+  text "Stage" => "المرحلة";
+  /// __PersonalDataExport2 · text on the page
+  text "Status since" => "الحالة منذ";
+  /// __PersonalDataExport2 · text on the page
+  text "Ticket" => "تذكرة";
+  /// __PersonalDataExport2 · text on the page
+  text "Title" => "العنوان";
+  /// __PersonalDataExport2 · text on the page
+  text "Waiting on" => "بانتظار";
+
+  // ── __Settings_DeskAddress_Section.Sections ──
+  /// __Settings_DeskAddress_Section.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "The address customers write to, and the one the desk's mail comes from." => "العنوان الذي يكتب إليه العملاء، والذي يُرسل منه بريد مكتب الدعم.";
+}

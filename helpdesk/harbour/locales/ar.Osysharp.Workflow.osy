@@ -1,0 +1,46 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Workflow, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Workflow · Osysharp.Workflow.CorrelationOutcome ──
+  /// Osysharp.Workflow.CorrelationOutcome · a label (a field, a list item, a menu entry) · at most ~27 characters
+  /// shown through Osysharp.Workflow.CorrelationOutcome.Ambiguous
+  /// beside: "recorded", "no such key", "nothing is waiting", "no correlation rule"
+  label "more than one match" => "أكثر من تطابق واحد";
+  /// Osysharp.Workflow.CorrelationOutcome · a label (a field, a list item, a menu entry) · at most ~27 characters
+  /// shown through Osysharp.Workflow.CorrelationOutcome.NoRule
+  /// beside: "recorded", "no such key", "nothing is waiting", "more than one match"
+  label "no correlation rule" => "لا توجد قاعدة ربط";
+  /// Osysharp.Workflow.CorrelationOutcome · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.Workflow.CorrelationOutcome.NoSuchKey
+  /// beside: "recorded", "nothing is waiting", "more than one match", "no correlation rule"
+  label "no such key" => "لا يوجد مفتاح كهذا";
+  /// Osysharp.Workflow.CorrelationOutcome · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Osysharp.Workflow.CorrelationOutcome.NotRunning
+  /// beside: "recorded", "no such key", "more than one match", "no correlation rule"
+  label "nothing is waiting" => "لا شيء بالانتظار";
+  /// Osysharp.Workflow.CorrelationOutcome · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.Workflow.CorrelationOutcome.Deposited
+  /// beside: "no such key", "nothing is waiting", "more than one match", "no correlation rule"
+  label "recorded" => "مُسجَّل";
+
+  // ── Osysharp.Workflow · Osysharp.Workflow.SlaKind ──
+  /// Osysharp.Workflow.SlaKind · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.Workflow.SlaKind.Assigned
+  /// beside: "resolution", "state expiry", "ticket deadline"
+  label "first response" => "الرد الأول";
+  /// Osysharp.Workflow.SlaKind · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.Workflow.SlaKind.Finished
+  /// beside: "first response", "state expiry", "ticket deadline"
+  label "resolution" => "الحل";
+  /// Osysharp.Workflow.SlaKind · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.Workflow.SlaKind.Expire
+  /// beside: "first response", "resolution", "ticket deadline"
+  label "state expiry" => "انتهاء الحالة";
+  /// Osysharp.Workflow.SlaKind · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.Workflow.SlaKind.Deadline
+  /// beside: "first response", "resolution", "state expiry"
+  label "ticket deadline" => "موعد التذكرة النهائي";
+}

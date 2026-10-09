@@ -1,0 +1,72 @@
+// What Vall writes itself on top of the shop kit: how staff sign in, how it is paid and delivered, and how a price reads.
+//
+// There is NO signup — a staff account is made by someone who already runs the shop (`osy user add … --role Staff`),
+// never by a stranger with the URL.
+
+using Osysharp.Delivery;
+using Osysharp.Payments.Klarna;
+using Osysharp.Payments;
+using Osysharp.Payments.Stripe;
+using Osysharp.Shop;
+
+app.Auth = new PasswordAuth { LoginField = Email, PasswordField = PasswordHash };
+app.AuthBootstrap = new AuthBootstrap {
+  Role = ShopRole.Authenticator, LoginPage = AccountSignIn,
+  Login = ShopLogin, Signup = ShopSignup,
+  PasswordResetRequest = ShopRequestPasswordReset, PasswordReset = ShopResetPassword,
+  PasswordChange = ShopChangePassword, EmailChange = ShopChangeEmail,
+  EmailVerify = ShopConfirmEmail, EmailVerifyCode = ShopConfirmEmailCode,
+};
+
+app.Audit = new AuditConfig {
+  Redact = new AuditRedaction { Properties = [ShopAccount.PasswordHash] },
+};
+
+// Stripe posts here. Open, because Stripe has no account to sign in with — the kit's signature check is the lock.
+// How this shop takes money and hands goods over — the providers it lists, which the shop kit calls through its
+// payment and delivery contracts. Adding or removing one is a line here.
+app.Shop = new ShopSetup {
+  Payments = [
+    // A card on Stripe's own page. Offered once both keys are set (`osy secret set StripeApiKey`, `StripeWebhookSecret`).
+    new StripePayments { ApiKey = Security.IsSecretSet("StripeApiKey") ? Secret.StripeApiKey : "",
+                         WebhookSecret = Security.IsSecretSet("StripeWebhookSecret") ? Secret.StripeWebhookSecret : "",
+                         Description = $"On Stripe's page, in TEST mode — {TestCardHint()}" },
+    // Klarna's own page — pay now, later or in parts, charged when the order is sent. Its playground while a demo.
+    new KlarnaPayments { Username = Security.IsSecretSet("KlarnaUsername") ? Secret.KlarnaUsername : "",
+                         Password = Security.IsSecretSet("KlarnaPassword") ? Secret.KlarnaPassword : "",
+                         Country = "SE", Locale = "sv-SE", Playground = true },
+    new ManualPayment { Key = "banktransfer", Label = "Bank transfer",
+                        Description = "Demo — there is no account to pay. The order stays reserved while you would." },
+  ],
+  Delivery = [
+    // Delivery at the fee the desk sets, free above its threshold — the shop reads both where it uses them, so a change
+    // applies to the next order.
+    new FlatRateDelivery { Label = "Home delivery", Description = "Anywhere in Sweden", DaysMin = 2, DaysMax = 4 },
+  ],
+};
+
+// The keys the payment providers above read. Set them with `osy secret set <NAME>`; until then they are not offered.
+app.Secrets = [ new Secret("StripeApiKey"), new Secret("StripeWebhookSecret"), new Secret("KlarnaUsername"), new Secret("KlarnaPassword") ];
+
+// Payment providers post their events here — Stripe to `/payments/stripe/events`, Klarna's callback to
+// `/payments/klarna/events`. Open, because a provider has no account to sign in with; each verifies its own events.
+app.Apis = [
+  new RestApi("Payments") {
+    Route = "payments",
+    Auth  = new ApiAuth { Anonymous = true },
+    Endpoints = [
+      new Endpoint(ShopPaymentEvents) { Method = HttpMethod.Post, Path = "/{provider}/events", Raw = true, Headers = ["Stripe-Signature"] },
+    ],
+  },
+];
+
+/// A price the way the shop writes it: kronor, no öre.
+string PriceText(decimal price) {
+  return $"{price:N0} kr";
+}
+
+// ── what a page reads while it renders ─────────────────────────────────────────────────────────────────────────────
+//
+// The cover, a size chip's name, sold and on hold are the shop kit's (`CoverPhoto`, `CoverPhotoFor`, `LookSizeName`,
+// `Sold`, `OnHold`, a variant's `EffectivePrice`): pure functions over rows a page holds, so they run in the browser as
+// it renders. Nothing of the store's own is needed here.

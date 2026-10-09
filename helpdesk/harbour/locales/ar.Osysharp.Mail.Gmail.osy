@@ -1,0 +1,40 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Mail.Gmail, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Mail.Gmail · Osysharp.Mail.Gmail.GmailMailbox.Bearer ──
+  /// Osysharp.Mail.Gmail.GmailMailbox.Bearer · an error message
+  /// placeholders: {Address} = Address (string), {answered.StatusCode} = answered.StatusCode (int) — {answered.StatusCode} is a count: give one text per plural form
+  /// shown through ExternalServiceException
+  error "Google refused the credentials for '{Address}' ({answered.StatusCode}) — the refresh token was revoked or the client secret changed. Grant the mailbox again." => { zero: "رفضت Google بيانات الاعتماد لـ '{Address}' ({answered.StatusCode})، فقد أُلغي رمز التحديث أو تغيّر سر العميل. امنح صلاحية الوصول إلى صندوق البريد مجددًا.", one: "رفضت Google بيانات الاعتماد لـ '{Address}' ({answered.StatusCode})، فقد أُلغي رمز التحديث أو تغيّر سر العميل. امنح صلاحية الوصول إلى صندوق البريد مجددًا.", two: "رفضت Google بيانات الاعتماد لـ '{Address}' ({answered.StatusCode})، فقد أُلغي رمز التحديث أو تغيّر سر العميل. امنح صلاحية الوصول إلى صندوق البريد مجددًا.", few: "رفضت Google بيانات الاعتماد لـ '{Address}' ({answered.StatusCode})، فقد أُلغي رمز التحديث أو تغيّر سر العميل. امنح صلاحية الوصول إلى صندوق البريد مجددًا.", many: "رفضت Google بيانات الاعتماد لـ '{Address}' ({answered.StatusCode})، فقد أُلغي رمز التحديث أو تغيّر سر العميل. امنح صلاحية الوصول إلى صندوق البريد مجددًا.", other: "رفضت Google بيانات الاعتماد لـ '{Address}' ({answered.StatusCode})، فقد أُلغي رمز التحديث أو تغيّر سر العميل. امنح صلاحية الوصول إلى صندوق البريد مجددًا." };
+  /// Osysharp.Mail.Gmail.GmailMailbox.Bearer · an error message
+  /// placeholders: {answered.StatusCode} = answered.StatusCode (int), {Address} = Address (string) — {answered.StatusCode} is a count: give one text per plural form
+  /// shown through ExternalServiceException
+  error "Google's token endpoint answered {answered.StatusCode} for '{Address}'." => { zero: "أجابت نقطة نهاية الرموز في Google بـ {answered.StatusCode} لـ '{Address}'.", one: "أجابت نقطة نهاية الرموز في Google بـ {answered.StatusCode} لـ '{Address}'.", two: "أجابت نقطة نهاية الرموز في Google بـ {answered.StatusCode} لـ '{Address}'.", few: "أجابت نقطة نهاية الرموز في Google بـ {answered.StatusCode} لـ '{Address}'.", many: "أجابت نقطة نهاية الرموز في Google بـ {answered.StatusCode} لـ '{Address}'.", other: "أجابت نقطة نهاية الرموز في Google بـ {answered.StatusCode} لـ '{Address}'." };
+
+  // ── Osysharp.Mail.Gmail · Osysharp.Mail.Gmail.GmailMailbox.BodyOf ──
+  /// Osysharp.Mail.Gmail.GmailMailbox.BodyOf · an error message
+  /// placeholders: {doing} = doing (string), {Address} = Address (string), {r.StatusCode} = r.StatusCode (int) — {r.StatusCode} is a count: give one text per plural form
+  /// shown through ExternalServiceException
+  error "Gmail could not {doing} for '{Address}': it answered {r.StatusCode}." => { zero: "تعذّر على Gmail {doing} لـ '{Address}': أجاب بـ {r.StatusCode}.", one: "تعذّر على Gmail {doing} لـ '{Address}': أجاب بـ {r.StatusCode}.", two: "تعذّر على Gmail {doing} لـ '{Address}': أجاب بـ {r.StatusCode}.", few: "تعذّر على Gmail {doing} لـ '{Address}': أجاب بـ {r.StatusCode}.", many: "تعذّر على Gmail {doing} لـ '{Address}': أجاب بـ {r.StatusCode}.", other: "تعذّر على Gmail {doing} لـ '{Address}': أجاب بـ {r.StatusCode}." };
+
+  // ── Osysharp.Mail.Gmail · Osysharp.Mail.Gmail.GmailMailbox.NotReadyReason ──
+  /// Osysharp.Mail.Gmail.GmailMailbox.NotReadyReason · note
+  /// placeholders: {Address} = Address (string)
+  /// shown through NotReadyReason()
+  note "The Gmail mailbox '{Address}' has no OAuth client yet — set ClientId and ClientSecret from your Google Cloud project." => "صندوق Gmail '{Address}' ليس له عميل OAuth بعد. اضبط ClientId وClientSecret من مشروعك على Google Cloud.";
+  /// Osysharp.Mail.Gmail.GmailMailbox.NotReadyReason · note
+  /// placeholders: {Address} = Address (string)
+  /// shown through NotReadyReason()
+  note "The Gmail mailbox '{Address}' has no refresh token yet — grant it once (gmail.readonly and gmail.send) and set RefreshToken." => "صندوق Gmail '{Address}' ليس له رمز تحديث بعد. امنحه الإذن مرة واحدة (gmail.readonly وgmail.send) واضبط RefreshToken.";
+  /// Osysharp.Mail.Gmail.GmailMailbox.NotReadyReason · note
+  /// shown through NotReadyReason()
+  note "This Gmail mailbox has no Address." => "صندوق Gmail هذا بلا عنوان.";
+
+  // ── Osysharp.Mail.Gmail · Osysharp.Mail.Gmail.GmailMailbox.ReadPush ──
+  /// Osysharp.Mail.Gmail.GmailMailbox.ReadPush · an error message
+  /// shown through ValidationException
+  error "This push is not signed by the mailbox's Pub/Sub service account." => "هذا الإشعار غير موقّع من حساب خدمة Pub/Sub الخاص بصندوق البريد.";
+}

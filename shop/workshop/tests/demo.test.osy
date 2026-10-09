@@ -20,8 +20,11 @@ void anybody_can_restock_and_every_held_bike_goes_back_in_the_window() {
       Assert.Equal(OrderStatus.Voided, order.Status);   // the desk still tells the story
     }
   }
-  Assert.Equal(0, OrderLine.Count(l => l.Held));   // both bikes are for sale again
-  Assert.Equal(2, OrderLine.Count());                      // …and both orders still say what they were for
+  runas (Workshop) {
+    Assert.Equal(0, OrderLine.Count(l => l.Held));   // both bikes are for sale again
+    Assert.Equal(2, OrderLine.Count());              // …and both orders still say what they were for
+  }
+  Assert.Equal(0, Order.Count());                    // and the visitor who pressed it read none of them
 }
 
 [Test(Window)]

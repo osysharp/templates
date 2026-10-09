@@ -1,0 +1,240 @@
+// THE TEAM AND THE COMPANIES ON THE KITS — teammates arrive by invitation, every change to somebody's access is recorded,
+// a customer with a PROVEN address lands in their company, a routing rule decides where a new ticket goes, and a
+// company's tier decides what it is promised.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Invitations;
+using Osysharp.People;
+using Osysharp.Mail;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+
+/// Mira runs the desk (an admin and an agent); Theo works it; Larkspur (Standard, shares tickets) and Atlas (Enterprise)
+/// are customers — Petra has a Larkspur portal account and a ticket.
+[TestFixture]
+void Office() {
+  // A FRESH desk, nobody named responsible for its customers' data yet — the privacy tests on this fixture prove the
+  // desk asks for that (and what changes once an admin answers), so this one fixture does not answer it for them.
+  SetUpDesk();
+  var mira = new Agent { Email = "mira@helpdesk.test", DisplayName = "Mira Okafor", PasswordHash = Security.HashPassword("mira-password-1"),
+                         EmailVerifiedAt = DateTime.UtcNow };
+  new RoleGrant { Member = mira, Role = AppRole.Agent };
+  new RoleGrant { Member = mira, Role = AppRole.Admin };
+  var theo = new Agent { Email = "theo@helpdesk.test", DisplayName = "Theo Brandt", PasswordHash = Security.HashPassword("theo-password-1"),
+                         EmailVerifiedAt = DateTime.UtcNow };
+  new RoleGrant { Member = theo, Role = AppRole.Agent };
+  JoinTheDesk(mira);
+  JoinTheDesk(theo);
+  var larkspur = new Company { Name = "Larkspur Freight", Tier = TierNamed("Standard"), SharesTickets = true };
+  new OrganizationDomain { Organization = larkspur, Domain = "larkspur.test" };
+  var atlas = new Company { Name = "Atlas Shipping", Tier = TierNamed("Enterprise") };
+  new OrganizationDomain { Organization = atlas, Domain = "atlas.test" };
+  var petra = new User { Email = "petra@larkspur.test", DisplayName = "Petra Holm", EmailVerifiedAt = DateTime.UtcNow };
+  new RoleGrant { Member = petra, Role = AppRole.Customer };
+  var party = new Customer { DisplayName = "Petra Holm", Company = larkspur, Account = petra, CreatedByVisit = null };
+  new ContactPoint { Party = party, Kind = ContactPointKind.Email, Value = "petra@larkspur.test", IsPreferred = true,
+                     VerifiedKey = "Email:petra@larkspur.test", VerifiedAt = DateTime.UtcNow, VerifiedBy = VerificationMethod.SignIn };
+  // Two customers who have just signed up: one proved their address, one did not.
+  new User { Email = "jonas@larkspur.test", DisplayName = "Jonas Weber", PasswordHash = Security.HashPassword("jonas-password-1"),
+             EmailVerifiedAt = DateTime.UtcNow };
+  new User { Email = "mallory@larkspur.test", DisplayName = "Not From Larkspur", PasswordHash = Security.HashPassword("mallory-password-1") };
+}
+
+principal Mira    => Agent.Single(a => a.Email == "mira@helpdesk.test");
+principal Theo    => Agent.Single(a => a.Email == "theo@helpdesk.test");
+principal Petra   => User.Single(u => u.Email == "petra@larkspur.test");
+principal Jonas   => User.Single(u => u.Email == "jonas@larkspur.test");
+principal Mallory => User.Single(u => u.Email == "mallory@larkspur.test");
+
+[Test(Office)]
+void a_teammate_is_invited_and_joins_as_an_agent_with_the_role_from_any_domain() {
+  Invitation? sent = null;
+  runas (Mira) { sent = Invite("kim@contractor.example", AppRole.Agent, note: "Welcome to the night shift"); }
+  Workflow.Settle(sent!);
+  string token = "";
+  runas (AuthBootstrap) {
+    var mail = OutgoingMail.Where(m => m.To == "kim@contractor.example").OrderByDescending(m => m.CreatedAt).First();
+    var text = mail.Text ?? "";
+    var at = text.IndexOf("/invite/") + "/invite/".Length;
+    var end = at;
+    while (end < text.Length && text.Substring(end, 1) != " " && text.Substring(end, 1) != "\n" && text.Substring(end, 1) != ")") { end = end + 1; }
+    token = text.Substring(at, end - at);
+  }
+  Assert.Equal("", JoinByInvitation(token, "kim@contractor.example", "Kim Sato", "kim-password-123"));
+  runas (Mira) {
+    var kim = Agent.Single(a => a.Email == "kim@contractor.example");
+    Assert.Equal("Kim Sato", kim.DisplayName);
+    Assert.True(RoleGrant.Any(g => g.Member == kim && g.Role == AppRole.Agent));
+    // …and is on the desk's first-line queues the moment they arrive — nobody has to remember Settings › Queues.
+    Assert.Equal("Billing, Support", QueuesOf(kim));
+  }
+}
+
+string QueuesOf(Principal p) =>
+  string.Join(", ", QueueMember.Where(m => m.Member == p).Select(m => m.Queue.Name).OrderBy(n => n).ToList());
+
+/// A desk role given puts a teammate on the queues it covers; taken away, it takes them off — so routing never offers a
+/// ticket to somebody who can no longer hold it. Told by the user manager (`RolesSetup.Events`, model/team.osy).
+[Test(Office)]
+void a_desk_role_puts_a_teammate_on_its_queues_and_taking_it_away_takes_them_off() {
+  Agent? theo = null;
+  runas (Mira) { theo = Agent.Single(a => a.Email == "theo@helpdesk.test"); }
+  runas (Mira) { Assert.Equal("Billing, Support", QueuesOf(theo!)); }
+  runas (Mira) { GrantRole(theo!, AppRole.Lead, "Second line this month"); }
+  runas (Mira) { Assert.Equal("Billing, Engineering, Support", QueuesOf(theo!)); }
+  runas (Mira) { RevokeRole(theo!, AppRole.Lead, "Back on the first line"); }
+  runas (Mira) { Assert.Equal("Billing, Support", QueuesOf(theo!)); }
+  runas (Mira) { RevokeRole(theo!, AppRole.Agent, "Left the team"); }
+  runas (Mira) { Assert.Equal("", QueuesOf(theo!)); }
+}
+
+[Test(Office)]
+void a_role_on_the_desk_changes_only_through_the_user_manager_and_is_recorded() {
+  // SECURITY-INVARIANT(people-access-changes-are-recorded-and-the-managers-alone), as the desk wires it: an admin may
+  // not write a grant directly any more — the change goes through the user manager, which records it.
+  Agent? theo = null;
+  runas (Mira) { theo = Agent.Single(a => a.Email == "theo@helpdesk.test"); }
+  runas (Mira) { Assert.Denied(() => { new RoleGrant { Member = theo!, Role = AppRole.Lead }; UnitOfWork.Commit(); }); }
+  runas (Mira) { GrantRole(theo!, AppRole.Lead, "Covering the night shift"); }
+  runas (Mira) {
+    Assert.True(RoleGrant.Any(g => g.Member == theo && g.Role == AppRole.Lead));
+    var change = AccessChange.Single(c => c.Person == theo);
+    Assert.Equal("mira@helpdesk.test", change.By.Email);
+    Assert.Equal("Covering the night shift", change.Reason);
+  }
+  // An agent manages nobody.
+  runas (Theo) { Assert.Denied(() => GrantRole(Theo, AppRole.Admin)); }
+}
+
+[Test(Office)]
+void the_desk_is_never_left_without_an_admin() {
+  Agent? mira = null;
+  runas (Mira) { mira = Agent.Single(a => a.Email == "mira@helpdesk.test"); }
+  runas (Mira) { Assert.Throws(() => RevokeRole(mira!, AppRole.Admin)); }
+  runas (Mira) { Assert.True(RoleGrant.Any(g => g.Member == Mira && g.Role == AppRole.Admin)); }
+}
+
+/// ⭐ THE PEOPLE PAGE READS THE TEAM, NOT THE CUSTOMERS — the desk's customers sign in too, and twenty more of them cost the
+/// page nothing: the directory names the team as a query, so a customer is never read to be left out. The same list is
+/// who an API key can be issued to.
+[Test(Office)]
+void the_people_page_reads_the_team_however_many_customers_sign_in() {
+  var few = 0;
+  runas (Mira) {
+    var mark = Cost.Mark();
+    var rows = PeopleList();
+    few = Cost.RowsReadSince(mark);
+    Assert.Equal(2, rows.Count);
+  }
+  runas (AuthBootstrap) {
+    for (var i = 1; i <= 20; i++) { new User { Email = "customer" + i + "@example.test", DisplayName = "Customer " + i }; }
+    UnitOfWork.Commit();
+  }
+  runas (Mira) {
+    var mark = Cost.Mark();
+    var rows = PeopleList();
+    var many = Cost.RowsReadSince(mark);
+    Log.Information("PeopleList: " + few + " rows read with 3 customers, " + many + " with 23");
+    Assert.Equal(["Mira Okafor", "Theo Brandt"], rows.Select(r => r.Name).ToList());
+    Assert.Equal(few, many);
+    Assert.False(KeyHolders().Any(p => p.Email.StartsWith("customer")));
+  }
+}
+
+[Test(Office)]
+void a_customer_whose_proven_address_is_on_a_company_domain_lands_in_it_and_sees_its_shared_tickets() {
+  runas (Petra) { SubmitRequest("Customs papers missing", "The papers for shipment 4471 never arrived."); }
+  runas (AuthBootstrap) { Assert.NotEqual("", SignIn("jonas@larkspur.test", "jonas-password-1").Ticket); }
+  runas (Jonas) {
+    Assert.Equal("Larkspur Freight", Membership.Single(m => m.Member == Jonas).Organization.Name);
+    // Larkspur shares its tickets, so its new member sees Petra's.
+    Assert.Equal(1, Ticket.Count(t => t.Title == "Customs papers missing"));
+  }
+}
+
+[Test(Office)]
+void an_address_nobody_proved_lands_in_no_company_and_sees_nothing_of_it() {
+  runas (Petra) { SubmitRequest("Customs papers missing", "The papers for shipment 4471 never arrived."); }
+  runas (AuthBootstrap) { SignIn("mallory@larkspur.test", "mallory-password-1"); }
+  runas (Mallory) {
+    Assert.False(Membership.Any(m => m.Member == Mallory));
+    Assert.Equal(0, Ticket.Count());
+  }
+}
+
+[Test(Office)]
+void a_routing_rule_assigns_prioritises_and_tags_a_matching_new_ticket_and_says_so() {
+  Agent? theo = null;
+  runas (Mira) {
+    theo = Agent.Single(a => a.Email == "theo@helpdesk.test");
+    new RoutingRule { Name = "Refunds to Theo", Position = -1, TitleContains = "refund", AssignTo = theo, SetPriority = WorkPriority.High,
+                      AppAction = "billing" };
+    UnitOfWork.Commit();
+  }
+  int number = 0;
+  runas (new Visitor { Id = "visit-refund" }) { number = SubmitRequest("Please REFUND my order", "I was charged twice.", "Ola", "ola@example.test"); }
+  runas (Mira) {
+    var t = Ticket.Single(x => x.Number == number);
+    Assert.Equal("theo@helpdesk.test", t.Assignee!.Email);
+    Assert.Equal(WorkPriority.High, t.Priority);
+    Assert.True(TicketTag.Any(g => g.Ticket == t && g.Tag.Name == "billing"));
+    Assert.True(ConversationEvent.Any(e => e.Conversation == t.Conversation && e.Kind == "helpdesk.routed"));
+  }
+  // A ticket the rule does not match is left alone.
+  runas (new Visitor { Id = "visit-other" }) { number = SubmitRequest("Where is my parcel", "It is late.", "Per", "per@example.test"); }
+  runas (Mira) { Assert.Null(Ticket.Single(x => x.Number == number).Assignee); }
+}
+
+/// A rule that routes by LANGUAGE sees a new customer's language as the ticket is opened: the offline detector reads it in
+/// the same commit (no model, no key, nothing settled first), so a Swedish request lands in the Nordic queue at once — and
+/// an English one does not.
+[Test(Office)]
+void a_language_routing_rule_routes_a_new_swedish_ticket() {
+  runas (Mira) {
+    var nordic = new Queue { Name = "Nordic", Position = 6, Description = "Swedish, Norwegian and Danish." };
+    new RoutingRule { Name = "Swedish to Nordic", Position = -1, Language = "sv", ToQueue = nordic };
+    UnitOfWork.Commit();
+  }
+  int number = 0;
+  runas (new Visitor { Id = "visit-sv" }) {
+    number = SubmitRequest("Fakturan går inte att ladda ner",
+      "Hej! Jag försöker ladda ner fakturan för september men PDF:en öppnas aldrig. Kan ni skicka den igen?", "Ana", "ana@example.test");
+  }
+  runas (Mira) {
+    var t = Ticket.Single(x => x.Number == number);
+    Assert.Equal("sv", t.Language);
+    Assert.Equal("Nordic", t.Queue!.Name);
+    // …and the ticket says so: the rule's placement is news on its timeline (the inbox's `ItemRouted`); landing in a
+    // queue by default is not (`ItemQueued`, bookkeeping — not even written, since nothing here hears it).
+    Assert.Contains("Arrived in Nordic — rule “Swedish to Nordic”.", TimelineOf(t));
+  }
+  runas (new Visitor { Id = "visit-en" }) {
+    number = SubmitRequest("The invoice will not download", "Hello! The September invoice never opens. Could you send it again?",
+      "Per", "per@example.test");
+  }
+  runas (Mira) {
+    var t = Ticket.Single(x => x.Number == number);
+    Assert.NotEqual("Nordic", t.Queue!.Name);
+    // The desk's own "Money questions" rule placed this one, and it says so — one line per placement, never Nordic's.
+    Assert.Equal("Tagged billing — rule “Money questions”. | Arrived in Billing — rule “Money questions”.",
+      string.Join(" | ", TimelineOf(t)));
+  }
+}
+
+[Test(Office)]
+void a_companys_tier_chooses_its_sla_promise() {
+  Guid standard = Guid.Empty;
+  Guid enterprise = Guid.Empty;
+  runas (Mira) {
+    standard = OpenTicket("someone@larkspur.test", "Someone", "Invoice question", "Hello", WorkPriority.Normal);
+    enterprise = OpenTicket("someone@atlas.test", "Someone Else", "Invoice question", "Hello", WorkPriority.Normal);
+  }
+  runas (Mira) {
+    Assert.Equal(TimeSpan.FromHours(8), Ticket.Single(t => t.Id == standard).FirstResponseWithin);
+    Assert.Equal(TimeSpan.FromHours(4), Ticket.Single(t => t.Id == enterprise).FirstResponseWithin);
+    Assert.Equal("Enterprise normal", Ticket.Single(t => t.Id == enterprise).Policy!.Name);
+  }
+}

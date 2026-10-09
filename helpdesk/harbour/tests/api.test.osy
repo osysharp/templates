@@ -1,0 +1,129 @@
+// THE TICKET API (H12) — another system works tickets over `/api/rest/v1/desk` with a teammate's API key, and IS that
+// teammate: it opens a ticket, replies, sets a status and a priority, tags it, lists what it may read — each the desk's
+// own verb, its line on the timeline signed by them. It cannot read, over the API, a ticket they could not open in the
+// desk: Rahul is not in the restricted Legal queue, so a ticket there is not there for his key either.
+//
+// The bells (Ines, Rahul, Lena; the Legal queue only Lena works; Olivia at Larkspur) are notifications.test.osy's.
+using Osysharp.Identity;
+using Osysharp.Inbox;
+using Osysharp.Conversations;
+
+/// GET /statuses answers its list in the `result` envelope.
+public class StatusList { public List<StatusData> Result = []; }
+
+/// The ticket API's base.
+string OnDesk(string path) => "/api/rest/v1/desk" + path;
+
+[Test(Bells)]
+void an_agent_works_a_ticket_over_the_api_as_themselves() {
+  var key = Api.KeyFor(Rahul);
+  var opened = Api.Post(OnDesk("/tickets"), new { email = "olivia@larkspur.test", subject = "Label printer offline",
+                                                text = "It stopped printing this morning.", priority = "High" }, apiKey: key);
+  Assert.Equal(201, opened.StatusCode);
+  var t = JsonSerializer.Deserialize<TicketData>(opened.Body);
+  Assert.Equal("Label printer offline", t.Subject);
+  Assert.Equal(WorkPriority.High, t.Priority);
+  Assert.Equal("Olivia Brandt", t.Customer);
+  Assert.Equal("olivia@larkspur.test", t.CustomerEmail);
+  Assert.Equal("Larkspur Freight", t.Company);
+  var n = t.Number;
+  Background.Settle();
+
+  Assert.Equal(200, Api.Post(OnDesk($"/tickets/{n}/replies"), new { text = "We are on it — a new driver is going out." }, apiKey: key).StatusCode);
+  Assert.Equal(200, Api.Post(OnDesk($"/tickets/{n}/replies"), new { text = "Driver 2.4 fixes it.", note = true }, apiKey: key).StatusCode);
+
+  var statuses = JsonSerializer.Deserialize<StatusList>(Api.Get(OnDesk("/statuses"), apiKey: key).Body).Result;
+  var pending = statuses.Single(s => s.Name == "Pending");
+  Assert.Equal(StatusCategory.Pending, pending.Category);
+  var moved = Api.Post(OnDesk($"/tickets/{n}/status"), new { statusId = pending.Id }, apiKey: key);
+  Assert.Equal(200, moved.StatusCode);
+  Assert.Equal(StatusCategory.Pending, JsonSerializer.Deserialize<TicketData>(moved.Body).Category);
+
+  var tagged = Api.Post(OnDesk($"/tickets/{n}/tags"), new { tag = "Hardware" }, apiKey: key);
+  Assert.Equal(["hardware"], JsonSerializer.Deserialize<TicketData>(tagged.Body).Tags);
+  var urgent = Api.Post(OnDesk($"/tickets/{n}/priority"), new { priority = "Urgent" }, apiKey: key);
+  Assert.Equal(WorkPriority.Urgent, JsonSerializer.Deserialize<TicketData>(urgent.Body).Priority);
+  Assert.Contains("\"Urgent\"", urgent.Body);   // by name on the wire, never its number
+
+  var one = Api.Get(OnDesk($"/tickets/{n}"), apiKey: key);
+  Assert.Equal(200, one.StatusCode);
+  Assert.EndsWith("/v/open/t/" + n, JsonSerializer.Deserialize<TicketData>(one.Body).Link);
+  Assert.Equal(200, Api.Get(OnDesk("/entities/Ticket"), apiKey: key).StatusCode);
+
+  // Each was the desk's own verb, done as Rahul: the reply reached the customer, the note did not, the timeline says who.
+  runas (Rahul) {
+    var ticket = Ticket.Single(x => x.Number == n);
+    Assert.Equal(EntryVisibility.Customer, Message.Single(m => m.Text == "We are on it — a new driver is going out.").Visibility);
+    Assert.Equal(EntryVisibility.Internal, Message.Single(m => m.Text == "Driver 2.4 fixes it.").Visibility);
+    Assert.Equal("Rahul Kapoor", Message.Single(m => m.Text == "Driver 2.4 fixes it.").ByName);
+    Assert.Contains("Status set to Pending.", LinesOf(ticket));
+  }
+}
+
+/// The desk's ACTIONS the API lists — take, give to a teammate — bind the ticket from its id and run as the key's teammate,
+/// each answering its own sentence; an action the API does not list (`TellLeads`) is not there.
+[Test(Bells)]
+void the_listed_desk_actions_work_a_ticket_by_its_id_and_no_other_action_is_reachable() {
+  var key = Api.KeyFor(Rahul);
+  var opened = JsonSerializer.Deserialize<TicketData>(Api.Post(OnDesk("/tickets"),
+    new { email = "olivia@larkspur.test", subject = "Scanner jams", text = "Every second page." }, apiKey: key).Body);
+  Background.Settle();
+  var taken = Api.Post(OnDesk($"/tickets/{opened.Id}/take"), new { }, apiKey: key);
+  Assert.Equal(200, taken.StatusCode);
+  Assert.Contains("Taken.", taken.Body);
+  Assert.Equal("Rahul Kapoor", JsonSerializer.Deserialize<TicketData>(Api.Get(OnDesk($"/tickets/{opened.Number}"), apiKey: key).Body).Assignee);
+  Guid ines = Guid.Empty;
+  runas (Ines) { ines = Agent.Single(a => a.Email == "ines@helpdesk.test").Id; }
+  var given = Api.Post(OnDesk($"/tickets/{opened.Id}/assignee"), new { agent = ines }, apiKey: key);
+  Assert.Equal(200, given.StatusCode);
+  Assert.Contains("Given to", given.Body);
+  // An action the API does not list is not an endpoint.
+  Assert.Equal(404, Api.Post(OnDesk($"/tickets/{opened.Id}/leads"), new { message = "Look at this" }, apiKey: key).StatusCode);
+}
+
+/// ⭐ The API follows the ticket's own security — nothing more. A ticket moved to the restricted Legal queue is not there
+/// for Rahul's key (404, and not in his list), exactly as it is not in his desk; Lena, who works Legal, reads and answers
+/// it. No key is a 401. Olivia, with a key of her own, reads her own ticket — and is refused writing as the desk.
+[Test(Bells)]
+void the_api_reads_and_writes_only_what_the_caller_may_in_the_desk() {
+  var id = OliviasTicket("Lawyer's letter about invoice 2214");
+  ToLegal(id);
+  var n = 0;
+  runas (Lena) { n = Ticket.Single(t => t.Id == id).Number; }
+
+  Assert.Equal(401, Api.Get(OnDesk($"/tickets/{n}")).StatusCode);
+
+  var rahul = Api.KeyFor(Rahul);
+  Assert.Equal(404, Api.Get(OnDesk($"/tickets/{n}"), apiKey: rahul).StatusCode);
+  Assert.Equal(404, Api.Post(OnDesk($"/tickets/{n}/replies"), new { text = "Can I help?" }, apiKey: rahul).StatusCode);
+  Assert.DoesNotContain("Lawyer's letter", Api.Get(OnDesk("/entities/Ticket"), apiKey: rahul).Body);
+
+  var lena = Api.KeyFor(Lena);
+  Assert.Equal(200, Api.Get(OnDesk($"/tickets/{n}"), apiKey: lena).StatusCode);
+  Assert.Contains("Lawyer's letter", Api.Get(OnDesk("/entities/Ticket"), apiKey: lena).Body);
+  Assert.Equal(200, Api.Post(OnDesk($"/tickets/{n}/replies"), new { text = "Our legal team has your letter." }, apiKey: lena).StatusCode);
+
+  var olivia = Api.KeyFor(Olivia);
+  Assert.Equal(200, Api.Get(OnDesk($"/tickets/{n}"), apiKey: olivia).StatusCode);
+  Assert.Equal(403, Api.Post(OnDesk($"/tickets/{n}/replies"), new { text = "I am the desk now." }, apiKey: olivia).StatusCode);
+}
+
+/// What the API refuses, with the desk's own sentence and the status that says what kind of refusal it is.
+[Test(Bells)]
+void the_api_refuses_with_the_desks_own_sentences() {
+  var key = Api.KeyFor(Rahul);
+  var missing = Api.Get(OnDesk("/tickets/99999"), apiKey: key);
+  Assert.Equal(404, missing.StatusCode);
+  Assert.Contains("There is no ticket #99999 — or not one you may read.", missing.Body);
+  var id = OliviasTicket();
+  var n = 0;
+  runas (Rahul) { n = Ticket.Single(t => t.Id == id).Number; }
+  var badStatus = Api.Post(OnDesk($"/tickets/{n}/status"), new { statusId = Guid.NewGuid() }, apiKey: key);
+  Assert.Equal(400, badStatus.StatusCode);
+  Assert.Contains("That is not one of the desk's statuses — GET /statuses lists them.", badStatus.Body);
+  var noTag = Api.Post(OnDesk($"/tickets/{n}/tags"), new { tag = " " }, apiKey: key);
+  Assert.Equal(400, noTag.StatusCode);
+  var noSubject = Api.Post(OnDesk("/tickets"), new { email = "olivia@larkspur.test", subject = "", text = "x" }, apiKey: key);
+  Assert.Equal(400, noSubject.StatusCode);
+  Assert.Contains("Give the ticket a subject.", noSubject.Body);
+}

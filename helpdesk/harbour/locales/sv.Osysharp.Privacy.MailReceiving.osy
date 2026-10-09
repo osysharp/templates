@@ -1,0 +1,19 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Privacy.MailReceiving, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Privacy.MailReceiving · Osysharp.Privacy.MailReceiving.ReceivedMailPersonalData.Categories ──
+  /// Osysharp.Privacy.MailReceiving.ReceivedMailPersonalData.Categories · a label (a field, a list item, a menu entry) · at most ~44 characters
+  /// shown through DataCategory.Label
+  label "Mail you sent us, as it arrived" => "E-post du skickat oss, som den kom fram";
+  /// Osysharp.Privacy.MailReceiving.ReceivedMailPersonalData.Categories · text on the page
+  text "Receiving what you write to us" => "Att ta emot det du skriver till oss";
+
+  // ── Osysharp.Privacy.MailReceiving · Osysharp.Privacy.MailReceiving.ReceivedMailPersonalData.Export ──
+  /// Osysharp.Privacy.MailReceiving.ReceivedMailPersonalData.Export · text on the page
+  text "Mail you sent us" => "Mejl du har skickat oss";
+  /// Osysharp.Privacy.MailReceiving.ReceivedMailPersonalData.Export · text on the page
+  text "To" => "Till";
+}

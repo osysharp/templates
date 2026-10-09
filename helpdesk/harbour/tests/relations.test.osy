@@ -1,0 +1,356 @@
+// TICKETS AND EACH OTHER (H2) — the desk copies somebody in and takes them off; a second question in one thread is split
+// into a ticket of its own, for the same customer, its message moved there and both tickets saying so; tickets are
+// linked by the desk's kinds (related, duplicate, caused by, incident of a problem), shown on both; and solving a
+// problem solves its open incidents, each customer told. `osy test --pixels` photographs the link panel, the split
+// dialog, a problem with its incidents and the phone (Docs/OsySharp/design/helpdesk/relations/).
+//
+// The desk (Ines, Rahul, Lena; Olivia and Sam at Larkspur, which shares tickets; Dev at Orbit Labs) is desk.test.osy's.
+using Osysharp.Identity;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+
+/// What `t`'s timeline says, as one string per line — the reader's language.
+List<string> LinesOf(Ticket t) {
+  List<string> said = [];
+  foreach (var e in ConversationEvent.Where(x => x.Conversation == t.Conversation).OrderBy(x => x.Sequence).ToList()) {
+    said.Add(EventWords(e));
+  }
+  return said;
+}
+
+Ticket TicketNumbered(int n) => Ticket.Single(t => t.Number == n);
+
+// ── copying people in ────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// Copying in is a read grant to a person: Dev (another company) reads Olivia's ticket in his portal once copied, and
+/// not after he is taken off. Both moves are on the timeline, named.
+[Test(Desk)]
+void the_desk_copies_somebody_in_and_takes_them_off_and_the_timeline_says_so() {
+  Guid id = Guid.Empty;
+  runas (Ines) { id = OpenTicket("olivia@larkspur.test", "", "Customs papers for order 7781", "Which form do we need?"); }
+  runas (Dev) { Assert.Equal(0, Ticket.Count(t => t.Id == id)); }
+  runas (Ines) {
+    AddCc(id, "Dev@Orbit.test");
+    var seat = Participant.Single(p => p.Conversation == TicketOf(id).Conversation && p.Role == ParticipantRole.Cc);
+    Assert.Equal("Dev Patel", seat.Party!.DisplayName);
+    Assert.Contains("Dev Patel was copied in.", LinesOf(TicketOf(id)));
+  }
+  runas (Dev) {
+    Assert.Equal(1, Ticket.Count(t => t.Id == id));
+    Assert.Equal(1, Message.Count(m => m.Conversation == TicketOf(id).Conversation));
+  }
+  runas (Ines) {
+    var seat = Participant.Single(p => p.Conversation == TicketOf(id).Conversation && p.Role == ParticipantRole.Cc);
+    RemoveCc(id, seat.Id);
+    Assert.Contains("Dev Patel is no longer copied in.", LinesOf(TicketOf(id)));
+  }
+  runas (Dev) { Assert.Equal(0, Ticket.Count(t => t.Id == id)); }
+}
+
+[Test(Desk)]
+[runas(Ines)]
+void copying_in_refuses_the_customer_somebody_already_copied_a_bad_address_and_a_closed_ticket() {
+  var id = OpenTicket("olivia@larkspur.test", "", "Invoice copy", "");
+  Assert.Equal("Olivia Brandt is who this conversation is with — every reply goes to them already.",
+               Assert.Throws<ValidationException>(() => AddCc(id, "olivia@larkspur.test")).Message);
+  AddCc(id, "accounts@larkspur.test", "Accounts");
+  Assert.Equal("Accounts is already copied in.", Assert.Throws<ValidationException>(() => AddCc(id, "accounts@larkspur.test")).Message);
+  Assert.Equal("Give the address to copy in — like ana@example.com.",
+               Assert.Throws<ValidationException>(() => AddCc(id, "accounts at larkspur")).Message);
+  // A new address is a customer of the desk — filed under the company whose domain it is.
+  Assert.Equal("Larkspur Freight", Customer.Single(c => c.DisplayName == "Accounts").Company!.Name);
+}
+
+// ── splitting a message off ──────────────────────────────────────────────────────────────────────────────────────────
+
+/// ⭐ Olivia asks two things in one thread. The second is split into a ticket of its own: hers, of the same type and
+/// urgency, its message MOVED there; each ticket says where it went or came from, and they stay linked. She reads both.
+[Test(Desk)]
+void a_second_question_is_split_into_a_ticket_of_its_own_for_the_same_customer() {
+  var first = 0;
+  runas (Olivia) {
+    first = SubmitRequest("Invoice 2041 has the wrong VAT number", "Our VAT number on invoice 2041 is the old one.");
+    CustomerReply(TicketNumbered(first).Id, "Also — the export to CSV has been stuck at 99% since Monday.");
+  }
+  var second = 0;
+  runas (Ines) {
+    var t = TicketNumbered(first);
+    SetPriority(t.Id, WorkPriority.High);
+    var export = Message.Single(m => m.Text.StartsWith("Also — the export"));
+    second = SplitTicket(t.Id, export.Id, "CSV export stuck at 99%");
+    var split = TicketNumbered(second);
+    Assert.Equal("CSV export stuck at 99%", split.Title);
+    Assert.Equal("Olivia Brandt", split.Customer.DisplayName);
+    Assert.Equal(WorkPriority.High, split.Priority);
+    Assert.Equal(t.Form!.Id, split.Form!.Id);
+    // The message MOVED: the new ticket has it, the old one does not.
+    Assert.Equal(split.Conversation.Id, Message.Single(m => m.Text.StartsWith("Also — the export")).Conversation.Id);
+    Assert.Equal(0, Message.Count(m => m.Conversation == t.Conversation && m.Text.StartsWith("Also — the export")));
+    // Each says where it went or came from — and the link would only repeat it, so the timeline has no "Linked" line.
+    Assert.Contains($"A message was split into #{second}: CSV export stuck at 99%.", LinesOf(t));
+    Assert.Contains($"Split from #{first} (Invoice 2041 has the wrong VAT number) — the customer's message moved here.", LinesOf(split));
+    Assert.False(LinesOf(t).Any(l => l.StartsWith("Linked")));
+    // …and both panels show the link, from each side; nobody can remove it by hand.
+    var links = ItemLinksOf(t.Id);
+    Assert.Equal("Split into", links[0].Words);
+    Assert.Equal("#" + second, links[0].Reference);
+    Assert.False(links[0].Removable);
+    Assert.Equal("Split from", ItemLinksOf(split.Id)[0].Words);
+  }
+  // Olivia reads both, and her message where it now is.
+  runas (Olivia) {
+    Assert.Equal(1, Ticket.Count(t => t.Number == second));
+    Assert.Equal(1, Message.Count(m => m.Conversation == TicketNumbered(second).Conversation));
+  }
+}
+
+[Test(Desk)]
+void only_something_the_customer_wrote_and_never_the_only_thing_is_split() {
+  var n = 0;
+  runas (Olivia) { n = SubmitRequest("Password reset mail never arrives", "I asked three times."); }
+  runas (Ines) {
+    var t = TicketNumbered(n);
+    var only = Message.Single(m => m.Conversation == t.Conversation);
+    Assert.Equal("That is the only thing the customer wrote here — there is nothing to split it from.",
+                 Assert.Throws<ValidationException>(() => SplitTicket(t.Id, only.Id, "Reset mail")).Message);
+    ReplyToTicket(t.Id, "Sending a new link now.");
+    var ours = Message.Single(m => m.Text == "Sending a new link now.");
+    Assert.Equal("Only something a customer wrote can be split into a ticket of its own.",
+                 Assert.Throws<ValidationException>(() => SplitTicket(t.Id, ours.Id, "Our reply")).Message);
+    Assert.Equal("Give the new ticket a subject: one line saying what this part is about.",
+                 Assert.Throws<ValidationException>(() => SplitTicket(t.Id, only.Id, "  ")).Message);
+  }
+}
+
+// ── links ────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// A link of the desk's kinds is on both tickets — in their panels and their timelines — and goes from both when
+/// removed. Merging a duplicate links it to what it duplicates.
+[Test(Desk)]
+[runas(Ines)]
+void tickets_are_linked_by_the_desks_kinds_and_both_say_so() {
+  var a = TicketOf(OpenTicket("olivia@larkspur.test", "", "Label printer offline", ""));
+  var b = TicketOf(OpenTicket("dev@orbit.test", "", "Labels will not print", ""));
+  LinkWork(b.Id, a.Id, "caused-by");
+  Assert.Contains($"Linked: Caused by #{a.Number}.", LinesOf(b));
+  Assert.Contains($"Linked: Caused #{b.Number}.", LinesOf(a));
+  Assert.Equal("Caused", ItemLinksOf(a.Id)[0].Words);
+  UnlinkWork(ItemLinksOf(a.Id)[0].Link);
+  Assert.Contains($"Link removed: Caused by #{a.Number}.", LinesOf(b));
+  Assert.Equal(0, ItemLinksOf(b.Id).Count);
+
+  var dup = TicketOf(OpenTicket("olivia@larkspur.test", "", "Printer offline again", ""));
+  MergeInto(dup.Id, a.Id);
+  Assert.Equal("Duplicate of", ItemLinksOf(dup.Id)[0].Words);
+  Assert.Equal("Duplicated by", ItemLinksOf(a.Id)[0].Words);
+}
+
+// ── a problem and its incidents ──────────────────────────────────────────────────────────────────────────────────────
+
+/// ⭐ An outage reported by two customers: each report is linked as an incident of the problem. Solving the problem solves
+/// both — each with how it was solved, and each timeline saying which problem solved it; their customers are told by the
+/// solve notice (feedback.test.osy), not by a reply on the ticket. An incident already solved is left as it was.
+[Test(Desk)]
+[runas(Ines)]
+void solving_a_problem_solves_its_open_incidents_and_each_says_how() {
+  var problem = TicketOf(OpenTicket("dev@orbit.test", "", "Carrier API is down", ""));
+  var one = TicketOf(OpenTicket("olivia@larkspur.test", "", "Labels will not print", "Nothing prints since 9:00."));
+  var two = TicketOf(OpenTicket("sam@larkspur.test", "", "Tracking numbers missing", "No tracking numbers today."));
+  var done = TicketOf(OpenTicket("dev@orbit.test", "", "Shipping slow", ""));
+  LinkWork(one.Id, problem.Id, "incident");
+  LinkWork(problem.Id, two.Id, "incident", back: true);       // from the problem's side: "Problem behind #…"
+  LinkWork(done.Id, problem.Id, "incident");
+  SetStatus(done.Id, StatusNamed("Solved").Id);
+  Assert.Equal(2, OpenIncidentCount(problem.Id));
+  Assert.Equal("Problem behind", ItemLinksOf(problem.Id).First(l => l.Reference == "#" + two.Number).Words);
+
+  var solved = SolveProblem(problem.Id, StatusNamed("Solved").Id, "The carrier's API is back — labels and tracking work again.");
+  Assert.Equal(2, solved);
+  foreach (var i in new List<Ticket> { problem, one, two }) { Assert.Equal(StatusCategory.Solved, TicketOf(i.Id).Category); }
+  foreach (var i in new List<Ticket> { one, two }) {
+    Assert.Equal("The carrier's API is back — labels and tracking work again.", TicketOf(i.Id).Resolution);
+    Assert.Contains($"Solved with its problem, #{problem.Number}.", LinesOf(TicketOf(i.Id)));
+    // Told by the solve notice, never by a reply posted on the ticket.
+    Assert.Equal(0, Message.Count(m => m.Conversation == i.Conversation && m.Direction == MessageDirection.Outbound));
+  }
+  Assert.Contains("Solved its 2 incidents with it.", LinesOf(TicketOf(problem.Id)));
+  // The one already solved was left alone.
+  Assert.Equal(0, Message.Count(m => m.Conversation == done.Conversation && m.Direction == MessageDirection.Outbound));
+}
+
+/// An incident whose type needs a root cause is solved with its problem only once the problem has one — and takes it.
+[Test(Desk)]
+[runas(Ines)]
+void an_incident_that_needs_a_root_cause_takes_the_problems() {
+  var outage = TicketForm.Single(f => f.Key == "incident");
+  var problem = TicketOf(OpenTicket("dev@orbit.test", "", "Database failover", ""));
+  var report = TicketOf(OpenTicket("olivia@larkspur.test", "", "Site down", "", formId: outage.Id));
+  LinkWork(report.Id, problem.Id, "incident");
+  var refused = Assert.Throws<ValidationException>(() => SetStatus(problem.Id, StatusNamed("Solved").Id));
+  Assert.Equal($"#{report.Number} need a root cause before they are solved. Record the root cause of #{problem.Number} — its incidents take it.",
+               refused.Message);
+  Assert.Equal(StatusCategory.New, TicketOf(problem.Id).Category);
+  // The bulk menu leaves it where it is, with its incident, rather than half-solving it.
+  Assert.Equal(0, SetStatusOf([problem.Id], StatusNamed("Solved").Id));
+  SetRootCause(problem.Id, "The primary database lost its disk; failover took 11 minutes.");
+  SetStatus(problem.Id, StatusNamed("Solved").Id);
+  Assert.Equal(StatusCategory.Solved, TicketOf(report.Id).Category);
+  Assert.Equal("The primary database lost its disk; failover took 11 minutes.", TicketOf(report.Id).RootCause);
+}
+
+// ── on screen ────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// The panel's links: found by number, shown from each side, opened, removed — and copying somebody in, beside them.
+[Test(Desk)]
+void the_ticket_panel_links_tickets_and_copies_people_in() {
+  var a = 0;
+  var b = 0;
+  runas (Ines) {
+    a = TicketOf(OpenTicket("olivia@larkspur.test", "", "Label printer offline", "The printer in bay 3 shows offline.")).Number;
+    b = TicketOf(OpenTicket("dev@orbit.test", "", "Labels will not print", "")).Number;
+  }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + a);
+  Assert.Visible("Not linked to another ticket.");
+  Assert.Visible("Only the customer is sent its replies.");
+  Ui.Click("Link…");
+  Ui.Click("Kind of link: Related to");
+  Ui.Click("Caused");
+  Ui.Fill("Find the other one", b.ToString());
+  Ui.Click("Find");
+  Ui.Click("Link #" + b);
+  Assert.Visible("Labels will not print", within: "Links");
+  Ui.Click("Copy someone in");
+  Ui.Fill("Their address", "ops@larkspur.test");
+  Ui.Click("Copy in");
+  Assert.Visible("ops@larkspur.test", within: "Copied");
+  Ui.Shot("relations link panel wide");
+  Ui.Theme("dark");
+  Ui.Shot("relations link panel wide dark");
+  Ui.Theme("light");
+  // Linking it again is refused in place, by name.
+  Ui.Click("Link…");
+  Ui.Fill("Find the other one", b.ToString());
+  Ui.Click("Find");
+  Ui.Click("Link #" + b);
+  Assert.Visible($"#{b} is already linked to #{a} that way.");
+  Ui.Click("Cancel", within: "Link to another");
+  // The other side reads it from its own side.
+  Ui.Visit("/v/open/t/" + b);
+  Assert.Visible("Caused by", within: "Links");
+  Assert.Visible("Label printer offline", within: "Links");
+}
+
+/// A duplicate's link offers the merge: "Merge into #n" on its row folds it into the ticket it repeats — closed, the
+/// requester copied on the survivor — and once merged nothing is offered any more. The ticket it repeats offers none.
+[Test(Desk)]
+void a_duplicate_is_merged_from_its_link() {
+  var original = 0;
+  var dup = 0;
+  runas (Ines) {
+    var o = TicketOf(OpenTicket("olivia@larkspur.test", "", "Invoices show the old VAT number", "Since Monday."));
+    var d = TicketOf(OpenTicket("dev@orbit.test", "", "Wrong VAT number on our invoice", "Our March invoice."));
+    original = o.Number;
+    dup = d.Number;
+    Link(d, o, "duplicate");
+    UnitOfWork.Commit();
+  }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + original);
+  Assert.Visible("Duplicated by", within: "Links");
+  Assert.Hidden("Merge into", within: "Links");
+  Ui.Visit("/v/open/t/" + dup);
+  Assert.Visible("Duplicate of", within: "Links");
+  Ui.Shot("relations duplicate offers merge wide");
+  Ui.Theme("dark");
+  Ui.Shot("relations duplicate offers merge wide dark");
+  Ui.Theme("light");
+  Ui.Click("Merge into #" + original);
+  Background.Settle();
+  runas (Ines) {
+    Assert.Equal(original, TicketNumbered(dup).MergedInto!.Number);
+    Assert.Equal(StatusCategory.Closed, TicketNumbered(dup).Category);
+  }
+  Assert.Hidden("Merge into #" + original);
+}
+
+/// Splitting from the thread: the dialog shows the message, asks a subject, and lands on the new ticket. Here the second
+/// question is Sam's — Olivia's colleague, copied in — so the new ticket is HIS: a split ticket belongs to whoever wrote
+/// the message.
+[Test(Desk)]
+void a_message_is_split_off_from_the_thread_into_a_new_ticket() {
+  var n = 0;
+  runas (Olivia) { n = SubmitRequest("Invoice 2041 has the wrong VAT number", "Our VAT number on invoice 2041 is the old one."); }
+  runas (Ines) { AddCc(TicketNumbered(n).Id, "sam@larkspur.test"); }
+  runas (Sam) { CustomerReply(TicketNumbered(n).Id, "Also — the export to CSV has been stuck at 99% since Monday."); }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + n);
+  Ui.Click("Split into a new ticket", within: "Message from Sam Okafor");
+  Assert.Dialog("Split into a new ticket");
+  Assert.Visible("Also — the export to CSV has been stuck at 99% since Monday.", within: "The message");
+  // Its subject starts as the message's first line; emptied, the split is refused, saying why.
+  Ui.Fill("Subject of the new ticket", "");
+  Ui.Click("Split it off");
+  Assert.Visible("Give the new ticket a subject: one line saying what this part is about.");
+  Ui.Fill("Subject of the new ticket", "CSV export stuck at 99%");
+  Ui.Shot("relations split dialog wide");
+  Ui.Click("Split it off");
+  Assert.Visible("CSV export stuck at 99%");
+  Assert.Visible($"Split from #{n} (Invoice 2041 has the wrong VAT number) — the customer's message moved here.");
+  // (The ticket it came from stays mounted behind this one — the desk keeps each ticket's own route — so these read the
+  // page as a whole rather than scoping to a panel both have.)
+  Assert.OnPage("/v/open/t/" + (n + 1));
+  Ui.Shot("relations split ticket wide");
+}
+
+/// A problem with its incidents: they are listed on it, solving it asks first, and what is written goes to each.
+[Test(Desk)]
+void a_problem_lists_its_incidents_and_solving_it_asks_first() {
+  var p = 0;
+  runas (Ines) {
+    var problem = TicketOf(OpenTicket("dev@orbit.test", "", "Carrier API is down", ""));
+    var one = TicketOf(OpenTicket("olivia@larkspur.test", "", "Labels will not print", ""));
+    var two = TicketOf(OpenTicket("sam@larkspur.test", "", "Tracking numbers missing", ""));
+    LinkWork(one.Id, problem.Id, "incident");
+    LinkWork(two.Id, problem.Id, "incident");
+    p = problem.Number;
+  }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + p);
+  Assert.Visible("Labels will not print", within: "Links");
+  Assert.Visible("Tracking numbers missing", within: "Links");
+  Ui.Click("Status: New");
+  Ui.Click("Solved");
+  Assert.Dialog("Solve #" + p + " and its 2 incidents");
+  Ui.Fill("How it was solved", "The carrier's API is back — labels and tracking work again.");
+  Ui.Shot("relations problem solve dialog wide");
+  Ui.Click("Solve all 3");
+  Assert.Visible("Solved", within: "Ticket");
+  Assert.Visible("Solved its 2 incidents with it.", within: "Conversation");
+  Ui.Shot("relations problem solved wide");
+}
+
+/// On a phone the panel is not beside the thread: the head's Links chip opens the links and the copies in a sheet.
+[Test(Desk)]
+void on_a_phone_the_links_and_copies_open_from_the_head() {
+  var a = 0;
+  runas (Ines) {
+    var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Label printer offline", "The printer in bay 3 shows offline."));
+    var b = TicketOf(OpenTicket("dev@orbit.test", "", "Labels will not print", ""));
+    LinkWork(b.Id, t.Id, "caused-by");
+    AddCc(t.Id, "ops@larkspur.test", "Ops desk");
+    a = t.Number;
+  }
+  Ui.Viewport(390, 844);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/v/open/t/" + a);
+  Ui.Click("Links: 2");
+  Assert.Visible("Labels will not print", within: "Links");
+  Assert.Visible("Ops desk", within: "Copied");
+  Ui.Shot("relations links sheet phone");
+}

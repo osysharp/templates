@@ -1,5 +1,7 @@
 using Osysharp.Shop;
+using Osysharp.Pages;
 using Osysharp.Storage;
+using Osysharp.Site.Looks;
 
 // The frame every page sits in — the kit's StorefrontShell — and the pieces the pages share.
 
@@ -12,11 +14,9 @@ component Shop() {
   live var bag = Bag.Include(b => b.Lines.Variant.Product).SingleOrDefault(b => b.VisitId == visitId);
   live var inBag = bag == null ? 0 : bag.Lines.Count();
 
-  AppChrome chrome = new AppChrome {
-    Product = "Rust & Chrome",
-    Tagline = "Restored steel road bicycles · Gothenburg",
-    Home = "/",
-    Nav = [
+  // The menu, the strip across the top and the words in the footer are the workshop's to arrange at the page desk
+  // (/staff/pages), in each version of the site; what is written here is what they show until then.
+  live var menu = SiteMenu("menu", [
       new NavItem { Label = "Bikes", Children = [
         new NavItem { Label = "Road", To = "/bikes/road" },
         new NavItem { Label = "Track", To = "/bikes/track" },
@@ -26,19 +26,35 @@ component Shop() {
       new NavItem { Label = "The workshop", To = "/workshop" },
       new NavItem { Label = "Archive", To = "/archive" },
       new NavItem { Label = "Sale", To = "/sale" },
-    ],
+  ]);
+  live var chrome = new AppChrome {
+    Product = "Rust & Chrome",
+    Tagline = "Restored steel road bicycles · Gothenburg",
+    Home = "/",
+    Nav = menu,
   };
 
   render {
     StorefrontShell(chrome, bagCount: inBag) {
+      // The live site version's theme variant, and — while staff preview the site — the banner saying so.
+      SiteLook();
       ShopVisitSync();
       slot actions { ShopAccountButton(); }
       Outlet(retain: 8);
-      slot promo { StorePromo(DemoNotice()); }
+      slot promo {
+        Region("announcement", allow: [Announcement]) {
+          Announcement(words: "A demo of Osy# — nothing here is for sale and no money moves. Pay with the test card 4242 4242 4242 4242.");
+        }
+      }
       slot bag { BagContents(); }
       slot footer {
-        StoreFooter(chrome, "A small workshop that strips vintage steel road bikes to bare tubes and builds them back up to be ridden hard — not hung on a wall.",
-                    note: "© 2026 Rust & Chrome · Photography via Unsplash");
+        StoreFooter(chrome, note: "© 2026 Rust & Chrome · Photography via Unsplash") {
+          slot about {
+            Region("footer", allow: [FooterWords, FooterLink, OpeningHours, Address, FooterSignUp]) {
+              FooterWords(words: "A small workshop that strips vintage steel road bikes to bare tubes and builds them back up to be ridden hard — not hung on a wall.");
+            }
+          }
+        }
         Box(px: 6, pb: 6) { ShopPolicyLinks(); }
       }
     }
@@ -69,7 +85,7 @@ component BagContents() {
         Stack(gap: 0, grow: 1) {
           foreach (var line in bag.Lines) {
             Row(gap: 4, py: 4, borderBW: 1, border: Colors.Border, align: Align.Center, exitAnimation: LineOut) {
-              Image(src: File.Url(CoverFor(covers, line.Variant.Product.Id)), alt: line.Variant.Product.Name, w: "88px", aspectRatio: "4 / 5", objectFit: ObjectFit.Cover);
+              Image(src: File.Url(CoverPhotoFor(covers, line.Variant.Product.Id)), alt: line.Variant.Product.Name, w: "88px", aspectRatio: "4 / 5", objectFit: ObjectFit.Cover);
               Stack(gap: 1, grow: 1, minW: "0") {
                 Text(line.Variant.Product.Name, fontFamily: Font.Display, fontSize: "22px", textTransform: TextTransform.Uppercase);
                 ShopLineNote(line);
@@ -110,16 +126,16 @@ component BikeCard(Product bike, int index) {
     Link(href: "/bike/" + bike.Id, label: bike.Name, animation: RiseIn, animationDelay: (index * 70) + "ms") {
       Stack(gap: 3) {
         Box(position: Position.Relative, overflow: Overflow.Hidden, bg: Colors.Surface) {
-          Image(src: File.Url(Cover(bike.Images)), alt: $"{bike.Brand} {bike.Name}, {SpecOf(bike.Specs, "Year")}", w: "100%", aspectRatio: "4 / 5",
-                objectFit: ObjectFit.Cover, filter: IsSold(bike.Variants) ? "grayscale(1) brightness(0.7)" : "saturate(0.9) contrast(1.05)");
-          if (IsSold(bike.Variants)) { SoldTag("SOLD"); } else if (IsHeld(bike.Variants)) { SoldTag("RESERVED"); }
+          Image(src: File.Url(CoverPhoto(bike.Images)), alt: $"{bike.Brand} {bike.Name}, {Spec(bike.Specs, "Year")}", w: "100%", aspectRatio: "4 / 5",
+                objectFit: ObjectFit.Cover, filter: Sold(bike.Variants) ? "grayscale(1) brightness(0.7)" : "saturate(0.9) contrast(1.05)");
+          if (Sold(bike.Variants)) { SoldTag("SOLD"); } else if (OnHold(bike.Variants)) { SoldTag("RESERVED"); }
         }
         Stack(gap: 1) {
           Row(justify: Justify.Between, align: Align.Baseline, gap: 3) {
             Text(bike.Name, fontFamily: Font.Display, fontSize: "28px", fontWeight: FontWeight.Bold, lineHeight: "1",
-                 textTransform: TextTransform.Uppercase, color: IsSold(bike.Variants) ? Colors.Sold : Colors.OnBg);
-            Text(IsSold(bike.Variants) ? "Sold" : PriceText(bike.Price), fontFamily: Font.Mono, fontSize: FontSize.Body,
-                 color: IsSold(bike.Variants) ? Colors.Sold : Colors.OnBg, whiteSpace: WhiteSpace.Nowrap);
+                 textTransform: TextTransform.Uppercase, color: Sold(bike.Variants) ? Colors.Sold : Colors.OnBg);
+            Text(Sold(bike.Variants) ? "Sold" : PriceText(bike.Price), fontFamily: Font.Mono, fontSize: FontSize.Body,
+                 color: Sold(bike.Variants) ? Colors.Sold : Colors.OnBg, whiteSpace: WhiteSpace.Nowrap);
           }
           Text(Specs(bike.Brand, bike.Specs), fontFamily: Font.Mono, fontSize: FontSize.Label,
                color: Colors.TextMuted);

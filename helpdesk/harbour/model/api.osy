@@ -1,0 +1,174 @@
+// THE TICKET API — the desk's own verbs, published for other systems (a CRM, a shop, a status page, an internal tool)
+// under `/api/rest/v1/desk`. A caller signs in with a teammate's API key (`X-API-Key`) or a bearer token and is THAT
+// teammate: what it may read and do is exactly what they may in the desk — a ticket in a restricted queue they are not
+// in is not there, over the API as on screen.
+//
+//   GET  /entities/Ticket                     the tickets the caller may read — `$top`/`$skip` paging, the platform's own
+//   POST /tickets                             open one for somebody (by their address) — what a phone call taken down is
+//   GET  /tickets/{number}                    one ticket, as `TicketData`
+//   POST /tickets/{number}/replies            a reply to the customer, or a note (`note: true`)
+//   POST /tickets/{number}/status             move it to a status (`statusId`, from GET /statuses)
+//   POST /tickets/{number}/priority           how urgent it is
+//   POST /tickets/{number}/tags               label it
+//   GET  /statuses                            the desk's statuses, with their categories
+//   POST /tickets/{id}/take                   the desk's own ACTIONS, listed (model/actions.osy) — take it, give it to a
+//   POST /tickets/{id}/assignee               teammate (`agent`: their id), move it to a queue (`queue`), set its type
+//   POST /tickets/{id}/queue                  (`type`). `{id}` is the ticket's id (TicketData.Id): an action's record is
+//   POST /tickets/{id}/type                   bound from it, and each answers the action's own sentence.
+//
+// ⚑ NOTHING DELETES A TICKET. A ticket is erased only by a privacy request (model/privacy.osy) — never by a call.
+// ⚑ EACH VERB IS THE DESK'S OWN: the same function the page calls, with its checks and its timeline line — the API adds
+//   no way round anything. A refusal is a 4xx with the desk's own sentence.
+// ⚑ AN [Action] IS AN ENDPOINT ONLY BECAUSE IT IS LISTED BELOW (owner, Q79): the macros' and rules' verbs are not the API
+//   by being actions. The number-addressed verbs (status, priority, tags, replies) stay functions of their own because
+//   they answer the ticket as it now is (`TicketData`), which a caller acting on a number wants back; the actions answer
+//   their sentence and are addressed by the ticket's id.
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Mail.Receiving;
+
+/// A ticket as the API answers it and as its webhooks carry it — what another system needs to act on it.
+public class TicketData {
+  /// The ticket's id — what the listed actions are addressed by (`/tickets/{id}/take`).
+  public Guid Id;
+  public int Number;
+  public string Subject = "";
+  /// The desk's own name for its status, and the fixed category it is in — `New`, `Open`, `Pending`, `OnHold`, `Solved`,
+  /// `Closed`. (An enum goes out by its member name: the REST wire writes one so, and a webhook's document is written with
+  /// `EnumsAsNames` — so the two read the same.)
+  public string Status = "";
+  public StatusCategory Category = StatusCategory.New;
+  /// `Low`, `Normal`, `High`, `Urgent`.
+  public WorkPriority Priority = WorkPriority.Normal;
+  /// Its type — the form it was asked on.
+  public string Type = "";
+  public string Queue = "";
+  public string Assignee = "";
+  public string Customer = "";
+  public string CustomerEmail = "";
+  public string Company = "";
+  /// The channel it came in on — "email", "web".
+  public string Channel = "";
+  public string Language = "";
+  public List<string> Tags = [];
+  public DateTime? OpenedAt;
+  public DateTime? LastActivityAt;
+  /// Where it opens in the desk.
+  public string Link = "";
+}
+
+/// `t` as the API and webhooks say it — read as whoever is asking (a webhook's document, as the app).
+public TicketData DataOf(Ticket t) {
+  var tags = TicketTag.Where(x => x.Ticket == t).Select(x => x.Tag.Name).OrderBy(n => n).ToList();
+  return new TicketData {
+    Id = t.Id, Number = t.Number, Subject = t.Title, Status = StatusName(t), Category = t.Category, Priority = t.Priority,
+    Type = t.Form == null ? "" : t.Form!.Name, Queue = t.Queue == null ? "" : t.Queue!.Name,
+    Assignee = t.Assignee == null ? "" : t.Assignee!.DisplayName,
+    Customer = t.Customer.DisplayName ?? "", CustomerEmail = AddressOf(t.Customer),
+    Company = t.Customer.Company == null ? "" : t.Customer.Company!.Name,
+    Channel = t.Channel, Language = t.Language, Tags = tags,
+    OpenedAt = t.Conversation.StartedAt, LastActivityAt = t.Conversation.LastEntryAt,
+    Link = App.BaseUrl + "/v/open/t/" + t.Number,
+  };
+}
+
+/// The ticket numbered `number` the caller may read — a 404 with a sentence when there is none.
+Ticket ReadableTicket(int number) {
+  var t = Ticket.FirstOrDefault(x => x.Number == number);
+  if (t == null) { throw new NotFoundException($"There is no ticket #{number} — or not one you may read."); }
+  return t!;
+}
+
+/// POST /tickets — open a ticket for somebody, by their address: their words as their own first message.
+public TicketData ApiOpenTicket(string email, string subject, string text, string name = "",
+                               WorkPriority priority = WorkPriority.Normal) {
+  var id = OpenTicket(email, name, subject, text, priority);
+  return DataOf(Ticket.Single(t => t.Id == id));
+}
+
+/// GET /tickets/{number}
+public TicketData ApiTicket(int number) { return DataOf(ReadableTicket(number)); }
+
+/// POST /tickets/{number}/replies — a reply the customer is sent on the ticket's channel, or a note (`note: true`).
+public TicketData ApiReply(int number, string text, bool note = false) {
+  var t = ReadableTicket(number);
+  ReplyToTicket(t.Id, text, note);
+  return DataOf(ReadableTicket(number));
+}
+
+/// POST /tickets/{number}/status — move it to `statusId` (GET /statuses lists them).
+public TicketData ApiSetStatus(int number, Guid statusId) {
+  var t = ReadableTicket(number);
+  if (!TicketStatus.Any(s => s.Id == statusId && s.Active)) {
+    throw new ValidationException("That is not one of the desk's statuses — GET /statuses lists them.");
+  }
+  SetStatus(t.Id, statusId);
+  return DataOf(ReadableTicket(number));
+}
+
+/// POST /tickets/{number}/priority
+public TicketData ApiSetPriority(int number, WorkPriority priority) {
+  var t = ReadableTicket(number);
+  SetPriority(t.Id, priority);
+  return DataOf(ReadableTicket(number));
+}
+
+/// POST /tickets/{number}/tags — label it (made on first use).
+public TicketData ApiTag(int number, string tag) {
+  var t = ReadableTicket(number);
+  if (tag.Trim() == "") { throw new ValidationException("Give the tag — a word or two, like billing."); }
+  AddTag(t.Id, tag);
+  return DataOf(ReadableTicket(number));
+}
+
+/// One of the desk's statuses, for a caller choosing one.
+public class StatusData {
+  public Guid Id;
+  public string Name = "";
+  public StatusCategory Category = StatusCategory.New;
+  public bool IsDefault;
+}
+
+/// GET /statuses
+public List<StatusData> ApiStatuses() {
+  return TicketStatus.Where(s => s.Active).OrderBy(s => s.Category).ThenBy(s => s.Position).ToList()
+    .Select(s => new StatusData { Id = s.Id, Name = s.Name, Category = s.Category, IsDefault = s.IsDefault }).ToList();
+}
+
+// What the desk publishes — its ticket API, and the door its mailbox's pushes arrive at.
+app.Apis = [
+  new RestApi("Desk") {
+    Route = "desk",
+    // A teammate's API key, or their bearer token — the request IS that teammate.
+    Auth = new ApiAuth { ApiKey = true, Bearer = true },
+    Expose = [ new Crud<Ticket>() { Operations = [CrudOp.Read] } ],
+    Endpoints = [
+      new Endpoint(ApiOpenTicket) { Method = HttpMethod.Post, Path = "/tickets", SuccessStatus = 201 },
+      new Endpoint(ApiTicket) { Method = HttpMethod.Get, Path = "/tickets/{number}" },
+      new Endpoint(ApiReply) { Method = HttpMethod.Post, Path = "/tickets/{number}/replies" },
+      new Endpoint(ApiSetStatus) { Method = HttpMethod.Post, Path = "/tickets/{number}/status" },
+      new Endpoint(ApiSetPriority) { Method = HttpMethod.Post, Path = "/tickets/{number}/priority" },
+      new Endpoint(ApiTag) { Method = HttpMethod.Post, Path = "/tickets/{number}/tags" },
+      new Endpoint(ApiStatuses) { Method = HttpMethod.Get, Path = "/statuses" },
+      // The desk's actions, listed — each binds the ticket from `{id}` and runs as the key's teammate.
+      new Endpoint(TakeTicket) { Method = HttpMethod.Post, Path = "/tickets/{id}/take" },
+      new Endpoint(AssignTicket) { Method = HttpMethod.Post, Path = "/tickets/{id}/assignee" },
+      new Endpoint(MoveTicketTo) { Method = HttpMethod.Post, Path = "/tickets/{id}/queue" },
+      new Endpoint(SetTicketType) { Method = HttpMethod.Post, Path = "/tickets/{id}/type" },
+    ],
+  },
+  // THE PUSH DOOR (Osysharp.Mail.Receiving's `MailboxPushed`): Gmail's Pub/Sub pushes and Graph's notifications arrive
+  // here. Open at the transport — a provider has no account here — and proven in the body: Pub/Sub's signed token is
+  // verified by the platform and checked against the inbox's push account; Graph's carry the subscription's secret.
+  new RestApi("MailPush") {
+    Route = "mail-push",
+    Auth  = new ApiAuth { Anonymous = true },
+    Endpoints = [
+      new Endpoint(MailboxPushed) {
+        Method = HttpMethod.Post, Path = "/{provider}", Raw = true,
+        Query = ["validationToken"], ContentType = "text/plain", OidcIssuer = "https://accounts.google.com",
+      },
+    ],
+  },
+];

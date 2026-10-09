@@ -1,0 +1,155 @@
+// THE CUSTOMERS — the people who write in, and the companies they write for.
+//
+// A customer is a `Party` (Osysharp.Conversations): someone outside the team, reached by mail or the portal, usually
+// with no account. The desk adds the company they belong to. Their addresses are the kit's `ContactPoint` rows — claims
+// until a proof flow verifies them.
+using Osysharp.Identity;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Conversations;
+using Osysharp.Conversations.Mail;
+using Osysharp.Conversations.MachineTranslation;
+using Osysharp.MachineTranslation;
+
+/// A customer company — Osysharp.Organizations' `Organization` (its name, its tier, its mail domains, its account team,
+/// its people's memberships), with what the desk adds: whether its people share tickets, the people who write in from
+/// it, and what the team knows about it.
+entity Company : CustomerAccount {
+  /// Its people see each other's tickets in the portal.
+  bool SharesTickets = false;
+  /// What the team knows — staff only.
+  [MaxLength(2000)] string? Notes;
+  [ForeignKey(Company)] Customer[] People;
+  /// What the desk keeps about it in its own fields (config.osy) — one answer per field, so a report reads each field as
+  /// a column of the company: "Company › Industry".
+  [ForeignKey(Company)] CompanyFieldValue[] Fields;
+
+  security {
+    allow read, create, update when IsAgent;
+    // The sign-in flow reads it to put a customer with a proven address in their company (`JoinByDomain`) — a grant on
+    // the kit's `Organization` base does not reach this subtype's rows, so it is stated here.
+    allow read when IsAuthenticator;
+    // A customer reads the company they belong to (its name, its tier) — never its notes: as one of the people who
+    // write in from it, or as a member (their proven address is on its domain).
+    allow read when IsConversationCustomer where People.Any(p => p.Account == user);
+    allow read when IsOrganizationMember where IsMemberOf(this);
+    deny read Notes when !IsAgent;
+  }
+}
+
+/// The company whose mail domain `address` is on, or null.
+Company? CompanyByDomain(string address) {
+  var org = OrganizationByDomain(address);
+  if (org is Company c) { return c; }
+  return null;
+}
+
+/// A company's tier by name ("Premium") — for the setup and the seed.
+OrganizationTier TierNamed(string name) { return OrganizationTier.Single(t => t.Name == name); }
+
+/// Somebody who writes to the desk. The SAME short name the kit's base would leave free is the app's — `Customer : Party`.
+entity Customer : Party {
+  Company? Company;
+  /// Their role at the company, as they told us.
+  [Classification(Personal.Identity), MaxLength(120)] string? Title;
+  /// What the desk keeps about them in its own fields — a report reads each as a column: "Customer › Their plan".
+  [ForeignKey(Customer)] CustomerFieldValue[] Fields;
+
+  security {
+    allow read, create, update when IsConversationStaff;
+    // The customer reads their own row; a web form (signed out) and the sign-in flow make one.
+    allow read when IsAnonymous || IsAuthenticated || IsAuthenticator
+      where Account == user
+         || CreatedByVisit == Visitor.Id;
+    allow read when IsAuthenticator;
+    allow create when IsAnonymous || IsAuthenticated || IsAuthenticator;
+    allow update when IsAuthenticator;
+    deny update Company when !IsConversationStaff;
+  }
+}
+
+/// A new party is the desk's kind — a `Customer`, put in the company whose mail domain they wrote from.
+public class DeskParties : PartyKinds {
+  public override Party New(ContactPointKind kind, string value, string displayName) {
+    var made = new Customer { DisplayName = displayName != "" ? displayName : value };
+    // Put in the company whose domain they wrote from — a guess for the TEAM's eyes only: an address a mail claims is
+    // not proven, so it opens nothing. Their portal account joins the company only once its address is proven
+    // (`DeskSignIns`), and a party is linked to an account only by a proven address.
+    if (kind == ContactPointKind.Email && value.Contains("@")) {
+      var company = CompanyByDomain(value);
+      if (company != null) { made.Company = company; }
+    }
+    return made;
+  }
+  /// A person erased: the desk's own fields about them go too — their job title, and which company they are filed under.
+  public override void Erase(Party party) {
+    var c = party as Customer;
+    if (c != null) { c.Title = null; c.Company = null; }
+  }
+}
+
+/// A customer's address — the one the desk mails, shown on the ticket.
+string AddressOf(Customer c) {
+  var point = ContactPoint.Where(p => p.Party == c && p.Kind == ContactPointKind.Email)
+    .OrderByDescending(p => p.IsPreferred).FirstOrDefault();
+  return point == null ? "" : point.Value;
+}
+
+/// The customer reached at `email`, or a new one — how the team opens a ticket for somebody on the phone.
+Customer CustomerFor(string email, string name) {
+  var address = email.Trim().ToLower();
+  var known = ContactPoint.Where(p => p.Kind == ContactPointKind.Email && p.Value == address)
+    .OrderByDescending(p => p.VerifiedKey != null).FirstOrDefault();
+  if (known != null) {
+    var party = known.Party;
+    if (party is Customer existing) { return existing; }
+  }
+  var made = new DeskParties().New(ContactPointKind.Email, address, name.Trim()) as Customer;
+  made!.CreatedByVisit = null;   // the team made it — the agent's own browser must not read it as the customer
+  new ContactPoint { Party = made!, Kind = ContactPointKind.Email, Value = address, IsPreferred = true };
+  return made!;
+}
+
+// What the team may do with the kit's rows — the kit grants the customer's side; the desk grants its own people theirs.
+partial entity Osysharp.Conversations.Party { security { allow read, create, update when IsConversationStaff; } }
+partial entity ContactPoint { security { allow read, create, update when IsConversationStaff; } }
+partial entity Conversation { security { allow read, create, update when IsConversationStaff; } }
+partial entity Participant { security { allow read, create, update when IsConversationStaff; } }
+partial entity ConversationEntry { security { allow read when IsConversationStaff; } }
+partial entity Message { security { allow read, create, update when IsConversationStaff; } }
+partial entity ConversationEvent { security { allow read, create when IsConversationStaff; } }
+partial entity MessageText { security { allow read, create when IsConversationStaff; } }
+// A message's language work — the desk reads why one was not translated, and starts it again (language_and_search.osy).
+partial entity MessageLanguageWork { security { allow read, create when IsConversationStaff; } }
+partial entity MessageDelivery { security { allow read, create, update when IsConversationStaff; } }
+partial entity ConversationThreadKey { security { allow read, create when IsConversationStaff; } }
+// The files on messages — a customer's screenshot, an agent's annotated reply, a mail's attachments. (A note's files
+// stay the team's whatever is granted here: the kit's floor.)
+partial entity MessageAttachment { security { allow read, create when IsConversationStaff; } }
+// One person, two records — a mailed request and a chat from the same address are two parties until somebody says they
+// are one. Merging them is any teammate's (it is undoable, and the kit records every row it moved). Erasing a person's
+// data is a privacy request's (model/privacy.osy): nobody records an erasure directly, an admin included.
+partial entity PartyMerge { security { allow read, create when IsConversationStaff; } }
+// A message split off into a ticket of its own is any teammate's to do — the kit records it and moves it (relations.osy).
+partial entity ConversationSplit { security { allow read, create when IsConversationStaff; } }
+partial entity PartyErasure { security { allow read when IsConversationStaff; } }
+
+// The customer's channels: the web (the portal and the form) always; mail from the support address.
+app.Conversations = new ConversationsSetup {
+  Parties = new DeskParties(),
+  // What the desk's own timeline lines say, in the reader's language (timeline.osy).
+  Copy = new DeskCopy(),
+  // A chat is a ticket: the first message opens one (chat.osy).
+  Events = new DeskChat(),
+  Channels = [new DeskMailChannel()],
+  // A reply in the chat the customer has not read after ten minutes is mailed to the address they left — the same
+  // conversation, so their answer to the mail continues it.
+  ContinueByAfter = TimeSpan.FromMinutes(10),
+  ContinueOn = ContactPointKind.Email,
+  // Every customer message in English for the desk, every reply in the customer's language — by the desk's own model,
+  // on its own key (language_and_search.osy). With no key, nothing is translated and each ticket says so.
+  Translator = new ModelConversationTranslator { Translator = new ModelTranslator { KeySecret = "HarbourModel" } },
+  Glossary = [new GlossaryTerm { Term = "Harbour" }],
+};
+
+// The organisation kit's rows the team works with — its tier names are read by anybody signed in (the kit's own grant).

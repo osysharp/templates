@@ -1,0 +1,51 @@
+// THE DESK'S WEBHOOKS — what happens to a ticket, told to other systems (Osysharp.Webhooks): an admin subscribes an
+// endpoint on Settings › Webhooks to some of the desk's events — the same ones its automations run on (events.osy), by
+// their own names: ticket-arrived · ticket-changed · customer-wrote-again · ticket-status-changed — and the inbox's,
+// inbox.holder-changed · inbox.promise-at-risk · inbox.promise-breached and the rest — and each is sent there as a
+// signed document: the ticket as the API answers it (`TicketData`, model/api.osy).
+//
+// ⚑ A WEBHOOK IS SENT ONLY WHAT ITS ADMIN MAY READ — a ticket in a restricted queue they are not in is never sent.
+// ⚑ AN ENDPOINT THAT KEEPS FAILING IS PAUSED, and the desk's admins are told in their bell.
+using Osysharp.Identity;
+using Osysharp.Inbox;
+using Osysharp.Webhooks;
+using Osysharp.Notifications;
+
+/// Admins look after the desk's webhooks.
+policy ManagesWebhooks => IsAdmin;
+
+app.Webhooks = new WebhooksSetup { Documents = [new TicketDocument()] };
+
+/// What a webhook is sent about a ticket — the ticket as the API answers it; its log line, its number alone (the line
+/// outlives the document, so nothing of the customer's).
+public class TicketDocument : WebhookDocument<Ticket> {
+  public override string Data(Entity record, Event e) {
+    var t = (Ticket)record;
+    // A ticket closed by its customer's privacy request is sent as its number and that it is closed — nothing of theirs.
+    if (t.ClosedFor != null || t.KeptFor != "") {
+      return JsonSerializer.Serialize(new TicketData { Id = t.Id, Number = t.Number, Category = t.Category, Status = StatusName(t),
+                                                      Priority = t.Priority }, AsTheApiWrites());
+    }
+    return JsonSerializer.Serialize(DataOf(t), AsTheApiWrites());
+  }
+  public override string Line(Entity record) { return "#" + ((Ticket)record).Number; }
+  public override string Sample(string name) {
+    return JsonSerializer.Serialize(new TicketData {
+      Number = 1000, Subject = "A sample ticket", Status = "Open", Category = StatusCategory.Open,
+      Priority = WorkPriority.Normal, Type = "A question",
+      Queue = "Support", Customer = "Sam Sample", CustomerEmail = "sam@example.com", Channel = "email", Language = "en",
+      OpenedAt = DateTime.UtcNow, Link = App.BaseUrl + "/v/open/t/1000",
+    }, AsTheApiWrites());
+  }
+}
+
+/// A webhook's document as the ticket API writes the same `TicketData` — every enum by its member name (`"High"`), which a
+/// receiver can read without knowing the desk's numbering.
+JsonSerializerOptions AsTheApiWrites() { return new JsonSerializerOptions { EnumsAsNames = true }; }
+
+/// An endpoint that kept failing was paused — every admin is told, in their bell.
+[On]
+void TellTheAdmins(WebhookPaused e) {
+  var admins = RoleGrant.Where(g => g.Role == AppRole.Admin).Select(g => g.Member).ToList().Where(p => p.IsActive).ToList();
+  NotifyAll(admins, e);
+}

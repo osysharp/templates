@@ -1,0 +1,45 @@
+using Osysharp.Shop;
+
+// One order, for whoever holds its link — what every mail about it opens ("See your order"), and where the paid page
+// points. The link is an `OrderLink`: the platform checks it before this page is served, and one that was altered or
+// has run out opens `LinkGone` instead. A reference alone opens nothing.
+
+[Title("Your order — Rust & Chrome")]
+[Route("/order/{link}")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component OrderPage(OrderLink link) {
+  render {
+    Section {
+      Stack(gap: 8, py: 20, maxW: "760px", animation: RiseIn) {
+        ShopOrderByLink(link);
+        Row { Link(href: "/bikes", label: "Back to the bikes") { Text("Back to the bikes →", color: Colors.Primary); } }
+      }
+    }
+  }
+}
+
+// What a link that does not check out opens — altered, run out, or not one of ours — in the shop's own frame.
+[Title("Link run out — Rust & Chrome")]
+[Route("/link-gone")]
+[Layout(Shop)]
+[Render(CSR)]
+[AllowAnonymous]
+component LinkGone() {
+  render {
+    Section {
+      Stack(gap: 6, py: 20, maxW: "760px", animation: RiseIn) {
+        Text("This link has run out.", fontFamily: Font.Display, fontSize: FontSize.Hero, fontWeight: FontWeight.Bold, lineHeight: "1", textTransform: TextTransform.Uppercase);
+        Text("Or it was changed on the way. The newest mail about your order carries one that works — or sign in, and your orders are under your account.",
+             fontSize: FontSize.Lead, lineHeight: "1.6", color: Colors.TextSecondary);
+        Row(gap: 6) {
+          Link(href: "/account", label: "Your account") { Text("Your account →", color: Colors.Primary); }
+          Link(href: "/bikes", label: "Back to the bikes") { Text("Back to the bikes →", color: Colors.Primary); }
+        }
+      }
+    }
+  }
+}
+
+app.Ui = new AppUi { InvalidLinkSurface = LinkGone };

@@ -1,0 +1,65 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Privacy.Conversations, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Privacy.Conversations · ConversationForAClaim ──
+  /// ConversationForAClaim · an error message
+  /// shown through ValidationException
+  error "No conversation is kept under that id." => "Ingen konversation sparas under det id:t.";
+
+  // ── Osysharp.Privacy.Conversations · ExportHeld ──
+  /// ExportHeld · text on the page
+  text "A redacted copy of your message" => "En maskad kopia av ditt meddelande";
+  /// ExportHeld · text on the page
+  text "Language" => "Språk";
+  /// ExportHeld · text on the page
+  text "Name" => "Namn";
+  /// ExportHeld · text on the page
+  text "Reached at" => "Nås på";
+  /// ExportHeld · text on the page
+  text "We wrote to you" => "Vi skrev till dig";
+  /// ExportHeld · text on the page
+  text "Who you are to us" => "Vem du är för oss";
+  /// ExportHeld · text on the page
+  text "You wrote" => "Du skrev";
+
+  // ── Osysharp.Privacy.Conversations · MaskedAddress ──
+  /// MaskedAddress · text on the page
+  /// shown through MaskedAddress()
+  text "your address" => "din adress";
+
+  // ── Osysharp.Privacy.Conversations · Osysharp.Privacy.Conversations.ConversationsAddressProof.StartFor ──
+  /// Osysharp.Privacy.Conversations.ConversationsAddressProof.StartFor · an error message
+  /// shown through ValidationException
+  error "We could not send a code to that address just now — wait a minute and ask again." => "Vi kunde inte skicka en kod till den adressen just nu. Vänta en minut och fråga igen.";
+
+  // ── Osysharp.Privacy.Conversations · Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories ──
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · a label (a field, a list item, a menu entry) · at most ~62 characters
+  /// shown through DataCategory.Label
+  label "Conversations about a complaint or a dispute" => "Konversationer om ett klagomål eller en tvist";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · a label (a field, a list item, a menu entry) · at most ~73 characters
+  /// shown through DataCategory.Label
+  label "Redacted copies of your messages in our own language" => "Avidentifierade kopior av dina meddelanden på vårt eget språk";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · a label (a field, a list item, a menu entry) · at most ~62 characters
+  /// shown through DataCategory.Label
+  label "Your name, email addresses and phone numbers" => "Ditt namn, dina e-postadresser och telefonnummer";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · a label (a field, a list item, a menu entry) · at most ~45 characters
+  /// shown through DataCategory.Label
+  label "Your other conversations with us" => "Dina andra konversationer med oss";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "Answering you, and improving our own support" => "Att svara dig, och förbättra vår egen support";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "Establishing, exercising or defending legal claims" => "Att fastställa, göra gällande eller försvara rättsliga anspråk";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "Reaching you about what you asked" => "Att nå dig om det du frågat";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "Searching our past answers, and improving our support" => "Att söka i våra tidigare svar, och förbättra vår support";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "answering you, and improving our own support" => "att svara dig, och förbättra vår egen support";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "from the last message in it" => "från det senaste meddelandet i den";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "the establishment, exercise or defence of legal claims (GDPR Art. 17(3)(e))" => "att fastställa, göra gällande eller försvara rättsliga anspråk (GDPR art. 17.3 e)";
+}

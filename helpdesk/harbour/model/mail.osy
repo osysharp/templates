@@ -1,0 +1,184 @@
+// MAIL — the desk answers by mail through Osysharp.Mail's outbox (Osysharp.Conversations.Mail threads it), and mail
+// ARRIVING at support@ is read from a watched mailbox (Osysharp.Mail.Receiving): each one lands on its conversation —
+// a reply on the ticket it answers, a new mail as a new ticket — with its files, and what the sender's client quoted
+// kept beside it.
+//
+// ⚑ OUT OF THE BOX IT SENDS NOTHING AND READS FROM NOBODY. Its sender KEEPS each message in `KeptMail` and reports it
+//   sent, and its mailbox is `DemoInbox` rows rather than a provider — so a reviewer can read exactly what would have gone
+//   out and put mail in by hand, with no account and no stray mail.
+//
+// ⭐ THE DESK'S REAL MAILBOX (D-PUSHMAIL1) is one block below — `DeskMailbox`: a Google Workspace inbox, connected by an
+//   admin from Settings → Mailboxes ("Connect"), PUSHED through Cloud Pub/Sub, polled every half hour as the safety net.
+//   Set its four values and the desk reads it; replies to its mail then go out FROM it, threaded. (A Microsoft 365
+//   mailbox is `Microsoft365Mailbox` in the same place; any other host, `ImapMailbox`.) What the operator configures
+//   outside the app — the Google Cloud project, the Pub/Sub topic and push subscription — is in
+//   `osy docs ui-mail-receiving-push`.
+using Osysharp.Identity;
+using Osysharp.Mail;
+using Osysharp.Mail.Receiving;
+using Osysharp.Mail.Gmail;
+using Osysharp.Conversations;
+using Osysharp.Conversations.Mail;
+
+// ── the support address ─────────────────────────────────────────────────────────────────────────────────────────────
+//
+// ONE address customers write to: the desk's mail comes from it, mail arriving at it becomes a ticket, and the portal
+// tells a customer they can write to it. An admin sets it in Settings › Support address; until then it is the demo's.
+
+/// Where customers write to the desk — one row, set by an admin.
+[Settings("Support address", Authorize = IsAdmin, Route = "/settings/support-address", Group = "Channels", Order = 25,
+          Icon = Icons.Mail, Hint = "The address customers write to, and the one the desk's mail comes from.",
+          Description = "Customers write here, and the desk's replies and notices come from it. The portal tells customers they can write to it too.",
+          Saved = "Support address saved.")]
+[SettingsGroup("Mail", "The address the desk is known by.")]
+public entity DeskAddress {
+  [Setting("Support address", Group = "Mail", Hint = "For example support@yourcompany.com.")]
+  [Required, MaxLength(200), Pattern("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")] string SupportAddress = DemoSupportAddress();
+  security {
+    // A customer is told it on the portal, and the mail it comes from carries it anyway.
+    allow read when IsAnonymous || IsAuthenticated;
+    allow create, update when IsAdmin;
+  }
+}
+
+/// The demo's address — the desk's until an admin sets its own.
+public string DemoSupportAddress() => "support@helpdesk.test";
+
+/// The support address in force — the admin's, else the demo's.
+public string DeskSupportAddress() {
+  var set = DeskAddress.FirstOrDefault();
+  return set == null ? DemoSupportAddress() : set!.SupportAddress;
+}
+
+/// Mail as the desk's channel: its address is the setting's, read when mail moves (not on every read of the setup).
+public class DeskMailChannel : MailConversationChannel {
+  public override List<string> Addresses() { return [DeskSupportAddress()]; }
+}
+
+/// A message the demo would have sent.
+entity KeptMail {
+  [CreatedAt] DateTime? CreatedAt;
+  [Required, MaxLength(320)] string To;
+  [MaxLength(320)] string From = "";
+  [MaxLength(300)] string Subject = "";
+  string Text = "";
+  [MaxLength(255)] string MessageId = "";
+  security { allow read when IsAdmin; allow create when IsAgent || IsAuthenticator || IsAuthenticated || IsAnonymous; }
+}
+
+/// Keeps the mail instead of sending it.
+public class KeepMail : IMailSender {
+  public string Key { get; } = "demo";
+  public bool IsReady() { return true; }
+  public string SendMail(MailMessage message, string idempotencyKey) {
+    new KeptMail { To = string.Join(", ", message.To), From = message.From, Subject = message.Subject,
+                   Text = message.Text ?? "", MessageId = message.MessageId };
+    return "kept-" + idempotencyKey;
+  }
+}
+
+/// What the demo's mailbox "holds" — one row per message, in arrival order, its whole RFC 5322 text.
+entity DemoInbox {
+  [Required] int Seq;
+  [Required] byte[] Raw;
+  security { allow read, create when IsAdmin; }
+}
+
+/// support@'s mailbox, demo-shaped: `Fetch` hands over every `DemoInbox` row after the cursor; a reply sent FROM it is
+/// kept like every other mail. Swap it for `GmailMailbox`, `Microsoft365Mailbox` or `ImapMailbox` to read a real one.
+public class DemoMailbox : IMailbox {
+  public string Key { get; } = "demo";
+  public string Address { get; set; } = "";
+  public bool IsReady() { return Address != ""; }
+  public MailboxPage Fetch(string cursor, int max) {
+    // An empty cursor is "start now": nothing from before the desk began watching.
+    if (cursor == "") { return new MailboxPage { Cursor = (DemoInbox.Any() ? DemoInbox.Max(i => i.Seq) : 0).ToString() }; }
+    var after = int.Parse(cursor);
+    var page = new MailboxPage { Cursor = cursor };
+    foreach (var i in DemoInbox.Where(i => i.Seq > after).OrderBy(i => i.Seq).Take(max).ToList()) {
+      page.Items.Add(new MailboxItem { ProviderId = "demo-" + i.Seq, Raw = i.Raw });
+      page.Cursor = i.Seq.ToString();
+    }
+    return page;
+  }
+  public string SendMail(MailMessage message, string idempotencyKey) { return new KeepMail().SendMail(message, idempotencyKey); }
+}
+
+/// Mail arriving at support@: into its conversation (the kit), then onto its ticket — a new one for a new mail.
+public class DeskMail : MailIntoConversations {
+  public override void Arrived(InboundResult result, MailMessage mail) {
+    if (result.Conversation != null && !result.Automatic && !result.Duplicate) { MailArrived(result.Conversation); }
+  }
+}
+
+// ── the desk's real mailbox ─────────────────────────────────────────────────────────────────────────────────────────
+//
+// The four values to set before the desk takes real mail. Empty, it reads only the demo mailbox.
+//   DeskMailboxAddress   the Google Workspace inbox customers write to ("support@yourcompany.com")
+//   DeskMailClientId     the OAuth client id from the Google Cloud project (its secret: `osy secret set DeskMailClientSecret`)
+//   DeskMailPushTopic    "projects/<project>/topics/<topic>" — Gmail publishes the inbox's changes to it
+//   DeskMailPushAccount  the service account the topic's push subscription signs with
+string DeskMailboxAddress() => "";
+string DeskMailPushTopic() => "";
+string DeskMailPushAccount() => "";
+
+// …and the keys of the desk's own model and embedder (language_and_search.osy): translation, and search by meaning.
+app.Secrets = [ new Secret("DeskMailClientSecret"), new Secret("DeskMailboxToken"), new Secret("HarbourModel"),
+                new Secret("HarbourEmbedding") ];
+
+// The client an admin consents with when connecting the inbox (Settings → Mailboxes → Connect). Its grant — a refresh
+// token — is kept in the app secret `DeskMailboxToken`, where the inbox's polls, pushes and replies read it; no
+// person's session is involved after the consent.
+app.OAuthClients = [
+  new OAuthClient("DeskMail") {
+    Provider     = OAuthProvider.Google,
+    Capabilities = [OAuthCapability.Connection],
+    ClientId     = "",
+    ClientSecret = Secret.DeskMailClientSecret,
+    Scopes       = ["openid", "email", "https://www.googleapis.com/auth/gmail.readonly", "https://www.googleapis.com/auth/gmail.send"],
+  },
+];
+
+/// The desk's mailboxes: the demo one always (a reviewer's way in), and the real inbox once its address is set.
+List<IMailbox> DeskMailboxes() {
+  List<IMailbox> boxes = [new DemoMailbox { Address = DeskSupportAddress() }];
+  if (DeskMailboxAddress() != "") {
+    boxes.Add(new GmailMailbox {
+      Address            = DeskMailboxAddress(),
+      ClientId           = DeskMailClientId(),
+      ClientSecret       = Security.IsSecretSet("DeskMailClientSecret") ? Secret.DeskMailClientSecret : "",
+      RefreshToken       = Security.IsSecretSet("DeskMailboxToken") ? Secret.DeskMailboxToken : "",
+      ConnectWith        = "DeskMail",
+      TokenSecret        = "DeskMailboxToken",
+      PushTopic          = DeskMailPushTopic(),
+      PushServiceAccount = DeskMailPushAccount(),
+    });
+  }
+  return boxes;
+}
+
+/// The OAuth client id the `DeskMail` client declares — the mailbox refreshes its token with the same one.
+string DeskMailClientId() => "";
+
+app.Mail = new MailSetup {
+  Sender = new KeepMail(), From = "Harbour Support <" + DeskSupportAddress() + ">",
+  Mailboxes = DeskMailboxes(),
+  Receiver = new DeskMail(),
+  // Where a mailbox that can push is told to notify — the push door (model/api.osy).
+  PushPath = "/api/rest/v1/mail-push",
+};
+
+// THE PUSH DOOR — where Gmail's Pub/Sub pushes and Graph's notifications arrive (`PushPath` above) — is published with the
+// desk's ticket API, in model/api.osy: an app declares its `app.Apis` once.
+
+// Only admins see the mailbox's watch and what it received — the desk works the TICKETS those mails became.
+partial entity MailboxWatch { security { allow create, read when IsAdmin; } }
+partial entity ReceivedMail { security { allow read when IsAdmin; } }
+
+/// Start reading support@ — once, by an admin. From then on it is asked for new mail every minute.
+public MailboxWatch WatchSupportMailbox() {
+  var address = DeskSupportAddress();
+  var watch = MailboxWatch.FirstOrDefault(w => w.Address == address) ?? WatchMailbox(address);
+  UnitOfWork.Commit();
+  return watch;
+}

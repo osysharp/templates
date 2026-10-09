@@ -1,0 +1,281 @@
+// REPORTS — the overview a lead opens every morning and the builder behind it, on Harbour's own tickets and promises.
+// The figures' DEFINITIONS are proven against hand-worked answers in Osysharp.Inbox.Reports' own tests; these prove the
+// desk's half: satisfaction arrives on the ticket from the customer's answer, the overview joins tickets and promises
+// in one breakdown, a customer opens no report — and what each screen looks like, filled and empty.
+using Osysharp.Identity;
+using Osysharp.Inbox;
+using Osysharp.Feedback;
+using Osysharp.Explore;
+using Osysharp.Reports;
+
+/// The overview's figures as "Label: value · …", run as whoever is signed in.
+string FiguresNow(OverviewAnswer a) { return String.Join(" · ", a.Figures.Select(f => $"{f.Label}: {f.Value}")); }
+
+/// The overview's breakdown, one "key | value…" line per row, as the table writes it.
+string BreakdownNow(OverviewAnswer a) {
+  List<string> lines = [];
+  foreach (var r in a.Breakdown.Rows) {
+    List<string> cells = [];
+    for (var i = 0; i < a.Breakdown.Columns.Count; i = i + 1) {
+      var c = a.Breakdown.Columns[i];
+      cells.Add(CellText(r.Cells[i], c.Kind, FormatOf(c, a.Words)));
+    }
+    lines.Add(String.Join(" | ", cells));
+  }
+  return String.Join("\n", lines);
+}
+
+// SATISFACTION IS THE CUSTOMER'S OWN ANSWER, counted with everything else about the ticket: three of Olivia's requests
+// solved by Rahul, two rated good and one bad — two in three, in Rahul's row and in the total.
+[Test(Solving)]
+void satisfaction_is_what_customers_answered_by_the_agent_who_solved_it() {
+  var a = SolvedForOlivia("Export to CSV drops the last row");
+  var b = SolvedForOlivia("Logo upload fails");
+  var c = SolvedForOlivia("Two-step code never arrives");
+  AnswerFeedbackByLink(QuestionLinkOf(a), FeedbackRating.Good, "Fixed within the hour.");
+  AnswerFeedbackByLink(QuestionLinkOf(b), FeedbackRating.Good);
+  AnswerFeedbackByLink(QuestionLinkOf(c), FeedbackRating.Bad, "Still no code.");
+  Background.Settle();
+  runas (Lena) {
+    var t = DeskTickets();
+    var o = RunOverview("tickets", [t.Work.Arrived, t.Work.Done, t.Satisfaction], [], [], null, 0, PeriodPreset.Last30Days);
+    Assert.Equal("", o.Problem);
+    Assert.Equal("Tickets: 3 · Solved: 3 · Satisfaction: 66.7%", FiguresNow(o));
+    Assert.Equal("Agent", o.Dimensions[o.By]);
+    Assert.Equal("Rahul Kapoor | 3 | 3 | 66.7%", BreakdownNow(o));
+  }
+}
+
+// ONE BREAKDOWN, TWO SOURCES: tickets by company, and the promises kept on them — joined on "Company". Olivia's
+// company is Larkspur Freight; her three tickets were solved inside every promise.
+[Test(Solving)]
+void the_overview_puts_promises_kept_beside_the_tickets_of_each_company() {
+  SolvedForOlivia("Export to CSV drops the last row");
+  SolvedForOlivia("Logo upload fails");
+  runas (Lena) {
+    var byCompany = 3;   // Agent, Queue, Channel, Company
+    var o = RunOverview("tickets", [DeskTickets().Work.Arrived, DeskPromises().KeptShare], [], [], null, byCompany,
+                        PeriodPreset.Last30Days);
+    Assert.Equal("Company", o.Dimensions[o.By]);
+    Assert.Equal("Larkspur Freight | 2 | 100%", BreakdownNow(o));
+  }
+}
+
+// A CUSTOMER OPENS NO REPORT — not the overview, not the builder's fields, not a saved one.
+[Test(Solving)]
+void a_customer_opens_no_report() {
+  SolvedForOlivia("Export to CSV drops the last row");
+  runas (Olivia) {
+    Assert.Denied(() => RunOverview("tickets", [DeskTickets().Work.Arrived], [], [], null, 0, PeriodPreset.Last30Days));
+    Assert.Denied(() => OpenReportDesk("tickets"));
+  }
+}
+
+/// The report field the builder offers under `label`.
+ExploreField Labelled(List<ExploreField> fields, string label) => fields.Single(f => f.Label == label);
+
+// ⭐ THE DESK'S OWN FIELDS ARE COLUMNS OF A REPORT — a ticket's, its customer's and its company's, by their names, each the
+// kind the field is: a list groups by its options, a number filters "more than" and sums, a date groups by week. One
+// answer per record and field is what makes "the customer's plan" one value.
+[Test(Solving)]
+void the_desks_own_fields_are_report_columns_grouped_filtered_and_measured() {
+  var a = SolvedForOlivia("Export to CSV drops the last row");
+  SolvedForOlivia("Logo upload fails");
+  runas (Ada) {
+    var plan = new CustomerField { Name = "Their plan", Kind = Osysharp.Fields.FieldKind.Choice, Options = "Starter\nTeam\nEnterprise", Position = 0 };
+    var seats = new CustomerField { Name = "Seats", Kind = Osysharp.Fields.FieldKind.Number, Position = 1 };
+    var industry = new CompanyField { Name = "Industry", Position = 0 };
+    var renews = new CompanyField { Name = "Renews on", Kind = Osysharp.Fields.FieldKind.Date, Position = 1 };
+    var version = new TicketField { Name = "Platform version", Position = 0 };
+    UnitOfWork.Commit();
+    var t = Ticket.Single(x => x.Id == a);
+    SetField(t.Customer.Id, plan.Id, "Team");
+    SetField(t.Customer.Id, seats.Id, "12");
+    SetField(t.Customer.Company!.Id, industry.Id, "Logistics");
+    SetField(t.Customer.Company!.Id, renews.Id, "2027-03-01");
+    SetTicketField(a, version.Id, "0.9.4");
+  }
+  runas (Lena) {
+    var fields = ReportFields("tickets");
+    Assert.Equal("Ticket › Customer › Their plan", String.Join(" › ", Labelled(fields, "Their plan").Trail));
+    Assert.Equal("Ticket › Customer › Company › Industry", String.Join(" › ", Labelled(fields, "Industry").Trail));
+    Assert.Equal("Ticket › Platform version", String.Join(" › ", Labelled(fields, "Platform version").Trail));
+    Assert.Equal(FieldKind.Choice, Labelled(fields, "Their plan").Kind);
+    Assert.Equal(["Starter", "Team", "Enterprise"], Labelled(fields, "Their plan").Choices);
+    Assert.Equal(FieldKind.Number, Labelled(fields, "Seats").Kind);
+    Assert.Equal(FieldKind.Date, Labelled(fields, "Renews on").Kind);
+    // Personal data, as the answer is: marked in the builder.
+    Assert.True(Labelled(fields, "Their plan").Personal);
+
+    // Grouped by the customer's plan: both of Olivia's tickets are a Team customer's.
+    var byPlan = new ExploreQuery { GroupBy = [new ExploreGroup { Field = Labelled(fields, "Their plan").Path }],
+                                    Measures = [new ExploreMeasure { Name = "tickets" }] };
+    var r = RunSourceReport("tickets", byPlan, PeriodPreset.Last30Days).Result;
+    Assert.Equal("", r.Problem);
+    Assert.Equal(1, r.Rows.Count);
+    Assert.Equal("Team", r.Rows[0].Cells[0].Text);
+    Assert.Equal(2m, r.Rows[0].Cells[1].Number);
+
+    // Filtered on a number, and the number summed.
+    var bigOnes = new ExploreQuery {
+      Measures = [new ExploreMeasure { Name = "tickets" },
+                  new ExploreMeasure { Name = "seats", Kind = MeasureKind.Sum, Field = Labelled(fields, "Seats").Path }],
+      Where = new ExploreFilterGroup { Filters = [new ExploreFilter { Field = Labelled(fields, "Seats").Path, Op = FilterOp.Above, Values = ["10"] }] } };
+    r = RunSourceReport("tickets", bigOnes, PeriodPreset.Last30Days).Result;
+    Assert.Equal("", r.Problem);
+    Assert.Equal(2m, r.Rows[0].Cells[0].Number);
+    Assert.Equal(24m, r.Rows[0].Cells[1].Number);
+    bigOnes.Where.Filters[0].Values = ["20"];
+    Assert.Equal(0m, RunSourceReport("tickets", bigOnes, PeriodPreset.Last30Days).Result.Rows[0].Cells[0].Number);
+
+    // A date groups by its month, a text and the ticket's own field show as written.
+    var byRenewal = new ExploreQuery {
+      GroupBy = [new ExploreGroup { Field = Labelled(fields, "Renews on").Path, Bucket = TimeBucket.Month },
+                 new ExploreGroup { Field = Labelled(fields, "Industry").Path }, new ExploreGroup { Field = Labelled(fields, "Platform version").Path }],
+      Measures = [new ExploreMeasure { Name = "tickets" }] };
+    r = RunSourceReport("tickets", byRenewal, PeriodPreset.Last30Days).Result;
+    Assert.Equal("", r.Problem);
+    Assert.Equal(2, r.Rows.Count);
+    Assert.Equal("1 Mar 2027", CellText(r.Rows[0].Cells[0], FieldKind.Date, FigureFormat.Date));
+    Assert.Equal("Logistics", r.Rows[0].Cells[1].Text);
+    Assert.Equal(["0.9.4", ""], r.Rows.Select(x => x.Cells[2].Text).OrderByDescending(x => x).ToList());
+  }
+  // The customer reads none of it: the desk's notes about her are no column of anything she may open.
+  runas (Olivia) {
+    Assert.Denied(() => ReportFields("tickets"));
+  }
+}
+
+// ── on screen ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// A month of the desk's work (160 tickets, seeded as Ines and caught up), with customers' answers on most solved
+/// tickets — built ONCE per run, and cloned for each of the report tests below and in languages/.
+[TestFixture(Floor)]
+void MonthOfWork() {
+  SeedAMonthAsInes();
+}
+
+void SeedAMonthAsInes() {
+  runas (Ines) { SeedDemoDesk(160); CatchUp(); RateSolved(); }
+}
+
+/// The same month, and what the desk keeps about each customer in its own "Their plan" field — built on MonthOfWork.
+[TestFixture(MonthOfWork)]
+void MonthWithPlans() {
+  PlansOnEveryCustomer();
+}
+
+/// A month of the desk's work, with customers' answers on most solved tickets.
+[Test(MonthOfWork)]
+void the_overview_on_a_month_of_work() {
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/reports");
+  Assert.Visible("Overview");
+  Assert.Visible("Promises kept");
+  Assert.Visible("Satisfaction");
+  Assert.Visible("Tickets per day");
+  Ui.Shot("reports-overview-wide-light");
+  Ui.Viewport(1280, 900);
+  Ui.Shot("reports-overview-1280-light");
+  Ui.Viewport(1600, 1000);
+  Ui.Click("7 days");
+  Ui.Shot("reports-overview-7-days-wide-light");
+  Ui.Click("30 days");
+  Ui.Click("Company", within: "Breakdown");
+  Ui.Shot("reports-overview-by-company-wide-light");
+  Ui.Theme("dark");
+  Ui.Shot("reports-overview-by-company-wide-dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/reports");
+  Ui.Shot("reports-overview-phone-light");
+}
+
+/// The builder on the same month: tickets by company tier, and a nested "any of" group of conditions.
+[Test(MonthOfWork)]
+void the_builder_on_a_month_of_work() {
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/reports/build");
+  Assert.Visible("Tickets");
+  Ui.Fill("Find a field", "tier");
+  Ui.Click("Ticket › Company › Tier");
+  Ui.Click("Group by");
+  Assert.Visible("Premium");
+  Ui.Shot("reports-builder-by-tier-wide-light");
+  Ui.Fill("Find a field", "priority");
+  Ui.Click("Ticket › Priority");
+  Ui.Click("Filter");
+  Ui.Click("Urgent");
+  Ui.Click("High");
+  Ui.Click("Apply filter");
+  Ui.Click("Add group");
+  Ui.Fill("Find a field", "channel");
+  Ui.Click("Ticket › Channel");
+  Ui.Click("Filter");
+  Ui.Fill("Words", "email");
+  Ui.Click("Apply filter");
+  Ui.Shot("reports-builder-nested-group-wide-light");
+  Ui.Theme("dark");
+  Ui.Shot("reports-builder-nested-group-wide-dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Shot("reports-builder-nested-group-phone-light");
+}
+
+/// What the desk keeps about each customer in its own "Their plan" field — Starter, Team, Enterprise, Team, in turn by
+/// name — on a desk that already holds its month of tickets.
+void PlansOnEveryCustomer() {
+  runas (Ines) {
+    var plan = new CustomerField { Name = "Their plan", Kind = Osysharp.Fields.FieldKind.Choice, Options = "Starter\nTeam\nEnterprise",
+                                   Position = 0 };
+    UnitOfWork.Commit();
+    string[] plans = ["Starter", "Team", "Enterprise", "Team"];
+    var i = 0;
+    foreach (var c in Customer.OrderBy(c => c.DisplayName).ToList()) {
+      SetField(c.Id, plan.Id, plans[i % plans.Length]);
+      i = i + 1;
+    }
+  }
+}
+
+/// The builder grouping a month of tickets by a field the desk keeps about each customer — found by its name like any
+/// other field, its options as the groups, wide and on a phone.
+[Test(MonthWithPlans)]
+void the_builder_groups_by_a_customer_field() {
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/reports/build");
+  Ui.Fill("Find a field", "plan");
+  Ui.Click("Ticket › Customer › Their plan");
+  Ui.Click("Group by");
+  Assert.Visible("Enterprise");
+  Assert.Visible("Starter");
+  Ui.Shot("reports-builder-by-customer-field-wide-light");
+  Ui.Theme("dark");
+  Ui.Shot("reports-builder-by-customer-field-wide-dark");
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Shot("reports-builder-by-customer-field-phone-light");
+}
+
+/// A desk with nothing in it yet: the overview says so, designed, not blank.
+[Test(Floor)]
+void the_overview_of_an_empty_desk() {
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Ines);
+  Ui.Visit("/reports");
+  Assert.Visible("No tickets in this period.");
+  Ui.Shot("reports-overview-empty-wide-light");
+}
+
+/// Most solved tickets answered, most of those well — the same every run (every third bad, every fourth unanswered).
+void RateSolved() {
+  var i = 0;
+  foreach (var t in Ticket.Where(t => t.Category == StatusCategory.Solved || t.Category == StatusCategory.Closed).OrderBy(t => t.Number).ToList()) {
+    i = i + 1;
+    if (i % 4 == 0) { continue; }
+    t.Rating = i % 7 == 0 ? FeedbackRating.Bad : FeedbackRating.Good;
+  }
+}

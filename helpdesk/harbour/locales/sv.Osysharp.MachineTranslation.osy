@@ -1,0 +1,11 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.MachineTranslation, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.MachineTranslation · ModelKeyMissing ──
+  /// ModelKeyMissing · text on the page
+  /// placeholders: {secret} = secret (string)
+  text "The model key is missing — give the secret {secret} a value, and translation starts again." => "Modellnyckeln saknas. Ge hemligheten {secret} ett värde, så börjar översättningen igen.";
+}

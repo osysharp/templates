@@ -1,0 +1,36 @@
+using Osysharp.Composer;
+
+// THE DESK'S KEYS — every key the desk binds itself, in one place.
+//
+// ⚑ ONE SOURCE PER KEY, AND THE HINTS ARE THE PLATFORM'S. A control binds `shortcut: KeyStatus`; every hint is DERIVED
+//   from that binding — a menu row's chip from the action it runs (`KeyHintOf`), a button's tip on hover and focus, the
+//   key on the Send button (`showShortcut: true`), and the `?` sheet listing everything bound on the page. `KeyHint(Key…)`
+//   spells a binding for the reader's platform (⌘ on a Mac, Ctrl elsewhere).
+//
+// ⚑ THE LIST'S KEYS ARE THE INBOX'S — J/K move, X selects, Enter opens, T takes, A hands on, M moves, P sets the
+//   priority, E escalates, U releases, and "G then M/U/A" go to a view (Osysharp.Inbox). The composer's (Osysharp.Composer)
+//   are bound here, through `DeskComposerKeys`: R replies, N writes a note, Shift+M opens the macros, ⌘B/⌘I format.
+//   The desk adds its own:
+
+const string KeyStatus = "S";
+/// Write a reply on the open ticket — the cursor goes to the box.
+const string KeyReply = "R";
+/// Write an internal note on the open ticket.
+const string KeyNote = "N";
+/// The macros. ⚠ Not a bare "M": the inbox's "Move to…" holds M while rows are selected, and two controls sharing a key
+/// resolve by which mounted last — a key whose meaning depends on the order things opened in is no key at all.
+const string KeyMacro = "Shift+M";
+/// Add a tag. ⚠ Not "T": the inbox's Take holds T on the list and on the ticket's head. "L" is the label key in the
+/// mail and issue tools an agent already knows.
+const string KeyTag = "L";
+const string KeyNewTicket = "C";
+/// Link the open ticket to another — related, a duplicate, a cause, a problem. "Shift+L": bare L is the tag.
+const string KeyLink = "Shift+L";
+const string KeySend = "Mod+Enter";
+/// Bound by the kit's `ShellSearch`, which this desk hands the same value.
+const string KeyCommands = "Mod+K";
+
+/// The composer's keys on a ticket.
+ComposerKeys DeskComposerKeys() {
+  return new ComposerKeys { Reply = KeyReply, Note = KeyNote, Macro = KeyMacro, Send = KeySend };
+}

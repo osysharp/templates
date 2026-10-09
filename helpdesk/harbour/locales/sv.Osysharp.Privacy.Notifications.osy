@@ -1,0 +1,18 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Privacy.Notifications, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Privacy.Notifications · Osysharp.Privacy.Notifications.NotificationsPersonalData.Categories ──
+  /// Osysharp.Privacy.Notifications.NotificationsPersonalData.Categories · text on the page
+  text "Telling you when something at work needs you, and mailing you what you had not read" => "Att meddela dig när något i arbetet behöver dig, och mejla dig det du inte hade läst";
+  /// Osysharp.Privacy.Notifications.NotificationsPersonalData.Categories · text on the page
+  text "What we told you in the app" => "Det vi har meddelat dig i appen";
+
+  // ── Osysharp.Privacy.Notifications · Osysharp.Privacy.Notifications.NotificationsPersonalData.Export ──
+  /// Osysharp.Privacy.Notifications.NotificationsPersonalData.Export · text on the page
+  text "Something we told you" => "Något vi meddelade dig";
+  /// Osysharp.Privacy.Notifications.NotificationsPersonalData.Export · text on the page
+  text "What you asked to be mailed" => "Vad du bad om att få mejlat";
+}

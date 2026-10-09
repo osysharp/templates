@@ -1,0 +1,47 @@
+// THE HELP CENTRE AND THE KNOWLEDGE BASE — Osysharp.Knowledge: articles the team writes in markdown, reviewed before a
+// customer reads them, in English, Swedish and Arabic; the public help centre at /help-centre that a stuck customer
+// reads first; suggestions under the help form's subject as they type; and a search of the articles inside the chat.
+//
+// ⚑ WHO DOES WHAT. Every teammate writes and reads the team's own articles (the playbooks); a lead or an admin reviews
+//   and publishes — never their own words while review is on; an admin arranges the categories and keeps the settings
+//   (Settings › Knowledge base).
+//
+// ⚑ A TEAM ARTICLE NEVER REACHES A CUSTOMER — the kit's rule, whatever a page asks for: not on the help centre, not in
+//   its search, not in a suggestion, not in the chat.
+using Osysharp.Identity;
+using Osysharp.Knowledge;
+using Osysharp.Inbox;
+using Osysharp.Notifications;
+
+policy ReadsTeamKnowledge => IsAgent;
+policy WritesKnowledge => IsAgent;
+policy ReviewsKnowledge => IsLead;
+policy ManagesKnowledge => IsAdmin;
+
+app.Knowledge = new KnowledgeSetup { Name = "Harbour Help Centre", ContactPath = "/help", ContactLabel = "Ask the team" };
+
+/// A version waits for review: told to the reviewers — every active lead and admin but the writer, who may not review
+/// their own words.
+[On]
+void TellTheReviewers(ArticleSentForReview e) {
+  var writer = e.Revision.Author;
+  List<Principal> reviewers = [];
+  foreach (var p in RoleGrant.Where(g => g.Role == AppRole.Lead || g.Role == AppRole.Admin).Select(g => g.Member).ToList()) {
+    if (!p.IsActive || (writer != null && p.Id == writer!.Id) || reviewers.Any(r => r.Id == p.Id)) { continue; }
+    reviewers.Add(p);
+  }
+  NotifyAll(reviewers, e, by: writer);
+}
+
+/// A version was sent back: told to its writer, with what to change.
+[On]
+void TellTheWriter(ArticleSentBack e) {
+  if (e.Revision.Author == null) { return; }
+  Notify(e.Revision.Author!, e);
+}
+
+/// The help centre in Harbour's portal — the portal's own header, its language switch and its account, and the chat in
+/// the corner, around every page of the help centre (a design of the kit's `HelpCentreFrame`).
+component HarbourHelpFrame() : HelpCentreFrame {
+  render { PortalChrome { Slot; } }
+}

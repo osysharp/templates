@@ -1,0 +1,181 @@
+// THE TEAM AND ITS ROLES — who works the desk, and who may do what.
+//
+// Everybody signs in through Osysharp.Accounts: agents, leads, admins and the customers who use the portal. The roles
+// are the desk's own; the kits ask the desk who its staff are (`IsConversationStaff`) and the desk answers here.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Invitations;
+using Osysharp.People;
+
+/// The desk's roles. `Authenticator` is the sign-in flow's own; the rest are people.
+[Role] enum AppRole {
+  Authenticator,
+  /// Works tickets: replies, notes, assigns, changes status.
+  Agent,
+  /// An agent who also watches the queues, rebalances work and sees the team's load.
+  Lead,
+  /// Runs the desk: the team, statuses, SLA policies, business hours, tags.
+  Admin,
+  /// A person at a customer who signs in to the portal — their own tickets, and their company's when it shares them.
+  Customer,
+  /// The account the mailbox receiver runs as — staff to the conversation kit, a person to nobody.
+  Integration,
+}
+
+/// Anyone who works tickets.
+policy IsAgent => RoleGrant.Any(g => g.Member == user
+  && (g.Role == AppRole.Agent || g.Role == AppRole.Lead || g.Role == AppRole.Admin));
+/// Leads and admins — the people who move somebody else's work.
+policy IsLead => RoleGrant.Any(g => g.Member == user && (g.Role == AppRole.Lead || g.Role == AppRole.Admin));
+policy IsAdmin => RoleGrant.Any(g => g.Member == user && g.Role == AppRole.Admin);
+
+/// The word under a teammate's name in the corner — their highest role, so the person editing the desk's settings is
+/// not labelled "Agent" (polish slice 2: an admin was).
+string RoleWord(bool admin, bool lead) => admin ? "Admin" : (lead ? "Lead" : "Agent");
+
+/// The conversation kit's question — who sees internal notes and works conversations. The team, and the mailbox
+/// receiver's account.
+policy IsConversationStaff => RoleGrant.Any(g => g.Member == user
+  && (g.Role == AppRole.Agent || g.Role == AppRole.Lead || g.Role == AppRole.Admin || g.Role == AppRole.Integration));
+// Who sits on a conversation (and any record) with the desk — the Collaboration kit's question.
+policy CollaboratesOnRecords => IsConversationStaff;
+
+// The kits' questions, answered by the desk: admins look after the team (roles, accounts, a lost phone) and invite
+// people; anybody on the desk looks after the customer companies.
+policy ManagesPeople => IsAdmin;
+policy MayInvite => IsAdmin;
+policy ManagesOrganizations => IsAgent;
+
+// The user manager READS who holds which role. Every CHANGE goes through it (Osysharp.People), recorded with who made
+// it and why — so the desk grants nothing more on RoleGrant: a second, unrecorded way to change access is the thing
+// the user manager exists to remove.
+partial entity RoleGrant { security { allow read when ManagesPeople; } }
+
+// How the desk's roles read to people, and which the user manager and an invitation may hand out. `Customer` comes from
+// sign-up and `Integration` is the mailbox's own — neither is offered.
+app.Roles = new RolesSetup { Offered = [
+  new RoleChoice { Role = AppRole.Agent, Label = "Agent", Description = "Works tickets: replies, notes, assigns, changes status." },
+  new RoleChoice { Role = AppRole.Lead, Label = "Lead", Description = "An agent who also rebalances the team's work." },
+  new RoleChoice { Role = AppRole.Admin, Label = "Admin", Description = "Runs the desk: the team, statuses, SLA policies, settings." },
+], Events = new DeskRoles() };
+
+/// A desk role given — by the user manager or an accepted invitation — puts the teammate on the desk's queues at once:
+/// an invited agent can take tickets the minute they sign in, rather than after an admin remembers Settings › Queues.
+/// A desk role taken away takes them off every queue their remaining roles no longer cover, so routing never offers a
+/// ticket to somebody who can no longer hold it.
+public class DeskRoles : RoleEvents {
+  public override void Granted(Principal person, role r) { JoinTheDesk(person); }
+  public override void Revoked(Principal person, role r) { LeaveWhatNoLongerFits(person); }
+}
+
+// The desk is never without an admin.
+app.People = new PeopleSetup { KeepOneOf = AppRole.Admin, Directory = new TheTeam() };
+
+/// The people page is the TEAM — the desk's customers sign in too, and are looked after on Companies.
+public class TheTeam : PeopleDirectory {
+  [SuppressWarning("cost-unbounded-read")]   // the desk's agents — the team, never its customers
+  public override List<Principal>? Listed() { return Principal.Where(p => p is Agent).ToList(); }
+}
+
+// A teammate is invited — and is an `Agent` whatever their address, because the invitation says so.
+app.Invitations = new InvitationsSetup { Accounts = new DeskInvitations() };
+
+/// An agent: an account (Osysharp.Accounts' `User`) with a place on the desk. The kit keeps the address, the password and
+/// every rule about them; the desk adds the signature. Whether they are on shift, away, who covers for them and which
+/// languages they answer in are the inbox's (`Availability`, `Absence`, `HeldSkill` — Osysharp.Inbox), which routing
+/// reads.
+entity Agent : User {
+  /// Under every reply they send by mail.
+  [MaxLength(300)] string? Signature;
+
+  // Everyone signed in sees the team (a customer sees who answered them); an agent edits their own signature, an admin
+  // anybody's. Accounts are made by the sign-in flow alone (Osysharp.Accounts' floor) — a teammate signs up.
+  security {
+    allow read when IsAuthenticated || IsAuthenticator;
+    allow create when IsAuthenticator;
+    allow update when IsAuthenticated || IsAuthenticator where Id == user.Id;
+    allow update when IsAuthenticator;
+    allow update when (IsAuthenticated || IsAuthenticator) && IsAdmin;
+  }
+}
+
+// Whoever sets the desk up runs it: the first account is the desk's admin (and an agent). Everybody after signs up as
+// a customer — the team is added by an admin. Leads and admins must use two-step sign-in.
+app.Accounts = new AccountsSetup {
+  AppName = "Harbour", FirstAccountRole = AppRole.Admin, SignupRole = AppRole.Customer,
+  Kinds = new DeskAccounts(), SecondFactor = new LeadsUseCodes(), Events = new DeskSignIns(),
+  AddressProof = new CustomersProveTheirAddress(),
+  HomePath = "/",
+};
+
+/// A customer proves their address — the code (or the link) mailed to it — before their first sign-in to the portal.
+/// The address is how the desk knows whose requests are whose: a proven one links the requests they wrote from it
+/// (`DeskSignIns`), and an unproven one would only ever open an empty portal. The team is not asked here: a teammate
+/// arrives by an invitation mailed to their address, which proves it, and the first account — whoever sets the desk up —
+/// must reach the desk before its mail is configured.
+public class CustomersProveTheirAddress : AddressProofPolicy {
+  public override bool Required(User account) { return !(account is Agent); }
+}
+
+/// The first account runs the desk; everybody after who signs up is a customer. The team arrives by invitation.
+public class DeskAccounts : AccountKinds {
+  public override User New(string email, string name) {
+    var shown = name != "" ? name : NameFromAddress(email);
+    if (!Agent.Any()) { return new Agent { Email = email, DisplayName = shown }; }
+    return new User { Email = email, DisplayName = shown };
+  }
+}
+
+/// An invitation to a desk role makes an `Agent` — a contractor on their own domain is still on the team.
+public class DeskInvitations : InvitationAccounts {
+  public override User New(Invitation invitation, string email, string name) {
+    if (invitation.Role != null && invitation.Organization == null) {
+      return new Agent { Email = email, DisplayName = name != "" ? name : NameFromAddress(email) };
+    }
+    return base.New(invitation, email, name);
+  }
+}
+
+/// Leads and admins can move anybody's work and change the desk itself, so a stolen password is not enough for them.
+public class LeadsUseCodes : SecondFactorPolicy {
+  public override bool Required(User account) {
+    return RoleGrant.Any(g => g.Member == account && (g.Role == AppRole.Lead || g.Role == AppRole.Admin));
+  }
+}
+
+/// A customer who signs in with a PROVEN address is linked to the party holding that address proven — the
+/// conversations they started and proved — or to a new party of their own (Osysharp.Conversations'
+/// `LinkSignedInAccount`, run as the sign-in flow). An unproven address links nothing: a claim is never enough.
+///
+/// A customer whose PROVEN address is on a company's mail domain joins that company too (Osysharp.Organizations'
+/// `JoinByDomain` — never for an address nobody proved), which is what opens the company's shared tickets to them.
+public class DeskSignIns : AccountEvents {
+  public override void SignedIn(User account, DateTime at) {
+    if (!Agent.Any(a => a.Id == account.Id)) {
+      LinkSignedInAccount(account, account.Email, account.EmailVerifiedAt != null);
+      JoinByDomain(account);
+    }
+  }
+}
+
+/// "nina.alvarez@x" → "Nina Alvarez": a name to show until the person gives their own.
+string NameFromAddress(string email) {
+  var local = email.Contains("@") ? email.Substring(0, email.IndexOf("@")) : email;
+  var words = local.Replace(".", " ").Replace("_", " ").Replace("-", " ").Split(" ");
+  var shown = "";
+  foreach (var w in words) {
+    if (w == "") { continue; }
+    shown = shown + (shown == "" ? "" : " ") + w.Substring(0, 1).ToUpper() + w.Substring(1);
+  }
+  return shown == "" ? email : shown;
+}
+
+/// Initials for an avatar — one letter for a single name, two for a full one.
+string Initials(string name) {
+  var parts = name.Trim().Split(" ").Where(p => p != "").ToList();
+  if (parts.Count == 0) { return "?"; }
+  if (parts.Count == 1) { return parts[0].Substring(0, 1).ToUpper(); }
+  return parts[0].Substring(0, 1).ToUpper() + parts[parts.Count - 1].Substring(0, 1).ToUpper();
+}

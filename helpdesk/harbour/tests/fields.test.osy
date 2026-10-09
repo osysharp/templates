@@ -1,0 +1,802 @@
+// TICKET FIELDS AND FORMS IN USE (H1) — the help page asks a form's questions by its conditions, the server checks
+// them again and keeps only what the form shows, the ticket shows and edits them with every change on its timeline, a
+// retired field keeps its answers, a saved view filters by a field, and the settings page makes, orders and retires
+// them. `osy test --pixels` photographs each (Ui.Shot); Docs/OsySharp/design/helpdesk/fields/ keeps the ones worth
+// keeping.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Fields;
+
+/// Osyrin's own desk, as it asks about a request: what it is about (always), and for a bug report the version, whether
+/// an error was shown — and only then its correlation id — and since when; the team adds the area it lands in. Mira
+/// runs the desk, Theo works it, Olivia has a portal account.
+[TestFixture]
+void Intake() {
+  SetUpTestDesk();
+  var mira = new Agent { Email = "mira@helpdesk.test", DisplayName = "Mira Okafor" };
+  new RoleGrant { Member = mira, Role = AppRole.Agent };
+  new RoleGrant { Member = mira, Role = AppRole.Admin };
+  var theo = new Agent { Email = "theo@helpdesk.test", DisplayName = "Theo Brandt" };
+  new RoleGrant { Member = theo, Role = AppRole.Agent };
+  JoinTheDesk(mira);
+  JoinTheDesk(theo);
+  var olivia = new User { Email = "olivia@larkspur.test", DisplayName = "Olivia Brandt", EmailVerifiedAt = DateTime.UtcNow };
+  new RoleGrant { Member = olivia, Role = AppRole.Customer };
+  var party = new Customer { DisplayName = "Olivia Brandt", Account = olivia, CreatedByVisit = null };
+  new ContactPoint { Party = party, Kind = ContactPointKind.Email, Value = "olivia@larkspur.test", IsPreferred = true };
+
+  var about = new TicketField { Name = "Which part", Kind = FieldKind.Choice, Public = true, Required = true, Position = 0,
+                                Options = "Osy# the language\nOsyrin Cloud\nThe osy CLI\nA kit" };
+  var version = new TicketField { Name = "Platform version", Kind = FieldKind.Text, Public = true, Position = 1,
+                                  Hint = "What osy --version prints." };
+  var error = new TicketField { Name = "Did you see an error?", Kind = FieldKind.YesNo, Public = true, Position = 2 };
+  var corr = new TicketField { Name = "Correlation id", Kind = FieldKind.Text, Public = true, Required = true, Position = 3,
+                               Hint = "Printed under the error, starting corr-." };
+  var since = new TicketField { Name = "Broken since", Kind = FieldKind.Date, Public = true, Position = 4 };
+  var seats = new TicketField { Name = "Seats", Kind = FieldKind.Number, Public = true, Position = 5 };
+  var area = new TicketField { Name = "Area", Kind = FieldKind.Choice, Position = 6, Options = "Compiler\nRuntime\nClient\nDocs" };
+
+  var question = TicketForm.Single(f => f.Key == "question");   // the desk's starting type (SetUpDesk), the default
+  new FormField { Form = question, Field = about, Position = 0 };
+  var bug = new TicketForm { Name = "A bug report", Key = "bug-report", Description = "Something the platform did that it should not.", Position = 1 };
+  new FormField { Form = bug, Field = about, Position = 0 };
+  new FormField { Form = bug, Field = version, Position = 1 };
+  new FormField { Form = bug, Field = error, Position = 2 };
+  new FormField { Form = bug, Field = corr, Position = 3, ShowWhen = error, ShowValue = "yes" };
+  new FormField { Form = bug, Field = since, Position = 4 };
+  new FormField { Form = bug, Field = area, Position = 5 };
+  var billing = new TicketForm { Name = "Billing", Key = "billing", Description = "Invoices, seats and plans.", Position = 2 };
+  new FormField { Form = billing, Field = seats, Position = 0 };
+}
+
+
+Guid FieldNamed(string name) => TicketField.Single(f => f.Name == name).Id;
+Guid FormNamed(string name) => TicketForm.Single(f => f.Name == name).Id;
+FieldAnswer A(string field, string value) => new FieldAnswer { Field = FieldNamed(field), Value = value };
+
+/// What a ticket holds for a field, as kept — "" for none.
+string AnswerOn(int number, string field) {
+  var v = TicketFieldValue.FirstOrDefault(x => x.Ticket.Number == number && x.Field.Name == field);
+  return v == null ? "" : v.Value;
+}
+
+// ── asking ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// ⭐ THE CONDITION, DRIVEN AS A CUSTOMER MEETS IT: a bug report asks for the correlation id only once they say they
+/// saw an error; the answers land on the ticket in their kept spelling, and the form they chose with them.
+[Test(Intake)]
+void a_bug_report_asks_for_the_correlation_id_only_once_an_error_was_seen() {
+  Ui.Viewport(1280, 1400);
+  Ui.Visit("/help");
+  Assert.Visible("What is it about?");
+  // The default form asks one question; the version is a bug report's.
+  Assert.Visible("Which part");
+  Assert.Hidden("Platform version");
+  Ui.Select("What is it about?", TicketForm.Single(f => f.Name == "A bug report"));
+  Assert.Visible("Platform version");
+  Assert.Visible("Did you see an error?");
+  Assert.Hidden("Correlation id");
+  Ui.Click("The osy CLI", within: "Which part");
+  Ui.Click("Yes", within: "Did you see an error?");
+  Assert.Visible("Correlation id");
+  Ui.Fill("Your name", "Pierre Laurent");
+  Ui.Fill("Your email", "pierre@example.test");
+  Ui.Fill("Subject", "osy compile hangs on a fresh project");
+  Ui.Fill("What happened", "It prints Compiling… and never returns.");
+  Ui.Fill("Platform version", "0.42.1");
+  Ui.Fill("Broken since", "2026-09-30");
+  Ui.Shot("help-form-condition");
+  // Required and shown: sending without it says so under the question, and nothing is sent.
+  Ui.Click("Send request");
+  Assert.Visible("Needs an answer.");
+  Ui.Fill("Correlation id", "corr-7f3a9c");
+  Ui.Click("Send request");
+  Assert.Visible("We have your request");
+  runas (Mira) {
+    var t = Ticket.Single(x => x.Title == "osy compile hangs on a fresh project");
+    Assert.Equal("A bug report", t.Form!.Name);
+    Assert.Equal("The osy CLI", AnswerOn(t.Number, "Which part"));
+    Assert.Equal("0.42.1", AnswerOn(t.Number, "Platform version"));
+    Assert.Equal("yes", AnswerOn(t.Number, "Did you see an error?"));
+    Assert.Equal("corr-7f3a9c", AnswerOn(t.Number, "Correlation id"));
+    Assert.Equal("2026-09-30", AnswerOn(t.Number, "Broken since"));
+  }
+}
+
+[Test(Intake)]
+void the_help_form_on_a_phone_in_the_dark() {
+  Ui.Viewport(390, 844);
+  Ui.Theme("dark");
+  Ui.Visit("/help");
+  Ui.Select("What is it about?", TicketForm.Single(f => f.Name == "A bug report"));
+  Ui.Click("Yes", within: "Did you see an error?");
+  Assert.Visible("Correlation id");
+  Ui.Shot("help-form-condition-phone-dark");
+}
+
+/// The server keeps what the FORM shows, whatever the browser sent: an answer the condition hides is dropped, a required
+/// one left empty is refused naming it, a wrong kind is refused naming it, and a choice is kept in its own spelling.
+[Test(Intake)]
+void the_server_checks_every_answer_again_and_keeps_only_what_the_form_shows() {
+  runas (new Visitor { Id = "visit-1" }) {
+    // Required and empty: refused, naming it.
+    var missing = Assert.Throws<ValidationException>(() => SubmitRequest("Docs question", "Where is the kit list?", "Ana", "ana@example.test",
+                                      formId: FormNamed("A question"), answers: new List<FieldAnswer>()));
+    Assert.Equal("Which part needs an answer.", missing.Message);
+    // A choice that is not one of the options, and a date that is not a date: both said at once.
+    var wrong = Assert.Throws<ValidationException>(() => SubmitRequest("Crash", "It crashed.", "Ana", "ana@example.test",
+                                      formId: FormNamed("A bug report"),
+                                      answers: [A("Which part", "Kubernetes"), A("Broken since", "last tuesday")]));
+    Assert.Equal("Which part is one of: Osy# the language, Osyrin Cloud, The osy CLI, A kit. Broken since takes a date, like 2026-10-02.",
+                 wrong.Message);
+    // No error seen: the correlation id the browser still sent is NOT kept (the condition hides it), and the choice is
+    // kept in its own spelling.
+    var n = SubmitRequest("Docs page 404s", "The kits page is gone.", "Ana", "ana@example.test", formId: FormNamed("A bug report"),
+                          answers: [A("Which part", "a KIT "), A("Did you see an error?", "No"), A("Correlation id", "corr-stale")]);
+    runas (Mira) {
+      Assert.Equal("A kit", AnswerOn(n, "Which part"));
+      Assert.Equal("no", AnswerOn(n, "Did you see an error?"));
+      Assert.Equal("", AnswerOn(n, "Correlation id"));
+      Assert.Equal(0, TicketFieldValue.Count(v => v.Ticket.Number == n && v.Field.Name == "Correlation id"));
+    }
+  }
+}
+
+/// ⭐ NOTHING THE BROWSER SAYS ABOUT THE FORM IS TRUSTED: a customer cannot answer the team's own field, nor one from
+/// another form, nor a retired one — through the verb or by writing the row — and never on somebody else's ticket.
+[Test(Intake)]
+void a_customer_can_answer_only_what_they_are_asked_on_their_own_ticket() {
+  var theirs = 0;
+  runas (Theo) {
+    var id = OpenTicket("someone@else.test", "Someone Else", "Their ticket", "Private.");
+    theirs = Ticket.Single(t => t.Id == id).Number;
+  }
+  runas (Olivia) {
+    // The team's own field, through the verb.
+    var teams = Assert.Throws<ValidationException>(() => SubmitRequest("Crash", "It crashed.", formId: FormNamed("A bug report"),
+                                      answers: [A("Which part", "A kit"), A("Area", "Compiler")]));
+    Assert.Contains("does not ask that any more", teams.Message);
+    // A field from another form.
+    var elsewhere = Assert.Throws<ValidationException>(() => SubmitRequest("Seats", "Two more please.", formId: FormNamed("A question"),
+                                      answers: [A("Which part", "Osyrin Cloud"), A("Seats", "2")]));
+    Assert.Contains("does not ask that any more", elsewhere.Message);
+    var mine = SubmitRequest("Cloud login loops", "Login sends me back to login.", formId: FormNamed("A question"),
+                             answers: [A("Which part", "Osyrin Cloud")]);
+    var t = Ticket.Single(x => x.Number == mine);
+    // Writing the rows directly: the team's field on their own ticket…
+    Assert.Denied(() => {
+      new TicketFieldValue { Ticket = t, Field = TicketField.Single(f => f.Name == "Area"), Value = "Compiler" };
+      UnitOfWork.Commit();
+    });
+    // …changing what they answered…
+    Assert.Denied(() => {
+      TicketFieldValue.Single(v => v.Ticket.Number == mine).Value = "A kit";
+      UnitOfWork.Commit();
+    });
+    // …and a question they are asked, on somebody else's ticket (which they cannot even read).
+    Assert.Equal(0, Ticket.Count(x => x.Number == theirs));
+  }
+  runas (Mira) {
+    TicketField.Single(f => f.Name == "Seats").Active = false;
+    UnitOfWork.Commit();
+  }
+  runas (Olivia) {
+    var t = Ticket.Single(x => x.Title == "Cloud login loops");
+    // A retired field takes no new answer, even one the customer was once asked.
+    Assert.Denied(() => {
+      new TicketFieldValue { Ticket = t, Field = TicketField.Single(f => f.Name == "Seats"), Value = "2" };
+      UnitOfWork.Commit();
+    });
+    // What they were asked is theirs to read; the team's own fields are not.
+    Assert.Equal("Osyrin Cloud", TicketFieldValue.Single(v => v.Ticket.Id == t.Id).Value);
+  }
+  runas (Mira) {
+    var other = Ticket.Single(x => x.Number == theirs);
+    SetTicketField(other.Id, FieldNamed("Area"), "Runtime");
+  }
+  runas (Olivia) { Assert.Equal(0, TicketFieldValue.Count(v => v.Field.Name == "Area")); }
+}
+
+/// ⭐ AN ANSWER IS ITS FIELD'S KIND ON EVERY WRITE — not only through the verbs that check it first. A customer may write
+/// an answer row for a question they are asked (their row rule allows it) and the team may write any; neither can keep
+/// a date that is not a date, a choice that is not an option, a number that is not a number or a yes that is a maybe.
+/// The rules read the FIELD through the answer (D-INVARIANTHOP1), so they hold wherever the row is written.
+[Test(Intake)]
+void an_answer_is_its_fields_kind_whoever_writes_the_row() {
+  runas (Olivia) {
+    var n = SubmitRequest("Two more seats", "For the new hires.", formId: FormNamed("Billing"), answers: [A("Seats", "2")]);
+    var t = Ticket.Single(x => x.Number == n);
+    // A question she is asked, written as a row: the shape of the field's kind, or nothing is kept.
+    var notADay = Assert.Throws<ValidationException>(() => {
+      new TicketFieldValue { Ticket = t, Field = TicketField.Single(f => f.Name == "Broken since"), Value = "last tuesday" };
+      UnitOfWork.Commit();
+    });
+    Assert.Contains("not a date", notADay.Message);
+    var notAnOption = Assert.Throws<ValidationException>(() => {
+      new TicketFieldValue { Ticket = t, Field = TicketField.Single(f => f.Name == "Which part"), Value = "The moon" };
+      UnitOfWork.Commit();
+    });
+    Assert.Contains("not one of the field's options", notAnOption.Message);
+    var notYesOrNo = Assert.Throws<ValidationException>(() => {
+      new TicketFieldValue { Ticket = t, Field = TicketField.Single(f => f.Name == "Did you see an error?"), Value = "maybe" };
+      UnitOfWork.Commit();
+    });
+    Assert.Contains("not yes or no", notYesOrNo.Message);
+    // …and the same row in the field's shape is kept: the rule refuses the wrong answer, not the writer.
+    new TicketFieldValue { Ticket = t, Field = TicketField.Single(f => f.Name == "Broken since"), Value = "2026-09-28" };
+    UnitOfWork.Commit();
+    Assert.Equal("2026-09-28", AnswerOn(n, "Broken since"));
+  }
+  runas (Mira) {
+    // The team writing the row directly is held to it too.
+    var seats = TicketFieldValue.Single(v => v.Field.Name == "Seats");
+    var notANumber = Assert.Throws<ValidationException>(() => { seats.Value = "a few"; UnitOfWork.Commit(); });
+    Assert.Contains("not a number", notANumber.Message);
+  }
+  runas (Mira) { Assert.Equal("2", TicketFieldValue.Single(v => v.Field.Name == "Seats").Value); }
+}
+
+/// ⭐ THE FORM IS THE TICKET'S TYPE — one notion. A ticket opened with no form chosen takes the desk's default type; the
+/// team changes it from the type menu; the inbox's kind follows (what rules, promises and views name it by); and a type
+/// that asks for a root cause (the desk's starting "An outage") shows it on the ticket, and is not solved without it.
+[Test(Intake)]
+void the_form_is_the_tickets_type_and_an_outage_asks_for_its_root_cause() {
+  var n = 0;
+  runas (Theo) {
+    var id = OpenTicket("olivia@larkspur.test", "", "Checkout is down", "Every card payment fails.");
+    var t = Ticket.Single(x => x.Id == id);
+    n = t.Number;
+    Assert.Equal("A question", t.Form!.Name);                 // the default type
+    Assert.Equal("question", t.Kind);
+  }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/open/t/" + n);
+  Assert.Hidden("Root cause");                                // a question asks for none
+  Ui.Click("Type: A question");
+  Ui.Click("An outage");
+  Assert.Visible("Type set to An outage.", within: "Conversation");
+  Assert.Visible("Not recorded yet — solving needs it", within: "Fields");
+  Ui.Shot("ticket-type-outage");
+  runas (Theo) {
+    var t = Ticket.Single(x => x.Number == n);
+    Assert.Equal("incident", t.Kind);
+    ReplyToTicket(t.Id, "Looking now.");
+    Assert.Throws<RequirementsNotMet>(() => SetStatus(t.Id, StatusNamed("Solved").Id));
+  }
+  Ui.Click("Edit the root cause");
+  Ui.Fill("Root cause", "An expired certificate on the card gateway.");
+  Ui.Click("Save the root cause");
+  Assert.Visible("An expired certificate on the card gateway.", within: "Fields");
+  Ui.Shot("ticket-type-root-cause");
+  Ui.Theme("dark");
+  Ui.Shot("ticket-type-root-cause-dark");
+  runas (Theo) {
+    var t = Ticket.Single(x => x.Number == n);
+    SetStatus(t.Id, StatusNamed("Solved").Id);
+    Assert.Equal(StatusCategory.Solved, Ticket.Single(x => x.Number == n).Category);
+  }
+  // On a phone the type and its root cause are in the Fields sheet.
+  Ui.Theme("light");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/v/open/t/" + n);
+  Ui.Click("Fields: None yet");
+  Assert.Visible("An outage", within: "Fields");
+  Assert.Visible("An expired certificate on the card gateway.", within: "Fields");
+  Ui.Shot("ticket-type-phone");
+}
+
+// ── on the ticket ────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// A bug report Olivia raised from the portal, as the desk receives it.
+int OliviasBug() {
+  var n = 0;
+  runas (Olivia) {
+    n = SubmitRequest("Kit install fails behind a proxy", "osy kit add times out at the office.", formId: FormNamed("A bug report"),
+                      answers: [A("Which part", "A kit"), A("Platform version", "0.42.1"), A("Did you see an error?", "yes"),
+                                A("Correlation id", "corr-55e1"), A("Broken since", "2026-09-28")]);
+  }
+  return n;
+}
+
+/// ⭐ EVERY CHANGE IS ON THE TIMELINE, WITH WHO: the team answers its own field, changes the customer's, and clears one —
+/// each a line on the ticket's timeline saying what it was and what it is, by name.
+[Test(Intake)]
+void the_team_edits_a_tickets_fields_and_the_timeline_says_who_changed_what() {
+  var n = OliviasBug();
+  runas (Theo) {
+    var t = Ticket.Single(x => x.Number == n);
+    SetTicketField(t.Id, FieldNamed("Area"), "runtime", "");
+    SetTicketField(t.Id, FieldNamed("Platform version"), "0.42.2", "0.42.1");
+    SetTicketField(t.Id, FieldNamed("Broken since"), "", "2026-09-28");
+    // Nothing changed is nothing on the timeline.
+    SetTicketField(t.Id, FieldNamed("Which part"), "a kit", "A kit");
+    var said = new List<string>();
+    foreach (var e in ConversationEvent.Where(e => e.Conversation == t.Conversation && e.Kind == "helpdesk.field")
+        .OrderBy(e => e.Sequence).ToList()) {
+      said.Add(e.ByName + ": " + EventWords(e));
+    }
+    Assert.Equal(3, said.Count);
+    Assert.Equal("Theo Brandt: Area set to Runtime.", said[0]);
+    Assert.Equal("Theo Brandt: Platform version changed from 0.42.1 to 0.42.2.", said[1]);
+    Assert.Equal("Theo Brandt: Broken since cleared (was 28 Sep 2026).", said[2]);
+    // The kind is checked here too: a choice that is not one is refused, naming the field.
+    var wrong = Assert.Throws<ValidationException>(() => SetTicketField(t.Id, FieldNamed("Area"), "Billing"));
+    Assert.Equal("Area is one of: Compiler, Runtime, Client, Docs.", wrong.Message);
+  }
+  // A change of field is the team's: the customer never sees it on their timeline.
+  runas (Olivia) {
+    var t = Ticket.Single(x => x.Number == n);
+    Assert.Equal(0, ConversationEvent.Count(e => e.Conversation == t.Conversation && e.Kind == "helpdesk.field"));
+  }
+}
+
+/// Two people on one field: the second is told who changed it and to what, and nothing is overwritten unknowingly.
+[Test(Intake)]
+void a_colleagues_change_to_a_field_stops_yours_with_their_name() {
+  var n = OliviasBug();
+  Guid id = Guid.Empty;
+  runas (Mira) { id = Ticket.Single(x => x.Number == n).Id; SetTicketField(id, FieldNamed("Area"), "Compiler", ""); }
+  runas (Theo) {
+    // Theo's page still showed no answer.
+    var stale = Assert.Throws<ValidationException>(() => SetTicketField(id, FieldNamed("Area"), "Docs", ""));
+    Assert.Equal("Mira Okafor changed Area to Compiler just now. Have another look.", stale.Message);
+    Assert.Equal("Compiler", AnswerOn(n, "Area"));
+  }
+}
+
+/// ⭐ RETIRED, NEVER LOST: retiring a field stops it being asked and edited, and every ticket keeps — and shows — its
+/// answer; bringing it back makes it a question again.
+[Test(Intake)]
+void a_retired_field_keeps_every_answer_and_takes_no_new_one() {
+  var n = OliviasBug();
+  runas (Mira) {
+    TicketField.Single(f => f.Name == "Platform version").Active = false;
+    UnitOfWork.Commit();
+    var t = Ticket.Single(x => x.Number == n);
+    Assert.Equal("0.42.1", AnswerOn(n, "Platform version"));
+    var refused = Assert.Throws<ValidationException>(() => SetTicketField(t.Id, FieldNamed("Platform version"), "0.43.0"));
+    Assert.Equal("Platform version is retired: records keep their answers to it, and it takes no new ones.", refused.Message);
+  }
+  // The help page no longer asks it…
+  Ui.Visit("/help");
+  Ui.Select("What is it about?", TicketForm.Single(f => f.Name == "A bug report"));
+  Assert.Visible("Did you see an error?");
+  Assert.Hidden("Platform version");
+  // …and the ticket still shows what it said, marked retired, not pressable.
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/v/open/t/" + n);
+  Assert.Visible("0.42.1", within: "Fields");
+  Assert.Visible("Retired", within: "Fields");
+  Assert.Hidden("Edit Platform version");
+}
+
+/// ⭐ THE TICKET'S FIELDS, AS THE TEAM WORKS THEM: the form's questions with the customer's answers, the condition
+/// honoured, the team's own field edited in place, and the change on the timeline.
+[Test(Intake)]
+void the_ticket_shows_its_fields_and_the_team_edits_one_in_place() {
+  var n = OliviasBug();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/open/t/" + n);
+  Assert.Visible("A bug report", within: "Fields");
+  Assert.Visible("corr-55e1", within: "Fields");
+  Assert.Visible("28 Sep 2026", within: "Fields");
+  Assert.Visible("Not answered", within: "Fields");      // the team's Area
+  Ui.Click("Edit Area");
+  Ui.Click("Client", within: "Area");
+  Ui.Shot("ticket-fields-editing");
+  Ui.Click("Save Area");
+  Assert.Visible("Client", within: "Fields");
+  Assert.Visible("Area set to Client.", within: "Conversation");
+  Ui.Shot("ticket-fields");
+  Ui.Theme("dark");
+  Ui.Shot("ticket-fields-dark");
+  runas (Theo) { Assert.Equal("Client", AnswerOn(n, "Area")); }
+}
+
+[Test(Intake)]
+void the_tickets_fields_on_a_phone_open_in_a_sheet() {
+  var n = OliviasBug();
+  Ui.Viewport(390, 844);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/open/t/" + n);
+  Ui.Click("Fields: 5 answered");
+  Assert.Visible("corr-55e1", within: "Fields");
+  Ui.Shot("ticket-fields-phone");
+}
+
+/// A ticket put on another form: its questions change, and every answer it holds stays in sight.
+[Test(Intake)]
+void moving_a_ticket_to_another_form_keeps_its_answers() {
+  var n = OliviasBug();
+  runas (Theo) {
+    var t = Ticket.Single(x => x.Number == n);
+    SetTicketForm(t.Id, FormNamed("Billing"));
+    Assert.Equal("Billing", Ticket.Single(x => x.Number == n).Form!.Name);
+    Assert.Equal("corr-55e1", AnswerOn(n, "Correlation id"));
+    Assert.Equal(1, TimelineOf(t).Count(s => s == "Type set to Billing."));
+    Assert.Equal("billing", Ticket.Single(x => x.Number == n).Kind);   // the inbox's kind follows the type
+  }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/open/t/" + n);
+  Assert.Visible("Billing", within: "Fields");
+  Assert.Visible("Seats", within: "Fields");
+  Assert.Visible("corr-55e1", within: "Fields");
+}
+
+/// The customer reads back what they told us — and only that.
+[Test(Intake)]
+void the_customer_reads_back_what_they_told_us() {
+  var n = OliviasBug();
+  runas (Theo) { SetTicketField(Ticket.Single(x => x.Number == n).Id, FieldNamed("Area"), "Runtime"); }
+  Ui.Viewport(1280, 900);
+  Ui.SignInAs(Olivia);
+  Ui.Visit("/my/" + n);
+  Assert.Visible("corr-55e1", within: "What you told us");
+  Assert.Visible("A kit", within: "What you told us");
+  Assert.Hidden("Runtime");
+  Ui.Shot("portal-request-told-us");
+}
+
+// ── filtering ────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// ⭐ A SAVED VIEW NAMES A FIELD: "field:which-part=osyrin cloud" lists the tickets whose answer is Osyrin Cloud — in
+/// any case the admin writes it — and "field:correlation-id" every ticket that has one.
+[Test(Intake)]
+void a_saved_view_lists_the_tickets_with_a_fields_answer() {
+  runas (Olivia) {
+    SubmitRequest("Cloud deploy stuck at 90%", "It never finishes.", formId: FormNamed("A question"), answers: [A("Which part", "Osyrin Cloud")]);
+    SubmitRequest("Cloud bill shows two plans", "We have one.", formId: FormNamed("A question"), answers: [A("Which part", "Osyrin Cloud")]);
+    SubmitRequest("How do I name a kit?", "Naming question.", formId: FormNamed("A question"), answers: [A("Which part", "A kit")]);
+  }
+  OliviasBug();
+  runas (Mira) {
+    Assert.Equal(2, new DeskViews().Narrow("field:Which-Part=osyrin CLOUD").Count);
+    Assert.Equal(1, new DeskViews().Narrow("field:correlation-id").Count);
+    Assert.Equal(0, new DeskViews().Narrow("field:which-part=Kubernetes").Count);
+    Assert.Equal(0, new DeskViews().Narrow("field:no-such-field=x").Count);
+    new InboxView { Name = "Cloud questions", AppFilter = "field:which-part=osyrin cloud", Position = 0 };
+    UnitOfWork.Commit();
+  }
+  var view = Guid.Empty;
+  runas (Mira) { view = InboxView.Single(v => v.Name == "Cloud questions").Id; }
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/v/v-" + view);
+  Assert.Visible("Cloud deploy stuck at 90%", within: "Work");
+  Assert.Visible("Cloud bill shows two plans", within: "Work");
+  Assert.Hidden("How do I name a kit?");
+  Assert.Hidden("Kit install fails behind a proxy");
+  Ui.Shot("view-by-field");
+  Ui.Theme("dark");
+  Ui.Shot("view-by-field-dark");
+}
+
+[Test(Intake)]
+void a_view_by_field_on_a_phone() {
+  runas (Olivia) {
+    SubmitRequest("Cloud deploy stuck at 90%", "It never finishes.", formId: FormNamed("A question"), answers: [A("Which part", "Osyrin Cloud")]);
+  }
+  runas (Mira) { new InboxView { Name = "Cloud questions", AppFilter = "field:which-part=osyrin cloud" }; UnitOfWork.Commit(); }
+  var view = Guid.Empty;
+  runas (Mira) { view = InboxView.Single(v => v.Name == "Cloud questions").Id; }
+  Ui.Viewport(390, 844);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/v/v-" + view);
+  Assert.Visible("Cloud deploy stuck at 90%");
+  Ui.Shot("view-by-field-phone");
+}
+
+// ── settings ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// ⭐ AN ADMIN MAKES, ORDERS, CONDITIONS AND RETIRES FIELDS — nothing saved until Save, and no answer lost: a field is
+/// added and put on a form, shown only on an earlier answer, moved, and an old one retired while its answers stay.
+[Test(Intake)]
+void an_admin_adds_a_conditional_field_orders_it_and_retires_another_without_losing_answers() {
+  var n = OliviasBug();
+  Ui.Viewport(1440, 1000);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/fields");
+  Assert.Visible("Fields and forms");
+  Assert.Visible("answered on 1 ticket", within: "Platform version");
+  Ui.Click("Add a field to Ticket fields");
+  Ui.Fill("Name", "Region", within: "A new field");
+  Ui.Select("Kind", FieldKind.Choice);
+  Ui.Fill("Options, one per line", "EU\nUS\nAsia");
+  Ui.Click("Ask the customer on the help page");
+  Ui.Click("Add the field");
+  Assert.Visible("Unsaved changes");
+  Ui.Click("Add a field to A bug report");
+  Ui.Click("Region");
+  Ui.Click("Condition of Region on A bug report");
+  Ui.Select("Show it only when", TicketField.Single(f => f.Name == "Which part"));
+  Ui.Click("Osyrin Cloud", within: "…and its answer is");
+  Ui.Viewport(1440, 2200);   // the whole page, down to the condition being written
+  Ui.Shot("settings-fields-condition");
+  Ui.Viewport(1440, 1000);
+  Ui.Click("Retire Platform version");
+  Ui.Click("Move Region up");
+  Ui.Click("Save");
+  Assert.Visible("Fields and forms saved.");
+  runas (Mira) {
+    var region = TicketField.Single(f => f.Name == "Region");
+    Assert.Equal(FieldKind.Choice, region.Kind);
+    Assert.True(region.Public);
+    var on = FormField.Single(x => x.Field == region && x.Form.Name == "A bug report");
+    Assert.Equal("Which part", on.ShowWhen!.Name);
+    Assert.Equal("Osyrin Cloud", on.ShowValue);
+    Assert.False(TicketField.Single(f => f.Name == "Platform version").Active);
+    // The retired field's answer is still on the ticket.
+    Assert.Equal("0.42.1", AnswerOn(n, "Platform version"));
+    // Moved above Area, the last field before it.
+    Assert.True(region.Position < TicketField.Single(f => f.Name == "Area").Position);
+  }
+  // The new question is asked by its condition.
+  Ui.SignOut();
+  Ui.Visit("/help");
+  Ui.Select("What is it about?", TicketForm.Single(f => f.Name == "A bug report"));
+  Assert.Hidden("Region");
+  Ui.Click("Osyrin Cloud", within: "Which part");
+  Assert.Visible("Region");
+}
+
+/// The settings page as it reads, light and dark, wide and on a phone — and a condition that can never be met says so.
+[Test(Intake)]
+void the_fields_page_says_when_a_condition_can_never_be_met() {
+  runas (Mira) {
+    // Correlation id's condition names "Did you see an error?" — retire that, and the condition can never be met.
+    TicketField.Single(f => f.Name == "Did you see an error?").Active = false;
+    UnitOfWork.Commit();
+  }
+  Ui.Viewport(1440, 1000);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/fields");
+  Assert.Visible("Never shown: Did you see an error? is retired.");
+  Ui.Shot("settings-fields");
+  Ui.Theme("dark");
+  Ui.Shot("settings-fields-dark");
+  Ui.Viewport(390, 844);
+  Ui.Theme("light");
+  Ui.Visit("/settings/fields");
+  Ui.Shot("settings-fields-phone");
+}
+
+/// ⭐ A NEW TYPE'S KEY IS CHOSEN ONCE: an admin adds a type, gives it the key rules will name it by, and the key is
+/// refused until it is lower-case words and hyphens; once saved it is fixed (a rename keeps every rule matching), and the
+/// page says what rules name it instead of offering a box the server would refuse.
+[Test(Intake)]
+void a_new_types_key_is_words_and_hyphens_and_fixed_once_saved() {
+  Ui.Viewport(1440, 1000);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/fields");
+  Ui.Click("Add a type");
+  Ui.Fill("Name", "A refund", within: "New type");
+  Ui.Fill("Key", "Refund Request", within: "A refund");      // the section is named as it is typed
+  Ui.Click("Solving it needs a root cause", within: "A refund");
+  // Said as it is typed, under the box — before anything is sent.
+  Assert.Visible("A key is lower-case words joined by hyphens, like bug-report.", within: "A refund");
+  Ui.Fill("Key", "refund", within: "A refund");
+  Assert.Hidden("A key is lower-case words joined by hyphens, like bug-report.");
+  Ui.Click("Save");
+  Assert.Visible("Fields and forms saved.");
+  Assert.Visible("Rules name it “refund”.", within: "A refund");
+  Ui.Viewport(1440, 1800);
+  Ui.Shot("settings-type-key");
+  runas (Mira) {
+    var refund = TicketForm.Single(f => f.Key == "refund");
+    Assert.Equal("A refund", refund.Name);
+    Assert.True(refund.AsksRootCause);
+    Assert.Throws(() => { refund.Key = "refunds"; UnitOfWork.Commit(); });
+  }
+  runas (Mira) {
+    // …and the form's own invariant holds whoever writes the row, the page or not.
+    var bad = Assert.Throws<ValidationException>(() => {
+      new TicketForm { Name = "Returns", Key = "Returns Desk", Position = 9 };
+      UnitOfWork.Commit();
+    });
+    Assert.Contains("lower-case words joined by hyphens", bad.Message);
+  }
+  // On a phone: a new type, its key typed wrong — said under the box as it is typed (the browser scrolls to it).
+  Ui.Viewport(390, 844);
+  Ui.Visit("/settings/fields");
+  Ui.Click("Add a type");
+  Ui.Fill("Key", "Returns Desk", within: "New type");
+  Assert.Visible("A key is lower-case words joined by hyphens, like bug-report.", within: "New type");
+  Ui.Shot("settings-type-key-phone");
+  Ui.Click("Discard");
+  Assert.Hidden("New type");
+}
+
+/// A field's kind is fixed once saved — the page says so instead of offering a menu the server would refuse.
+[Test(Intake)]
+void a_saved_fields_kind_is_fixed() {
+  Ui.Viewport(1440, 1000);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/fields");
+  Ui.Click("Edit Seats");
+  Assert.Visible("Fixed once saved");
+  runas (Mira) {
+    Assert.Throws(() => { TicketField.Single(f => f.Name == "Seats").Kind = FieldKind.Text; UnitOfWork.Commit(); });
+  }
+}
+
+/// The team opens a ticket with what it already knows: the form's fields, its own too, none of them required.
+[Test(Intake)]
+void the_team_opens_a_ticket_with_the_forms_fields() {
+  Ui.Viewport(1440, 1000);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/new");
+  Ui.Fill("Customer's address", "olivia@larkspur.test");
+  Ui.Fill("Subject", "Phoned in: the CLI crashes on Windows");
+  Ui.Select("Type", TicketForm.Single(f => f.Name == "A bug report"));
+  Ui.Click("Client", within: "Area");
+  Ui.Click("Open the ticket");
+  Assert.Visible("Phoned in: the CLI crashes on Windows");
+  runas (Theo) {
+    var t = Ticket.Single(x => x.Title == "Phoned in: the CLI crashes on Windows");
+    Assert.Equal("A bug report", t.Form!.Name);
+    Assert.Equal("Client", AnswerOn(t.Number, "Area"));
+  }
+}
+
+// ── the customer and the company (H1b) ───────────────────────────────────────────────────────────────────────────────
+
+/// What the desk keeps about Olivia and Larkspur, in its own fields — her plan, the company's industry and renewal.
+void PartyFieldsOfLarkspur() {
+  runas (Mira) {
+    var larkspur = new Company { Name = "Larkspur" };
+    Customer.Single(c => c.DisplayName == "Olivia Brandt").Company = larkspur;
+    new CustomerField { Name = "Their plan", Kind = FieldKind.Choice, Options = "Starter\nTeam\nEnterprise", Position = 0 };
+    new CustomerField { Name = "Prefers calls", Kind = FieldKind.YesNo, Position = 1 };
+    new CompanyField { Name = "Industry", Kind = FieldKind.Text, Position = 0 };
+    new CompanyField { Name = "Renews on", Kind = FieldKind.Date, Position = 1 };
+    new CompanyField { Name = "Employees", Kind = FieldKind.Number, Position = 2 };
+    UnitOfWork.Commit();
+  }
+}
+
+/// ⭐ THE CUSTOMER PANEL KEEPS WHAT THE DESK KNOWS ABOUT HER AND HER COMPANY: each field edited in place beside the
+/// conversation, kept on the customer and the company (not the ticket), so the next ticket from either shows it too —
+/// and none of it is hers to read.
+[Test(Intake)]
+void the_customer_panel_keeps_what_the_desk_knows_about_her_and_her_company() {
+  PartyFieldsOfLarkspur();
+  var n = OliviasBug();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/open/t/" + n);
+  Assert.Visible("Their plan", within: "About them");
+  Assert.Visible("Industry", within: "About the company");
+  Ui.Click("Edit Their plan");
+  Ui.Click("Team", within: "Their plan");
+  Ui.Click("Save Their plan");
+  Assert.Visible("Team", within: "About them");
+  Ui.Click("Edit Industry");
+  Ui.Fill("Industry", "Logistics");
+  Ui.Click("Save Industry");
+  Ui.Click("Edit Renews on");
+  Ui.Fill("Renews on", "2027-03-01");
+  Ui.Click("Save Renews on");
+  Assert.Visible("1 Mar 2027", within: "About the company");
+  Ui.Shot("customer-panel-fields");
+  Ui.Theme("dark");
+  Ui.Shot("customer-panel-fields-dark");
+  Ui.Theme("light");
+  runas (Theo) {
+    Assert.Equal("Team", CustomerFieldValue.Single(v => v.Field.Name == "Their plan").Value);
+    Assert.Equal("Logistics", CompanyFieldValue.Single(v => v.Field.Name == "Industry").Value);
+    Assert.Equal("2027-03-01", CompanyFieldValue.Single(v => v.Field.Name == "Renews on").Value);
+    // Kept on HER, not on the ticket: no ticket answer was written.
+    Assert.False(TicketFieldValue.Any(v => v.Field.Name == "Their plan"));
+  }
+  // The team's notes about her are never hers to read, nor what her company's fields are.
+  runas (Olivia) {
+    Assert.Equal(0, CustomerFieldValue.Count());
+    Assert.Equal(0, CompanyFieldValue.Count());
+    Assert.Equal(0, CustomerField.Count());
+  }
+}
+
+/// A value its field's kind cannot hold is refused under the question, in words, and nothing is kept.
+[Test(Intake)]
+void a_company_fields_answer_is_its_kind_or_it_is_refused() {
+  PartyFieldsOfLarkspur();
+  var n = OliviasBug();
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/open/t/" + n);
+  Ui.Click("Edit Employees");
+  Ui.Fill("Employees", "about fifty");
+  Ui.Click("Save Employees");
+  Assert.Visible("Employees takes a number, like 42 or 3.5.");
+  runas (Theo) { Assert.Equal(0, CompanyFieldValue.Count()); }
+  // And on the server, whoever writes the row.
+  runas (Theo) {
+    var larkspur = Company.Single(c => c.Name == "Larkspur");
+    var renews = CompanyField.Single(f => f.Name == "Renews on");
+    Assert.Throws<ValidationException>(() => { new CompanyFieldValue { Company = larkspur, Field = renews, Value = "soon" }; UnitOfWork.Commit(); });
+  }
+}
+
+/// An admin defines a customer's and a company's fields on the same page as the ticket's, kept on Save.
+[Test(Intake)]
+void an_admin_adds_a_customer_field_and_a_company_field() {
+  Ui.Viewport(1440, 1000);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings/fields");
+  Ui.Click("Add a field to Customer fields");
+  Ui.Fill("Name", "Preferred language for calls", within: "A new field");
+  Ui.Click("Add the field");
+  Ui.Click("Add a field to Company fields");
+  Ui.Fill("Name", "Contract number", within: "A new field");
+  Ui.Click("Add the field");
+  Assert.Visible("Preferred language for calls", within: "Customer fields");
+  Assert.Visible("Contract number", within: "Company fields");
+  Ui.Click("Save");
+  Assert.Visible("Fields and forms saved.");
+  runas (Mira) {
+    Assert.True(CustomerField.Any(f => f.Name == "Preferred language for calls"));
+    Assert.True(CompanyField.Any(f => f.Name == "Contract number"));
+    // A customer's field is the team's: never asked of the customer.
+    Assert.False(CustomerField.Single(f => f.Name == "Preferred language for calls").Public);
+  }
+  Ui.Viewport(1440, 2600);
+  Ui.Shot("settings-fields-all");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/settings/fields");
+  Assert.NoOverflow();
+  Ui.Shot("settings-fields-phone");
+}
+
+/// ⭐ A FIELD'S NAME IS UNIQUE AMONG ITS OWN KIND, AND THE DATABASE SAYS SO: a customer field and a company field may
+/// both be "Area" beside the ticket's, but a second ticket field called "Area" is refused — by the unique index, with
+/// the sentence the desk wrote, whoever writes the row and however.
+[Test(Intake)]
+void a_fields_name_is_unique_among_its_own_kind_and_the_database_refuses_a_second() {
+  runas (Mira) {
+    new CustomerField { Name = "Area", Position = 0 };
+    new CompanyField { Name = "Area", Position = 0 };
+    UnitOfWork.Commit();
+    Assert.Equal(1, TicketField.Count(f => f.Name == "Area"));
+    Assert.Equal(1, CustomerField.Count(f => f.Name == "Area"));
+    Assert.Equal(1, CompanyField.Count(f => f.Name == "Area"));
+    var refused = Assert.Throws<ValidationException>(() => {
+      new TicketField { Name = "Area", Position = 9 };
+      UnitOfWork.Commit();
+    });
+    Assert.Contains("Another ticket field already has that name", refused.Message);
+  }
+  runas (Mira) {
+    Assert.Equal(1, TicketField.Count(f => f.Name == "Area"));
+    Assert.Throws<ValidationException>(() => {
+      new CustomerField { Name = "Area", Position = 9 };
+      UnitOfWork.Commit();
+    });
+  }
+}
+
+/// ⭐ A FIELD IS READ UNDER ITS OWN KIND'S GRANTS, WHATEVER IT IS REACHED THROUGH. The kit's base grants anybody a
+/// public, active field; a customer field is the team's. So a customer field marked public is still nobody else's —
+/// not through the base type, not through a form that names it.
+[Test(Intake)]
+void a_customer_field_is_never_a_customers_to_read_through_the_kits_base() {
+  runas (Mira) {
+    var plan = new CustomerField { Name = "Their plan", Kind = FieldKind.Text, Public = true, Position = 0 };
+    new FormField { Form = TicketForm.Single(f => f.Key == "billing"), Field = plan, Position = 9 };
+    UnitOfWork.Commit();
+    Assert.Equal(1, CustomField.Count(f => f.Name == "Their plan"));
+  }
+  runas (Olivia) {
+    Assert.Equal(0, CustomField.Count(f => f.Name == "Their plan"));
+    Assert.Equal(1, CustomField.Count(f => f.Name == "Seats"));
+    Assert.Equal(0, FormField.Where(x => x.Field.Name == "Their plan").Count());
+    Assert.Equal(0, FormSpecs().Count(x => x.Name == "Their plan"));
+  }
+}

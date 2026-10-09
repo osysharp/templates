@@ -1,0 +1,64 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Ui, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Ui · DurationField ──
+  /// DurationField · a button's label · at most ~10 characters
+  /// shown through Button.label
+  /// also in FieldListSection
+  button "Done" => "تم";
+
+  // ── Osysharp.Ui · DurationWords ──
+  /// DurationWords · a control's name for screen readers
+  /// shown through DurationWords()
+  accessibleName "1 day" => "يوم واحد";
+  /// DurationWords · a control's name for screen readers
+  /// shown through DurationWords()
+  accessibleName "1 hour" => "ساعة واحدة";
+  /// DurationWords · a control's name for screen readers
+  /// shown through DurationWords()
+  /// also in Spoken
+  accessibleName "1 minute" => "دقيقة واحدة";
+  /// DurationWords · a control's name for screen readers
+  /// shown through DurationWords()
+  accessibleName "No time" => "لا وقت";
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {n} = n (int) — {n} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{n} days" => { zero: "{n} يوم", one: "يوم واحد", two: "يومان", few: "{n} أيام", many: "{n} يومًا", other: "{n} يوم" };
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {n} = n (int) — {n} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{n} hours" => { zero: "{n} ساعة", one: "ساعة واحدة", two: "ساعتان", few: "{n} ساعات", many: "{n} ساعة", other: "{n} ساعة" };
+  /// DurationWords · a control's name for screen readers
+  /// placeholders: {n} = n (int) — {n} is a count: give one text per plural form
+  /// shown through DurationWords()
+  accessibleName "{n} minutes" => { zero: "{n} دقيقة", one: "دقيقة واحدة", two: "دقيقتان", few: "{n} دقائق", many: "{n} دقيقة", other: "{n} دقيقة" };
+
+  // ── Osysharp.Ui · Osysharp.Ui.ShellPresence ──
+  /// Osysharp.Ui.ShellPresence · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Ui.ShellPresence.None
+  /// beside: "Online", "Away", "Do not disturb"
+  /// also in Osysharp.Conversations.FollowUpState
+  label "None" => "لا شيء";
+
+  // ── Osysharp.Ui · TimeAgo ──
+  /// TimeAgo · text on the page
+  /// shown through TimeAgo()
+  /// also in Ago
+  text "just now" => "الآن";
+  /// TimeAgo · text on the page
+  /// shown through TimeAgo()
+  /// also in Ago
+  text "yesterday" => "أمس";
+  /// TimeAgo · text on the page
+  /// placeholders: {ToInt} = Convert.ToInt(…) (int) — {ToInt} is a count: give one text per plural form
+  /// shown through TimeAgo()
+  text "{ToInt} h ago" => { zero: "قبل {ToInt} ساعة", one: "قبل ساعة", two: "قبل ساعتين", few: "قبل {ToInt} ساعات", many: "قبل {ToInt} ساعة", other: "قبل {ToInt} ساعة" };
+  /// TimeAgo · text on the page
+  /// placeholders: {ToInt} = Convert.ToInt(…) (int) — {ToInt} is a count: give one text per plural form
+  /// shown through TimeAgo()
+  text "{ToInt} min ago" => { zero: "قبل {ToInt} دقيقة", one: "قبل دقيقة", two: "قبل دقيقتين", few: "قبل {ToInt} دقائق", many: "قبل {ToInt} دقيقة", other: "قبل {ToInt} دقيقة" };
+}

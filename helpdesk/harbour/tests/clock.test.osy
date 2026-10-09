@@ -1,0 +1,45 @@
+// THE DESK'S CLOCK — an admin picks the time zone the desk's days start in on Settings › Time and date, from a list,
+// and a report's day follows it at once. Wide and on a phone, light and dark (`osy test --pixels`;
+// Docs/OsySharp/design/clock/ keeps the ones worth keeping); in Swedish and Arabic in tests/languages/.
+using Osysharp.Clock;
+using Osysharp.Reports;
+
+[Test(Office)]
+void an_admin_picks_the_desks_time_zone_and_a_reports_day_follows() {
+  Ui.Viewport(1440, 900);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/settings");
+  Assert.Visible("Time and date", within: "Settings sections");
+  Ui.Click("Time and date", within: "Settings sections");
+  Assert.Visible("Time zone");
+  Ui.Click("Time zone");
+  // The desk's own zones, the Gulf among them.
+  Assert.Visible("Dubai — Asia");
+  Assert.Visible("Stockholm — Europe");
+  Ui.Shot("settings-clock-open");
+  Ui.Select("Time zone", Zone.Of("Asia/Dubai"));
+  Ui.Click("Save");
+  Assert.Visible("Time and date saved.");
+  Ui.Shot("settings-clock");
+  runas (Mira) {
+    Assert.Equal(Zone.Of("Asia/Dubai"), TheClock().TimeZone);
+    // 10 September in Dubai (UTC+4) begins at 20:00 UTC on the 9th.
+    var day = DateFilterValues(PeriodPreset.Custom, new DateOnly(2026, 9, 10), new DateOnly(2026, 9, 10));
+    Assert.Equal(new DateTime(2026, 9, 9, 20, 0, 0).ToString("o"), day[0]);
+  }
+  Ui.Theme("dark");
+  Ui.Shot("settings-clock-dark");
+  Ui.Viewport(390, 844);
+  Ui.Shot("settings-clock-phone-dark");
+  Ui.Theme("light");
+}
+
+[Test(Office)]
+void an_agent_reads_the_desks_clock_and_is_not_offered_the_page() {
+  Ui.SignInAs(Theo);
+  Ui.Visit("/settings");
+  Assert.Hidden("Time and date", within: "Settings sections");
+  runas (Theo) {
+    Assert.Equal(Zone.Of("UTC"), TheClock().TimeZone);
+  }
+}

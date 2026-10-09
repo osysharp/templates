@@ -1,0 +1,482 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.Composer, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.Composer · ActionsFor ──
+  /// ActionsFor · a label (a field, a list item, a menu entry) · at most ~8 characters
+  /// shown through ActionChoice.Label
+  label "No" => "Nej";
+  /// ActionsFor · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through ActionChoice.Label
+  label "Yes" => "Ja";
+
+  // ── Osysharp.Composer · ApplyMacro ──
+  /// ApplyMacro · an error message
+  /// shown through ValidationException
+  /// also in SaveMacro
+  error "That macro is gone — somebody removed it." => "Makrot finns inte längre. Någon har tagit bort det.";
+
+  // ── Osysharp.Composer · Composer ──
+  /// Composer · a control's name for screen readers
+  accessibleName "Composer" => "Skrivruta";
+  /// Composer · a control's name for screen readers
+  accessibleName "Formatting" => "Formatering";
+  /// Composer · a control's name for screen readers
+  accessibleName "Internal note" => "Intern anteckning";
+  /// Composer · a control's name for screen readers
+  accessibleName "Prepared draft" => "Förberett utkast";
+  /// Composer · a control's name for screen readers
+  accessibleName "Preview" => "Förhandsvisning";
+  /// Composer · a control's name for screen readers
+  /// shown through Composer.replyLabel
+  accessibleName "Reply" => "Svar";
+  /// Composer · a control's name for screen readers
+  accessibleName "Signature" => "Signatur";
+  /// Composer · a control's name for screen readers
+  accessibleName "Steps when you send" => "Steg när du skickar";
+  /// Composer · a button's label · at most ~11 characters
+  /// shown through SendWord()
+  button "Apply" => "Tillämpa";
+  /// Composer · a button's label · at most ~12 characters
+  /// shown through ComposerBarButton.label
+  button "Macros" => "Makron";
+  /// Composer · a button's label · at most ~13 characters
+  /// shown through ComposerBarButton.label
+  /// beside: "B", "I", "Code", "Link"
+  button "Preview" => "Förhandsvisa";
+  /// Composer · a button's label · at most ~21 characters
+  /// placeholders: {f.Name} = f.Name
+  /// shown through IconButton.label
+  /// beside: "16rem"
+  button "Remove {f.Name}" => "Ta bort {f.Name}";
+  /// Composer · a button's label · at most ~19 characters
+  /// shown through ComposerBarButton.label
+  button "Saved replies" => "Sparade svar";
+  /// Composer · a button's label · at most ~19 characters
+  /// shown through Button.label
+  button "Send and set…" => "Skicka och ange…";
+  /// Composer · a button's label · at most ~26 characters
+  /// placeholders: {s.Label} = s.Label
+  /// shown through IconButton.label
+  button "Take off {s.Label}" => "Ta bort {s.Label}";
+  /// Composer · a button's label · at most ~12 characters
+  /// shown through Button.label
+  button "Use it" => "Använd det";
+  /// Composer · a button's label · at most ~11 characters
+  /// shown through ComposerBarButton.label
+  /// beside: "B", "I", "Code", "Link"
+  button "Write" => "Skriv";
+  /// Composer · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through FormatKey.label
+  /// beside: "I", "Code", "Link", "Bulleted list"
+  label "Bold" => "Fet";
+  /// Composer · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through FormatKey.label
+  /// beside: "B", "I", "Code", "Link"
+  label "Bulleted list" => "Punktlista";
+  /// Composer · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through FormatKey.label
+  /// beside: "B", "Code", "Link", "Bulleted list"
+  label "Italic" => "Kursiv";
+  /// Composer · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through FormatKey.label
+  /// beside: "B", "I", "Code", "Link"
+  label "Numbered list" => "Numrerad lista";
+  /// Composer · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through FormatKey.label
+  /// beside: "B", "I", "Code", "Link"
+  label "Quote" => "Citat";
+  /// Composer · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Menu.label
+  label "Send and set" => "Skicka och ange";
+  /// Composer · a label (a field, a list item, a menu entry) · at most ~31 characters
+  /// placeholders: {a.Label} = a.Label
+  /// shown through MenuItem.label
+  label "Send and set {a.Label}" => "Skicka och ange {a.Label}";
+  /// Composer · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Switch.label
+  label "Sign" => "Signera";
+  /// Composer · message
+  /// placeholders: {p.Key} = p.Key, {p.Label} = p.Label
+  /// shown through Alert.message
+  message "Nothing on record fills {{{{{p.Key}}}}} ({p.Label}) — write what it should say before sending." => "Inget sparat fyller {{{{{p.Key}}}}} ({p.Label}). Skriv vad det ska stå innan du skickar.";
+  /// Composer · placeholder text inside an empty field · at most ~68 characters
+  /// shown through Composer.notePlaceholder
+  placeholder "A note for the team. The customer never sees it." => "En anteckning till teamet. Kunden ser den aldrig.";
+  /// Composer · placeholder text inside an empty field · at most ~24 characters
+  /// shown through Composer.placeholder
+  placeholder "Write your reply…" => "Skriv ditt svar…";
+  /// Composer · text on the page
+  /// shown through notice
+  text " — its steps run when you send." => ". Dess steg körs när du skickar.";
+  /// Composer · text on the page
+  /// placeholders: {m.Title} = m.Title, {value} = …
+  /// shown through notice
+  text "Applied “{m.Title}”{value}" => "Tillämpade ”{m.Title}”{value}";
+  /// Composer · text on the page
+  /// shown through notice
+  text "Draft discarded." => "Utkastet har kastats.";
+  /// Composer · text on the page
+  /// placeholders: {ToString} = mine.SavedAt.ToString(…)
+  /// beside: "Discard"
+  text "Draft saved {ToString}" => "Utkastet sparades {ToString}";
+  /// Composer · text on the page
+  /// beside: "Sign"
+  text "Not signed" => "Inte signerat";
+  /// Composer · text on the page
+  text "Nothing to preview yet." => "Inget att förhandsvisa än.";
+  /// Composer · text on the page
+  /// beside: "Reply"
+  text "Only the team sees this." => "Bara teamet ser det här.";
+  /// Composer · text on the page
+  /// placeholders: {prepared.PreparedBy} = prepared.PreparedBy
+  /// beside: "Use it"
+  text "Prepared by {prepared.PreparedBy}" => "Förberett av {prepared.PreparedBy}";
+  /// Composer · text on the page
+  /// placeholders: {Lower} = Lower(…)
+  /// shown through problem
+  text "Sent — but {Lower}" => "Skickat, men {Lower}";
+  /// Composer · text on the page
+  /// beside: "Sign"
+  text "Signed" => "Signerat";
+  /// Composer · text on the page
+  text "When you apply:" => "När du tillämpar:";
+  /// Composer · text on the page
+  text "When you send:" => "När du skickar:";
+
+  // ── Osysharp.Composer · ComposerMacroSettings (/settings/macros) ──
+  /// ComposerMacroSettings · /settings/macros · a title
+  /// shown through [Title]
+  /// also in MacroSettings
+  title "Macros" => "Makron";
+
+  // ── Osysharp.Composer · ComposerRepliesSettings (/settings/replies) ──
+  /// ComposerRepliesSettings · /settings/replies · a title
+  /// shown through [Title]
+  /// also in SavedReplySettings
+  title "Saved replies" => "Sparade svar";
+
+  // ── Osysharp.Composer · InsertSavedReply ──
+  /// InsertSavedReply · an error message
+  /// shown through ValidationException
+  /// also in SaveSavedReply
+  error "That saved reply is gone — somebody removed it." => "Det sparade svaret finns inte längre. Någon har tagit bort det.";
+
+  // ── Osysharp.Composer · KeepPrivately ──
+  /// KeepPrivately · an error message
+  /// placeholders: {name} = name (string), {SizeOf} = SizeOf(…) (string), {SizeOf2} = SizeOf(…) (string)
+  /// shown through ValidationException
+  error "{name} is {SizeOf}, and a file may be at most {SizeOf2}. Send a smaller one — a cropped screenshot, or the part of the log that matters." => "{name} är {SizeOf}, och en fil får vara högst {SizeOf2}. Skicka en mindre, till exempel en beskuren skärmbild eller den del av loggen som spelar roll.";
+
+  // ── Osysharp.Composer · Linked ──
+  /// Linked · text on the page
+  /// placeholders: {picked} = picked (string)
+  /// shown through TextEdit.Text
+  text "[link]({picked})" => "[länk]({picked})";
+
+  // ── Osysharp.Composer · MacroPicker ──
+  /// MacroPicker · a control's name for screen readers
+  /// beside: "Search macros"
+  accessibleName "Macros list" => "Makrolista";
+  /// MacroPicker · a control's name for screen readers
+  /// beside: "320px"
+  accessibleName "Search macros" => "Sök makron";
+  /// MacroPicker · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through ComposerPopover.label
+  /// also in Osysharp.Composer.ComposerSettingsSections.Sections
+  label "Macros" => "Makron";
+  /// MacroPicker · placeholder text inside an empty field · at most ~20 characters
+  /// beside: "320px"
+  placeholder "Search macros…" => "Sök makron…";
+  /// MacroPicker · text on the page
+  /// shown through PickerEmpty.body
+  text "A macro writes a reply and sets things in one move — make one in Settings › Macros." => "Ett makro skriver ett svar och ändrar saker i ett enda steg. Skapa ett under Inställningar › Makron.";
+  /// MacroPicker · text on the page
+  /// shown through words
+  /// also in MacroSettings
+  text "Writes a note" => "Skriver en anteckning";
+  /// MacroPicker · text on the page
+  /// shown through words
+  /// also in MacroSettings
+  text "Writes a reply" => "Skriver ett svar";
+  /// MacroPicker · a title
+  /// shown through PickerEmpty.title
+  /// also in MacroSettings
+  title "No macros yet" => "Inga makron än";
+
+  // ── Osysharp.Composer · MacroSettings ──
+  /// MacroSettings · a control's name for screen readers
+  /// beside: "Add a macro"
+  accessibleName "Macros" => "Makron";
+  /// MacroSettings · a control's name for screen readers
+  /// beside: "Title", "Category", "Reply (optional)", "Write it as an internal note"
+  accessibleName "Steps" => "Steg";
+  /// MacroSettings · a button's label · at most ~17 characters
+  /// shown through Button.label
+  button "Add a macro" => "Lägg till makro";
+  /// MacroSettings · a button's label · at most ~23 characters
+  /// shown through Button.label
+  button "Remove the macro" => "Ta bort makrot";
+  /// MacroSettings · a button's label · at most ~23 characters
+  /// placeholders: {s.Label} = s.Label
+  /// shown through IconButton.label
+  button "Remove {s.Label}" => "Ta bort {s.Label}";
+  /// MacroSettings · a description
+  /// shown through SettingsPage.description
+  description "A reply and the things that go with it, in one move — “Refund on its way” writes the reply, tags the ticket and sets it Pending. Applying one puts it in the reply box; its steps run when you send." => "Ett svar och det som hör till det, i ett enda steg. ”Återbetalningen är på väg” skriver svaret, taggar ärendet och sätter det som Väntande. När du tillämpar ett hamnar det i svarsrutan; dess steg körs när du skickar.";
+  /// MacroSettings · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Menu.label
+  label "Add a step" => "Lägg till steg";
+  /// MacroSettings · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through ReplyBodyEditor.label
+  /// beside: "Title", "Category", "Write it as an internal note", "Steps"
+  label "Reply (optional)" => "Svar (valfritt)";
+  /// MacroSettings · a label (a field, a list item, a menu entry) · at most ~40 characters
+  /// shown through Checkbox.label
+  /// beside: "Title", "Category", "Reply (optional)", "Steps"
+  label "Write it as an internal note" => "Skriv det som en intern anteckning";
+  /// MacroSettings · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Applying it writes its reply into the box; its steps run when the reply is sent." => "När du tillämpar det skrivs dess svar i rutan; dess steg körs när svaret skickas.";
+  /// MacroSettings · text on the page
+  /// shown through EmptyState.body
+  text "Make one for the answer that always comes with a status change or a tag." => "Skapa ett för svaret som alltid kommer med en statusändring eller en tagg.";
+  /// MacroSettings · text on the page
+  text "None — it only writes the reply." => "Inga, det skriver bara svaret.";
+  /// MacroSettings · text on the page
+  /// shown through FieldLabel.text
+  text "Steps, in order" => "Steg, i ordning";
+  /// MacroSettings · a title
+  /// shown through SettingsSection.title
+  title "Every macro" => "Alla makron";
+  /// MacroSettings · a title
+  /// shown through Dialog.title
+  title "New macro" => "Nytt makro";
+
+  // ── Osysharp.Composer · MentionMenu ──
+  /// MentionMenu · a control's name for screen readers
+  accessibleName "Mention someone" => "Nämn någon";
+  /// MentionMenu · a control's name for screen readers
+  /// beside: "Mention someone — they are told, and the note is theirs to read"
+  accessibleName "People to mention" => "Personer att nämna";
+  /// MentionMenu · text on the page
+  /// beside: "People to mention"
+  text "Mention someone — they are told, and the note is theirs to read" => "Nämn någon. De får veta det och kan läsa anteckningen.";
+
+  // ── Osysharp.Composer · Osysharp.Composer.ComposerSettingsSections.Sections ──
+  /// Osysharp.Composer.ComposerSettingsSections.Sections · a heading
+  /// shown through SettingsLink.Group
+  heading "Replies" => "Svar";
+  /// Osysharp.Composer.ComposerSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "A reply and the things that go with it, applied in one move." => "Ett svar och det som hör till det, tillämpat i ett enda steg.";
+  /// Osysharp.Composer.ComposerSettingsSections.Sections · a hint under a field
+  /// shown through SettingsLink.Hint
+  hint "Replies written once and sent often, with placeholders filled from the record." => "Svar som skrivs en gång och skickas ofta, med platshållare som fylls från posten.";
+
+  // ── Osysharp.Composer · Osysharp.Composer.ComposerTarget.Send ──
+  /// Osysharp.Composer.ComposerTarget.Send · an error message
+  /// shown through ValidationException
+  error "Nothing is set up to send this — the app names a target for it in app.Composer." => "Inget är konfigurerat för att skicka det här. Appen anger ett mål för det i app.Composer.";
+
+  // ── Osysharp.Composer · Osysharp.Composer.Macro ──
+  /// Osysharp.Composer.Macro · validation
+  /// shown through Osysharp.Composer.Macro.Title [Required]
+  validation "Name the macro — it is what you search for." => "Namnge makrot. Det är det du söker efter.";
+
+  // ── Osysharp.Composer · Osysharp.Composer.SavedReply ──
+  /// Osysharp.Composer.SavedReply · validation
+  /// shown through Osysharp.Composer.SavedReply.Title [Required]
+  validation "Name the reply — it is what you search for." => "Namnge svaret. Det är det du söker efter.";
+  /// Osysharp.Composer.SavedReply · validation
+  /// shown through Osysharp.Composer.SavedReply.Body [Required]
+  validation "Write the reply." => "Skriv svaret.";
+
+  // ── Osysharp.Composer · PickerEmpty ──
+  /// PickerEmpty · text on the page
+  text "Open settings" => "Öppna inställningar";
+
+  // ── Osysharp.Composer · PrepareDraft ──
+  /// PrepareDraft · an error message
+  /// placeholders: {DraftKeeps} = DraftKeeps (int) — {DraftKeeps} is a count: give one text per plural form
+  /// shown through ValidationException
+  error "A prepared draft may be at most {DraftKeeps} characters." => { one: "Ett förberett utkast får vara högst ett tecken.", other: "Ett förberett utkast får vara högst {DraftKeeps} tecken." };
+  /// PrepareDraft · an error message
+  /// shown through ValidationException
+  error "A prepared draft needs words." => "Ett förberett utkast behöver text.";
+  /// PrepareDraft · an error message
+  /// shown through ValidationException
+  error "Say who prepared it — the writer is told." => "Ange vem som förberedde det. Skribenten får veta det.";
+
+  // ── Osysharp.Composer · ReplyBodyEditor ──
+  /// ReplyBodyEditor · a button's label · at most ~28 characters
+  /// shown through Button.label
+  button "Insert a placeholder" => "Infoga en platshållare";
+  /// ReplyBodyEditor · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Menu.label
+  label "Placeholders" => "Platshållare";
+  /// ReplyBodyEditor · text on the page
+  text "Markdown: **bold**, _italic_, - lists, [words](https://…)." => "Markdown: **fet**, _kursiv_, - listor, [ord](https://…).";
+
+  // ── Osysharp.Composer · RunSteps ──
+  /// RunSteps · an error message
+  /// placeholders: {s.Label} = s.Label (string), {result.Problem} = result.Problem (string)
+  /// shown through ValidationException
+  error "\"{s.Label}\" was not done: {result.Problem}" => "”{s.Label}” utfördes inte: {result.Problem}";
+
+  // ── Osysharp.Composer · SaveDraft ──
+  /// SaveDraft · an error message
+  /// placeholders: {text.Length} = text.Length (int), {DraftKeeps} = DraftKeeps (int) — {text.Length} is a count: give one text per plural form
+  /// shown through ValidationException
+  error "This draft is {text.Length} characters — more than can be kept ({DraftKeeps}). Shorten it." => { one: "Utkastet är ett tecken långt, mer än som kan sparas ({DraftKeeps}). Korta det.", other: "Utkastet är {text.Length} tecken långt, mer än som kan sparas ({DraftKeeps}). Korta det." };
+
+  // ── Osysharp.Composer · SaveMacro ──
+  /// SaveMacro · an error message
+  /// placeholders: {s.Action} = s.Action (string)
+  /// shown through ValidationException
+  error "\"{s.Action}\" is not an action this desk offers." => "”{s.Action}” är inte en åtgärd som det här supportcentret erbjuder.";
+  /// SaveMacro · an error message
+  /// shown through ValidationException
+  error "A macro writes a reply, sets something, or both — give it at least one." => "Ett makro skriver ett svar, ändrar något, eller båda. Ge det minst en sak.";
+  /// SaveMacro · an error message
+  /// placeholders: {action.Label} = action.Label (string)
+  /// shown through ValidationException
+  error "Choose what \"{action.Label}\" sets." => "Välj vad ”{action.Label}” ska ändra.";
+  /// SaveMacro · an error message
+  /// shown through ValidationException
+  error "Name the macro — it is what you search for." => "Namnge makrot. Det är det du söker efter.";
+
+  // ── Osysharp.Composer · SaveSavedReply ──
+  /// SaveSavedReply · an error message
+  /// shown through ValidationException
+  error "Name the reply — it is what you search for." => "Namnge svaret. Det är det du söker efter.";
+  /// SaveSavedReply · an error message
+  /// shown through ValidationException
+  error "Write the reply." => "Skriv svaret.";
+
+  // ── Osysharp.Composer · SavedReplyPicker ──
+  /// SavedReplyPicker · a control's name for screen readers
+  /// beside: "Search saved replies"
+  /// also in SavedReplySettings
+  accessibleName "Replies" => "Svar";
+  /// SavedReplyPicker · a control's name for screen readers
+  /// beside: "320px"
+  accessibleName "Search saved replies" => "Sök sparade svar";
+  /// SavedReplyPicker · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through ComposerPopover.label
+  /// also in Osysharp.Composer.ComposerSettingsSections.Sections
+  label "Saved replies" => "Sparade svar";
+  /// SavedReplyPicker · placeholder text inside an empty field · at most ~30 characters
+  /// beside: "320px"
+  placeholder "Search saved replies…" => "Sök sparade svar…";
+  /// SavedReplyPicker · text on the page
+  /// shown through PickerEmpty.body
+  /// also in MacroPicker
+  text "Search by title, category or words." => "Sök på rubrik, kategori eller ord.";
+  /// SavedReplyPicker · text on the page
+  /// shown through PickerEmpty.body
+  text "Write the ones you send often in Settings › Saved replies." => "Skriv de som du skickar ofta under Inställningar › Sparade svar.";
+  /// SavedReplyPicker · a title
+  /// shown through PickerEmpty.title
+  /// also in SavedReplySettings
+  title "No saved replies yet" => "Inga sparade svar än";
+  /// SavedReplyPicker · a title
+  /// placeholders: {query} = query
+  /// shown through PickerEmpty.title
+  /// also in MacroPicker
+  title "Nothing matches “{query}”" => "Inget matchar ”{query}”";
+
+  // ── Osysharp.Composer · SavedReplySettings ──
+  /// SavedReplySettings · a button's label · at most ~17 characters
+  /// shown through Button.label
+  button "Add a reply" => "Lägg till svar";
+  /// SavedReplySettings · a button's label · at most ~23 characters
+  /// shown through Button.label
+  button "Remove the reply" => "Ta bort svaret";
+  /// SavedReplySettings · a description
+  /// shown through SettingsPage.description
+  description "Replies written once and sent often — find them from the reply box, under Saved replies. The team's are everyone's; your own are yours." => "Svar som skrivs en gång och skickas ofta. Hitta dem från svarsrutan under Sparade svar. Teamets är allas; dina egna är dina.";
+  /// SavedReplySettings · a label (a field, a list item, a menu entry) · at most ~54 characters
+  /// shown through Checkbox.label
+  /// also in MacroSettings
+  label "The whole team's — everyone can use it" => "Hela teamets, alla kan använda det";
+  /// SavedReplySettings · placeholder text inside an empty field · at most ~13 characters
+  /// shown through Field.placeholder
+  /// beside: "Title", "Reply", "Cancel"
+  /// also in MacroSettings
+  placeholder "Billing" => "Fakturering";
+  /// SavedReplySettings · placeholder text inside an empty field · at most ~24 characters
+  /// shown through Field.placeholder
+  /// beside: "Category", "Reply", "Cancel"
+  /// also in MacroSettings
+  placeholder "Refund on its way" => "Återbetalning på väg";
+  /// SavedReplySettings · a subtitle
+  /// shown through Dialog.subtitle
+  subtitle "Its placeholders are filled from the record each time it is used." => "Dess platshållare fylls från posten varje gång det används.";
+  /// SavedReplySettings · text on the page
+  /// shown through EmptyState.body
+  text "Write the answers you give again and again once — a reply can greet the customer by name with a placeholder." => "Skriv de svar som du ger om och om igen en gång. Ett svar kan hälsa kunden vid namn med en platshållare.";
+  /// SavedReplySettings · text on the page
+  /// placeholders: {value} = …, {Used} = Used(…)
+  text "{value} · used {Used}×" => "{value} · använt {Used}×";
+  /// SavedReplySettings · text on the page
+  /// placeholders: {Trim} = title.Trim(…)
+  /// shown through notice
+  /// also in MacroSettings
+  /// also in AutomationRules
+  text "“{Trim}” removed." => "”{Trim}” är borttaget.";
+  /// SavedReplySettings · text on the page
+  /// placeholders: {Trim} = title.Trim(…)
+  /// shown through notice
+  /// also in MacroSettings
+  /// also in AutomationRules
+  /// also in WebhookSubscriptions
+  text "“{Trim}” saved." => "”{Trim}” är sparat.";
+  /// SavedReplySettings · a title
+  /// shown through SettingsSection.title
+  title "Every saved reply" => "Alla sparade svar";
+  /// SavedReplySettings · a title
+  /// shown through Dialog.title
+  title "New saved reply" => "Nytt sparat svar";
+
+  // ── Osysharp.Composer · SendFromComposer ──
+  /// SendFromComposer · an error message
+  /// placeholders: {Join} = string.Join(…) (string)
+  /// shown through ValidationException
+  error "Replace {Join} before sending — there is nothing on record to put there." => "Ersätt {Join} innan du skickar. Det finns inget sparat att fylla i där.";
+  /// SendFromComposer · an error message
+  /// placeholders: {value} = … (string), {words.Length} = words.Length (int), {setup.MaxLength} = setup.MaxLength (int) — {words.Length} is a count: give one text per plural form
+  /// shown through ValidationException
+  error "This {value} is {words.Length} characters, and one may be at most {setup.MaxLength}. Shorten it, or send it in two." => { one: "Den här texten ({value}) är ett tecken lång, och högst {setup.MaxLength} tillåts. Korta den eller skicka den i två delar.", other: "Den här texten ({value}) är {words.Length} tecken lång, och högst {setup.MaxLength} tillåts. Korta den eller skicka den i två delar." };
+  /// SendFromComposer · an error message
+  /// shown through ValidationException
+  error "Write the note first." => "Skriv anteckningen först.";
+  /// SendFromComposer · an error message
+  /// shown through ValidationException
+  error "Write the reply first." => "Skriv svaret först.";
+  /// SendFromComposer · an error message
+  /// shown through ValidationException
+  error "note" => "anteckning";
+  /// SendFromComposer · an error message
+  /// shown through ValidationException
+  error "reply" => "svar";
+  /// SendFromComposer · text on the page
+  /// shown through Said
+  text "Note added." => "Anteckningen är tillagd.";
+  /// SendFromComposer · text on the page
+  /// shown through Said
+  text "Sent." => "Skickat.";
+
+  // ── Osysharp.Composer · TakePreparedDraft ──
+  /// TakePreparedDraft · an error message
+  /// shown through ValidationException
+  error "That prepared draft is gone — somebody else took it." => "Det förberedda utkastet finns inte längre. Någon annan tog det.";
+
+  // ── Osysharp.Composer · TargetFor ──
+  /// TargetFor · an error message
+  /// placeholders: {kind} = kind (string), {Join} = string.Join(…) (string)
+  /// shown through ValidationException
+  error "No composer is set up for '{kind}'. The kinds are: {Join}." => "Ingen skrivruta är konfigurerad för '{kind}'. Typerna är: {Join}.";
+}

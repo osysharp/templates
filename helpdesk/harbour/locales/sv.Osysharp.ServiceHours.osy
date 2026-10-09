@@ -1,0 +1,64 @@
+// sv (Svenska): the words of Helpdesk · Osysharp.ServiceHours, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations sv {
+  // ── Osysharp.ServiceHours · Osysharp.ServiceHours.ServiceException ──
+  /// Osysharp.ServiceHours.ServiceException · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.ServiceHours.ServiceException.From
+  /// beside: "Service hours", "To", "Is closed", "Reason"
+  /// also in Osysharp.Inbox.Assignment
+  /// also in FilterEditor
+  label "From" => "Från";
+  /// Osysharp.ServiceHours.ServiceException · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.ServiceHours.ServiceException.IsClosed
+  /// beside: "Service hours", "From", "To", "Reason"
+  label "Is closed" => "Stängt";
+  /// Osysharp.ServiceHours.ServiceException · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.ServiceHours.ServiceException.Reason
+  /// beside: "Service hours", "From", "To", "Is closed"
+  /// also in Osysharp.Inbox.Assignment
+  label "Reason" => "Anledning";
+  /// Osysharp.ServiceHours.ServiceException · a label (a field, a list item, a menu entry) · at most ~8 characters
+  /// shown through Osysharp.ServiceHours.ServiceException.To
+  /// beside: "Service hours", "From", "Is closed", "Reason"
+  /// also in Osysharp.Inbox.Assignment
+  /// also in SlaPolicySettings
+  /// also in FilterEditor
+  label "To" => "Till";
+
+  // ── Osysharp.ServiceHours · Osysharp.ServiceHours.ServiceHours ──
+  /// Osysharp.ServiceHours.ServiceHours · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.ServiceHours.ServiceHours.Exceptions
+  /// beside: "Name", "Zone", "Windows"
+  label "Exceptions" => "Undantag";
+  /// Osysharp.ServiceHours.ServiceHours · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.ServiceHours.ServiceHours.Windows
+  /// beside: "Name", "Zone", "Exceptions"
+  label "Windows" => "Tidsfönster";
+  /// Osysharp.ServiceHours.ServiceHours · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.ServiceHours.ServiceHours.Zone
+  /// beside: "Name", "Windows", "Exceptions"
+  label "Zone" => "Tidszon";
+
+  // ── Osysharp.ServiceHours · Osysharp.ServiceHours.ServiceWindow ──
+  /// Osysharp.ServiceHours.ServiceWindow · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.ServiceHours.ServiceWindow.Day
+  /// beside: "Service hours", "Start", "End"
+  /// also in BusinessHoursSettings
+  label "Day" => "Dag";
+  /// Osysharp.ServiceHours.ServiceWindow · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.ServiceHours.ServiceWindow.End
+  /// beside: "Service hours", "Day", "Start"
+  label "End" => "Slut";
+  /// Osysharp.ServiceHours.ServiceWindow · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.ServiceHours.ServiceWindow.ServiceHours
+  /// beside: "Day", "Start", "End"
+  /// also in Osysharp.ServiceHours.ServiceException
+  label "Service hours" => "Öppettider";
+  /// Osysharp.ServiceHours.ServiceWindow · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.ServiceHours.ServiceWindow.Start
+  /// beside: "Service hours", "Day", "End"
+  label "Start" => "Start";
+}

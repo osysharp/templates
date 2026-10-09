@@ -1,0 +1,43 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Mail, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Mail · Osysharp.Mail.IMailSender.NotReadyReason ──
+  /// Osysharp.Mail.IMailSender.NotReadyReason · note
+  /// placeholders: {Key} = Key (string)
+  /// shown through NotReadyReason()
+  note "The mail sender '{Key}' is not ready — its credentials are not set." => "مُرسِل البريد '{Key}' غير جاهز: بيانات اعتماده غير مضبوطة.";
+
+  // ── Osysharp.Mail · Osysharp.Mail.IMailbox.NotReadyReason ──
+  /// Osysharp.Mail.IMailbox.NotReadyReason · note
+  /// placeholders: {Address} = Address (string)
+  /// shown through NotReadyReason()
+  note "The mailbox '{Address}' is not ready — its credentials are not set." => "صندوق البريد '{Address}' غير جاهز: بيانات اعتماده غير مضبوطة.";
+
+  // ── Osysharp.Mail · Osysharp.Mail.IMailbox.Subscribe ──
+  /// Osysharp.Mail.IMailbox.Subscribe · an error message
+  /// placeholders: {Address} = Address (string)
+  /// shown through ValidationException
+  error "The mailbox '{Address}' cannot push; it is polled." => "لا يمكن لصندوق البريد '{Address}' الدفع؛ بل يُستعلم عنه دوريًا.";
+
+  // ── Osysharp.Mail · Osysharp.Mail.MailStatus ──
+  /// Osysharp.Mail.MailStatus · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// shown through Osysharp.Mail.MailStatus.Held
+  /// beside: "Waiting", "Sent"
+  label "Not sent — no mail sender" => "لم تُرسل، لا يوجد مُرسِل بريد";
+  /// Osysharp.Mail.MailStatus · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Mail.MailStatus.Sent
+  /// beside: "Waiting", "Not sent — no mail sender"
+  /// also in Osysharp.Conversations.DeliveryState
+  /// also in Osysharp.Conversations.MessageDirection
+  /// also in Osysharp.Sms.SmsStatus
+  label "Sent" => "أُرسلت";
+
+  // ── Osysharp.Mail · ReplyTo ──
+  /// ReplyTo · an email's subject line
+  /// placeholders: {original.Subject} = original.Subject (string)
+  /// shown through MailMessage.Subject
+  mailSubject "Re: {original.Subject}" => "Re: {original.Subject}";
+}

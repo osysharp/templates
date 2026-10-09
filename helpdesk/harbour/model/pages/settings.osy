@@ -1,0 +1,176 @@
+// THE SETTINGS AREA — the desk's configuration, in Osysharp.Ui's settings vocabulary: one layout and navigation for every
+// admin page, nothing saved until the admin says so (the SaveBar), undo back to the last change, and who changed what.
+//
+// ⚑ THE AREA KEEPS THE DESK'S SHELL — the same rail, top bar and account menu — and puts the settings' own sections beside
+//   it instead of the ticket list, because configuring the desk is not working the queue.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.People;
+using Osysharp.ServiceHours;
+using Osysharp.Observability;
+using Osysharp.Inbox;
+using Osysharp.Notifications;
+
+/// The desk's own settings sections (D-SETTINGSREG1) — the rest are announced by the kits that own them: People and
+/// Access changes (People), Tiers (Organizations), Queues, Routing, Skills, Shared views, SLA policies and Business
+/// hours (Inbox), Saved replies and Macros (Composer). Its pages of the same names take the kits' over.
+public class DeskSettingsSections : ISettingsProvider {
+  public SettingsLink[] Sections() {
+    return [
+      new SettingsLink { Label = "Statuses", To = "/settings/statuses", Group = "Tickets", Icon = Icons.CircleDot, Order = 15,
+                         Shown = IsAdmin, Hint = "Your names for where a ticket is, inside the six fixed categories." },
+      new SettingsLink { Label = "Fields and forms", To = "/settings/fields", Group = "Tickets", Icon = Icons.File, Order = 16,
+                         Shown = IsAdmin, Hint = "What a ticket asks beyond its subject." },
+      new SettingsLink { Label = "Audit log", To = "/settings/audit", Group = "Team", Icon = Icons.Eye, Order = 12,
+                         Shown = IsAdmin, Hint = "Who changed the desk's settings or somebody's access, from what to what." },
+    ];
+  }
+}
+
+/// The area's own address: on a phone, the list of sections; on a wide screen, the area's overview of every section
+/// (`SettingsOverview`) — this page has nothing to add under it.
+[Route("/settings")] [Layout(SettingsFrame)] [Authorize(IsAgent)] [Render(CSR)] [Title("Settings")]
+[Nav("Settings", Icon = Icons.Gear, Order = 90)]
+component SettingsHome() {
+  render { }
+}
+
+// ── team ────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Route("/settings/people")] [Layout(SettingsFrame)] [Authorize(ManagesPeople)] [Render(CSR)] [Title("People")]
+component PeopleSettings() { render { PeopleManager(canInvite: MayInvite); } }
+
+[Route("/settings/access")] [Layout(SettingsFrame)] [Authorize(ManagesPeople)] [Render(CSR)] [Title("Access changes")]
+component AccessSettings() {
+  render {
+    SettingsPage("Access changes", description: "Every change to somebody's access — a role, an account switched off, a lost phone, a sign-out — with who made it and why. Nobody edits or deletes these.") {
+      AccessTrailList();
+    }
+  }
+}
+
+// ── who changed a set of rows last ──────────────────────────────────────────────────────────────────────────────────
+
+/// Who last changed a status in `category`, and when — "" until a PERSON has changed one. The desk's own starting set
+/// is written by the system, and "Changed by the system · just now" on every section of a new desk said nothing.
+string StatusesChangedIn(StatusCategory category, DateTime now) {
+  EntityChange? last = null;
+  foreach (var s in TicketStatus.Where(x => x.Category == category).ToList()) {
+    var c = TicketStatus.Changes(s.Id).Where(x => x.By != "").FirstOrDefault();
+    if (c != null && (last == null || c.At > last.At)) { last = c; }
+  }
+  return last == null ? "" : ChangedBy(last.By, last.At, now);
+}
+
+// ── statuses ────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Route("/settings/statuses")] [Layout(SettingsFrame)] [Authorize(IsAdmin)] [Render(CSR)] [Title("Statuses")]
+component StatusSettings() {
+  live var statuses = TicketStatus.OrderBy(s => s.Category).ThenBy(s => s.Position).ToList();
+  Dictionary<StatusCategory, string> changed = new Dictionary<StatusCategory, string>();
+  DateTime now = DateTime.UtcNow;
+
+  on mount { Load(); }
+  action Load() {
+    foreach (var c in StatusCategory.Members) { changed[c] = StatusesChangedIn(c, now); }
+  }
+
+  action Add(StatusCategory c) {
+    UnitOfWork.Mark("Add a status");
+    var next = statuses.Where(s => s.Category == c).Count();
+    new TicketStatus { Name = "", Category = c, Position = next };
+  }
+  action Up(TicketStatus s) {
+    var above = statuses.Where(x => x.Category == s.Category && x.Position < s.Position).OrderByDescending(x => x.Position).FirstOrDefault();
+    if (above == null) { return; }
+    UnitOfWork.Mark("Move " + s.Name);
+    var p = above.Position;
+    above.Position = s.Position;
+    s.Position = p;
+  }
+  action MakeDefault(TicketStatus s) {
+    UnitOfWork.Mark("Make " + s.Name + " the default");
+    foreach (var o in statuses.Where(x => x.Category == s.Category)) { o.IsDefault = o.Id == s.Id; }
+  }
+
+  render {
+    SettingsPage("Statuses", description: "Every ticket is in one of six fixed categories — the SLA clocks and the views reason about those. Inside each, a status is your team's own name for where it is.") {
+      foreach (var c in StatusCategory.Members) {
+        SettingsSection(c.Label, description: c == StatusCategory.Pending ? "Waiting on the customer — every clock is paused."
+          : c == StatusCategory.OnHold ? "Waiting on somebody else — resolution time still runs." : "",
+          changed: changed.ContainsKey(c) ? changed[c] : "") {
+          // One line per status: its name, then what it is in words — the one a ticket gets when it moves into this
+          // category, or a button to make it that — whether it is offered, and (from the second on) a move up.
+          Stack(gap: 2, label: c.Label + " statuses") {
+            Stack(gap: 0, role: UiRole.List, label: "Each " + c.Label.ToLower() + " status") {
+              foreach (var s in statuses.Where(x => x.Category == c)) {
+                Row(gap: 3, align: Align.Center, wrap: Wrapping.Wrap, py: 2, borderBW: 1, border: Colors.Border,
+                    role: UiRole.ListItem, label: s.Name) {
+                  Box(grow: 1, minW: "160px") {
+                    Input(value: s.Name, label: "Name", placeholder: "Name this status", w: "100%", h: Length.ControlSm, px: 2,
+                          rounded: Radius.Md, borderW: 1, border: Colors.Border, bg: Colors.Surface);
+                  }
+                  Box(w: "168px") {
+                    if (s.IsDefault) {
+                      Text("Default — given on arrival", fontSize: FontSize.Caption, color: Colors.TextMuted);
+                    } else {
+                      Button("Make it the default", onPress: () => MakeDefault(s), tone: Tone.Ghost, size: Size.Sm);
+                    }
+                  }
+                  Switch("In use", value: s.Active);
+                  Box(w: "72px") {
+                    if (s.Position > 0) { Button("Move up", onPress: () => Up(s), tone: Tone.Ghost, size: Size.Sm); }
+                  }
+                }
+              }
+            }
+            // Six of these, one per category: the text stays short, the name a screen reader (and a test) reads says which.
+            Row { Button("Add a status", onPress: () => Add(c), tone: Tone.Ghost, size: Size.Sm,
+                         announceAs: "Add a status to " + c.Label); }
+          }
+        }
+      }
+      SaveBar(saved: "Statuses saved.");
+    }
+  }
+}
+
+// ── SLA policies ────────────────────────────────────────────────────────────────────────────────────────────────────
+
+/// An SLA policy as its row reads, in hours.
+class PolicyHours {
+  public Guid Id;
+  public double First;
+  public double Next;
+  public double Resolve;
+}
+
+// ── the inbox: queues, routing, skills, shared views, promises, hours (Osysharp.Inbox's pages) ────────────────────
+
+[Route("/settings/queues")] [Layout(SettingsFrame)] [Authorize(IsAdmin)] [Render(CSR)] [Title("Queues")]
+component QueuesSettings() { render { QueueSettings(); } }
+
+[Route("/settings/routing")] [Layout(SettingsFrame)] [Authorize(IsAdmin)] [Render(CSR)] [Title("Routing")]
+component RoutingSettings() { render { RoutingRuleSettings(appAction: "Tag it", appActionHint: "billing"); } }
+
+[Route("/settings/skills")] [Layout(SettingsFrame)] [Authorize(IsAdmin)] [Render(CSR)] [Title("Skills")]
+component SkillsSettings() { render { SkillSettings(); } }
+
+[Route("/settings/views")] [Layout(SettingsFrame)] [Authorize(IsAdmin)] [Render(CSR)] [Title("Shared views")]
+component ViewSettings() { render { SharedViewSettings(appFilter: "Tagged, status: or field:", appFilterHint: "refund · field:product=mail"); } }
+
+[Route("/settings/sla")] [Layout(SettingsFrame)] [Authorize(IsAdmin)] [Render(CSR)] [Title("SLA policies")]
+component SlaSettings() { render { SlaPolicySettings(); } }
+
+[Route("/settings/hours")] [Layout(SettingsFrame)] [Authorize(IsAdmin)] [Render(CSR)] [Title("Business hours")]
+component HoursSettings() { render { BusinessHoursSettings(); } }
+
+// ── tiers ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+[Route("/settings/tiers")] [Layout(SettingsFrame)] [Authorize(IsAdmin)] [Render(CSR)] [Title("Tiers")]
+component TierSettings() {
+  // The Accounts add-on's editor, in the desk's words: a tier chooses a company's SLA policy as well.
+  render { TierEditor(description: "The levels of service a company can be on. A company's tier chooses its SLA policy and what it is entitled to; a company's own contract can add more (on the company)."); }
+}

@@ -1,0 +1,65 @@
+// ar (العربية): the words of Helpdesk · Osysharp.Privacy.Conversations, translated.
+// Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
+// whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
+// Source language: en.
+
+translations ar {
+  // ── Osysharp.Privacy.Conversations · ConversationForAClaim ──
+  /// ConversationForAClaim · an error message
+  /// shown through ValidationException
+  error "No conversation is kept under that id." => "لا توجد محادثة محفوظة بهذا المعرّف.";
+
+  // ── Osysharp.Privacy.Conversations · ExportHeld ──
+  /// ExportHeld · text on the page
+  text "A redacted copy of your message" => "نسخة منقّحة من رسالتك";
+  /// ExportHeld · text on the page
+  text "Language" => "اللغة";
+  /// ExportHeld · text on the page
+  text "Name" => "الاسم";
+  /// ExportHeld · text on the page
+  text "Reached at" => "نتواصل معك عبر";
+  /// ExportHeld · text on the page
+  text "We wrote to you" => "كتبنا إليك";
+  /// ExportHeld · text on the page
+  text "Who you are to us" => "من أنت بالنسبة إلينا";
+  /// ExportHeld · text on the page
+  text "You wrote" => "كتبتَ";
+
+  // ── Osysharp.Privacy.Conversations · MaskedAddress ──
+  /// MaskedAddress · text on the page
+  /// shown through MaskedAddress()
+  text "your address" => "عنوانك";
+
+  // ── Osysharp.Privacy.Conversations · Osysharp.Privacy.Conversations.ConversationsAddressProof.StartFor ──
+  /// Osysharp.Privacy.Conversations.ConversationsAddressProof.StartFor · an error message
+  /// shown through ValidationException
+  error "We could not send a code to that address just now — wait a minute and ask again." => "تعذّر إرسال رمز إلى هذا العنوان الآن. انتظر دقيقة واطلب مجددًا.";
+
+  // ── Osysharp.Privacy.Conversations · Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories ──
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · a label (a field, a list item, a menu entry) · at most ~62 characters
+  /// shown through DataCategory.Label
+  label "Conversations about a complaint or a dispute" => "المحادثات المتعلقة بشكوى أو نزاع";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · a label (a field, a list item, a menu entry) · at most ~73 characters
+  /// shown through DataCategory.Label
+  label "Redacted copies of your messages in our own language" => "نسخ منقّحة من رسائلك بلغتنا";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · a label (a field, a list item, a menu entry) · at most ~62 characters
+  /// shown through DataCategory.Label
+  label "Your name, email addresses and phone numbers" => "اسمك، وعناوين بريدك الإلكتروني، وأرقام هواتفك";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · a label (a field, a list item, a menu entry) · at most ~45 characters
+  /// shown through DataCategory.Label
+  label "Your other conversations with us" => "محادثاتك الأخرى معنا";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "Answering you, and improving our own support" => "الرد عليك، وتحسين دعمنا";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "Establishing, exercising or defending legal claims" => "إثبات المطالبات القانونية أو ممارستها أو الدفاع عنها";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "Reaching you about what you asked" => "التواصل معك بشأن ما طلبته";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "Searching our past answers, and improving our support" => "البحث في إجاباتنا السابقة، وتحسين دعمنا";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "answering you, and improving our own support" => "الرد عليك، وتحسين دعمنا";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "from the last message in it" => "من آخر رسالة فيها";
+  /// Osysharp.Privacy.Conversations.ConversationsPersonalData.Categories · text on the page
+  text "the establishment, exercise or defence of legal claims (GDPR Art. 17(3)(e))" => "إثبات المطالبات القانونية أو ممارستها أو الدفاع عنها (المادة 17(3)(هـ) من اللائحة العامة لحماية البيانات)";
+}

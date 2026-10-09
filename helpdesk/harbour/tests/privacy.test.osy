@@ -1,0 +1,459 @@
+// A CUSTOMER'S PRIVACY REQUEST ON THE DESK — what goes, what is kept RESTRICTED for legal claims (how the desk shows it,
+// and who reads it), and what the desk keeps beside a conversation (a reply draft, a form's answers) going with it. Mira manages privacy; the Office desk is in team.test.osy.
+using Osysharp.Identity;
+using Osysharp.Conversations;
+using Osysharp.Composer;
+using Osysharp.Privacy;
+using Osysharp.Privacy.Conversations;
+using Osysharp.Inbox;
+using Osysharp.Fields;
+
+Guid Customer(string email, string name, string subject, string text) {
+  var id = Guid.Empty;
+  runas (Mira) { id = OpenTicket(email, name, subject, text); }
+  return id;
+}
+
+PrivacyRequest ErasureApproved(Guid ticketId) {
+  var party = Ticket.Single(t => t.Id == ticketId).Customer.Id;
+  var r = StartPrivacyRequestFor(party, RequestKind.Erasure, IdentityCheck.CodeToKnownAddress, "A code to her address came back.");
+  ApproveRequest(PrivacyRequest.Single(x => x.Id == r.Id));
+  return PrivacyRequest.Single(x => x.Id == r.Id);
+}
+
+/// Hanna asks where her order is, and complains she was charged twice; the desk tags the complaint as one. Answers the
+/// complaint's ticket; the question's is `QuestionOf`.
+Guid HannaWithAComplaint() {
+  Customer("hanna@kestrel.test", "Hanna Lind", "Where is my order", "Order QUOLL4 has not arrived.");
+  var complaint = Customer("hanna@kestrel.test", "Hanna Lind", "You charged me twice", "I was charged twice for QUOLL4.");
+  runas (Mira) {
+    var tag = new Tag { Name = "Complaint" };
+    new TicketTag { Ticket = Ticket.Single(t => t.Id == complaint), Tag = tag };
+    UnitOfWork.Commit();
+  }
+  return complaint;
+}
+
+/// Her erasure, started from her complaint's ticket (any of her tickets reaches all of her).
+PrivacyRequest HannaErased(Guid complaint) { return ErasureApproved(complaint); }
+
+[Test(Office)]
+void a_complaint_is_kept_restricted_for_legal_claims_while_the_rest_of_her_data_goes() {
+  var complaint = HannaWithAComplaint();
+  runas (Mira) {
+    SaveDraft("", complaint, "Dear Hanna, the double charge is being refunded.", false, [], []);
+    UnitOfWork.Commit();
+    var r = HannaErased(complaint);
+    // Answered at once: the complaint is KEPT — out of use — and she is told why and until when.
+    Assert.Equal(RequestState.Done, r.State);
+    var kept = PlanLine.Single(l => l.Request == r && l.Category == "conversations.claims");
+    Assert.Equal(PlanOutcome.Restrict, kept.Outcome);
+    Assert.NotNull(kept.Until);
+    Assert.Contains("What we keep, and why: Conversations about a complaint or a dispute, for the establishment, exercise or defence of legal claims", r.Response);
+    // Her question's words are gone; her complaint's are out of every ordinary read, and so is the draft that quotes it.
+    Assert.False(Message.Any(m => m.Text.Contains("has not arrived")));
+    Assert.False(Message.Any(m => m.Text.Contains("charged twice")));
+    Assert.Equal(0, ComposerDraft.Count(d => d.Item == complaint));
+    Assert.Equal(0, ContactPoint.Count(p => p.Value == "hanna@kestrel.test"));
+    // The ticket stays the desk's, and says it is kept — its title was her subject.
+    var t = Ticket.Single(x => x.Id == complaint);
+    Assert.Equal("conversations.claims", t.KeptFor);
+    Assert.Equal(kept.Until, t.KeptUntil);
+    Assert.Equal("Kept for legal claims", t.Title);
+    // Whoever handles claims — an admin, here — reads it for the claim.
+    Assert.True(ClaimOfTicket(complaint).Entries.Any(e => e.Text.Contains("I was charged twice for QUOLL4.")));
+  }
+  // An agent does not.
+  runas (Theo) { Assert.Denied(() => ClaimOfTicket(complaint)); }
+}
+
+[Test(Office)]
+void the_kept_complaint_goes_when_its_period_ends_and_takes_who_she_was_with_it() {
+  var complaint = HannaWithAComplaint();
+  runas (Mira) { HannaErased(complaint); }
+  TestClock.Advance(TimeSpan.FromDays(3 * 366 + 2));
+  runas (Mira) {
+    PurgeNow();
+    Assert.NoTraceOf("QUOLL4");
+    Assert.NoTraceOf("hanna@kestrel.test");
+    Assert.Equal(0, Restriction.Count("conversations.claims"));
+    var t = Ticket.Single(x => x.Id == complaint);
+    Assert.Equal("Erased conversation", t.Title);
+    Assert.Equal("", t.KeptFor);
+  }
+}
+
+[Test(Office)]
+void a_kept_complaint_on_the_desk_says_why_and_until_when_and_only_a_claims_handler_reads_it() {
+  var complaint = HannaWithAComplaint();
+  var number = 0;
+  runas (Mira) {
+    HannaErased(complaint);
+    number = Ticket.Single(x => x.Id == complaint).Number;
+  }
+  Ui.Viewport(1720, 1000);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/open/t/" + number);
+  Assert.Visible("Kept for legal claims until");
+  Assert.Visible("Customer kept for legal claims");
+  Assert.Hidden("I was charged twice");
+  Assert.Hidden("Read it for the claim");
+  // Closed — nothing on it can be worked, so nothing is offered to take.
+  Assert.Visible("Closed: the customer asked to be erased, and this conversation concerns a claim, so it is kept for legal claims, out of use.");
+  Assert.Hidden("Take it");
+  Ui.Shot("kept-complaint-on-the-desk");
+  Ui.SignInAs(Mira);
+  Ui.Visit("/v/open/t/" + number);
+  Ui.Click("Read it for the claim");
+  Assert.Visible("I was charged twice for QUOLL4.");
+  Assert.Visible("This read is recorded, with your name.");
+  Ui.Shot("kept-complaint-read-for-a-claim");
+}
+
+[Test(Office)]
+void a_reply_draft_on_her_ticket_goes_with_her_words_and_leaves_no_trace() {
+  var id = Customer("ines.b@kestrel.test", "Ines Berg", "Wrong size NARWHAL8", "The jacket NARWHAL8 is the wrong size.");
+  runas (Mira) {
+    SaveDraft("", id, "Dear Ines, about NARWHAL8 — we will send the right size.", false, [], []);
+    UnitOfWork.Commit();
+    Assert.Equal(1, ComposerDraft.Count(d => d.Item == id));
+    var r = ErasureApproved(id);
+    Assert.Equal(RequestState.Done, r.State);
+    Assert.Equal(0, ComposerDraft.Count(d => d.Item == id));
+    // Nowhere the desk keeps data — its tables, its files, its memory, its audit trail.
+    Assert.NoTraceOf("NARWHAL8");
+  }
+}
+
+[Test(Office)]
+void a_customer_with_no_account_finds_where_to_ask_about_her_data_from_the_help_page() {
+  Ui.Viewport(1280, 900);
+  Ui.Visit("/help");
+  Ui.Click("see what we keep, ask for a copy or have it erased");
+  Assert.Visible("Ask about your data");
+  Assert.Visible("Send me a code");
+}
+
+// ── R1-b: a ticket whose conversation is erased, or kept out of use, is CLOSED — its promises stop, and it says why ──
+
+[Test(Office)]
+void erasing_her_conversation_closes_her_ticket_says_why_and_stops_its_promises() {
+  var id = Customer("ines.b@kestrel.test", "Ines Berg", "Wrong size PANGOLIN5", "The jacket PANGOLIN5 is the wrong size.");
+  runas (Mira) {
+    var r = ErasureApproved(id);
+    Assert.Equal(RequestState.Done, r.State);
+    var t = Ticket.Single(x => x.Id == id);
+    Workflow.Settle(t);
+    Assert.Equal(StatusCategory.Closed, Ticket.Single(x => x.Id == id).Category);
+    Assert.Equal(PrivacyLine.Erased, Ticket.Single(x => x.Id == id).ClosedFor);
+    // On its timeline, with why — and no promise still counting on a conversation nobody may read.
+    Assert.True(ConversationEvent.Any(e => e.Conversation == t.Conversation && e.Kind == "helpdesk.privacy-closed"));
+    Assert.False(SlaClock.Any(c => c.Item.Id == id && c.Outcome == ClockOutcome.Running));
+  }
+}
+
+[Test(Office)]
+void a_kept_complaint_closes_its_ticket_and_a_legal_hold_placed_then_lifted_says_what_now_happens() {
+  var complaint = HannaWithAComplaint();
+  runas (Mira) {
+    HannaErased(complaint);
+    Workflow.Settle(Ticket.Single(x => x.Id == complaint));
+    var t = Ticket.Single(x => x.Id == complaint);
+    Assert.Equal(StatusCategory.Closed, t.Category);
+    Assert.Equal(PrivacyLine.KeptForClaims, t.ClosedFor);
+    Assert.False(SlaClock.Any(c => c.Item.Id == complaint && c.Outcome == ClockOutcome.Running));
+    var kept = t.KeptUntil;
+    Assert.NotNull(kept);
+
+    // A dispute about her: a hold keeps the complaint for as long as it stands…
+    var hold = PlaceHold("hanna@kestrel.test", null, "Chargeback dispute", "The bank opened a chargeback.", DateTime.UtcNow.AddDays(60));
+    PurgeNow();
+    Assert.Null(Ticket.Single(x => x.Id == complaint).KeptUntil);
+    // …and lifting it gives the complaint its period back — the kept record says so, for the claim.
+    LiftHold(hold, "The bank closed the chargeback.");
+    Workflow.Settle(hold);
+    Assert.Equal(kept, Ticket.Single(x => x.Id == complaint).KeptUntil);
+    var entries = ClaimOfTicket(complaint).Entries;
+    Assert.True(entries.Any(e => e.Text.Contains("A legal hold now keeps it")));
+    Assert.True(entries.Any(e => e.Text.Contains("The legal hold was lifted")));
+    Assert.True(entries.Any(e => e.Text.Contains("Closed: the customer asked to be erased")));
+  }
+}
+
+[Test(Office)]
+void a_customer_writing_after_her_ticket_was_closed_opens_a_follow_up_that_says_what_it_follows() {
+  var id = Customer("lena.v@kestrel.test", "Lena Vik", "Cannot sign in", "The sign-in page loops.");
+  runas (Mira) {
+    SetStatus(id, StatusNamed("Solved").Id);
+    SetStatus(id, StatusNamed("Closed").Id);
+    var t = Ticket.Single(x => x.Id == id);
+    Workflow.Settle(t);
+    Assert.Equal(StatusCategory.Closed, Ticket.Single(x => x.Id == id).Category);
+    // She writes on the same conversation (a reply to the closing mail, threaded onto it).
+    Post(t.Conversation, "It loops again since this morning.", EntryVisibility.Customer);
+    MailArrived(t.Conversation);
+    var next = Ticket.Where(x => x.Conversation == t.Conversation && x.Id != id).Single();
+    Assert.Equal(id, next.FollowUpOf!.Id);
+    Assert.Equal(StatusCategory.New, next.Category);
+    Assert.True(ConversationEvent.Any(e => e.Conversation == t.Conversation && e.Kind == "helpdesk.follow-up"));
+  }
+}
+
+// ── item 12 / D-DATASUBJECT1: the desk's own rows are a holder of their own, by name ──
+
+[Test(Office)]
+void the_desks_own_notes_and_form_answers_are_in_her_plan_by_name_and_go_with_her() {
+  var id = Customer("ines.b@kestrel.test", "Ines Berg", "Refund", "Please refund my order.");
+  runas (Mira) {
+    var field = new TicketField { Name = "Order number", Kind = FieldKind.Text, Public = true, Position = 0 };
+    // …and a detail the TEAM filled in on her ticket — no form asked her, so nothing but her erasure blanks it.
+    var account = new TicketField { Name = "Account note", Kind = FieldKind.Text, Position = 1 };
+    // …and what the team keeps about HER in its own customer fields (H1b) — personal data of its own category.
+    var plan = new CustomerField { Name = "Their plan", Kind = FieldKind.Text, Position = 0 };
+    UnitOfWork.Commit();
+    SetTicketField(id, field.Id, "Order OKAPI77");
+    SetTicketField(id, account.Id, "Paid by card BADGER5");
+    var t = Ticket.Single(x => x.Id == id);
+    SetField(t.Customer.Id, plan.Id, "Pays yearly via WALRUS42");
+    t.RootCause = "The gateway billed GECKO9 twice.";
+    UnitOfWork.Commit();
+
+    // In the records of processing by name, beside the kits' — "Helpdesk", its two categories.
+    var records = RecordsOfProcessing();
+    Assert.True(records.Any(x => x.Holder == "Helpdesk" && x.Category == "harbour.tickets"));
+    Assert.True(records.Any(x => x.Holder == "Helpdesk" && x.Category == "harbour.answers"));
+    Assert.True(records.Any(x => x.Holder == "Helpdesk" && x.Category == "harbour.customer-details"));
+
+    var r = StartPrivacyRequestFor(t.Customer.Id, RequestKind.Erasure, IdentityCheck.CodeToKnownAddress, "A code came back.");
+    var notes = PlanLine.Single(l => l.Request.Id == r.Id && l.Category == "harbour.tickets");
+    Assert.Equal("Helpdesk", notes.Holder);
+    Assert.Equal(PlanOutcome.Erase, notes.Outcome);
+    Assert.Equal(1, notes.Items);
+    Assert.Equal(2, PlanLine.Single(l => l.Request.Id == r.Id && l.Category == "harbour.answers").Items);
+    Assert.Equal(1, PlanLine.Single(l => l.Request.Id == r.Id && l.Category == "harbour.customer-details").Items);
+    ApproveRequest(PrivacyRequest.Single(x => x.Id == r.Id));
+
+    // The ticket stays the desk's record; what the team wrote about her and what was filled in go — and its title, her
+    // subject, says the conversation was erased rather than going blank.
+    Assert.Null(Ticket.Single(x => x.Id == id).RootCause);
+    Assert.Equal("Erased conversation", Ticket.Single(x => x.Id == id).Title);
+    // ⭐ Her answer on the ticket is blanked like every personal field the ticket holds — the value is INHERITED from
+    // Osysharp.Fields, and an inherited personal field is erased exactly as a declared one is. The row stays: the
+    // ticket's record that the field was answered, never what the answer was.
+    Assert.Equal("", TicketFieldValue.Single(v => v.Ticket.Id == id && v.Field.Id == field.Id).Value);
+    Assert.Equal("", TicketFieldValue.Single(v => v.Ticket.Id == id && v.Field.Id == account.Id).Value);
+    Assert.NoTraceOf("BADGER5");
+    // What the team kept ABOUT her is wholly hers, so its row goes.
+    Assert.False(CustomerFieldValue.Any(v => v.Field.Id == plan.Id));
+    Assert.NoTraceOf("WALRUS42");
+    Assert.Contains("What our team wrote on your tickets", PrivacyRequest.Single(x => x.Id == r.Id).Response);
+    Assert.NoTraceOf("GECKO9");
+    // D-RTL2 Q2 — the timeline kept her answer as a FACT, classified, so it went with her too; the line keeps its place
+    // and says what changed, without her words.
+    Assert.NoTraceOf("OKAPI77");
+    var lines = ConversationEvent.Where(e => e.Conversation == t.Conversation && e.Kind == "helpdesk.field")
+      .OrderBy(e => e.Sequence).ToList();
+    Assert.Equal("Order number changed.", EventWords(lines[0]));
+    Assert.Equal("Account note changed.", EventWords(lines[1]));
+  }
+}
+
+[Test(Office)]
+void her_access_request_exports_the_desks_own_rows_about_her() {
+  var id = Customer("ines.b@kestrel.test", "Ines Berg", "Refund", "Please refund my order.");
+  runas (Mira) {
+    Ticket.Single(x => x.Id == id).Resolution = "Refunded in full on the 3rd.";
+    var plan = new CustomerField { Name = "Their plan", Kind = FieldKind.Text, Position = 0 };
+    UnitOfWork.Commit();
+    SetField(Ticket.Single(x => x.Id == id).Customer.Id, plan.Id, "Pays yearly");
+    var r = StartPrivacyRequestFor(Ticket.Single(x => x.Id == id).Customer.Id, RequestKind.Access,
+                                   IdentityCheck.CodeToKnownAddress, "A code came back.");
+    Assert.Equal(PlanOutcome.Export, PlanLine.Single(l => l.Request.Id == r.Id && l.Category == "harbour.tickets").Outcome);
+    Assert.Equal(PlanOutcome.Export, PlanLine.Single(l => l.Request.Id == r.Id && l.Category == "harbour.customer-details").Outcome);
+    ApproveRequest(PrivacyRequest.Single(x => x.Id == r.Id));
+    Assert.Contains("Refunded in full on the 3rd.", ExportOf(PrivacyRequest.Single(x => x.Id == r.Id)));
+    // …and what the team keeps about her in its own fields (H1b), by value.
+    Assert.Contains("Pays yearly", ExportOf(PrivacyRequest.Single(x => x.Id == r.Id)));
+  }
+}
+
+// ── Harbour's privacy settings: 24 months, IMY, and who is responsible — named by an admin, missing until then ──
+
+[Test(Office)]
+void a_conversation_that_concerns_no_claim_is_erased_24_months_after_its_last_message() {
+  var id = Customer("otto@kestrel.test", "Otto Lind", "Invoice copy WOMBAT2", "Can I have a copy of invoice WOMBAT2?");
+  runas (Mira) {
+    Assert.Equal(24, RetentionOf(Osysharp.Privacy.CategoryOf("conversations.service")).RetainedMonths);
+    TestClock.Advance(TimeSpan.FromDays(23 * 31));
+    PurgeNow();
+    Assert.True(Message.Any(m => m.Text.Contains("WOMBAT2")));
+    TestClock.Advance(TimeSpan.FromDays(40));
+    PurgeNow();
+    Assert.NoTraceOf("WOMBAT2");
+  }
+}
+
+[Test(Office)]
+void every_answer_names_who_is_responsible_and_where_to_complain_once_an_admin_names_it() {
+  runas (Mira) {
+    Assert.Equal("", ControllerName());
+    new PrivacyController { LegalName = "Kestrel Test Desk AB" };
+    UnitOfWork.Commit();
+    Assert.Equal("Kestrel Test Desk AB", ControllerName());
+  }
+  var id = Customer("ines.b@kestrel.test", "Ines Berg", "Hello", "Hello there.");
+  runas (Mira) {
+    var r = ErasureApproved(id);
+    Assert.Contains("Kestrel Test Desk AB is responsible for your data here", r.Response);
+    Assert.Contains("IMY (Integritetsskyddsmyndigheten)", r.Response);
+  }
+}
+
+[Test(Office)]
+void the_desk_says_nobody_is_named_responsible_until_an_admin_names_it() {
+  Ui.Viewport(1720, 1000);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/v/mine");
+  Assert.Visible("Name who is responsible for customer data");
+  Ui.Shot("controller-missing-on-the-desk");
+  Ui.Click("Name who is responsible for customer data");
+  Assert.Visible("Not named yet.");
+  Ui.Shot("controller-not-named");
+  Ui.Click("Name the controller");
+  Ui.Fill("Legal name", "Kestrel Test Desk AB");
+  Ui.Click("Save");
+  Assert.Visible("Saved.");
+  Ui.Visit("/v/mine");
+  Assert.Hidden("Name who is responsible for customer data");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/settings/privacy/controller");
+  Assert.Hidden("Not named yet.");
+  Assert.Visible("Legal name");
+  Ui.Shot("controller-named-phone");
+  // An agent who does not manage privacy is never asked.
+  Ui.Viewport(1720, 1000);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/mine");
+  Assert.Hidden("Name who is responsible for customer data");
+}
+
+[Test(Office)]
+void a_ticket_closed_by_her_erasure_says_why_and_offers_nothing_to_take_or_send() {
+  var id = Customer("ines.b@kestrel.test", "Ines Berg", "Wrong size QUAGGA4", "The jacket QUAGGA4 is the wrong size.");
+  var number = 0;
+  runas (Mira) {
+    ErasureApproved(id);
+    Workflow.Settle(Ticket.Single(x => x.Id == id));
+    number = Ticket.Single(x => x.Id == id).Number;
+  }
+  Ui.Viewport(1720, 1000);
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/open/t/" + number);
+  Assert.Visible("Closed: the customer's data in this conversation was erased at their request.");
+  Assert.Visible("Nothing more is sent on this ticket.");
+  Assert.Hidden("Take it");
+  Ui.Shot("privacy-closed-ticket");
+  Ui.Viewport(390, 844);
+  Ui.Visit("/v/open/t/" + number);
+  Assert.Visible("Closed: the customer's data in this conversation was erased at their request.");
+  Ui.Shot("privacy-closed-ticket-phone");
+}
+
+// ── a legal hold from the ticket's own page, and its review on the Inbox ──
+
+[Test(Office)]
+void a_hold_placed_from_the_ticket_is_reviewed_on_the_inbox_when_its_date_comes() {
+  var id = Customer("ines.b@kestrel.test", "Ines Berg", "Refund dispute", "I want my money back.");
+  var number = 0;
+  runas (Mira) { number = Ticket.Single(x => x.Id == id).Number; }
+  Ui.Viewport(1720, 1000);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/v/open/t/" + number);
+  Ui.Click("Place a legal hold…");
+  Ui.Fill("Matter", "Refund dispute, 2026");
+  Ui.Fill("Why it must be kept", "She has said she will take it to court.");
+  Ui.Fill("Review by", DateTime.UtcNow.AddDays(30).ToString("yyyy-MM-dd"));
+  Ui.Shot("hold-control-dialog");
+  Ui.Click("Place the hold");
+  Assert.Visible("On legal hold: Refund dispute, 2026");
+  Ui.Shot("hold-control-on-the-ticket");
+  // An agent who does not place holds sees none of it.
+  Ui.SignInAs(Theo);
+  Ui.Visit("/v/open/t/" + number);
+  Assert.Hidden("Place a legal hold…");
+  Assert.Hidden("On legal hold");
+
+  // The review date comes: the review is work on the Inbox, for the people who place holds.
+  TestClock.Advance(TimeSpan.FromDays(31));
+  runas (Mira) {
+    var hold = LegalHold.Single(h => h.CaseLabel == "ticket #" + number);
+    Workflow.Settle(hold);
+    Assert.Equal(HoldState.ReviewDue, LegalHold.Single(h => h.Id == hold.Id).State);
+    Assert.Equal(1, HoldReview.Count(x => x.Hold.Id == hold.Id && x.DoneAt == null));
+  }
+  runas (Theo) { Assert.Equal(0, HoldReview.Count()); }
+  Ui.SignInAs(Mira);
+  Ui.Visit("/v/open");
+  Ui.Click("Review the legal hold on ticket #" + number);
+  Assert.Visible("Refund dispute, 2026");
+  Ui.Shot("hold-review-on-the-inbox");
+  Ui.Click("Keep it, and review again…");
+  Ui.Fill("Next review", DateTime.UtcNow.AddDays(60).ToString("yyyy-MM-dd"));
+  Ui.Click("Keep it");
+  Assert.Visible("Kept. Somebody looks at it again on");
+  // Settled and closed: nothing on it is offered to take any more.
+  Assert.Hidden("Take it");
+  runas (Mira) {
+    Assert.Equal(0, HoldReview.Count(x => x.DoneAt == null));
+    Assert.Equal(HoldState.Holding, LegalHold.Single(h => h.CaseLabel == "ticket #" + number).State);
+  }
+  Ui.Viewport(390, 844);
+  Ui.Shot("hold-review-kept-phone");
+}
+
+// ── one customer's request, end to end, as osyrin.com's privacy page shows it (D-SITEPRIVACY1) ──
+//
+// Hanna has a complaint and a question on the desk, and the team wrote down what went wrong on the complaint. An admin
+// files her erasure from the ticket: the plan names every kind of data the desk holds about her — the kits' and the
+// desk's own — and keeps the complaint for legal claims instead of erasing it. Nothing happens until it is approved.
+[Test(Office)]
+void her_erasure_is_planned_category_by_category_and_waits_on_the_inbox_until_an_admin_approves_it() {
+  var complaint = HannaWithAComplaint();
+  var number = 0;
+  runas (Mira) {
+    var t = Ticket.Single(x => x.Id == complaint);
+    t.RootCause = "The gateway billed QUOLL4 twice.";
+    UnitOfWork.Commit();
+    number = t.Number;
+  }
+  Ui.Viewport(1600, 1000);
+  Ui.SignInAs(Mira);
+  Ui.Visit("/v/open/t/" + number);
+  Ui.Click("Start a privacy request…");
+  Ui.Fill("In your words", "A code to the address she writes from came back on 4 Oct.");
+  Ui.Click("Plan the request");
+  Assert.Dialog("Planned — nothing has happened yet");
+  Assert.Visible("Conversations about a complaint or a dispute", within: "The plan");
+  Assert.Visible("What our team wrote on your tickets: what went wrong, and how it was solved", within: "The plan");
+  Ui.Shot("site-request-planned");
+  Ui.Click("Open it on the Inbox");
+  Assert.Visible("Approve and run the plan");
+  Ui.Shot("site-request-on-the-desk");
+  // Planned, not run: her words and what the team wrote are all still there.
+  runas (Mira) {
+    Assert.True(Message.Any(m => m.Text.Contains("charged twice")));
+    Assert.Equal("The gateway billed QUOLL4 twice.", Ticket.Single(x => x.Id == complaint).RootCause);
+  }
+  Ui.Viewport(390, 844);
+  Ui.Theme("dark");
+  Assert.Visible("Approve and run the plan");
+  Ui.Shot("site-request-phone-dark");
+  Ui.Theme("light");
+
+  // The retention page lists the same categories the plan was made from, the desk's own among them.
+  Ui.Viewport(1600, 1000);
+  Ui.Visit("/settings/privacy");
+  Assert.Visible("Conversations about a complaint or a dispute");
+  Assert.Visible("What our team wrote on your tickets: what went wrong, and how it was solved");
+  Ui.Shot("site-retention");
+}

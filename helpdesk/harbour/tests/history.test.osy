@@ -1,0 +1,41 @@
+// A TICKET'S HISTORY IN THE READER'S LANGUAGE (D-RTL2 Q2) — every line on the timeline, and every step of how the ticket
+// got where it is, is kept as FACTS and said when it is read: the same ticket reads in English here, and in Arabic and in
+// Swedish in tests/languages/. Photographed with `osy test --pixels`, at a desk's width and a phone's.
+using Osysharp.Identity;
+using Osysharp.Workflow;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+
+/// A refund question with a history: a rule sends it to Billing and tags it, Ines hands it to Rahul, raises its priority
+/// and answers it, waiting on the refund; Lena escalates it to Engineering, where Rahul does not work, so nobody holds it.
+int TicketWithAHistory() {
+  var number = 0;
+  runas (Ines) {
+    var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Refund for order 88213: the lamp arrived broken",
+                                "The box was crushed and the lamp inside is cracked."));
+    HandWorkTo(t, Agent.Single(a => a.DisplayName == "Rahul Kapoor"));
+    SetPriority(t.Id, WorkPriority.High);
+    ReplyToTicket(t.Id, "Sorry about that. A new lamp goes out today, and the refund for the broken one follows.", false,
+                  StatusNamed("Waiting on a refund").Id);
+    number = t.Number;
+  }
+  runas (Lena) {
+    var t = Ticket.Single(x => x.Number == number);
+    EscalateWork(t, "The carrier's damage claim needs Engineering");
+    Workflow.Settle(t);
+  }
+  return number;
+}
+
+[Test(Desk)]
+void a_tickets_history_reads_as_facts_said_when_it_is_read() {
+  var number = TicketWithAHistory();
+  Ui.SignInAs(Lena);
+  Ui.Viewport(1600, 1000);
+  Ui.Visit("/v/open/t/" + number);
+  Assert.Visible("Ines Moreau handed it to Rahul Kapoor.");              // the inbox's facts
+  Assert.Visible("Priority Normal → High.");                             // its priorities' labels
+  Assert.Visible("Status set to Waiting on a refund.");                  // the team's own status name
+  Assert.Visible("How it got here");                                      // how it got here — the inbox's trail
+  Ui.Shot("history: a ticket's timeline and how it got here, wide");
+}

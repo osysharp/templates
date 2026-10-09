@@ -1,0 +1,77 @@
+// THE SETTINGS AREA, FIELDS — what the desk asks about a ticket and the forms that ask it, and what it keeps about a
+// customer and a company (their model is config.osy; what they do is fields.osy). The sections are Osysharp.Fields';
+// this page puts them in the desk's words. Saved replies and macros are the Composer kit's pages (model/composer.osy);
+// routing rules and shared views are the inbox's pages (settings.osy).
+//
+// ⚑ NOTHING HERE DELETES AN ANSWER. A field is RETIRED, never deleted: it stops being asked and edited, and every record
+//   keeps what it said, shown as retired. Taking a field off a form takes the question away, not the answers. Nothing is
+//   kept until Save.
+using Osysharp.Identity;
+using Osysharp.Organizations;
+using Osysharp.Organizations.Accounts;
+using Osysharp.Fields;
+
+[Route("/settings/fields")] [Layout(SettingsFrame)] [Authorize(IsAdmin)] [Render(CSR)] [Title("Fields and forms")]
+component FieldSettings() {
+  live var ticketFields = TicketField.OrderBy(f => f.Position).ThenBy(f => f.Name).ToList();
+  live var customerFields = CustomerField.OrderBy(f => f.Position).ThenBy(f => f.Name).ToList();
+  live var companyFields = CompanyField.OrderBy(f => f.Position).ThenBy(f => f.Name).ToList();
+  live var forms = TicketForm.OrderBy(f => f.Position).ThenBy(f => f.Name).ToList();
+  // ⚠ Every form's fields in ONE unfiltered read, sorted out per form below: a field put on a form here joins only a list
+  //   of every row of its type until Save (D-GHOSTFILTER1).
+  live var onForms = FormField.Include(x => x.Form).Include(x => x.Field).Include(x => x.ShowWhen).OrderBy(x => x.Position).ToList();
+  live var ticketUse = TicketFieldValue.Where(v => v.Value != "").GroupBy(v => v.Field.Id)
+    .Select(g => new FieldUse { Field = g.Key, Count = g.Count() }).ToList();
+  live var customerUse = CustomerFieldValue.Where(v => v.Value != "").GroupBy(v => v.Field.Id)
+    .Select(g => new FieldUse { Field = g.Key, Count = g.Count() }).ToList();
+  live var companyUse = CompanyFieldValue.Where(v => v.Value != "").GroupBy(v => v.Field.Id)
+    .Select(g => new FieldUse { Field = g.Key, Count = g.Count() }).ToList();
+  /// The type made on this page and never saved — its key may still be chosen (it is fixed once saved).
+  Guid freshForm = Guid.Empty;
+
+  CustomField AddTicketField(FieldDraft d) => FillField(new TicketField(), d, ticketFields.Count);
+  CustomField AddCustomerField(FieldDraft d) => FillField(new CustomerField(), d, customerFields.Count);
+  CustomField AddCompanyField(FieldDraft d) => FillField(new CompanyField(), d, companyFields.Count);
+  action AddForm() {
+    UnitOfWork.Mark("Add a type");
+    var made = new TicketForm { Name = "New type", Key = FreeKey("new-type", forms.Select(f => f.Key).ToList()),
+                                Position = forms.Count, IsDefault = forms.Count == 0 };
+    freshForm = made.Id;
+  }
+  action MakeDefault(TicketForm form) {
+    UnitOfWork.Mark("Make " + form.Name + " the default");
+    foreach (var o in forms) { o.IsDefault = o.Id == form.Id; }
+  }
+
+  /// What a type is to the customer: a choice on the help page only once it asks them something.
+  string FormLine(TicketForm form) => form.IsDefault ? "The type a request takes when nobody chose another."
+    : onForms.Any(x => x.Form.Id == form.Id && x.Field.Public && x.Field.Active)
+      ? "A type of request the customer chooses on the help page."
+      : "A type the team sets on the ticket. The customer is offered it once it asks them something.";
+
+  render {
+    SettingsPage("Fields and forms", description: "What the desk asks about a ticket — the product, a version, an order number — and the forms that ask it, and what it keeps about a customer and a company. A form is a type of request: the customer's choice, the team's to change on the ticket.") {
+      FieldListSection(ticketFields, AddTicketField, ticketUse, title: "Ticket fields",
+                       description: "Every question a form can ask, in the order the ticket shows them. A question asked of the customer is on the help page; the rest are the team's, on the ticket. A field is retired, never deleted: tickets keep their answers.",
+                       record: "ticket", records: "tickets", publicLabel: "Ask the customer on the help page",
+                       nameHint: "A saved view finds it by its name: field:order-number=…", about: "Something the desk asks about a ticket.");
+      FieldListSection(customerFields, AddCustomerField, customerUse, title: "Customer fields",
+                       description: "What the team keeps about a person who writes in — shown and edited beside their tickets, never to them.",
+                       record: "customer", records: "customers", about: "Something the desk keeps about a customer.");
+      FieldListSection(companyFields, AddCompanyField, companyUse, title: "Company fields",
+                       description: "What the team keeps about a customer company — shown and edited beside its people's tickets.",
+                       record: "company", records: "companies", about: "Something the desk keeps about a company.");
+      foreach (var form in forms) {
+        FormSection(form, onForms.Where(x => x.Form.Id == form.Id).ToList(), ticketFields, freshForm == form.Id,
+                    () => MakeDefault(form), description: FormLine(form),
+                    keyHint: "What routing rules, SLA policies and views name it by — lower-case words and hyphens. Fixed once saved.") {
+          Switch("Solving it needs a root cause", value: form.AsksRootCause);
+        }
+      }
+      Row { Button("Add a type", onPress: AddForm, tone: Tone.Ghost, size: Size.Sm); }
+      // Saving fixes a new type's key (`[Immutable]`), so the page stops offering the box. (A refused save discards the
+      // whole unit of work, the new type with it — so there is nothing left to keep fresh either way.)
+      SaveBar(onSave: () => { freshForm = Guid.Empty; }, saved: "Fields and forms saved.");
+    }
+  }
+}

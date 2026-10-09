@@ -1,0 +1,237 @@
+// THE TICKET'S LIFECYCLE, AND THE PROMISES THE INBOX KEEPS ON IT — first reply, next reply, resolution, on the
+// company's calendar.
+//
+// The clocks are the inbox's (Osysharp.Inbox proves them in general: business hours and holidays, pausing, retargeting,
+// imported history, follow-the-sun). What is proven HERE is the desk on them: that its lifecycle tells the inbox each
+// fact as it happens, so a person at the desk sees the promise kept, paused and missed exactly when they should. Every
+// test drives the ticket through the desk's own verbs (`OpenTicket`, `ReplyToTicket`, `SetStatus`, `CustomerReply`).
+// The desk (Ines and Rahul, agents; Lena, a lead; Olivia at Larkspur, a customer) is in desk.test.osy.
+using Osysharp.Identity;
+using Osysharp.Accounts;
+using Osysharp.Workflow;
+using Osysharp.ServiceHours;
+using Osysharp.Conversations;
+using Osysharp.Inbox;
+
+/// Was `metric` missed on `t` — its clock recorded as breached?
+bool Missed(Ticket t, SlaMetric metric) => SlaClock.Any(c => c.Item.Id == t.Id && c.Metric == metric && c.BreachedAt != null);
+
+/// What the inbox has the ticket as, now.
+Handling HandlingOf(Ticket t) => Ticket.Single(x => x.Id == t.Id).Handling;
+
+[Test(Desk)]
+[runas(Ines)]
+void a_ticket_goes_new_open_solved_closed() {
+  var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Invoice PDF shows the wrong VAT line", "Since this morning."));
+  Assert.Equal(StatusCategory.New, t.Category);
+  Assert.Equal("New", t.Status!.Name);
+  Assert.Equal("#" + t.Number, t.Reference);                // the reference people quote, on the inbox's row too
+
+  ReplyToTicket(t.Id, "Looking into it now.");
+  Workflow.Settle(t);
+  Assert.Equal(StatusCategory.Open, t.Category);
+  Assert.Equal(Stage.Answered, t.Stage);                  // answered: nothing is owed until the customer writes again
+  Assert.Equal(Handling.Answered, HandlingOf(t));         // …and the inbox heard it
+  Assert.NotNull(TicketOf(t.Id).FirstRespondedAt);
+  Assert.Equal("Ines Moreau", t.Assignee!.DisplayName);   // answering an unowned ticket takes it
+
+  SetStatus(t.Id, StatusNamed("Solved").Id);
+  Assert.Equal(StatusCategory.Solved, t.Category);
+  Assert.Equal(Handling.Done, HandlingOf(t));
+  SetStatus(t.Id, StatusNamed("Closed").Id);
+  Assert.Equal(StatusCategory.Closed, t.Category);
+  Assert.Equal(Handling.Closed, HandlingOf(t));
+}
+
+/// ⭐ THE DESK KEEPS ITS PROMISES THROUGH THE INBOX (Inbox slice 7). One ticket, end to end: a Premium company's urgent
+/// ticket is promised by the Premium policy (the inbox chose it by priority AND tier), its first reply is missed in
+/// the policy's own around-the-clock hours and the miss is on the ticket's timeline in the desk's words; once answered,
+/// waiting on the customer pauses the clock for five days with nothing missed, their answer makes a reply owed again,
+/// and solving it keeps the resolution promise.
+[Test(Desk)]
+[runas(Ines)]
+void the_desk_keeps_its_promises_through_the_inbox() {
+  TestClock.Set(new DateTime(2026, 6, 6, 22, 0, 0));       // Saturday night
+  var t = TicketOf(OpenTicket("dev@orbit.test", "", "Checkout returns 500", "", WorkPriority.Urgent));
+  Workflow.Settle(t);
+  Assert.Equal("Premium urgent", TicketOf(t.Id).Policy!.Name);
+  Assert.Equal(TimeSpan.FromMinutes(30), TicketOf(t.Id).FirstResponseWithin);
+  TestClock.Advance(TimeSpan.FromMinutes(45));
+  Workflow.Settle(t);
+  Assert.True(Missed(t, SlaMetric.FirstResponse));
+  Assert.Equal(StatusCategory.New, t.Category);            // recorded, not fatal — the customer still needs an answer
+  // …dated when it HAPPENED (30 minutes in, 22:30), not when the desk next looked (22:45).
+  var missed = ConversationEvent.Where(e => e.Conversation == t.Conversation && e.Kind == "inbox.promise-breached").ToList();
+  Assert.Equal(1, missed.Count);
+  Assert.Equal("First reply time was missed.", EventWords(missed[0]));
+  Assert.Equal(new DateTime(2026, 6, 6, 22, 30, 0), missed[0].At);
+
+  ReplyToTicket(t.Id, "Which page fails?", false, StatusNamed("Pending").Id);
+  Workflow.Settle(t);
+  Assert.Equal(Handling.WaitingOnRequester, HandlingOf(t));
+  TestClock.Advance(TimeSpan.FromDays(5));                 // far past every promise — but paused
+  Workflow.Settle(t);
+  Assert.False(Missed(t, SlaMetric.Resolution));
+  Assert.False(Missed(t, SlaMetric.NextResponse));
+
+  runas (Dev) { CustomerReply(t.Id, "The payment step."); }
+  Workflow.Settle(t);
+  Assert.Equal(Handling.Owed, HandlingOf(t));              // a reply is owed again
+  ReplyToTicket(t.Id, "Fixed — a bad deploy.", false, StatusNamed("Solved").Id);
+  Workflow.Settle(t);
+  Assert.Equal(Handling.Done, HandlingOf(t));
+  Assert.False(Missed(t, SlaMetric.Resolution));
+  Assert.True(SlaClock.Any(c => c.Item.Id == t.Id && c.Metric == SlaMetric.Resolution && c.Outcome == ClockOutcome.Met));
+}
+
+[Test(Desk)]
+[runas(Ines)]
+void the_first_reply_clock_breaches_when_nobody_answers_in_business_hours() {
+  // Larkspur is on Standard: a Normal ticket owes a first reply within 8 business hours.
+  TestClock.Set(new DateTime(2026, 6, 2, 7, 0, 0));        // Tue 09:00 Stockholm
+  var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Export stuck", ""));
+  Workflow.Settle(t);
+  TestClock.Advance(TimeSpan.FromHours(7));
+  Workflow.Settle(t);
+  Assert.False(Missed(t, SlaMetric.FirstResponse));        // 7 of 8 business hours gone
+  TestClock.Advance(TimeSpan.FromHours(2));
+  Workflow.Settle(t);
+  Assert.True(Missed(t, SlaMetric.FirstResponse));
+}
+
+[Test(Desk)]
+[runas(Ines)]
+void the_next_reply_is_owed_only_after_the_customer_writes() {
+  var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Webhook retries arrive twice", ""));
+  ReplyToTicket(t.Id, "Can you send a request id?");
+  Workflow.Settle(t);
+  TestClock.Advance(TimeSpan.FromDays(10));               // answered: ten quiet days owe nothing
+  Workflow.Settle(t);
+  Assert.False(Missed(t, SlaMetric.NextResponse));
+
+  runas (Olivia) { CustomerReply(t.Id, "Here it is: req_8812."); }
+  Workflow.Settle(t);
+  Assert.Equal(Stage.Open, t.Stage);                      // now a reply IS owed
+  // Past 16 business hours on ANY weekday: three days are not, from a Thursday afternoon (Thursday's last hours and
+  // Friday make 12 — this failed every Monday afternoon, ten days on being a Thursday); five always hold at least 30.
+  TestClock.Advance(TimeSpan.FromDays(5));
+  Workflow.Settle(t);
+  Assert.True(Missed(t, SlaMetric.NextResponse));
+}
+
+[Test(Desk)]
+[runas(Ines)]
+void pending_pauses_every_clock_and_the_customers_answer_reopens_it() {
+  var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "SSO loops after reset", ""));
+  ReplyToTicket(t.Id, "Which browser?", false, StatusNamed("Pending").Id);
+  Workflow.Settle(t);
+  Assert.Equal(StatusCategory.Pending, t.Category);
+
+  TestClock.Advance(TimeSpan.FromDays(5));                // far past the 72h resolution promise — but paused
+  Workflow.Settle(t);
+  Assert.False(Missed(t, SlaMetric.Resolution));
+  Assert.True(t.ChasesSent >= 1);                         // the customer was reminded
+
+  runas (Olivia) { CustomerReply(t.Id, "Safari 18."); }
+  Workflow.Settle(t);
+  Assert.Equal(StatusCategory.Open, t.Category);
+  Assert.Equal("Open", t.Status!.Name);                   // the category's default, set by the workflow
+}
+
+[Test(Desk)]
+[runas(Ines)]
+void a_week_of_silence_while_pending_solves_the_ticket() {
+  var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Need a log file", ""));
+  ReplyToTicket(t.Id, "Could you send the log?", false, StatusNamed("Pending").Id);
+  Workflow.Settle(t);
+  TestClock.Advance(TimeSpan.FromDays(8));
+  Workflow.Settle(t);
+  Assert.Equal(StatusCategory.Solved, t.Category);
+  Assert.Equal(Handling.Done, HandlingOf(t));             // a timer solved it, and the inbox heard
+  Assert.False(Missed(t, SlaMetric.Resolution));
+}
+
+[Test(Desk)]
+[runas(Ines)]
+void on_hold_keeps_the_resolution_clock_running() {
+  TestClock.Set(new DateTime(2026, 6, 2, 7, 0, 0));
+  var t = TicketOf(OpenTicket("dev@orbit.test", "", "Carrier API down", "", WorkPriority.High));   // Premium High: 12h resolve
+  ReplyToTicket(t.Id, "Raised with the carrier.", false, StatusNamed("Waiting on engineering").Id);
+  Workflow.Settle(t);
+  Assert.Equal(StatusCategory.OnHold, t.Category);
+  Assert.Equal("Waiting on engineering", t.Status!.Name);  // the team's own status, inside the category
+  Assert.Equal(Handling.WaitingOnOthers, HandlingOf(t));
+  TestClock.Advance(TimeSpan.FromHours(13));
+  Workflow.Settle(t);
+  Assert.True(Missed(t, SlaMetric.Resolution));            // the customer is still waiting on US
+}
+
+[Test(Desk)]
+[runas(Ines)]
+void raising_the_priority_tightens_the_promise() {
+  TestClock.Set(new DateTime(2026, 6, 2, 7, 0, 0));
+  var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Minor glitch", "", WorkPriority.Low));   // 24 business hours
+  Workflow.Settle(t);
+  SetPriority(t.Id, WorkPriority.Urgent);                  // 1 business hour
+  Workflow.Settle(t);
+  Assert.Equal(WorkPriority.Urgent, TicketOf(t.Id).Priority);
+  Assert.Equal(TimeSpan.FromHours(1), TicketOf(t.Id).FirstResponseWithin);
+  TestClock.Advance(TimeSpan.FromHours(2));
+  Workflow.Settle(t);
+  Assert.True(Missed(t, SlaMetric.FirstResponse));         // judged against the tighter promise
+  Assert.Contains("Priority Low → Urgent.", TimelineOf(t));
+}
+
+[Test(Desk)]
+[runas(Ines)]
+void an_incident_is_not_solved_until_its_root_cause_is_on_record() {
+  // An outage — the desk's starting type that asks for a root cause (SetUpDesk).
+  var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Payments failing", "", WorkPriority.High,
+                              formId: TicketForm.Single(f => f.Key == "incident").Id));
+  ReplyToTicket(t.Id, "On it.");
+  Assert.Throws<RequirementsNotMet>(() => SetStatus(t.Id, StatusNamed("Solved").Id));
+  Assert.Equal(StatusCategory.Open, t.Category);
+  SetRootCause(t.Id, "An expired certificate on the card gateway.");
+  SetStatus(t.Id, StatusNamed("Solved").Id);
+  Assert.Equal(StatusCategory.Solved, t.Category);
+}
+
+[Test(Desk)]
+[runas(Ines)]
+void a_solved_ticket_closes_by_itself_unless_the_customer_writes_back() {
+  var quiet = TicketOf(OpenTicket("olivia@larkspur.test", "", "Typo on invoice", ""));
+  var loud  = TicketOf(OpenTicket("olivia@larkspur.test", "", "Login loop", ""));
+  ReplyToTicket(quiet.Id, "Fixed the template.", false, StatusNamed("Solved").Id);
+  ReplyToTicket(loud.Id, "Cleared the cookie.", false, StatusNamed("Solved").Id);
+  runas (Olivia) { CustomerReply(loud.Id, "Still loops on Safari."); }
+  Workflow.Settle(loud);
+  Assert.Equal(StatusCategory.Open, loud.Category);
+  Assert.Equal(1, loud.ReopenCount);
+  Assert.Equal(Handling.Owed, HandlingOf(loud));          // reopened in the inbox too: a reply is owed
+
+  TestClock.Advance(TimeSpan.FromDays(5));
+  Workflow.Settle(quiet);
+  Assert.Equal(StatusCategory.Closed, quiet.Category);
+  Assert.Equal(Handling.Closed, HandlingOf(quiet));
+}
+
+[Test(Desk)]
+[runas(Ines)]
+void a_ticket_cannot_go_back_to_new_or_close_before_it_is_solved() {
+  var t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Seats", ""));
+  ReplyToTicket(t.Id, "Sure.");
+  Assert.Throws<ValidationException>(() => SetStatus(t.Id, StatusNamed("New").Id));
+  Assert.Throws<ValidationException>(() => SetStatus(t.Id, StatusNamed("Closed").Id));
+  Assert.Equal(StatusCategory.Open, t.Category);
+}
+
+[Test(Desk)]
+void a_customer_cannot_work_a_ticket() {
+  Ticket? t = null;
+  runas (Ines) { t = TicketOf(OpenTicket("olivia@larkspur.test", "", "Mine", "")); }
+  runas (Olivia) {
+    Assert.Throws<NotAuthorized>(() => SupportTicket.RaiseSolve(t!, "solved it myself"));
+    Assert.Throws<NotAuthorized>(() => Responded(t!));       // nor tell the inbox it was answered
+  }
+  runas (Ines) { Assert.Equal(StatusCategory.New, Ticket.Single(x => x.Id == t!.Id).Category); }
+}
