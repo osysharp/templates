@@ -1,4 +1,4 @@
-// LANGUAGE AND SEARCH (H8 + H11) — a customer writing in Swedish or Arabic is read by the team in English and answered
+// LANGUAGE AND SEARCH — a customer writing in Swedish or Arabic is read by the team in English and answered
 // in their own language, on the desk, in the portal and in the mail that says their request is solved; the search box
 // and "Seen before" find tickets by what they are about, whatever language they were written in, how the team solved
 // ones like them, and the articles that may answer them — never a team playbook outside the team. Without the desk's
@@ -8,10 +8,10 @@
 // (`LlmClient.Complete.Stub`); search runs on the deterministic words embedder (`TestEmbedder.Use`).
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Knowledge;
+using Osysharp.KnowledgeBase;
 using Osysharp.MachineTranslation;
 using Osysharp.Memory.Testing;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 
 /// Harbour's help centre (Nadia, Leo, Clara) with its keys answered and its model a phrasebook.
 [TestFixture]

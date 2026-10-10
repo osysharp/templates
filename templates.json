@@ -1,6 +1,6 @@
 {
   "format": "osy-templates/1",
-  "tag": "v0.3.0",
+  "tag": "v0.4.0",
   "templates": [
     {
       "category": "shop",
@@ -11,7 +11,7 @@
       "path": "shop/fashion",
       "screenshot": "docs/fashion-store-atelier.jpg",
       "asset": "shop-fashion.zip",
-      "hash": "sha256:ad698ba735cbdbe18a791dde9823600d70ba1c820c8e4cc10fa8a21770290c34"
+      "hash": "sha256:fc2291818263a45a9720f5bd3a612bbb105a23215169ca33388df7bdb7eb0fcc"
     },
     {
       "category": "shop",
@@ -22,7 +22,7 @@
       "path": "shop/thrift",
       "screenshot": "docs/thrift-store-rail.jpg",
       "asset": "shop-thrift.zip",
-      "hash": "sha256:83492eaa80bab60601c358d2cd4d38655adf0ecdef4c9e2016d52c22e2609660"
+      "hash": "sha256:280e9305f4d06d9a1db2b588aece9880be54ccd8ca1937b26c7e5124f11ca033"
     },
     {
       "category": "shop",
@@ -33,7 +33,7 @@
       "path": "shop/workshop",
       "screenshot": "docs/rust-and-chrome.jpg",
       "asset": "shop-workshop.zip",
-      "hash": "sha256:dcbe92f082204981f67207c1eeffc1151879df29b2b7fe5712f12638763ec1a3"
+      "hash": "sha256:3d035682dbbd0784d244093c2c3014e156bb36148ce158388902b43bba9bd3cf"
     },
     {
       "category": "helpdesk",
@@ -44,7 +44,7 @@
       "path": "helpdesk/harbour",
       "screenshot": "docs/harbour-desk.jpg",
       "asset": "helpdesk-harbour.zip",
-      "hash": "sha256:e8e5f05aabc7f89c9039139ec4674d8cce03c2c1a62f98140395e4b4e5b0adfa"
+      "hash": "sha256:2cbe5edcf02b61186b74e598cf8e537411b7d72393e1fca6ce931fd1322faa54"
     }
   ]
 }

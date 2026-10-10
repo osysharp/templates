@@ -1,14 +1,14 @@
-// THE HELP CENTRE, THE HELP FORM'S SUGGESTIONS AND THE CHAT (H6 + H7) — Harbour's articles as a customer reads them, in
+// THE HELP CENTRE, THE HELP FORM'S SUGGESTIONS AND THE CHAT — Harbour's articles as a customer reads them, in
 // English, Swedish and Arabic; the playbooks the team keeps for itself, which no customer reads or finds; the help form
 // offering an article as the subject is typed; and the chat in the corner, searching the help centre before a person is
 // asked, opening a ticket with its first message and mailing a reply the customer left unread. Each screen is
 // photographed (`osy test --pixels`).
 using Osysharp.Identity;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
-using Osysharp.Accounts;
+using Osysharp.Organizations.ServicePlans;
+using Osysharp.UserAccounts;
 using Osysharp.Conversations;
-using Osysharp.Knowledge;
+using Osysharp.KnowledgeBase;
 using Osysharp.Mail;
 using Osysharp.Workflow;
 using Osysharp.Notifications;
@@ -185,7 +185,7 @@ void a_reviewer_is_told_when_an_article_waits_and_the_writer_when_it_comes_back(
   Background.Settle();
   runas (LeoLead) {
     var waiting = Notification.Single(n => n.About.Id == version);
-    Assert.Equal("Osysharp.Knowledge.ArticleSentForReview", waiting.Kind);
+    Assert.Equal("Osysharp.KnowledgeBase.ArticleSentForReview", waiting.Kind);
     // The article's own facts — its title, and the page it opens on in its language — reach the bell with no words of
     // the desk's: the kit's [Title] and [Opens], through the desk's take-over of that page.
     var line = MyNotificationLines().Single(l => l.Title == "Change your billing address");
@@ -195,14 +195,14 @@ void a_reviewer_is_told_when_an_article_waits_and_the_writer_when_it_comes_back(
   Background.Settle();
   runas (Nadia) {
     var back = Notification.Single(n => n.About.Id == version);
-    Assert.Equal("Osysharp.Knowledge.ArticleSentBack", back.Kind);
+    Assert.Equal("Osysharp.KnowledgeBase.ArticleSentBack", back.Kind);
     Assert.Equal("Sent back: Say where Billing is — top right, under your name.", SaidOf(back));
   }
   // The actions a rule or a macro may run on an article are the kit's own steps, by name.
   runas (LeoLead) {
-    Assert.Equal("Publish", Actions.Find("Osysharp.Knowledge.PublishKnowledge")!.Label);
-    Assert.Equal("Archive", Actions.Find("Osysharp.Knowledge.ArchiveKnowledge")!.Label);
-    Assert.Equal("Bring back", Actions.Find("Osysharp.Knowledge.RestoreKnowledge")!.Label);
+    Assert.Equal("Publish", Actions.Find("Osysharp.KnowledgeBase.PublishKnowledge")!.Label);
+    Assert.Equal("Archive", Actions.Find("Osysharp.KnowledgeBase.ArchiveKnowledge")!.Label);
+    Assert.Equal("Bring back", Actions.Find("Osysharp.KnowledgeBase.RestoreKnowledge")!.Label);
   }
 }
 

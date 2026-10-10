@@ -1,11 +1,11 @@
-// THE AUDIT LOG (H13) — an admin reads who changed the desk's settings and somebody's access, with the values; nobody
+// THE AUDIT LOG — an admin reads who changed the desk's settings and somebody's access, with the values; nobody
 // else reads it; and the trail it reads is opened for the settings alone, never a customer's or an account's rows.
 // `osy test --pixels` photographs it (Ui.Shot).
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
-using Osysharp.People;
+using Osysharp.Organizations.ServicePlans;
+using Osysharp.UserManagement;
 using Osysharp.Observability;
 
 /// Mira renames a status and a tier, and makes Theo a lead — three changes, two kinds.
@@ -53,8 +53,8 @@ void the_trail_opens_to_admins_and_for_the_settings_alone() {
     Assert.True(EntityAuditRecord.Any(e => e.EntityType == "TicketStatus"));
     // (The fixture made every one of these, and `ThreeChanges` a role grant and an access change: they are in the trail.)
     Assert.Equal(0, EntityAuditRecord.Count(e => e.EntityType == "Agent" || e.EntityType == "Customer"
-                                              || e.EntityType == "Osysharp.Accounts.User" || e.EntityType == "Osysharp.Identity.RoleGrant"
-                                              || e.EntityType == "Osysharp.People.AccessChange"
+                                              || e.EntityType == "Osysharp.UserAccounts.User" || e.EntityType == "Osysharp.Identity.RoleGrant"
+                                              || e.EntityType == "Osysharp.UserManagement.AccessChange"
                                               || e.EntityType == "Osysharp.Conversations.ContactPoint"));
   }
 }

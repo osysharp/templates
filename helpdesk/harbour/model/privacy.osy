@@ -6,14 +6,14 @@
 // who manages privacy.
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Composer;
-using Osysharp.Inbox;
+using Osysharp.ReplyComposer;
+using Osysharp.WorkQueues;
 using Osysharp.Privacy;
 using Osysharp.Privacy.Conversations;
 using Osysharp.Observability;
 using Osysharp.Mail;
 using Osysharp.Mail.Receiving;
-using Osysharp.Fields;
+using Osysharp.CustomFields;
 
 /// The admins file and approve privacy requests, set how long things are kept, and place legal holds.
 policy ManagesPrivacy => IsAdmin;

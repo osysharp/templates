@@ -1,13 +1,13 @@
-// THE DESK ON THE INBOX — what the helpdesk tells Osysharp.Inbox, and what it adds to it.
+// THE DESK ON THE INBOX — what the helpdesk tells Osysharp.WorkQueues, and what it adds to it.
 //
 // The kit owns where a ticket waits (queues), who has it (taking, handing on, round robin, account routing, cover), what
 // it was promised (SLA policies in business hours, paused while waiting, at risk, breached) and the screens a team works
 // it from. The desk says four things here: who works the inbox, which of its events go on a ticket's timeline, what
 // its own saved-view filters and routing actions mean, and the words its promises are called by. What the inbox raises
-// reaches the desk's automations and webhooks by itself, and the people it names their bell (Osysharp.Inbox.Notifications).
+// reaches the desk's automations and webhooks by itself, and the people it names their bell (Osysharp.WorkQueues.Notifications).
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Automations;
 
 // Who works the inbox, leads it and administers it — the desk's own roles.

@@ -1,5 +1,5 @@
 // THE OPEN TICKETS, AS TABS — the desk's own strip above the open ticket. (The list beside it is the inbox's
-// `WorkList`, Osysharp.Inbox: its rows, lamps, countdowns, keys and bulk bar.)
+// `WorkList`, Osysharp.WorkQueues: its rows, lamps, countdowns, keys and bulk bar.)
 using Osysharp.Identity;
 using Osysharp.Conversations;
 

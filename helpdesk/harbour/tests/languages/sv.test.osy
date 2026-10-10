@@ -3,22 +3,22 @@
 // leaves this file out with locales/sv*.osy when Swedish is not wanted, so the rest of the suite never reads a page in
 // it. The worlds these tests stand in (`Office`, `Desk`, `Bells`, …) and their helpers live beside the English tests.
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
-using Osysharp.People;
+using Osysharp.Organizations.ServicePlans;
+using Osysharp.UserManagement;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
 using Osysharp.Mail;
 using Osysharp.Mail.Receiving;
-using Osysharp.Inbox;
-using Osysharp.Knowledge;
-using Osysharp.Feedback;
+using Osysharp.WorkQueues;
+using Osysharp.KnowledgeBase;
+using Osysharp.SatisfactionSurveys;
 using Osysharp.Notifications;
 using Osysharp.Privacy;
 using Osysharp.Reports;
-using Osysharp.Clock;
-using Osysharp.Fields;
+using Osysharp.TimeZone;
+using Osysharp.CustomFields;
 using Osysharp.Webhooks;
 using Osysharp.Http;
 

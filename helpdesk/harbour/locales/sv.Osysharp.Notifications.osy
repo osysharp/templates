@@ -179,7 +179,7 @@ translations sv {
   /// Osysharp.Notifications.NotificationWatchState · a label (a field, a list item, a menu entry) · at most ~21 characters
   /// shown through Osysharp.Notifications.NotificationWatchState.Watching
   /// beside: "Stopped"
-  /// also in Osysharp.Feedback.FeedbackWatchState
+  /// also in Osysharp.SatisfactionSurveys.FeedbackWatchState
   label "Sweeping hourly" => "Körs varje timme";
 
   // ── Osysharp.Notifications · Osysharp.Notifications.__Settings_NotificationPreferences_Section.Sections ──

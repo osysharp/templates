@@ -5,12 +5,12 @@
 // digest mail.
 using Osysharp.Identity;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
-using Osysharp.Accounts;
+using Osysharp.Organizations.ServicePlans;
+using Osysharp.UserAccounts;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
-using Osysharp.Composer;
-using Osysharp.Inbox;
+using Osysharp.ReplyComposer;
+using Osysharp.WorkQueues;
 using Osysharp.Notifications;
 
 /// Ines (an agent who runs the desk), Rahul (an agent) and Lena (a lead); a restricted "Legal" queue only Lena works;

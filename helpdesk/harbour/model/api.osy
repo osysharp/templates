@@ -25,7 +25,7 @@
 //   their sentence and are addressed by the ticket's id.
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Mail.Receiving;
 
 /// A ticket as the API answers it and as its webhooks carry it — what another system needs to act on it.

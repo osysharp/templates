@@ -3,7 +3,7 @@
 // server calls among them, and the statements behind them. Held as budgets, so placing a kit's page in the desk (its
 // frame, its nav row) can never quietly add a request to a page.
 using Osysharp.Identity;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 
 void Said(string page, string mark) {
   Log.Information(page + ": " + Cost.RequestsSince(mark) + " requests, " + Cost.ServerCallsSince(mark) + " server calls, "

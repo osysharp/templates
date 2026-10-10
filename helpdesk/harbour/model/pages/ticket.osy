@@ -6,15 +6,15 @@
 //   their load), its queue and priority are the inbox's, and its promises are the inbox's `ItemClocks` — each counting
 //   down live, in the policy's hours, paused while it waits on the customer.
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
+using Osysharp.Organizations.ServicePlans;
 using Osysharp.Identity;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
 using Osysharp.Storage;
-using Osysharp.Collaboration;
-using Osysharp.Inbox;
-using Osysharp.Composer;
-using Osysharp.Fields;
+using Osysharp.Presence;
+using Osysharp.WorkQueues;
+using Osysharp.ReplyComposer;
+using Osysharp.CustomFields;
 using Osysharp.Privacy;
 
 [Route("/v/{view}/t/{number}")]
@@ -232,7 +232,7 @@ component TicketView(Ticket t, string here) {
                                  opened: opened.Conversation);
             }
           }
-          // The composer (Osysharp.Composer): reply or note, saved replies, macros, markdown, files, the agent's
+          // The composer (Osysharp.ReplyComposer): reply or note, saved replies, macros, markdown, files, the agent's
           // signature, "send and set…" — and the draft kept per ticket, so it survives a reload or another ticket.
           // …unless the customer's privacy request closed it: their words are gone, and there is nobody left to reply to
           // on it. Their next message opens a follow-up.
@@ -383,7 +383,7 @@ public TicketOpening OpenTicketView(Guid ticketId) {
   return opening;
 }
 
-/// The composer on a ticket (Osysharp.Composer), with what the desk tells it: who reads a reply, and the timeline's last
+/// The composer on a ticket (Osysharp.ReplyComposer), with what the desk tells it: who reads a reply, and the timeline's last
 /// place — remembered as the agent starts writing, so a colleague's reply that lands meanwhile stops theirs with the
 /// colleague's name (`ReplyToTicket`'s `seen`).
 [Composable]
@@ -519,7 +519,7 @@ component CustomerPanel(Ticket t, Guid requesterId, Guid companyId, string here,
 
       // HOW IT GOT HERE — the inbox's own trail: where it arrived and by which rule, who was offered it and why that fell
       // through, who was given it and why, every hand-on, move and escalation. Said in the reader's language from the
-      // trail's facts (Osysharp.Inbox `WhyHere`); the timeline carries only the moves a person reads twice.
+      // trail's facts (Osysharp.WorkQueues `WhyHere`); the timeline carries only the moves a person reads twice.
       Stack(gap: 2) {
         SectionLabel("How it got here");
         WhyHere(t, opened: opened.Item);
@@ -535,7 +535,7 @@ component CustomerPanel(Ticket t, Guid requesterId, Guid companyId, string here,
   }
 }
 
-/// THE PERSON BEHIND THE TICKET, as a record — who they are probably the same as (a mailed request and a chat from one
+/// THE PERSON BEHIND THE TICKET, as a record — who they are likely the same as (a mailed request and a chat from one
 /// address are two records until somebody merges them; undoable) and the merges made. Erasing their data on request is
 /// `StartPrivacyRequest`, at the foot of the panel. The kit's functions do the work (Osysharp.Conversations: `PartyCardOf`, `MergeIntoParty`,
 /// `UnmergeParties`); this is the desk's compact way of showing it beside a ticket. `opened`: the record as the ticket

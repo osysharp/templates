@@ -1,44 +1,44 @@
-// ar (العربية): the words of Helpdesk · Osysharp.Organizations.Accounts, translated.
+// ar (العربية): the words of Helpdesk · Osysharp.Organizations.ServicePlans, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations ar {
-  // ── Osysharp.Organizations.Accounts · Osysharp.Organizations.Accounts.AccountSettingsSections.Sections ──
-  /// Osysharp.Organizations.Accounts.AccountSettingsSections.Sections · a heading
+  // ── Osysharp.Organizations.ServicePlans · Osysharp.Organizations.ServicePlans.AccountSettingsSections.Sections ──
+  /// Osysharp.Organizations.ServicePlans.AccountSettingsSections.Sections · a heading
   /// shown through SettingsLink.Group
   heading "Organizations" => "المؤسسات";
-  /// Osysharp.Organizations.Accounts.AccountSettingsSections.Sections · a hint under a field
+  /// Osysharp.Organizations.ServicePlans.AccountSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "The levels of service an organisation can be on, and what each includes." => "مستويات الخدمة التي يمكن أن تكون عليها المؤسسة، وما يشمله كل منها.";
-  /// Osysharp.Organizations.Accounts.AccountSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// Osysharp.Organizations.ServicePlans.AccountSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~11 characters
   /// shown through SettingsLink.Label
   label "Tiers" => "الفئات";
 
-  // ── Osysharp.Organizations.Accounts · Osysharp.Organizations.Accounts.AccountTeamRole ──
-  /// Osysharp.Organizations.Accounts.AccountTeamRole · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Organizations.Accounts.AccountTeamRole.Backup
+  // ── Osysharp.Organizations.ServicePlans · Osysharp.Organizations.ServicePlans.AccountTeamRole ──
+  /// Osysharp.Organizations.ServicePlans.AccountTeamRole · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.Organizations.ServicePlans.AccountTeamRole.Backup
   /// beside: "Owner", "Team"
   label "Backup" => "البديل";
-  /// Osysharp.Organizations.Accounts.AccountTeamRole · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Organizations.Accounts.AccountTeamRole.Owner
+  /// Osysharp.Organizations.ServicePlans.AccountTeamRole · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.Organizations.ServicePlans.AccountTeamRole.Owner
   /// beside: "Team", "Backup"
   label "Owner" => "المالك";
 
-  // ── Osysharp.Organizations.Accounts · Osysharp.Organizations.Accounts.OrganizationTier ──
-  /// Osysharp.Organizations.Accounts.OrganizationTier · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Organizations.Accounts.OrganizationTier.Rank
+  // ── Osysharp.Organizations.ServicePlans · Osysharp.Organizations.ServicePlans.OrganizationTier ──
+  /// Osysharp.Organizations.ServicePlans.OrganizationTier · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Organizations.ServicePlans.OrganizationTier.Rank
   /// beside: "Name", "Description", "Is default"
   /// also in TierSection
   label "Rank" => "الترتيب";
-  /// Osysharp.Organizations.Accounts.OrganizationTier · validation
-  /// shown through Osysharp.Organizations.Accounts.OrganizationTier.Name [Required]
+  /// Osysharp.Organizations.ServicePlans.OrganizationTier · validation
+  /// shown through Osysharp.Organizations.ServicePlans.OrganizationTier.Name [Required]
   validation "Name the tier." => "سمِّ الفئة.";
-  /// Osysharp.Organizations.Accounts.OrganizationTier · validation
-  /// shown through Osysharp.Organizations.Accounts.OrganizationTier.Name [Unique]
+  /// Osysharp.Organizations.ServicePlans.OrganizationTier · validation
+  /// shown through Osysharp.Organizations.ServicePlans.OrganizationTier.Name [Unique]
   validation "There is already a tier of that name." => "توجد فئة بهذا الاسم بالفعل.";
 
-  // ── Osysharp.Organizations.Accounts · TierEditor ──
+  // ── Osysharp.Organizations.ServicePlans · TierEditor ──
   /// TierEditor · a button's label · at most ~16 characters
   /// shown through Button.label
   button "Add a tier" => "إضافة فئة";
@@ -56,7 +56,7 @@ translations ar {
   /// shown through EmptyState.title
   title "No tiers yet" => "لا توجد فئات بعد";
 
-  // ── Osysharp.Organizations.Accounts · TierSection ──
+  // ── Osysharp.Organizations.ServicePlans · TierSection ──
   /// TierSection · a button's label · at most ~9 characters
   /// shown through Button.label
   /// beside: "Phone support"

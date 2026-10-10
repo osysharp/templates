@@ -3,9 +3,9 @@
 // data is a privacy request (Osysharp.Privacy): only an admin starts one, it is planned before anything happens, and it
 // runs once an admin approves it on the Inbox.
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
+using Osysharp.Organizations.ServicePlans;
 using Osysharp.Conversations;
 using Osysharp.Privacy;
 

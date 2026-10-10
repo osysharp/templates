@@ -1,6 +1,6 @@
 // Second Round's back office, through its pages — what staff see on an ordinary day. `osy test --pixels` photographs each.
 
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Identity;
 using Osysharp.Shop;
 using Osysharp.Workflow;

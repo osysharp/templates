@@ -4,13 +4,13 @@
 // ⚑ THE AREA KEEPS THE DESK'S SHELL — the same rail, top bar and account menu — and puts the settings' own sections beside
 //   it instead of the ticket list, because configuring the desk is not working the queue.
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
-using Osysharp.People;
+using Osysharp.Organizations.ServicePlans;
+using Osysharp.UserManagement;
 using Osysharp.ServiceHours;
 using Osysharp.Observability;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Notifications;
 
 /// The desk's own settings sections — the rest are announced by the kits that own them: People and
@@ -147,7 +147,7 @@ class PolicyHours {
   public double Resolve;
 }
 
-// ── the inbox: queues, routing, skills, shared views, promises, hours (Osysharp.Inbox's pages) ────────────────────
+// ── the inbox: queues, routing, skills, shared views, promises, hours (Osysharp.WorkQueues's pages) ────────────────────
 
 [Route("/settings/queues")] [Layout(SettingsFrame)] [Authorize(IsAdmin)] [Render(CSR)] [Title("Queues")]
 component QueuesSettings() { render { QueueSettings(); } }

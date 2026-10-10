@@ -1,10 +1,10 @@
-// ar (العربية): the words of Helpdesk · Osysharp.Composer, translated.
+// ar (العربية): the words of Helpdesk · Osysharp.ReplyComposer, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations ar {
-  // ── Osysharp.Composer · ActionsFor ──
+  // ── Osysharp.ReplyComposer · ActionsFor ──
   /// ActionsFor · a label (a field, a list item, a menu entry) · at most ~8 characters
   /// shown through ActionChoice.Label
   label "No" => "لا";
@@ -12,13 +12,13 @@ translations ar {
   /// shown through ActionChoice.Label
   label "Yes" => "نعم";
 
-  // ── Osysharp.Composer · ApplyMacro ──
+  // ── Osysharp.ReplyComposer · ApplyMacro ──
   /// ApplyMacro · an error message
   /// shown through ValidationException
   /// also in SaveMacro
   error "That macro is gone — somebody removed it." => "لم يعد هذا الماكرو موجودًا، فقد أزاله أحدهم.";
 
-  // ── Osysharp.Composer · Composer ──
+  // ── Osysharp.ReplyComposer · Composer ──
   /// Composer · a control's name for screen readers
   accessibleName "Composer" => "المحرر";
   /// Composer · a control's name for screen readers
@@ -146,37 +146,37 @@ translations ar {
   /// Composer · text on the page
   text "When you send:" => "عند الإرسال:";
 
-  // ── Osysharp.Composer · ComposerMacroSettings (/settings/macros) ──
+  // ── Osysharp.ReplyComposer · ComposerMacroSettings (/settings/macros) ──
   /// ComposerMacroSettings · /settings/macros · a title
   /// shown through [Title]
   /// also in MacroSettings
   title "Macros" => "الماكرو";
 
-  // ── Osysharp.Composer · ComposerRepliesSettings (/settings/replies) ──
+  // ── Osysharp.ReplyComposer · ComposerRepliesSettings (/settings/replies) ──
   /// ComposerRepliesSettings · /settings/replies · a title
   /// shown through [Title]
   /// also in SavedReplySettings
   title "Saved replies" => "الردود المحفوظة";
 
-  // ── Osysharp.Composer · InsertSavedReply ──
+  // ── Osysharp.ReplyComposer · InsertSavedReply ──
   /// InsertSavedReply · an error message
   /// shown through ValidationException
   /// also in SaveSavedReply
   error "That saved reply is gone — somebody removed it." => "لم يعد هذا الرد المحفوظ موجودًا، فقد أزاله أحدهم.";
 
-  // ── Osysharp.Composer · KeepPrivately ──
+  // ── Osysharp.ReplyComposer · KeepPrivately ──
   /// KeepPrivately · an error message
   /// placeholders: {name} = name (string), {SizeOf} = SizeOf(…) (string), {SizeOf2} = SizeOf(…) (string)
   /// shown through ValidationException
   error "{name} is {SizeOf}, and a file may be at most {SizeOf2}. Send a smaller one — a cropped screenshot, or the part of the log that matters." => "حجم {name} هو {SizeOf}، والحد الأقصى لحجم الملف {SizeOf2}. أرسل ملفًا أصغر، مثل لقطة شاشة مقصوصة، أو الجزء المهم من السجل.";
 
-  // ── Osysharp.Composer · Linked ──
+  // ── Osysharp.ReplyComposer · Linked ──
   /// Linked · text on the page
   /// placeholders: {picked} = picked (string)
   /// shown through TextEdit.Text
   text "[link]({picked})" => "[رابط]({picked})";
 
-  // ── Osysharp.Composer · MacroPicker ──
+  // ── Osysharp.ReplyComposer · MacroPicker ──
   /// MacroPicker · a control's name for screen readers
   /// beside: "Search macros"
   accessibleName "Macros list" => "قائمة الماكرو";
@@ -185,7 +185,7 @@ translations ar {
   accessibleName "Search macros" => "البحث في الماكرو";
   /// MacroPicker · a label (a field, a list item, a menu entry) · at most ~12 characters
   /// shown through ComposerPopover.label
-  /// also in Osysharp.Composer.ComposerSettingsSections.Sections
+  /// also in Osysharp.ReplyComposer.ComposerSettingsSections.Sections
   label "Macros" => "الماكرو";
   /// MacroPicker · placeholder text inside an empty field · at most ~20 characters
   /// beside: "320px"
@@ -206,7 +206,7 @@ translations ar {
   /// also in MacroSettings
   title "No macros yet" => "لا يوجد ماكرو بعد";
 
-  // ── Osysharp.Composer · MacroSettings ──
+  // ── Osysharp.ReplyComposer · MacroSettings ──
   /// MacroSettings · a control's name for screen readers
   /// beside: "Add a macro"
   accessibleName "Macros" => "الماكرو";
@@ -255,7 +255,7 @@ translations ar {
   /// shown through Dialog.title
   title "New macro" => "ماكرو جديد";
 
-  // ── Osysharp.Composer · MentionMenu ──
+  // ── Osysharp.ReplyComposer · MentionMenu ──
   /// MentionMenu · a control's name for screen readers
   accessibleName "Mention someone" => "أشر إلى زميل";
   /// MentionMenu · a control's name for screen readers
@@ -265,40 +265,40 @@ translations ar {
   /// beside: "People to mention"
   text "Mention someone — they are told, and the note is theirs to read" => "أشر إلى زميل، فيصله إشعار ويمكنه قراءة الملاحظة.";
 
-  // ── Osysharp.Composer · Osysharp.Composer.ComposerSettingsSections.Sections ──
-  /// Osysharp.Composer.ComposerSettingsSections.Sections · a heading
+  // ── Osysharp.ReplyComposer · Osysharp.ReplyComposer.ComposerSettingsSections.Sections ──
+  /// Osysharp.ReplyComposer.ComposerSettingsSections.Sections · a heading
   /// shown through SettingsLink.Group
   heading "Replies" => "الردود";
-  /// Osysharp.Composer.ComposerSettingsSections.Sections · a hint under a field
+  /// Osysharp.ReplyComposer.ComposerSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "A reply and the things that go with it, applied in one move." => "رد وما يرافقه، يُطبَّق بخطوة واحدة.";
-  /// Osysharp.Composer.ComposerSettingsSections.Sections · a hint under a field
+  /// Osysharp.ReplyComposer.ComposerSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "Replies written once and sent often, with placeholders filled from the record." => "ردود تُكتب مرة وتُرسل كثيرًا، مع عناصر نائبة تُملأ من السجل.";
 
-  // ── Osysharp.Composer · Osysharp.Composer.ComposerTarget.Send ──
-  /// Osysharp.Composer.ComposerTarget.Send · an error message
+  // ── Osysharp.ReplyComposer · Osysharp.ReplyComposer.ComposerTarget.Send ──
+  /// Osysharp.ReplyComposer.ComposerTarget.Send · an error message
   /// shown through ValidationException
   error "Nothing is set up to send this — the app names a target for it in app.Composer." => "لم يُعدّ أي شيء لإرسال هذا، إذ يحدد التطبيق وجهة له في app.Composer.";
 
-  // ── Osysharp.Composer · Osysharp.Composer.Macro ──
-  /// Osysharp.Composer.Macro · validation
-  /// shown through Osysharp.Composer.Macro.Title [Required]
+  // ── Osysharp.ReplyComposer · Osysharp.ReplyComposer.Macro ──
+  /// Osysharp.ReplyComposer.Macro · validation
+  /// shown through Osysharp.ReplyComposer.Macro.Title [Required]
   validation "Name the macro — it is what you search for." => "سمِّ الماكرو، فاسمه هو ما تبحث عنه.";
 
-  // ── Osysharp.Composer · Osysharp.Composer.SavedReply ──
-  /// Osysharp.Composer.SavedReply · validation
-  /// shown through Osysharp.Composer.SavedReply.Title [Required]
+  // ── Osysharp.ReplyComposer · Osysharp.ReplyComposer.SavedReply ──
+  /// Osysharp.ReplyComposer.SavedReply · validation
+  /// shown through Osysharp.ReplyComposer.SavedReply.Title [Required]
   validation "Name the reply — it is what you search for." => "سمِّ الرد، فاسمه هو ما تبحث عنه.";
-  /// Osysharp.Composer.SavedReply · validation
-  /// shown through Osysharp.Composer.SavedReply.Body [Required]
+  /// Osysharp.ReplyComposer.SavedReply · validation
+  /// shown through Osysharp.ReplyComposer.SavedReply.Body [Required]
   validation "Write the reply." => "اكتب الرد.";
 
-  // ── Osysharp.Composer · PickerEmpty ──
+  // ── Osysharp.ReplyComposer · PickerEmpty ──
   /// PickerEmpty · text on the page
   text "Open settings" => "فتح الإعدادات";
 
-  // ── Osysharp.Composer · PrepareDraft ──
+  // ── Osysharp.ReplyComposer · PrepareDraft ──
   /// PrepareDraft · an error message
   /// placeholders: {DraftKeeps} = DraftKeeps (int) — {DraftKeeps} is a count: give one text per plural form
   /// shown through ValidationException
@@ -310,7 +310,7 @@ translations ar {
   /// shown through ValidationException
   error "Say who prepared it — the writer is told." => "اذكر من أعدّها، فسيتم إخبار الكاتب.";
 
-  // ── Osysharp.Composer · ReplyBodyEditor ──
+  // ── Osysharp.ReplyComposer · ReplyBodyEditor ──
   /// ReplyBodyEditor · a button's label · at most ~28 characters
   /// shown through Button.label
   button "Insert a placeholder" => "إدراج عنصر نائب";
@@ -320,19 +320,19 @@ translations ar {
   /// ReplyBodyEditor · text on the page
   text "Markdown: **bold**, _italic_, - lists, [words](https://…)." => "Markdown: **غامق**، _مائل_، - قوائم، [كلمات](https://…).";
 
-  // ── Osysharp.Composer · RunSteps ──
+  // ── Osysharp.ReplyComposer · RunSteps ──
   /// RunSteps · an error message
   /// placeholders: {s.Label} = s.Label (string), {result.Problem} = result.Problem (string)
   /// shown through ValidationException
   error "\"{s.Label}\" was not done: {result.Problem}" => "«{s.Label}» لم يُنفَّذ: {result.Problem}";
 
-  // ── Osysharp.Composer · SaveDraft ──
+  // ── Osysharp.ReplyComposer · SaveDraft ──
   /// SaveDraft · an error message
   /// placeholders: {text.Length} = text.Length (int), {DraftKeeps} = DraftKeeps (int) — {text.Length} is a count: give one text per plural form
   /// shown through ValidationException
   error "This draft is {text.Length} characters — more than can be kept ({DraftKeeps}). Shorten it." => { zero: "تتكوّن هذه المسودة من {text.Length} حرف، وهذا أكثر مما يمكن حفظه ({DraftKeeps}). اختصرها.", one: "تتكوّن هذه المسودة من {text.Length} حرف، وهذا أكثر مما يمكن حفظه ({DraftKeeps}). اختصرها.", two: "تتكوّن هذه المسودة من {text.Length} حرف، وهذا أكثر مما يمكن حفظه ({DraftKeeps}). اختصرها.", few: "تتكوّن هذه المسودة من {text.Length} أحرف، وهذا أكثر مما يمكن حفظه ({DraftKeeps}). اختصرها.", many: "تتكوّن هذه المسودة من {text.Length} حرفًا، وهذا أكثر مما يمكن حفظه ({DraftKeeps}). اختصرها.", other: "تتكوّن هذه المسودة من {text.Length} حرف، وهذا أكثر مما يمكن حفظه ({DraftKeeps}). اختصرها." };
 
-  // ── Osysharp.Composer · SaveMacro ──
+  // ── Osysharp.ReplyComposer · SaveMacro ──
   /// SaveMacro · an error message
   /// placeholders: {s.Action} = s.Action (string)
   /// shown through ValidationException
@@ -348,7 +348,7 @@ translations ar {
   /// shown through ValidationException
   error "Name the macro — it is what you search for." => "سمِّ الماكرو، فاسمه هو ما تبحث عنه.";
 
-  // ── Osysharp.Composer · SaveSavedReply ──
+  // ── Osysharp.ReplyComposer · SaveSavedReply ──
   /// SaveSavedReply · an error message
   /// shown through ValidationException
   error "Name the reply — it is what you search for." => "سمِّ الرد، فاسمه هو ما تبحث عنه.";
@@ -356,7 +356,7 @@ translations ar {
   /// shown through ValidationException
   error "Write the reply." => "اكتب الرد.";
 
-  // ── Osysharp.Composer · SavedReplyPicker ──
+  // ── Osysharp.ReplyComposer · SavedReplyPicker ──
   /// SavedReplyPicker · a control's name for screen readers
   /// beside: "Search saved replies"
   /// also in SavedReplySettings
@@ -366,7 +366,7 @@ translations ar {
   accessibleName "Search saved replies" => "البحث في الردود المحفوظة";
   /// SavedReplyPicker · a label (a field, a list item, a menu entry) · at most ~19 characters
   /// shown through ComposerPopover.label
-  /// also in Osysharp.Composer.ComposerSettingsSections.Sections
+  /// also in Osysharp.ReplyComposer.ComposerSettingsSections.Sections
   label "Saved replies" => "الردود المحفوظة";
   /// SavedReplyPicker · placeholder text inside an empty field · at most ~30 characters
   /// beside: "320px"
@@ -388,7 +388,7 @@ translations ar {
   /// also in MacroPicker
   title "Nothing matches “{query}”" => "لا شيء يطابق «{query}»";
 
-  // ── Osysharp.Composer · SavedReplySettings ──
+  // ── Osysharp.ReplyComposer · SavedReplySettings ──
   /// SavedReplySettings · a button's label · at most ~17 characters
   /// shown through Button.label
   button "Add a reply" => "إضافة رد";
@@ -441,7 +441,7 @@ translations ar {
   /// shown through Dialog.title
   title "New saved reply" => "رد محفوظ جديد";
 
-  // ── Osysharp.Composer · SendFromComposer ──
+  // ── Osysharp.ReplyComposer · SendFromComposer ──
   /// SendFromComposer · an error message
   /// placeholders: {Join} = string.Join(…) (string)
   /// shown through ValidationException
@@ -469,12 +469,12 @@ translations ar {
   /// shown through Said
   text "Sent." => "تم الإرسال.";
 
-  // ── Osysharp.Composer · TakePreparedDraft ──
+  // ── Osysharp.ReplyComposer · TakePreparedDraft ──
   /// TakePreparedDraft · an error message
   /// shown through ValidationException
   error "That prepared draft is gone — somebody else took it." => "لم تعد تلك المسودة المُعدّة موجودة، فقد أخذها شخص آخر.";
 
-  // ── Osysharp.Composer · TargetFor ──
+  // ── Osysharp.ReplyComposer · TargetFor ──
   /// TargetFor · an error message
   /// placeholders: {kind} = kind (string), {Join} = string.Join(…) (string)
   /// shown through ValidationException

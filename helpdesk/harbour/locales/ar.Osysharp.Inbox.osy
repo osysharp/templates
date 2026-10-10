@@ -1,10 +1,10 @@
-// ar (العربية): the words of Helpdesk · Osysharp.Inbox, translated.
+// ar (العربية): the words of Helpdesk · Osysharp.WorkQueues, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations ar {
-  // ── Osysharp.Inbox · Ago ──
+  // ── Osysharp.WorkQueues · Ago ──
   /// Ago · text on the page
   /// shown through Ago()
   /// also in FeedbackWeeks
@@ -22,7 +22,7 @@ translations ar {
   /// shown through Ago()
   text "{ToInt}m" => { zero: "{ToInt} د", one: "{ToInt} د", two: "{ToInt} د", few: "{ToInt} د", many: "{ToInt} د", other: "{ToInt} د" };
 
-  // ── Osysharp.Inbox · ArrivedWords ──
+  // ── Osysharp.WorkQueues · ArrivedWords ──
   /// ArrivedWords · text on the page
   /// placeholders: {happened.Due.Value} = happened.Due.Value (DateTime)
   /// shown through ArrivedWords()
@@ -35,7 +35,7 @@ translations ar {
   /// shown through ArrivedWords()
   text "Arrived — promised by {happened.Policy}." => "وصلت، والوعد وفق {happened.Policy}.";
 
-  // ── Osysharp.Inbox · AssignControl ──
+  // ── Osysharp.WorkQueues · AssignControl ──
   /// AssignControl · a control's name for screen readers
   /// placeholders: {holderName} = holderName
   accessibleName "Assignee: {holderName}" => "المسؤول: {holderName}";
@@ -58,7 +58,7 @@ translations ar {
   /// AssignControl · text on the page
   text "Nobody may hold this — its queue has no members who hold the skills it needs." => "لا يمكن لأحد تولّي هذا، فقائمة انتظاره ليس فيها أعضاء يملكون المهارات التي يحتاجها.";
 
-  // ── Osysharp.Inbox · BudgetWords ──
+  // ── Osysharp.WorkQueues · BudgetWords ──
   /// BudgetWords · text on the page
   /// placeholders: {mins} = mins (int) — {mins} is a count: give one text per plural form
   /// shown through BudgetWords()
@@ -82,13 +82,13 @@ translations ar {
   /// shown through BudgetWords()
   text "{value}h {value2}m" => { zero: "{value} س {value2} د", one: "{value} س {value2} د", two: "{value} س {value2} د", few: "{value} س {value2} د", many: "{value} س {value2} د", other: "{value} س {value2} د" };
 
-  // ── Osysharp.Inbox · BulkSentence ──
+  // ── Osysharp.WorkQueues · BulkSentence ──
   /// BulkSentence · text on the page
   /// placeholders: {s} = s (string), {r.NotMoved.Count} = r.NotMoved.Count (int), {Join} = string.Join(…) (string) — {r.NotMoved.Count} is a count: give one text per plural form
   /// shown through BulkSentence()
   text "{s} {r.NotMoved.Count} could not be — {Join}" => { zero: "{s} تعذّر ذلك مع عناصر عددها {r.NotMoved.Count}: {Join}", one: "{s} تعذّر ذلك مع عناصر عددها {r.NotMoved.Count}: {Join}", two: "{s} تعذّر ذلك مع عناصر عددها {r.NotMoved.Count}: {Join}", few: "{s} تعذّر ذلك مع عناصر عددها {r.NotMoved.Count}: {Join}", many: "{s} تعذّر ذلك مع عناصر عددها {r.NotMoved.Count}: {Join}", other: "{s} تعذّر ذلك مع عناصر عددها {r.NotMoved.Count}: {Join}" };
 
-  // ── Osysharp.Inbox · BusinessHoursSettings ──
+  // ── Osysharp.WorkQueues · BusinessHoursSettings ──
   /// BusinessHoursSettings · a control's name for screen readers
   /// placeholders: {h.Name} = h.Name
   /// beside: "180px", "150px", "Holidays", "160px"
@@ -175,18 +175,18 @@ translations ar {
   /// shown through problem
   text "Write the hours like 08:00 and 17:00, the second after the first." => "اكتب الساعات بصيغة 08:00 و17:00، على أن تكون الثانية بعد الأولى.";
 
-  // ── Osysharp.Inbox · CancelledWords ──
+  // ── Osysharp.WorkQueues · CancelledWords ──
   /// CancelledWords · text on the page
   /// placeholders: {happened.Detail} = happened.Detail (string)
   /// shown through CancelledWords()
   text "Cancelled: {happened.Detail}" => "أُلغيت: {happened.Detail}";
 
-  // ── Osysharp.Inbox · CandidateRow ──
+  // ── Osysharp.WorkQueues · CandidateRow ──
   /// CandidateRow · a control's name for screen readers
   /// placeholders: {c.Load} = c.Load, {c.Capacity} = c.Capacity
   accessibleName "{c.Load} of {c.Capacity} in hand" => "{c.Load} من {c.Capacity} قيد العمل";
 
-  // ── Osysharp.Inbox · ClockFigure ──
+  // ── Osysharp.WorkQueues · ClockFigure ──
   /// ClockFigure · text on the page
   /// shown through ClockFigure()
   text "met" => "مُحقَّق";
@@ -198,7 +198,7 @@ translations ar {
   /// shown through ClockFigure()
   text "{figure} · paused" => "{figure} · متوقف مؤقتًا";
 
-  // ── Osysharp.Inbox · ClockWords ──
+  // ── Osysharp.WorkQueues · ClockWords ──
   /// ClockWords · a control's name for screen readers
   /// placeholders: {Spoken} = Spoken(…) (string)
   /// shown through ClockWords()
@@ -221,7 +221,7 @@ translations ar {
   /// shown through ClockWords()
   accessibleName "paused, {Spoken} left" => "متوقف مؤقتًا، يتبقى {Spoken}";
 
-  // ── Osysharp.Inbox · ConditionsOf ──
+  // ── Osysharp.WorkQueues · ConditionsOf ──
   /// ConditionsOf · a description
   /// shown through ConditionsOf()
   description "VIPs" => "كبار العملاء";
@@ -234,13 +234,13 @@ translations ar {
   /// shown through ConditionsOf()
   description "via {p.Channel}" => "عبر {p.Channel}";
 
-  // ── Osysharp.Inbox · DueWords ──
+  // ── Osysharp.WorkQueues · DueWords ──
   /// DueWords · text on the page
   /// placeholders: {wasDue} = wasDue (string), {due} = due (string), {happened.Detail} = happened.Detail (string)
   /// shown through DueWords()
   text "Due {wasDue} → {due}: {happened.Detail}" => "الاستحقاق {wasDue} ← {due}: {happened.Detail}";
 
-  // ── Osysharp.Inbox · EmptyLine ──
+  // ── Osysharp.WorkQueues · EmptyLine ──
   /// EmptyLine · text on the page
   /// shown through EmptyLine()
   text "Everything being worked has somebody on it." => "كل ما يجري العمل عليه له مسؤول.";
@@ -272,14 +272,14 @@ translations ar {
   /// shown through EmptyLine()
   text "Your accounts have nothing open." => "لا يوجد شيء مفتوح في حساباتك.";
 
-  // ── Osysharp.Inbox · FormSection ──
+  // ── Osysharp.WorkQueues · FormSection ──
   /// FormSection · a label (a field, a list item, a menu entry) · at most ~10 characters
   /// shown through Badge.label
-  /// also in Osysharp.Organizations.Accounts.AccountTeamRole
+  /// also in Osysharp.Organizations.ServicePlans.AccountTeamRole
   /// also in InboxNav
   label "Team" => "الفريق";
 
-  // ── Osysharp.Inbox · HandedNotice ──
+  // ── Osysharp.WorkQueues · HandedNotice ──
   /// HandedNotice · text on the page
   /// placeholders: {happened.Queue} = happened.Queue (string)
   /// shown through HandedNotice()
@@ -296,7 +296,7 @@ translations ar {
   /// shown through HandedNotice()
   text "{by} handed it to you." => "أُسند إليك من {by}.";
 
-  // ── Osysharp.Inbox · HoldFor ──
+  // ── Osysharp.WorkQueues · HoldFor ──
   /// HoldFor · an error message
   /// shown through ValidationException
   error "Only a lead can hand on work you do not hold — take it first." => "لا يمكن إلا لقائد الفريق تسليم عمل لا تتولّاه أنت. تولَّه أولًا.";
@@ -306,7 +306,7 @@ translations ar {
   /// also in MoveTo
   error "{NameOf} holds this — only a lead can move work a colleague holds." => "{NameOf} يتولّى هذا. لا يمكن إلا لقائد الفريق نقل عمل يتولّاه زميل.";
 
-  // ── Osysharp.Inbox · HolderMark ──
+  // ── Osysharp.WorkQueues · HolderMark ──
   /// HolderMark · a control's name for screen readers
   /// placeholders: {Spoken} = Spoken(…)
   accessibleName ", falls through in {Spoken}" => "، ويسقط العرض خلال {Spoken}";
@@ -314,19 +314,19 @@ translations ar {
   /// placeholders: {row.OfferedTo} = row.OfferedTo, {value} = …
   accessibleName "offered to {row.OfferedTo}{value}" => "معروض على {row.OfferedTo}{value}";
 
-  // ── Osysharp.Inbox · InboxNav ──
+  // ── Osysharp.WorkQueues · InboxNav ──
   /// InboxNav · a label (a field, a list item, a menu entry) · at most ~11 characters
   /// shown through NavItem.Label
   label "Inbox" => "صندوق الوارد";
   /// InboxNav · a label (a field, a list item, a menu entry) · at most ~12 characters
   /// shown through NavItem.Label
-  /// also in Osysharp.Inbox.InboxSettingsSections.Sections
+  /// also in Osysharp.WorkQueues.InboxSettingsSections.Sections
   label "Queues" => "قوائم الانتظار";
   /// InboxNav · a label (a field, a list item, a menu entry) · at most ~11 characters
   /// shown through NavItem.Label
   label "Views" => "العروض";
 
-  // ── Osysharp.Inbox · InboxOverview ──
+  // ── Osysharp.WorkQueues · InboxOverview ──
   /// InboxOverview · a control's name for screen readers
   /// placeholders: {noun} = noun
   accessibleName "No {noun} selected" => "لم يتم تحديد {noun}";
@@ -382,13 +382,13 @@ translations ar {
   /// beside: "J", "Enter", "X", "every key on the page"
   text "take it" => "تولّيه";
 
-  // ── Osysharp.Inbox · ItemClocks ──
+  // ── Osysharp.WorkQueues · ItemClocks ──
   /// ItemClocks · a control's name for screen readers
   accessibleName "Promises" => "الوعود";
   /// ItemClocks · text on the page
   text "No promise applies" => "لا ينطبق أي وعد";
 
-  // ── Osysharp.Inbox · ItemLinks ──
+  // ── Osysharp.WorkQueues · ItemLinks ──
   /// ItemLinks · a control's name for screen readers
   /// placeholders: {kindWords} = kindWords
   accessibleName "Kind of link: {kindWords}" => "نوع الربط: {kindWords}";
@@ -430,7 +430,7 @@ translations ar {
   /// ItemLinks · text on the page
   text "This one is" => "هذا العنصر";
 
-  // ── Osysharp.Inbox · Label ──
+  // ── Osysharp.WorkQueues · Label ──
   /// Label · a control's name for screen readers
   /// shown through Label()
   accessibleName "High" => "عالية";
@@ -444,7 +444,7 @@ translations ar {
   /// shown through Label()
   accessibleName "Urgent" => "عاجلة";
 
-  // ── Osysharp.Inbox · LevelUp ──
+  // ── Osysharp.WorkQueues · LevelUp ──
   /// LevelUp · an error message
   /// shown through ValidationException
   error "It" => "هذا العنصر";
@@ -457,7 +457,7 @@ translations ar {
   /// shown through ValidationException
   error "{value} has no next level to escalate to." => "لا يوجد مستوى تالٍ يمكن تصعيد {value} إليه.";
 
-  // ── Osysharp.Inbox · Link ──
+  // ── Osysharp.WorkQueues · Link ──
   /// Link · an error message
   /// shown through ValidationException
   error "An item cannot be linked to itself." => "لا يمكن ربط عنصر بنفسه.";
@@ -486,24 +486,24 @@ translations ar {
   /// shown through ValidationException
   error "{NameOfItem} is itself “{words}” {NameOfItem2} — link to {NameOfItem3} instead." => "{NameOfItem} نفسه «{words}» {NameOfItem2}. اربطه بـ {NameOfItem3} بدلًا من ذلك.";
 
-  // ── Osysharp.Inbox · LinkLine ──
+  // ── Osysharp.WorkQueues · LinkLine ──
   /// LinkLine · a button's label · at most ~51 characters
   /// placeholders: {other.Reference} = other.Reference
   /// shown through IconButton.label
   button "Remove the link to {other.Reference}" => "أزل الربط بـ {other.Reference}";
 
-  // ── Osysharp.Inbox · LinkWork ──
+  // ── Osysharp.WorkQueues · LinkWork ──
   /// LinkWork · an error message
   /// shown through ValidationException
   error "That kind of link is made by the app itself, not by hand." => "هذا النوع من الربط ينشئه التطبيق نفسه، وليس يدويًا.";
 
-  // ── Osysharp.Inbox · LinkedWords ──
+  // ── Osysharp.WorkQueues · LinkedWords ──
   /// LinkedWords · text on the page
   /// placeholders: {LinkWords} = LinkWords(…) (string), {happened.Other} = happened.Other (string)
   /// shown through LinkedWords()
   text "Linked: {LinkWords} {happened.Other}." => "رُبطت: {LinkWords} {happened.Other}.";
 
-  // ── Osysharp.Inbox · MomentWords ──
+  // ── Osysharp.WorkQueues · MomentWords ──
   /// MomentWords · text on the page
   /// placeholders: {promise} = promise (string)
   /// shown through MomentWords()
@@ -513,7 +513,7 @@ translations ar {
   /// shown through MomentWords()
   text "{promise} was missed" => "{promise}: فات موعده";
 
-  // ── Osysharp.Inbox · MoveTo ──
+  // ── Osysharp.WorkQueues · MoveTo ──
   /// MoveTo · an error message
   /// placeholders: {queue.Name} = queue.Name (string)
   /// shown through ValidationException
@@ -523,7 +523,7 @@ translations ar {
   /// shown through ValidationException
   error "The {queue.Name} queue is closed." => "قائمة الانتظار {queue.Name} مغلقة.";
 
-  // ── Osysharp.Inbox · MyAccountsPanel ──
+  // ── Osysharp.WorkQueues · MyAccountsPanel ──
   /// MyAccountsPanel · a control's name for screen readers
   accessibleName "Accounts I look after" => "الحسابات التي أتابعها";
   /// MyAccountsPanel · text on the page
@@ -542,7 +542,7 @@ translations ar {
   /// shown through EmptyState.title
   title "No accounts" => "لا توجد حسابات";
 
-  // ── Osysharp.Inbox · MyStatus ──
+  // ── Osysharp.WorkQueues · MyStatus ──
   /// MyStatus · a control's name for screen readers
   /// placeholders: {StandingWord} = StandingWord(…)
   accessibleName "My status: {StandingWord}" => "حالتي: {StandingWord}";
@@ -579,13 +579,13 @@ translations ar {
   /// placeholders: {s.Cover} = s.Cover
   text "· {s.Cover} covers" => "· يحلّ محلّي {s.Cover}";
 
-  // ── Osysharp.Inbox · NameOf ──
+  // ── Osysharp.WorkQueues · NameOf ──
   /// NameOf · text on the page
   /// shown through NameOf()
   /// also in AssignControl
   text "Nobody" => "لا أحد";
 
-  // ── Osysharp.Inbox · OfferedNotice ──
+  // ── Osysharp.WorkQueues · OfferedNotice ──
   /// OfferedNotice · text on the page
   /// placeholders: {happened.Minutes} = happened.Minutes (int) — {happened.Minutes} is a count: give one text per plural form
   /// shown through OfferedNotice()
@@ -594,744 +594,744 @@ translations ar {
   /// shown through OfferedNotice()
   text "Offered to you." => "عُرض عليك.";
 
-  // ── Osysharp.Inbox · Osysharp.ActionOutcome ──
+  // ── Osysharp.WorkQueues · Osysharp.ActionOutcome ──
   /// Osysharp.ActionOutcome · a label (a field, a list item, a menu entry) · at most ~10 characters
   /// shown through Osysharp.ActionOutcome.Done
   /// beside: "Refused", "Not allowed", "Gone", "Failed"
   /// also in Osysharp.Conversations.LanguageWorkState
   /// also in SideConversationCard
-  /// also in Osysharp.Inbox.Handling
+  /// also in Osysharp.WorkQueues.Handling
   label "Done" => "منتهية";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.AbsenceState ──
-  /// Osysharp.Inbox.AbsenceState · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Inbox.AbsenceState.Cancelled
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.AbsenceState ──
+  /// Osysharp.WorkQueues.AbsenceState · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.WorkQueues.AbsenceState.Cancelled
   /// beside: "Planned", "Away", "Over"
-  /// also in Osysharp.Inbox.Handling
-  /// also in Osysharp.Inbox.ClockOutcome
+  /// also in Osysharp.WorkQueues.Handling
+  /// also in Osysharp.WorkQueues.ClockOutcome
   label "Cancelled" => "ملغاة";
-  /// Osysharp.Inbox.AbsenceState · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Inbox.AbsenceState.Over
+  /// Osysharp.WorkQueues.AbsenceState · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.WorkQueues.AbsenceState.Over
   /// beside: "Planned", "Away", "Cancelled"
   label "Over" => "انتهت";
-  /// Osysharp.Inbox.AbsenceState · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.AbsenceState.Planned
+  /// Osysharp.WorkQueues.AbsenceState · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.AbsenceState.Planned
   /// beside: "Away", "Over", "Cancelled"
   label "Planned" => "مخطط لها";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.AssignReason ──
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~20 characters
-  /// shown through Osysharp.Inbox.AssignReason.AccountBackup
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.AssignReason ──
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.AccountBackup
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
   label "Account backup" => "البديل للحساب";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~17 characters
-  /// shown through Osysharp.Inbox.AssignReason.AccountPod
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.AccountPod
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
   label "Account pod" => "فريق الحساب";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.AssignReason.Arrived
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.Arrived
   /// beside: "Claimed", "Released", "Handed on", "Moved", "Round robin", "Least loaded"
   label "Arrived" => "وصلت";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Inbox.AssignReason.Cover
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.Cover
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
   label "Cover" => "بديل";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Inbox.AssignReason.Escalated
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.Escalated
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
   label "Escalated" => "صُعّدت";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~18 characters
-  /// shown through Osysharp.Inbox.AssignReason.FellThrough
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.FellThrough
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
-  /// also in Osysharp.Inbox.OfferState
+  /// also in Osysharp.WorkQueues.OfferState
   label "Fell through" => "لم تُقبل";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Inbox.AssignReason.HandedOn
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.HandedOn
   /// beside: "Arrived", "Claimed", "Released", "Moved", "Round robin", "Least loaded"
   label "Handed on" => "سُلّمت";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.AssignReason.Imported
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.Imported
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
   label "Imported" => "مستوردة";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~18 characters
-  /// shown through Osysharp.Inbox.AssignReason.LeastLoaded
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.LeastLoaded
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
-  /// also in Osysharp.Inbox.Distribution
+  /// also in Osysharp.WorkQueues.Distribution
   label "Least loaded" => "الأقل انشغالًا";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Inbox.AssignReason.Moved
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.Moved
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Round robin", "Least loaded"
   label "Moved" => "نُقلت";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.Inbox.AssignReason.OffHoursCover
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.OffHoursCover
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
   label "Off-hours cover" => "بديل خارج الدوام";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Inbox.AssignReason.OwnerAway
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.OwnerAway
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
   label "Owner away" => "المسؤول غائب";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.AssignReason.Refill
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.Refill
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
   label "Refill" => "إعادة تعبئة";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.AssignReason.Released
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.Released
   /// beside: "Arrived", "Claimed", "Handed on", "Moved", "Round robin", "Least loaded"
   label "Released" => "أُفلتت";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~17 characters
-  /// shown through Osysharp.Inbox.AssignReason.RoundRobin
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.RoundRobin
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Least loaded"
-  /// also in Osysharp.Inbox.Distribution
+  /// also in Osysharp.WorkQueues.Distribution
   label "Round robin" => "بالتناوب";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Inbox.AssignReason.Rule
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.Rule
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
-  /// also in Osysharp.Inbox.Assignment
+  /// also in Osysharp.WorkQueues.Assignment
   label "Rule" => "قاعدة";
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.AssignReason.Skipped
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.Skipped
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
   label "Skipped" => "تُجووز";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.Assignment ──
-  /// Osysharp.Inbox.Assignment · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Inbox.Assignment.About
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.Assignment ──
+  /// Osysharp.WorkQueues.Assignment · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.WorkQueues.Assignment.About
   /// beside: "Item", "From", "To", "From queue", "To queue", "Reason"
   label "About" => "بشأن";
-  /// Osysharp.Inbox.Assignment · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.Assignment.Because
+  /// Osysharp.WorkQueues.Assignment · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.Assignment.Because
   /// beside: "Item", "From", "To", "From queue", "To queue", "Reason"
   label "Because" => "بسبب";
-  /// Osysharp.Inbox.Assignment · a label (a field, a list item, a menu entry) · at most ~8 characters
-  /// shown through Osysharp.Inbox.Assignment.By
+  /// Osysharp.WorkQueues.Assignment · a label (a field, a list item, a menu entry) · at most ~8 characters
+  /// shown through Osysharp.WorkQueues.Assignment.By
   /// beside: "Item", "From", "To", "From queue", "To queue", "Reason"
   label "By" => "بواسطة";
-  /// Osysharp.Inbox.Assignment · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.Assignment.Detail
+  /// Osysharp.WorkQueues.Assignment · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.Assignment.Detail
   /// beside: "Item", "From", "To", "From queue", "To queue", "Reason"
   label "Detail" => "التفاصيل";
-  /// Osysharp.Inbox.Assignment · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Inbox.Assignment.FromQueue
+  /// Osysharp.WorkQueues.Assignment · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.WorkQueues.Assignment.FromQueue
   /// beside: "Item", "From", "To", "To queue", "Reason", "By"
   label "From queue" => "من قائمة الانتظار";
-  /// Osysharp.Inbox.Assignment · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Inbox.Assignment.Item
+  /// Osysharp.WorkQueues.Assignment · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.WorkQueues.Assignment.Item
   /// beside: "From", "To", "From queue", "To queue", "Reason", "By"
-  /// also in Osysharp.Inbox.SlaClock
+  /// also in Osysharp.WorkQueues.SlaClock
   label "Item" => "العنصر";
-  /// Osysharp.Inbox.Assignment · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Inbox.Assignment.Level
+  /// Osysharp.WorkQueues.Assignment · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.WorkQueues.Assignment.Level
   /// beside: "Item", "From", "To", "From queue", "To queue", "Reason"
-  /// also in Osysharp.Inbox.Queue
+  /// also in Osysharp.WorkQueues.Queue
   /// also in QueueSettings
   /// also in SkillSettings
   label "Level" => "المستوى";
-  /// Osysharp.Inbox.Assignment · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.Assignment.Metric
+  /// Osysharp.WorkQueues.Assignment · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.Assignment.Metric
   /// beside: "Item", "From", "To", "From queue", "To queue", "Reason"
-  /// also in Osysharp.Inbox.SlaTarget
-  /// also in Osysharp.Inbox.SlaEscalation
-  /// also in Osysharp.Inbox.SlaClock
+  /// also in Osysharp.WorkQueues.SlaTarget
+  /// also in Osysharp.WorkQueues.SlaEscalation
+  /// also in Osysharp.WorkQueues.SlaClock
   label "Metric" => "المقياس";
-  /// Osysharp.Inbox.Assignment · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.Assignment.Moment
+  /// Osysharp.WorkQueues.Assignment · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.Assignment.Moment
   /// beside: "Item", "From", "To", "From queue", "To queue", "Reason"
   label "Moment" => "اللحظة";
-  /// Osysharp.Inbox.Assignment · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Inbox.Assignment.Step
+  /// Osysharp.WorkQueues.Assignment · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.WorkQueues.Assignment.Step
   /// beside: "Item", "From", "To", "From queue", "To queue", "Reason"
   label "Step" => "الخطوة";
-  /// Osysharp.Inbox.Assignment · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.Assignment.ToQueue
+  /// Osysharp.WorkQueues.Assignment · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.Assignment.ToQueue
   /// beside: "Item", "From", "To", "From queue", "Reason", "By"
-  /// also in Osysharp.Inbox.RoutingRule
+  /// also in Osysharp.WorkQueues.RoutingRule
   label "To queue" => "إلى قائمة الانتظار";
-  /// Osysharp.Inbox.Assignment · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Inbox.Assignment.Until
+  /// Osysharp.WorkQueues.Assignment · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.WorkQueues.Assignment.Until
   /// beside: "Item", "From", "To", "From queue", "To queue", "Reason"
   label "Until" => "حتى";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.AwayRule ──
-  /// Osysharp.Inbox.AwayRule · a label (a field, a list item, a menu entry) · at most ~24 characters
-  /// shown through Osysharp.Inbox.AwayRule.ToQueue
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.AwayRule ──
+  /// Osysharp.WorkQueues.AwayRule · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Osysharp.WorkQueues.AwayRule.ToQueue
   /// beside: "Keep it", "Give it to their cover"
   label "Back to the queue" => "إعادتها إلى قائمة الانتظار";
-  /// Osysharp.Inbox.AwayRule · a label (a field, a list item, a menu entry) · at most ~31 characters
-  /// shown through Osysharp.Inbox.AwayRule.ToCover
+  /// Osysharp.WorkQueues.AwayRule · a label (a field, a list item, a menu entry) · at most ~31 characters
+  /// shown through Osysharp.WorkQueues.AwayRule.ToCover
   /// beside: "Keep it", "Back to the queue"
   label "Give it to their cover" => "إعطاؤها لبديله";
-  /// Osysharp.Inbox.AwayRule · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.AwayRule.Keep
+  /// Osysharp.WorkQueues.AwayRule · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.AwayRule.Keep
   /// beside: "Give it to their cover", "Back to the queue"
   label "Keep it" => "الاحتفاظ بها";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.BuiltInView ──
-  /// Osysharp.Inbox.BuiltInView · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.BuiltInView.Open
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.BuiltInView ──
+  /// Osysharp.WorkQueues.BuiltInView · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.BuiltInView.Open
   /// beside: "Mine", "Offered to me", "My accounts", "Unassigned", "At risk", "Waiting"
   /// also in InboxNav
   label "All open" => "كل المفتوحة";
-  /// Osysharp.Inbox.BuiltInView · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Inbox.BuiltInView.Mine
+  /// Osysharp.WorkQueues.BuiltInView · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.WorkQueues.BuiltInView.Mine
   /// beside: "Offered to me", "My accounts", "Unassigned", "All open", "At risk", "Waiting"
   /// also in InboxNav
   label "Mine" => "لي";
-  /// Osysharp.Inbox.BuiltInView · a label (a field, a list item, a menu entry) · at most ~17 characters
-  /// shown through Osysharp.Inbox.BuiltInView.MyAccounts
+  /// Osysharp.WorkQueues.BuiltInView · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.WorkQueues.BuiltInView.MyAccounts
   /// beside: "Mine", "Offered to me", "Unassigned", "All open", "At risk", "Waiting"
   /// also in InboxNav
   label "My accounts" => "حساباتي";
-  /// Osysharp.Inbox.BuiltInView · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Inbox.BuiltInView.Offered
+  /// Osysharp.WorkQueues.BuiltInView · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.WorkQueues.BuiltInView.Offered
   /// beside: "Mine", "My accounts", "Unassigned", "All open", "At risk", "Waiting"
   /// also in InboxNav
   label "Offered to me" => "معروضة عليّ";
-  /// Osysharp.Inbox.BuiltInView · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Inbox.BuiltInView.Unassigned
+  /// Osysharp.WorkQueues.BuiltInView · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.WorkQueues.BuiltInView.Unassigned
   /// beside: "Mine", "Offered to me", "My accounts", "All open", "At risk", "Waiting"
   /// also in InboxNav
   label "Unassigned" => "غير مُسندة";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.ClockOutcome ──
-  /// Osysharp.Inbox.ClockOutcome · a label (a field, a list item, a menu entry) · at most ~9 characters
-  /// shown through Osysharp.Inbox.ClockOutcome.Met
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.ClockOutcome ──
+  /// Osysharp.WorkQueues.ClockOutcome · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.WorkQueues.ClockOutcome.Met
   /// beside: "Running", "Met late", "Cancelled"
   label "Met" => "مُحقَّقة";
-  /// Osysharp.Inbox.ClockOutcome · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.ClockOutcome.Breached
+  /// Osysharp.WorkQueues.ClockOutcome · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.ClockOutcome.Breached
   /// beside: "Running", "Met", "Cancelled"
   label "Met late" => "مُحقَّقة متأخرة";
-  /// Osysharp.Inbox.ClockOutcome · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.ClockOutcome.Running
+  /// Osysharp.WorkQueues.ClockOutcome · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.ClockOutcome.Running
   /// beside: "Met", "Met late", "Cancelled"
   /// also in Osysharp.Privacy.RequestState
   label "Running" => "جارية";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.Distribution ──
-  /// Osysharp.Inbox.Distribution · a label (a field, a list item, a menu entry) · at most ~26 characters
-  /// shown through Osysharp.Inbox.Distribution.Manual
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.Distribution ──
+  /// Osysharp.WorkQueues.Distribution · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Osysharp.WorkQueues.Distribution.Manual
   /// beside: "Round robin", "Least loaded"
   label "Pick from the pool" => "الاختيار من المجمّع";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.Handling ──
-  /// Osysharp.Inbox.Handling · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.Inbox.Handling.Owed
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.Handling ──
+  /// Osysharp.WorkQueues.Handling · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.WorkQueues.Handling.Owed
   /// beside: "New", "Answered", "Waiting on the requester", "Waiting on others", "Paused", "Done"
   label "Owed a response" => "بانتظار رد";
-  /// Osysharp.Inbox.Handling · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.Handling.Paused
+  /// Osysharp.WorkQueues.Handling · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.Handling.Paused
   /// beside: "New", "Owed a response", "Answered", "Waiting on the requester", "Waiting on others", "Done"
   /// also in Osysharp.Webhooks.WebhookPause
   /// also in WebhookRow
   label "Paused" => "متوقفة مؤقتًا";
-  /// Osysharp.Inbox.Handling · a label (a field, a list item, a menu entry) · at most ~24 characters
-  /// shown through Osysharp.Inbox.Handling.WaitingOnOthers
+  /// Osysharp.WorkQueues.Handling · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Osysharp.WorkQueues.Handling.WaitingOnOthers
   /// beside: "New", "Owed a response", "Answered", "Waiting on the requester", "Paused", "Done"
   label "Waiting on others" => "بانتظار آخرين";
-  /// Osysharp.Inbox.Handling · a label (a field, a list item, a menu entry) · at most ~34 characters
-  /// shown through Osysharp.Inbox.Handling.WaitingOnRequester
+  /// Osysharp.WorkQueues.Handling · a label (a field, a list item, a menu entry) · at most ~34 characters
+  /// shown through Osysharp.WorkQueues.Handling.WaitingOnRequester
   /// beside: "New", "Owed a response", "Answered", "Waiting on others", "Paused", "Done"
   label "Waiting on the requester" => "بانتظار مقدّم الطلب";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.Holder ──
-  /// Osysharp.Inbox.Holder · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.Holder.Anyone
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.Holder ──
+  /// Osysharp.WorkQueues.Holder · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.Holder.Anyone
   /// beside: "Me", "Nobody"
   label "Anyone" => "أي شخص";
-  /// Osysharp.Inbox.Holder · a label (a field, a list item, a menu entry) · at most ~8 characters
-  /// shown through Osysharp.Inbox.Holder.Me
+  /// Osysharp.WorkQueues.Holder · a label (a field, a list item, a menu entry) · at most ~8 characters
+  /// shown through Osysharp.WorkQueues.Holder.Me
   /// beside: "Anyone", "Nobody"
   label "Me" => "أنا";
-  /// Osysharp.Inbox.Holder · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.Holder.Nobody
+  /// Osysharp.WorkQueues.Holder · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.Holder.Nobody
   /// beside: "Anyone", "Me"
   label "Nobody" => "لا أحد";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.InboxSettingsSections.Sections ──
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a heading
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.InboxSettingsSections.Sections ──
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a heading
   /// shown through SettingsLink.Group
   heading "Inbox" => "صندوق الوارد";
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a heading
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a heading
   /// shown through SettingsLink.Group
   heading "Service" => "الخدمة";
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a hint under a field
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "How fast each priority and tier is answered." => "مدى سرعة الرد على كل أولوية وفئة.";
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a hint under a field
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "Views the whole team sees in the rail." => "عروض يراها الفريق كله في الشريط الجانبي.";
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a hint under a field
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "What work can need — a product, a language — and who has it." => "ما قد يحتاجه العمل، كمنتج أو لغة، ومن يملكه.";
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a hint under a field
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "When the promises' clocks run, and the holidays they stop for." => "متى تعمل مؤقتات الوعود، والعطلات التي تتوقف فيها.";
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a hint under a field
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "Where new work goes, how urgent it is, and what it is tagged." => "إلى أين يذهب العمل الجديد، وما مدى إلحاحه، وما الوسوم التي توضع عليه.";
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a hint under a field
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "Where work waits, who works each queue, and how it is handed out." => "أين ينتظر العمل، ومن يعمل على كل قائمة انتظار، وكيف يُوزَّع.";
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~20 characters
   /// shown through SettingsLink.Label
   label "Business hours" => "ساعات العمل";
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~13 characters
   /// shown through SettingsLink.Label
   label "Routing" => "التوجيه";
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~18 characters
   /// shown through SettingsLink.Label
   label "SLA policies" => "سياسات SLA";
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~18 characters
   /// shown through SettingsLink.Label
   label "Shared views" => "العروض المشتركة";
-  /// Osysharp.Inbox.InboxSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// Osysharp.WorkQueues.InboxSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~12 characters
   /// shown through SettingsLink.Label
   label "Skills" => "المهارات";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.InboxView ──
-  /// Osysharp.Inbox.InboxView · validation
-  /// shown through Osysharp.Inbox.InboxView.Name [Required]
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.InboxView ──
+  /// Osysharp.WorkQueues.InboxView · validation
+  /// shown through Osysharp.WorkQueues.InboxView.Name [Required]
   validation "Name the view." => "سمِّ العرض.";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.InboxWords.Metric ──
-  /// Osysharp.Inbox.InboxWords.Metric · text on the page
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.InboxWords.Metric ──
+  /// Osysharp.WorkQueues.InboxWords.Metric · text on the page
   /// shown through Metric()
   text "first response" => "الرد الأول";
-  /// Osysharp.Inbox.InboxWords.Metric · text on the page
+  /// Osysharp.WorkQueues.InboxWords.Metric · text on the page
   /// shown through Metric()
   text "next response" => "الرد التالي";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.ItemReopened.Sentence ──
-  /// Osysharp.Inbox.ItemReopened.Sentence · text on the page
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.ItemReopened.Sentence ──
+  /// Osysharp.WorkQueues.ItemReopened.Sentence · text on the page
   /// shown through Sentence()
   text "Reopened." => "أُعيد فتحها.";
-  /// Osysharp.Inbox.ItemReopened.Sentence · text on the page
+  /// Osysharp.WorkQueues.ItemReopened.Sentence · text on the page
   /// shown through Sentence()
   text "Reopened: the requester wrote back." => "أُعيد فتحها: كتب صاحب الطلب من جديد.";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.OfferState ──
-  /// Osysharp.Inbox.OfferState · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.OfferState.Offered
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.OfferState ──
+  /// Osysharp.WorkQueues.OfferState · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.OfferState.Offered
   /// beside: "Accepted", "Fell through", "Withdrawn"
   label "Offered" => "معروضة";
-  /// Osysharp.Inbox.OfferState · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Inbox.OfferState.Withdrawn
+  /// Osysharp.WorkQueues.OfferState · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.WorkQueues.OfferState.Withdrawn
   /// beside: "Offered", "Accepted", "Fell through"
   label "Withdrawn" => "مسحوبة";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.Presence ──
-  /// Osysharp.Inbox.Presence · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Inbox.Presence.Available
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.Presence ──
+  /// Osysharp.WorkQueues.Presence · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.WorkQueues.Presence.Available
   /// beside: "Busy", "Away", "Offline"
   label "Available" => "متاح";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.Queue ──
-  /// Osysharp.Inbox.Queue · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.Inbox.Queue.CoverOffHours
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.Queue ──
+  /// Osysharp.WorkQueues.Queue · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.WorkQueues.Queue.CoverOffHours
   /// beside: "Name", "Description", "Restricted", "Level", "Escalates to", "Distribution"
   label "Cover off hours" => "التغطية خارج ساعات العمل";
-  /// Osysharp.Inbox.Queue · a label (a field, a list item, a menu entry) · at most ~23 characters
-  /// shown through Osysharp.Inbox.Queue.DefaultCapacity
+  /// Osysharp.WorkQueues.Queue · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.WorkQueues.Queue.DefaultCapacity
   /// beside: "Name", "Description", "Restricted", "Level", "Escalates to", "Distribution"
   label "Default capacity" => "السعة الافتراضية";
-  /// Osysharp.Inbox.Queue · a label (a field, a list item, a menu entry) · at most ~18 characters
-  /// shown through Osysharp.Inbox.Queue.Distribution
+  /// Osysharp.WorkQueues.Queue · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.WorkQueues.Queue.Distribution
   /// beside: "Name", "Description", "Restricted", "Level", "Escalates to", "Default capacity"
   label "Distribution" => "التوزيع";
-  /// Osysharp.Inbox.Queue · a label (a field, a list item, a menu entry) · at most ~18 characters
-  /// shown through Osysharp.Inbox.Queue.EscalatesTo
+  /// Osysharp.WorkQueues.Queue · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.WorkQueues.Queue.EscalatesTo
   /// beside: "Name", "Description", "Restricted", "Level", "Distribution", "Default capacity"
   /// also in QueueSettings
   label "Escalates to" => "تُصعَّد إلى";
-  /// Osysharp.Inbox.Queue · a label (a field, a list item, a menu entry) · at most ~17 characters
-  /// shown through Osysharp.Inbox.Queue.ForSegment
+  /// Osysharp.WorkQueues.Queue · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.WorkQueues.Queue.ForSegment
   /// beside: "Name", "Description", "Restricted", "Level", "Escalates to", "Distribution"
   label "For segment" => "للشريحة";
-  /// Osysharp.Inbox.Queue · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.Queue.ForTier
+  /// Osysharp.WorkQueues.Queue · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.Queue.ForTier
   /// beside: "Name", "Description", "Restricted", "Level", "Escalates to", "Distribution"
   label "For tier" => "للمستوى";
-  /// Osysharp.Inbox.Queue · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Inbox.Queue.LanguageWait
+  /// Osysharp.WorkQueues.Queue · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.WorkQueues.Queue.LanguageWait
   /// beside: "Name", "Description", "Restricted", "Level", "Escalates to", "Distribution"
   label "Language wait" => "انتظار اللغة";
-  /// Osysharp.Inbox.Queue · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.Queue.Members
+  /// Osysharp.WorkQueues.Queue · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.Queue.Members
   /// beside: "Name", "Description", "Restricted", "Level", "Escalates to", "Distribution"
   label "Members" => "الأعضاء";
-  /// Osysharp.Inbox.Queue · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Inbox.Queue.OfferFor
+  /// Osysharp.WorkQueues.Queue · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.WorkQueues.Queue.OfferFor
   /// beside: "Name", "Description", "Restricted", "Level", "Escalates to", "Distribution"
   label "Offer for" => "العرض لمدة";
-  /// Osysharp.Inbox.Queue · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.Queue.OnAway
+  /// Osysharp.WorkQueues.Queue · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.Queue.OnAway
   /// beside: "Name", "Description", "Restricted", "Level", "Escalates to", "Distribution"
   label "On away" => "عند الغياب";
-  /// Osysharp.Inbox.Queue · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Inbox.Queue.PickupWithin
+  /// Osysharp.WorkQueues.Queue · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.WorkQueues.Queue.PickupWithin
   /// beside: "Name", "Description", "Restricted", "Level", "Escalates to", "Distribution"
   label "Pickup within" => "الاستلام خلال";
-  /// Osysharp.Inbox.Queue · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Inbox.Queue.Restricted
+  /// Osysharp.WorkQueues.Queue · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.WorkQueues.Queue.Restricted
   /// beside: "Name", "Description", "Level", "Escalates to", "Distribution", "Default capacity"
   /// also in QueueSettings
   label "Restricted" => "مقيّدة";
-  /// Osysharp.Inbox.Queue · validation
-  /// shown through Osysharp.Inbox.Queue.Name [Required]
+  /// Osysharp.WorkQueues.Queue · validation
+  /// shown through Osysharp.WorkQueues.Queue.Name [Required]
   validation "Name the queue." => "سمِّ قائمة الانتظار.";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.QueueMember ──
-  /// Osysharp.Inbox.QueueMember · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.QueueMember.Capacity
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.QueueMember ──
+  /// Osysharp.WorkQueues.QueueMember · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.QueueMember.Capacity
   /// beside: "Queue", "Member", "Active", "Last given at"
   label "Capacity" => "السعة";
-  /// Osysharp.Inbox.QueueMember · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Inbox.QueueMember.LastGivenAt
+  /// Osysharp.WorkQueues.QueueMember · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.WorkQueues.QueueMember.LastGivenAt
   /// beside: "Queue", "Member", "Capacity", "Active"
   label "Last given at" => "آخر إسناد";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.RoutingRule ──
-  /// Osysharp.Inbox.RoutingRule · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Inbox.RoutingRule.AppAction
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.RoutingRule ──
+  /// Osysharp.WorkQueues.RoutingRule · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.WorkQueues.RoutingRule.AppAction
   /// beside: "Name", "Position", "Active", "Continue after", "Channel", "Title contains"
   label "App action" => "إجراء التطبيق";
-  /// Osysharp.Inbox.RoutingRule · a label (a field, a list item, a menu entry) · at most ~20 characters
-  /// shown through Osysharp.Inbox.RoutingRule.ContinueAfter
+  /// Osysharp.WorkQueues.RoutingRule · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.WorkQueues.RoutingRule.ContinueAfter
   /// beside: "Name", "Position", "Active", "Channel", "Title contains", "Organization"
   label "Continue after" => "المتابعة بعد";
-  /// Osysharp.Inbox.RoutingRule · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.RoutingRule.ForVip
+  /// Osysharp.WorkQueues.RoutingRule · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.RoutingRule.ForVip
   /// beside: "Name", "Position", "Active", "Continue after", "Channel", "Title contains"
-  /// also in Osysharp.Inbox.SlaPolicy
+  /// also in Osysharp.WorkQueues.SlaPolicy
   label "For vip" => "لكبار العملاء";
-  /// Osysharp.Inbox.RoutingRule · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Inbox.RoutingRule.NeedSkill
+  /// Osysharp.WorkQueues.RoutingRule · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.WorkQueues.RoutingRule.NeedSkill
   /// beside: "Name", "Position", "Active", "Continue after", "Channel", "Title contains"
   label "Need skill" => "يتطلب مهارة";
-  /// Osysharp.Inbox.RoutingRule · a label (a field, a list item, a menu entry) · at most ~20 characters
-  /// shown through Osysharp.Inbox.RoutingRule.SkillRequired
+  /// Osysharp.WorkQueues.RoutingRule · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.WorkQueues.RoutingRule.SkillRequired
   /// beside: "Name", "Position", "Active", "Continue after", "Channel", "Title contains"
   label "Skill required" => "المهارة المطلوبة";
-  /// Osysharp.Inbox.RoutingRule · a label (a field, a list item, a menu entry) · at most ~20 characters
-  /// shown through Osysharp.Inbox.RoutingRule.TitleContains
+  /// Osysharp.WorkQueues.RoutingRule · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.WorkQueues.RoutingRule.TitleContains
   /// beside: "Name", "Position", "Active", "Continue after", "Channel", "Organization"
   label "Title contains" => "العنوان يحتوي";
-  /// Osysharp.Inbox.RoutingRule · validation
-  /// shown through Osysharp.Inbox.RoutingRule.Name [Required]
+  /// Osysharp.WorkQueues.RoutingRule · validation
+  /// shown through Osysharp.WorkQueues.RoutingRule.Name [Required]
   validation "Name the rule." => "سمِّ القاعدة.";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.RoutingSkill ──
-  /// Osysharp.Inbox.RoutingSkill · validation
-  /// shown through Osysharp.Inbox.RoutingSkill.Name [Required]
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.RoutingSkill ──
+  /// Osysharp.WorkQueues.RoutingSkill · validation
+  /// shown through Osysharp.WorkQueues.RoutingSkill.Name [Required]
   validation "Name the skill." => "سمِّ المهارة.";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.SkillKind ──
-  /// Osysharp.Inbox.SkillKind · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Inbox.SkillKind.Skill
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.SkillKind ──
+  /// Osysharp.WorkQueues.SkillKind · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.WorkQueues.SkillKind.Skill
   /// beside: "Language"
   label "Skill" => "مهارة";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.SlaAction ──
-  /// Osysharp.Inbox.SlaAction · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.SlaAction.Escalate
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.SlaAction ──
+  /// Osysharp.WorkQueues.SlaAction · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.SlaAction.Escalate
   /// beside: "Tell the holder", "Tell the leads", "Raise the priority", "Move to a queue"
   label "Escalate" => "تصعيد";
-  /// Osysharp.Inbox.SlaAction · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.Inbox.SlaAction.MoveTo
+  /// Osysharp.WorkQueues.SlaAction · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.WorkQueues.SlaAction.MoveTo
   /// beside: "Tell the holder", "Tell the leads", "Raise the priority", "Escalate"
   label "Move to a queue" => "نقل إلى قائمة انتظار";
-  /// Osysharp.Inbox.SlaAction · a label (a field, a list item, a menu entry) · at most ~26 characters
-  /// shown through Osysharp.Inbox.SlaAction.RaisePriority
+  /// Osysharp.WorkQueues.SlaAction · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Osysharp.WorkQueues.SlaAction.RaisePriority
   /// beside: "Tell the holder", "Tell the leads", "Escalate", "Move to a queue"
   label "Raise the priority" => "رفع الأولوية";
-  /// Osysharp.Inbox.SlaAction · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.Inbox.SlaAction.TellHolder
+  /// Osysharp.WorkQueues.SlaAction · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.WorkQueues.SlaAction.TellHolder
   /// beside: "Tell the leads", "Raise the priority", "Escalate", "Move to a queue"
   label "Tell the holder" => "إبلاغ المتولّي";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.SlaClock ──
-  /// Osysharp.Inbox.SlaClock · a label (a field, a list item, a menu entry) · at most ~17 characters
-  /// shown through Osysharp.Inbox.SlaClock.BreachedAt
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.SlaClock ──
+  /// Osysharp.WorkQueues.SlaClock · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.WorkQueues.SlaClock.BreachedAt
   /// beside: "Item", "Metric", "Cycle", "Target", "Started at", "At risk at"
   label "Breached at" => "تاريخ الإخلال";
-  /// Osysharp.Inbox.SlaClock · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Inbox.SlaClock.BusinessTime
+  /// Osysharp.WorkQueues.SlaClock · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.WorkQueues.SlaClock.BusinessTime
   /// beside: "Item", "Metric", "Cycle", "Target", "Started at", "At risk at"
   label "Business time" => "وقت العمل";
-  /// Osysharp.Inbox.SlaClock · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Inbox.SlaClock.Cycle
+  /// Osysharp.WorkQueues.SlaClock · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.WorkQueues.SlaClock.Cycle
   /// beside: "Item", "Metric", "Target", "Started at", "At risk at", "Met at"
   label "Cycle" => "الدورة";
-  /// Osysharp.Inbox.SlaClock · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.SlaClock.MetAt
+  /// Osysharp.WorkQueues.SlaClock · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.SlaClock.MetAt
   /// beside: "Item", "Metric", "Cycle", "Target", "Started at", "At risk at"
   label "Met at" => "تاريخ التحقق";
-  /// Osysharp.Inbox.SlaClock · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.SlaClock.Outcome
+  /// Osysharp.WorkQueues.SlaClock · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.SlaClock.Outcome
   /// beside: "Item", "Metric", "Cycle", "Target", "Started at", "At risk at"
   label "Outcome" => "النتيجة";
-  /// Osysharp.Inbox.SlaClock · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Inbox.SlaClock.RunningSince
+  /// Osysharp.WorkQueues.SlaClock · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.WorkQueues.SlaClock.RunningSince
   /// beside: "Item", "Metric", "Cycle", "Target", "Started at", "At risk at"
   label "Running since" => "يعمل منذ";
-  /// Osysharp.Inbox.SlaClock · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.SlaClock.Target
+  /// Osysharp.WorkQueues.SlaClock · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.SlaClock.Target
   /// beside: "Item", "Metric", "Cycle", "Started at", "At risk at", "Met at"
   label "Target" => "الهدف";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.SlaEscalation ──
-  /// Osysharp.Inbox.SlaEscalation · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.SlaEscalation.Action
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.SlaEscalation ──
+  /// Osysharp.WorkQueues.SlaEscalation · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.SlaEscalation.Action
   /// beside: "Policy", "Metric", "When", "Move to"
   label "Action" => "الإجراء";
-  /// Osysharp.Inbox.SlaEscalation · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.SlaEscalation.MoveTo
+  /// Osysharp.WorkQueues.SlaEscalation · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.SlaEscalation.MoveTo
   /// beside: "Policy", "Metric", "When", "Action"
   label "Move to" => "النقل إلى";
-  /// Osysharp.Inbox.SlaEscalation · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Inbox.SlaEscalation.When
+  /// Osysharp.WorkQueues.SlaEscalation · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.WorkQueues.SlaEscalation.When
   /// beside: "Policy", "Metric", "Action", "Move to"
   /// also in SlaPolicySettings
   /// also in AutomationRules
   label "When" => "متى";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.SlaMetric ──
-  /// Osysharp.Inbox.SlaMetric · a label (a field, a list item, a menu entry) · at most ~20 characters
-  /// shown through Osysharp.Inbox.SlaMetric.FirstResponse
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.SlaMetric ──
+  /// Osysharp.WorkQueues.SlaMetric · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.WorkQueues.SlaMetric.FirstResponse
   /// beside: "Next response", "Resolution"
   /// also in SlaPolicySettings
   label "First response" => "الرد الأول";
-  /// Osysharp.Inbox.SlaMetric · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Inbox.SlaMetric.NextResponse
+  /// Osysharp.WorkQueues.SlaMetric · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.WorkQueues.SlaMetric.NextResponse
   /// beside: "First response", "Resolution"
   label "Next response" => "الرد التالي";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.SlaPolicy ──
-  /// Osysharp.Inbox.SlaPolicy · a label (a field, a list item, a menu entry) · at most ~17 characters
-  /// shown through Osysharp.Inbox.SlaPolicy.Escalations
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.SlaPolicy ──
+  /// Osysharp.WorkQueues.SlaPolicy · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.WorkQueues.SlaPolicy.Escalations
   /// beside: "Name", "Priority", "Tier", "Queue", "Channel", "Segment"
   label "Escalations" => "التصعيدات";
-  /// Osysharp.Inbox.SlaPolicy · a label (a field, a list item, a menu entry) · at most ~41 characters
-  /// shown through Osysharp.Inbox.SlaPolicy.PauseWhileWaitingOnOthers
+  /// Osysharp.WorkQueues.SlaPolicy · a label (a field, a list item, a menu entry) · at most ~41 characters
+  /// shown through Osysharp.WorkQueues.SlaPolicy.PauseWhileWaitingOnOthers
   /// beside: "Name", "Priority", "Tier", "Queue", "Channel", "Segment"
   label "Pause while waiting on others" => "الإيقاف أثناء انتظار الآخرين";
-  /// Osysharp.Inbox.SlaPolicy · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.SlaPolicy.Targets
+  /// Osysharp.WorkQueues.SlaPolicy · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.SlaPolicy.Targets
   /// beside: "Name", "Priority", "Tier", "Queue", "Channel", "Segment"
   label "Targets" => "الأهداف";
-  /// Osysharp.Inbox.SlaPolicy · validation
-  /// shown through Osysharp.Inbox.SlaPolicy.Name [Required]
+  /// Osysharp.WorkQueues.SlaPolicy · validation
+  /// shown through Osysharp.WorkQueues.SlaPolicy.Name [Required]
   validation "Name the policy." => "سمِّ السياسة.";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.SlaState ──
-  /// Osysharp.Inbox.SlaState · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.SlaState.AtRisk
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.SlaState ──
+  /// Osysharp.WorkQueues.SlaState · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.SlaState.AtRisk
   /// beside: "On track", "Breached"
-  /// also in Osysharp.Inbox.SlaMoment
-  /// also in Osysharp.Inbox.BuiltInView
+  /// also in Osysharp.WorkQueues.SlaMoment
+  /// also in Osysharp.WorkQueues.BuiltInView
   /// also in InboxNav
   label "At risk" => "معرّضة للخطر";
-  /// Osysharp.Inbox.SlaState · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.SlaState.Breached
+  /// Osysharp.WorkQueues.SlaState · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.SlaState.Breached
   /// beside: "On track", "At risk"
-  /// also in Osysharp.Inbox.SlaMoment
+  /// also in Osysharp.WorkQueues.SlaMoment
   label "Breached" => "مخالَفة";
-  /// Osysharp.Inbox.SlaState · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.SlaState.OnTrack
+  /// Osysharp.WorkQueues.SlaState · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.SlaState.OnTrack
   /// beside: "At risk", "Breached"
   label "On track" => "في المسار";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.SlaTarget ──
-  /// Osysharp.Inbox.SlaTarget · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.SlaTarget.Within
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.SlaTarget ──
+  /// Osysharp.WorkQueues.SlaTarget · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.SlaTarget.Within
   /// beside: "Policy", "Metric"
   label "Within" => "خلال";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.Unavailability ──
-  /// Osysharp.Inbox.Unavailability · a label (a field, a list item, a menu entry) · at most ~17 characters
-  /// shown through Osysharp.Inbox.Unavailability.AtCapacity
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.Unavailability ──
+  /// Osysharp.WorkQueues.Unavailability · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.WorkQueues.Unavailability.AtCapacity
   /// beside: "May not hold it", "Away", "Busy", "Offline", "Off shift", "Declined"
   label "At capacity" => "بلغ حدّه";
-  /// Osysharp.Inbox.Unavailability · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Inbox.Unavailability.Busy
+  /// Osysharp.WorkQueues.Unavailability · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.WorkQueues.Unavailability.Busy
   /// beside: "May not hold it", "Away", "Offline", "Off shift", "At capacity", "Declined"
-  /// also in Osysharp.Inbox.Presence
+  /// also in Osysharp.WorkQueues.Presence
   label "Busy" => "مشغول";
-  /// Osysharp.Inbox.Unavailability · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.Unavailability.Declined
+  /// Osysharp.WorkQueues.Unavailability · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.Unavailability.Declined
   /// beside: "May not hold it", "Away", "Busy", "Offline", "Off shift", "At capacity"
   label "Declined" => "اعتذر";
-  /// Osysharp.Inbox.Unavailability · a label (a field, a list item, a menu entry) · at most ~33 characters
-  /// shown through Osysharp.Inbox.Unavailability.DidNotTake
+  /// Osysharp.WorkQueues.Unavailability · a label (a field, a list item, a menu entry) · at most ~33 characters
+  /// shown through Osysharp.WorkQueues.Unavailability.DidNotTake
   /// beside: "May not hold it", "Away", "Busy", "Offline", "Off shift", "At capacity"
   label "Did not take it in time" => "لم يتولّها في الوقت";
-  /// Osysharp.Inbox.Unavailability · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.Inbox.Unavailability.MayNotHold
+  /// Osysharp.WorkQueues.Unavailability · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.WorkQueues.Unavailability.MayNotHold
   /// beside: "Away", "Busy", "Offline", "Off shift", "At capacity", "Declined"
   label "May not hold it" => "لا يجوز له تولّيها";
-  /// Osysharp.Inbox.Unavailability · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Inbox.Unavailability.OffShift
+  /// Osysharp.WorkQueues.Unavailability · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.WorkQueues.Unavailability.OffShift
   /// beside: "May not hold it", "Away", "Busy", "Offline", "At capacity", "Declined"
   label "Off shift" => "خارج النوبة";
-  /// Osysharp.Inbox.Unavailability · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.Unavailability.Offline
+  /// Osysharp.WorkQueues.Unavailability · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.Unavailability.Offline
   /// beside: "May not hold it", "Away", "Busy", "Off shift", "At capacity", "Declined"
-  /// also in Osysharp.Inbox.Presence
+  /// also in Osysharp.WorkQueues.Presence
   /// also in MyStatus
   label "Offline" => "غير متصل";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.WaitFor ──
-  /// Osysharp.Inbox.WaitFor · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Inbox.WaitFor.Others
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.WaitFor ──
+  /// Osysharp.WorkQueues.WaitFor · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.WorkQueues.WaitFor.Others
   /// beside: "The requester", "On hold"
   label "Somebody else" => "شخص آخر";
-  /// Osysharp.Inbox.WaitFor · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Inbox.WaitFor.Requester
+  /// Osysharp.WorkQueues.WaitFor · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.WorkQueues.WaitFor.Requester
   /// beside: "Somebody else", "On hold"
   label "The requester" => "مقدّم الطلب";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.WorkItem ──
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Inbox.WorkItem.ArrivedAt
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.WorkItem ──
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.ArrivedAt
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Arrived at" => "تاريخ الوصول";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.WorkItem.Assignee
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Assignee
   /// beside: "Title", "Reference", "Queue", "Offered to", "Priority", "Handling"
   /// also in AssignControl
   label "Assignee" => "المسؤول";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~17 characters
-  /// shown through Osysharp.Inbox.WorkItem.Assignments
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Assignments
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Assignments" => "الإسنادات";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Inbox.WorkItem.AtRiskAt
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.AtRiskAt
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
-  /// also in Osysharp.Inbox.SlaPolicy
-  /// also in Osysharp.Inbox.SlaClock
+  /// also in Osysharp.WorkQueues.SlaPolicy
+  /// also in Osysharp.WorkQueues.SlaClock
   label "At risk at" => "معرّضة للخطر في";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.WorkItem.Channel
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Channel
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
-  /// also in Osysharp.Inbox.RoutingRule
-  /// also in Osysharp.Inbox.SlaPolicy
+  /// also in Osysharp.WorkQueues.RoutingRule
+  /// also in Osysharp.WorkQueues.SlaPolicy
   /// also in SlaPolicySettings
   label "Channel" => "القناة";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.WorkItem.Clocks
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Clocks
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Clocks" => "المؤقتات";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.WorkItem.DoneAt
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.DoneAt
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Done at" => "تاريخ الإنجاز";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.WorkItem.DueAt
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.DueAt
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
-  /// also in Osysharp.Inbox.SlaClock
+  /// also in Osysharp.WorkQueues.SlaClock
   label "Due at" => "موعد الاستحقاق";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.WorkItem.DueNext
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.DueNext
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Due next" => "الاستحقاق التالي";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~23 characters
-  /// shown through Osysharp.Inbox.WorkItem.EscalationLevel
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.EscalationLevel
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Escalation level" => "مستوى التصعيد";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~26 characters
-  /// shown through Osysharp.Inbox.WorkItem.FirstRespondedAt
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~26 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.FirstRespondedAt
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "First responded at" => "تاريخ الرد الأول";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~30 characters
-  /// shown through Osysharp.Inbox.WorkItem.FirstResponseWithin
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~30 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.FirstResponseWithin
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "First response within" => "الرد الأول خلال";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.WorkItem.Handling
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Handling
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Handling" => "المعالجة";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Inbox.WorkItem.MissedAt
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.MissedAt
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Missed at" => "تاريخ الإخلال";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~28 characters
-  /// shown through Osysharp.Inbox.WorkItem.NextResponseWithin
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.NextResponseWithin
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Next response within" => "الرد التالي خلال";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Inbox.WorkItem.OfferedTo
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.OfferedTo
   /// beside: "Title", "Reference", "Queue", "Assignee", "Priority", "Handling"
   label "Offered to" => "معروضة على";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~18 characters
-  /// shown through Osysharp.Inbox.WorkItem.Organization
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Organization
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
-  /// also in Osysharp.Inbox.RoutingRule
+  /// also in Osysharp.WorkQueues.RoutingRule
   label "Organization" => "المؤسسة";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.WorkItem.Policy
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Policy
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
-  /// also in Osysharp.Inbox.SlaTarget
-  /// also in Osysharp.Inbox.SlaEscalation
+  /// also in Osysharp.WorkQueues.SlaTarget
+  /// also in Osysharp.WorkQueues.SlaEscalation
   label "Policy" => "السياسة";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Inbox.WorkItem.Requester
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Requester
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Requester" => "مقدم الطلب";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~24 characters
-  /// shown through Osysharp.Inbox.WorkItem.ResolutionWithin
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.ResolutionWithin
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Resolution within" => "الحل خلال";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.WorkItem.Segment
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Segment
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
-  /// also in Osysharp.Inbox.RoutingRule
-  /// also in Osysharp.Inbox.SlaPolicy
+  /// also in Osysharp.WorkQueues.RoutingRule
+  /// also in Osysharp.WorkQueues.SlaPolicy
   label "Segment" => "الشريحة";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~9 characters
-  /// shown through Osysharp.Inbox.WorkItem.Sla
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Sla
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Sla" => "اتفاقية الخدمة";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Inbox.WorkItem.Steps
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Steps
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Priority"
   label "Steps" => "الخطوات";
-  /// Osysharp.Inbox.WorkItem · validation
-  /// shown through Osysharp.Inbox.WorkItem.Title [Required]
+  /// Osysharp.WorkQueues.WorkItem · validation
+  /// shown through Osysharp.WorkQueues.WorkItem.Title [Required]
   validation "Say what the item is — it is the line the whole queue scans." => "اذكر ما هو العنصر، فهو السطر الذي تمسحه قائمة الانتظار كلها بنظرها.";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.WorkPriority ──
-  /// Osysharp.Inbox.WorkPriority · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Inbox.WorkPriority.High
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.WorkPriority ──
+  /// Osysharp.WorkQueues.WorkPriority · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.WorkQueues.WorkPriority.High
   /// beside: "Low", "Normal", "Urgent"
   label "High" => "عالية";
-  /// Osysharp.Inbox.WorkPriority · a label (a field, a list item, a menu entry) · at most ~9 characters
-  /// shown through Osysharp.Inbox.WorkPriority.Low
+  /// Osysharp.WorkQueues.WorkPriority · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.WorkQueues.WorkPriority.Low
   /// beside: "Normal", "High", "Urgent"
   label "Low" => "منخفضة";
-  /// Osysharp.Inbox.WorkPriority · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.WorkPriority.Normal
+  /// Osysharp.WorkQueues.WorkPriority · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.WorkPriority.Normal
   /// beside: "Low", "High", "Urgent"
   label "Normal" => "عادية";
-  /// Osysharp.Inbox.WorkPriority · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.WorkPriority.Urgent
+  /// Osysharp.WorkQueues.WorkPriority · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.WorkPriority.Urgent
   /// beside: "Low", "Normal", "High"
   label "Urgent" => "عاجلة";
 
-  // ── Osysharp.Inbox · Osysharp.Inbox.WorkSort ──
-  /// Osysharp.Inbox.WorkSort · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Inbox.WorkSort.Due
+  // ── Osysharp.WorkQueues · Osysharp.WorkQueues.WorkSort ──
+  /// Osysharp.WorkQueues.WorkSort · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.WorkQueues.WorkSort.Due
   /// beside: "Newest", "Priority", "Oldest"
   label "Due first" => "الأقرب استحقاقًا";
-  /// Osysharp.Inbox.WorkSort · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.WorkSort.Newest
+  /// Osysharp.WorkQueues.WorkSort · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.WorkSort.Newest
   /// beside: "Due first", "Priority", "Oldest"
   label "Newest" => "الأحدث";
-  /// Osysharp.Inbox.WorkSort · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.WorkSort.Oldest
+  /// Osysharp.WorkQueues.WorkSort · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.WorkSort.Oldest
   /// beside: "Due first", "Newest", "Priority"
   label "Oldest" => "الأقدم";
 
-  // ── Osysharp.Inbox · Osysharp.RaisedEventState ──
+  // ── Osysharp.WorkQueues · Osysharp.RaisedEventState ──
   /// Osysharp.RaisedEventState · a label (a field, a list item, a menu entry) · at most ~13 characters
   /// shown through Osysharp.RaisedEventState.Queued
   /// beside: "Delivered"
@@ -1340,13 +1340,13 @@ translations ar {
   /// also in Osysharp.Conversations.DeliveryState
   label "Waiting" => "بانتظار القبول";
 
-  // ── Osysharp.Inbox · OverdueWords ──
+  // ── Osysharp.WorkQueues · OverdueWords ──
   /// OverdueWords · text on the page
   /// placeholders: {queue} = queue (string), {value} = … (int) — {value} is a count: give one text per plural form
   /// shown through OverdueWords()
   text "Nobody has picked it up in {queue} — it has waited more than {value} minutes." => { zero: "لم يتولّها أحد في {queue}، وقد انتظرت أكثر من {value} دقيقة.", one: "لم يتولّها أحد في {queue}، وقد انتظرت أكثر من دقيقة واحدة.", two: "لم يتولّها أحد في {queue}، وقد انتظرت أكثر من دقيقتين.", few: "لم يتولّها أحد في {queue}، وقد انتظرت أكثر من {value} دقائق.", many: "لم يتولّها أحد في {queue}، وقد انتظرت أكثر من {value} دقيقة.", other: "لم يتولّها أحد في {queue}، وقد انتظرت أكثر من {value} دقيقة." };
 
-  // ── Osysharp.Inbox · PooledWords ──
+  // ── Osysharp.WorkQueues · PooledWords ──
   /// PooledWords · text on the page
   /// placeholders: {happened.Language} = happened.Language (string)
   /// shown through PooledWords()
@@ -1356,7 +1356,7 @@ translations ar {
   /// shown through PooledWords()
   text "Waiting in {queue} for somebody to be free." => "في انتظار أن يتفرغ أحد في {queue}.";
 
-  // ── Osysharp.Inbox · PrioritisedWords ──
+  // ── Osysharp.WorkQueues · PrioritisedWords ──
   /// PrioritisedWords · text on the page
   /// placeholders: {was} = was (string), {now} = now (string), {MomentWords} = MomentWords(…) (string)
   /// shown through PrioritisedWords()
@@ -1366,7 +1366,7 @@ translations ar {
   /// shown through PrioritisedWords()
   text "Priority {was} → {now}." => "الأولوية {was} ← {now}.";
 
-  // ── Osysharp.Inbox · PromiseWords ──
+  // ── Osysharp.WorkQueues · PromiseWords ──
   /// PromiseWords · text on the page
   /// placeholders: {promise} = promise (string)
   /// shown through PromiseWords()
@@ -1384,7 +1384,7 @@ translations ar {
   /// shown through PromiseWords()
   text "{promise} time was missed." => "فات موعد {promise}.";
 
-  // ── Osysharp.Inbox · QueueSettings ──
+  // ── Osysharp.WorkQueues · QueueSettings ──
   /// QueueSettings · a control's name for screen readers
   /// placeholders: {q.Name} = q.Name
   /// beside: "180px", "200px", "200px", "Timers"
@@ -1535,7 +1535,7 @@ translations ar {
   /// beside: "Only speakers of its language for", "An account offer waits, in the queue's hours", "Cancel"
   unit "min" => "دقيقة";
 
-  // ── Osysharp.Inbox · RoutingRuleSettings ──
+  // ── Osysharp.WorkQueues · RoutingRuleSettings ──
   /// RoutingRuleSettings · a button's label · at most ~16 characters
   /// shown through Button.label
   /// also in AutomationRules
@@ -1616,7 +1616,7 @@ translations ar {
   /// shown through SettingsPage.title
   title "Routing rules" => "قواعد التوجيه";
 
-  // ── Osysharp.Inbox · RuleWhen ──
+  // ── Osysharp.WorkQueues · RuleWhen ──
   /// RuleWhen · a description
   /// shown through RuleWhen()
   description "a VIP" => "عميل مهم";
@@ -1633,12 +1633,12 @@ translations ar {
   /// shown through RuleWhen()
   description "via {r.Channel}" => "عبر {r.Channel}";
 
-  // ── Osysharp.Inbox · SetMyPresence ──
+  // ── Osysharp.WorkQueues · SetMyPresence ──
   /// SetMyPresence · an error message
   /// shown through ValidationException
   error "Going away hands your work over — say until when, with GoAway." => "الغياب ينقل عملك إلى غيرك. حدّد حتى متى، باستخدام GoAway.";
 
-  // ── Osysharp.Inbox · SharedViewSettings ──
+  // ── Osysharp.WorkQueues · SharedViewSettings ──
   /// SharedViewSettings · a button's label · at most ~16 characters
   /// shown through Button.label
   button "Add a view" => "إضافة عرض";
@@ -1685,7 +1685,7 @@ translations ar {
   /// shown through SaveBar.saved
   text "Shared views saved." => "تم حفظ العروض المشتركة.";
 
-  // ── Osysharp.Inbox · SkillSettings ──
+  // ── Osysharp.WorkQueues · SkillSettings ──
   /// SkillSettings · a control's name for screen readers
   /// placeholders: {s.Name} = s.Name
   /// beside: "180px", "220px"
@@ -1739,7 +1739,7 @@ translations ar {
   /// shown through SettingsPage.title
   title "Skills and languages" => "المهارات واللغات";
 
-  // ── Osysharp.Inbox · SkippedWords ──
+  // ── Osysharp.WorkQueues · SkippedWords ──
   /// SkippedWords · text on the page
   /// placeholders: {happened.Rule} = happened.Rule (string), {about} = about (string)
   /// shown through SkippedWords()
@@ -1751,7 +1751,7 @@ translations ar {
   /// also in StepWords
   text "somebody" => "أحدهم";
 
-  // ── Osysharp.Inbox · SlaChip ──
+  // ── Osysharp.WorkQueues · SlaChip ──
   /// SlaChip · a control's name for screen readers
   /// placeholders: {Ago} = Ago(…)
   accessibleName "arrived {Ago} ago" => "وصل قبل {Ago}";
@@ -1764,7 +1764,7 @@ translations ar {
   /// also in MyAccountsPanel
   text "waiting" => "بانتظار";
 
-  // ── Osysharp.Inbox · SlaPolicySettings ──
+  // ── Osysharp.WorkQueues · SlaPolicySettings ──
   /// SlaPolicySettings · a control's name for screen readers
   /// placeholders: {p.Name} = p.Name
   /// beside: "180px", "130px", "200px", "Times"
@@ -1888,7 +1888,7 @@ translations ar {
   /// beside: "Every next response", "Resolution", "Cancel"
   unit "h" => "س";
 
-  // ── Osysharp.Inbox · Spoken ──
+  // ── Osysharp.WorkQueues · Spoken ──
   /// Spoken · a control's name for screen readers
   /// placeholders: {ToInt} = Convert.ToInt(…) (int) — {ToInt} is a count: give one text per plural form
   /// shown through Spoken()
@@ -1902,7 +1902,7 @@ translations ar {
   /// shown through Spoken()
   accessibleName "{m} minutes" => { zero: "{m} دقيقة", one: "{m} دقيقة", two: "{m} دقيقة", few: "{m} دقائق", many: "{m} دقيقةً", other: "{m} دقيقة" };
 
-  // ── Osysharp.Inbox · StandingWord ──
+  // ── Osysharp.WorkQueues · StandingWord ──
   /// StandingWord · a control's name for screen readers
   /// shown through StandingWord()
   accessibleName "Available" => "متاح";
@@ -1923,7 +1923,7 @@ translations ar {
   /// shown through StandingWord()
   accessibleName "Offline" => "غير متصل";
 
-  // ── Osysharp.Inbox · StandingWords ──
+  // ── Osysharp.WorkQueues · StandingWords ──
   /// StandingWords · text on the page
   /// shown through StandingWords()
   text "At capacity" => "بلغ طاقته";
@@ -1947,7 +1947,7 @@ translations ar {
   /// shown through StandingWords()
   text "Offline" => "غير متصل";
 
-  // ── Osysharp.Inbox · StepWord ──
+  // ── Osysharp.WorkQueues · StepWord ──
   /// StepWord · text on the page
   /// shown through StepWord()
   text "account owner" => "مسؤول الحساب";
@@ -1958,7 +1958,7 @@ translations ar {
   /// shown through StepWord()
   text "backup" => "البديل";
 
-  // ── Osysharp.Inbox · StepWords ──
+  // ── Osysharp.WorkQueues · StepWords ──
   /// StepWords · text on the page
   /// placeholders: {queue} = queue (string), {happened.Rule} = happened.Rule (string)
   /// shown through StepWords()
@@ -2076,7 +2076,7 @@ translations ar {
   /// shown through StepWords()
   text "{up} {from} is not in {queue}, so it is unheld." => "{up} {from} ليس في {queue}، فلم تعد مسندة إلى أحد.";
 
-  // ── Osysharp.Inbox · SummaryLine ──
+  // ── Osysharp.WorkQueues · SummaryLine ──
   /// SummaryLine · text on the page
   /// placeholders: {head} = head (string), {Join} = string.Join(…) (string)
   /// shown through SummaryLine()
@@ -2098,7 +2098,7 @@ translations ar {
   /// shown through SummaryLine()
   text "{s.Late} late" => { zero: "متأخرة: {s.Late}", one: "متأخرة: {s.Late}", two: "متأخرة: {s.Late}", few: "متأخرة: {s.Late}", many: "متأخرة: {s.Late}", other: "متأخرة: {s.Late}" };
 
-  // ── Osysharp.Inbox · TeamLoad ──
+  // ── Osysharp.WorkQueues · TeamLoad ──
   /// TeamLoad · a control's name for screen readers
   /// placeholders: {r.AtRisk} = r.AtRisk
   accessibleName ", {r.AtRisk} at risk" => "، {r.AtRisk} معرّضة للخطر";
@@ -2128,33 +2128,33 @@ translations ar {
   /// shown through EmptyState.title
   title "Nobody works a queue yet" => "لا أحد يعمل على أي قائمة انتظار بعد";
 
-  // ── Osysharp.Inbox · TeamRows ──
+  // ── Osysharp.WorkQueues · TeamRows ──
   /// TeamRows · text on the page
   /// shown through Cover
   text "somebody outside the queues" => "شخص من خارج قوائم الانتظار";
 
-  // ── Osysharp.Inbox · ToldHolderWords ──
+  // ── Osysharp.WorkQueues · ToldHolderWords ──
   /// ToldHolderWords · text on the page
   /// placeholders: {about} = about (string), {MomentWords} = MomentWords(…) (string)
   /// shown through ToldHolderWords()
   text "Told {about}: {MomentWords}." => "أُبلغ {about}: {MomentWords}.";
 
-  // ── Osysharp.Inbox · ToldLeadsWords ──
+  // ── Osysharp.WorkQueues · ToldLeadsWords ──
   /// ToldLeadsWords · text on the page
   /// placeholders: {MomentWords} = MomentWords(…) (string)
   /// shown through ToldLeadsWords()
   text "Told the leads: {MomentWords}." => "أُبلغ المشرفون: {MomentWords}.";
 
-  // ── Osysharp.Inbox · TrailStep ──
+  // ── Osysharp.WorkQueues · TrailStep ──
   /// TrailStep · a control's name for screen readers
   /// placeholders: {Ago} = Ago(…)
   /// beside: "5px"
   accessibleName "{Ago} ago" => "قبل {Ago}";
 
-  // ── Osysharp.Inbox · Unavailable ──
+  // ── Osysharp.WorkQueues · Unavailable ──
   /// Unavailable · text on the page
   /// shown through Unavailable()
-  /// also in Osysharp.Feedback.FeedbackAnswered.Sentence
+  /// also in Osysharp.SatisfactionSurveys.FeedbackAnswered.Sentence
   text "Somebody" => "شخص ما";
   /// Unavailable · text on the page
   /// placeholders: {name} = name (string)
@@ -2185,7 +2185,7 @@ translations ar {
   /// shown through Unavailable()
   text "{name} may not hold it" => "{name}: لا يمكنه تولّيه";
 
-  // ── Osysharp.Inbox · UnlinkWork ──
+  // ── Osysharp.WorkQueues · UnlinkWork ──
   /// UnlinkWork · an error message
   /// shown through ValidationException
   error "That link was already removed." => "أُزيل الربط بالفعل.";
@@ -2193,19 +2193,19 @@ translations ar {
   /// shown through ValidationException
   error "That link was made by the app itself, and stays." => "أنشأ التطبيق هذا الربط بنفسه، ويبقى كما هو.";
 
-  // ── Osysharp.Inbox · UnlinkedWords ──
+  // ── Osysharp.WorkQueues · UnlinkedWords ──
   /// UnlinkedWords · text on the page
   /// placeholders: {LinkWords} = LinkWords(…) (string), {happened.Other} = happened.Other (string)
   /// shown through UnlinkedWords()
   text "Link removed: {LinkWords} {happened.Other}." => "أُزيل الربط: {LinkWords} {happened.Other}.";
 
-  // ── Osysharp.Inbox · When ──
+  // ── Osysharp.WorkQueues · When ──
   /// When · text on the page
   /// placeholders: {at} = at (DateTime)
   /// shown through When()
   text "{at} UTC" => "{at} UTC";
 
-  // ── Osysharp.Inbox · WhichPolicy ──
+  // ── Osysharp.WorkQueues · WhichPolicy ──
   /// WhichPolicy · text on the page
   /// shown through WhichPolicy()
   text "No policy applies — an item like this is promised nothing, and says so." => "لا تنطبق أي سياسة: عنصر كهذا لا يُوعد بشيء، ويذكر ذلك.";
@@ -2219,11 +2219,11 @@ translations ar {
   /// also in SlaPolicySettings
   text "in {p.Hours.Name}" => "ضمن {p.Hours.Name}";
 
-  // ── Osysharp.Inbox · WhyHere ──
+  // ── Osysharp.WorkQueues · WhyHere ──
   /// WhyHere · a control's name for screen readers
   accessibleName "Why this is here" => "سبب وجوده هنا";
 
-  // ── Osysharp.Inbox · WithdrawnWords ──
+  // ── Osysharp.WorkQueues · WithdrawnWords ──
   /// WithdrawnWords · text on the page
   /// placeholders: {about} = about (string), {to} = to (string)
   /// shown through WithdrawnWords()
@@ -2233,12 +2233,12 @@ translations ar {
   /// also in StepWords
   text "nobody" => "لا أحد";
 
-  // ── Osysharp.Inbox · WorkHandling ──
+  // ── Osysharp.WorkQueues · WorkHandling ──
   /// WorkHandling · an error message
   /// shown through ValidationException
   error "Say why the due date moves — it is recorded on the item." => "اذكر سبب تغيير تاريخ الاستحقاق، فهو يُسجَّل على العنصر.";
 
-  // ── Osysharp.Inbox · WorkItemHead ──
+  // ── Osysharp.WorkQueues · WorkItemHead ──
   /// WorkItemHead · a control's name for screen readers
   accessibleName "Item" => "العنصر";
   /// WorkItemHead · a control's name for screen readers
@@ -2250,7 +2250,7 @@ translations ar {
   /// beside: "Queue", "Priority"
   label "State" => "الحالة";
 
-  // ── Osysharp.Inbox · WorkLine ──
+  // ── Osysharp.WorkQueues · WorkLine ──
   /// WorkLine · a control's name for screen readers
   /// placeholders: {row.EscalationLevel} = row.EscalationLevel
   accessibleName "escalated to level {row.EscalationLevel}" => "صُعّد إلى المستوى {row.EscalationLevel}";
@@ -2262,7 +2262,7 @@ translations ar {
   /// placeholders: {row.EscalationLevel} = row.EscalationLevel
   text "L{row.EscalationLevel}" => "م{row.EscalationLevel}";
 
-  // ── Osysharp.Inbox · WorkListView ──
+  // ── Osysharp.WorkQueues · WorkListView ──
   /// WorkListView · a control's name for screen readers
   accessibleName "Filter this view" => "تصفية هذا العرض";
   /// WorkListView · a control's name for screen readers

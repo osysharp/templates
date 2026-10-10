@@ -3,9 +3,9 @@
 // approved by an admin, and downloaded — the readable copy she opens in a browser, and the data file beside it.
 // Mira manages privacy; Petra (Larkspur) has a portal account; the Office desk is in team.test.osy.
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Mail;
 using Osysharp.Privacy;
 using Osysharp.Workflow;

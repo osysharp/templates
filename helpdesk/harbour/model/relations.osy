@@ -1,15 +1,15 @@
-// TICKETS AND EACH OTHER (H2) — who else is copied on a ticket, a second question split off into a ticket of its own,
+// TICKETS AND EACH OTHER — who else is copied on a ticket, a second question split off into a ticket of its own,
 // typed links between tickets, and a problem whose incidents are solved with it.
 //
 // ⚑ THE MECHANISMS ARE THE KITS'. Copying somebody in and splitting a message off are Osysharp.Conversations' (`CopyIn`,
 //   `SplitOff` — the message moves by the kit's own run, with its files and its mail thread); a link between two tickets is
-//   Osysharp.Inbox's (`Link`, `WorkLink`, the `ItemLinks` panel), of the kinds the desk declares below. What is the
+//   Osysharp.WorkQueues's (`Link`, `WorkLink`, the `ItemLinks` panel), of the kinds the desk declares below. What is the
 //   desk's here is what they MEAN to a desk: a split is a new ticket for the same customer that says where it came
 //   from; a ticket an incident is OF is a problem, and solving it solves them.
 using Osysharp.Identity;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 
 /// The ways two tickets are linked on this desk — a closed set, said in the reader's language wherever a link is shown.
 public class DeskLinks : InboxLinks {

@@ -1,16 +1,16 @@
-// sv (Svenska): the words of Helpdesk · Osysharp.Knowledge, translated.
+// sv (Svenska): the words of Helpdesk · Osysharp.KnowledgeBase, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations sv {
-  // ── Osysharp.Knowledge · AddKnowledgeCategory ──
+  // ── Osysharp.KnowledgeBase · AddKnowledgeCategory ──
   /// AddKnowledgeCategory · an error message
   /// shown through ValidationException
   /// also in EditKnowledgeCategory
   error "Give the category a name." => "Ge kategorin ett namn.";
 
-  // ── Osysharp.Knowledge · AddKnowledgeSection ──
+  // ── Osysharp.KnowledgeBase · AddKnowledgeSection ──
   /// AddKnowledgeSection · an error message
   /// shown through ValidationException
   /// also in EditKnowledgeSection
@@ -20,38 +20,38 @@ translations sv {
   /// also in EditKnowledgeCategory
   error "That category is gone." => "Kategorin finns inte längre.";
 
-  // ── Osysharp.Knowledge · DeleteKnowledgeCategory ──
+  // ── Osysharp.KnowledgeBase · DeleteKnowledgeCategory ──
   /// DeleteKnowledgeCategory · an error message
   /// shown through ValidationException
   error "Delete or move its sections first." => "Ta bort eller flytta dess avsnitt först.";
 
-  // ── Osysharp.Knowledge · DeleteKnowledgeSection ──
+  // ── Osysharp.KnowledgeBase · DeleteKnowledgeSection ──
   /// DeleteKnowledgeSection · an error message
   /// shown through ValidationException
   error "Move its articles to another section first — a section with articles is not deleted." => "Flytta först dess artiklar till ett annat avsnitt — ett avsnitt med artiklar tas inte bort.";
 
-  // ── Osysharp.Knowledge · DiscardKnowledgeDraft ──
+  // ── Osysharp.KnowledgeBase · DiscardKnowledgeDraft ──
   /// DiscardKnowledgeDraft · an error message
   /// shown through ValidationException
   error "Only a draft that was never sent for review can be thrown away." => "Bara ett utkast som aldrig skickats för granskning kan kastas.";
 
-  // ── Osysharp.Knowledge · DiscardKnowledgeVersion ──
+  // ── Osysharp.KnowledgeBase · DiscardKnowledgeVersion ──
   /// DiscardKnowledgeVersion · an error message
   /// shown through ValidationException
   error "That draft is gone." => "Utkastet finns inte längre.";
 
-  // ── Osysharp.Knowledge · EditKnowledgeSection ──
+  // ── Osysharp.KnowledgeBase · EditKnowledgeSection ──
   /// EditKnowledgeSection · an error message
   /// shown through ValidationException
   error "That section is gone." => "Avsnittet finns inte längre.";
 
-  // ── Osysharp.Knowledge · HelpCentreCategoryPage (/help-centre/c/{slug}) ──
+  // ── Osysharp.KnowledgeBase · HelpCentreCategoryPage (/help-centre/c/{slug}) ──
   /// HelpCentreCategoryPage · /help-centre/c/{slug} · a title
   /// shown through head { Title }
   /// also in HelpCentreArticlePage /help-centre/a/{slug}
   title "Not found" => "Hittades inte";
 
-  // ── Osysharp.Knowledge · HelpCentrePage (/help-centre) ──
+  // ── Osysharp.KnowledgeBase · HelpCentrePage (/help-centre) ──
   /// HelpCentrePage · /help-centre · a description
   /// shown through head { Description }
   description "Answers, guides and how-tos — search, or start with a category." => "Svar, guider och instruktioner — sök, eller börja med en kategori.";
@@ -62,7 +62,7 @@ translations sv {
   /// also in KnowledgeSettingsFields
   title "Help centre" => "Hjälpcenter";
 
-  // ── Osysharp.Knowledge · KnowledgeArticleBody ──
+  // ── Osysharp.KnowledgeBase · KnowledgeArticleBody ──
   /// KnowledgeArticleBody · message
   /// shown through Alert.message
   message "Only the team reads this article — customers never see it, here or in a search." => "Bara teamet läser den här artikeln — kunder ser den aldrig, varken här eller i en sökning.";
@@ -70,7 +70,7 @@ translations sv {
   /// shown through Alert.message
   message "This article is not in your language yet — here it is in the language it was written in." => "Den här artikeln finns inte på ditt språk än — här är den på språket den skrevs på.";
 
-  // ── Osysharp.Knowledge · KnowledgeArticleDesk ──
+  // ── Osysharp.KnowledgeBase · KnowledgeArticleDesk ──
   /// KnowledgeArticleDesk · a link · at most ~37 characters
   /// shown through TextLink.label
   /// beside: "This article is not here"
@@ -89,7 +89,7 @@ translations sv {
   /// beside: "Back to the knowledge base"
   title "This article is not here" => "Artikeln finns inte här";
 
-  // ── Osysharp.Knowledge · KnowledgeArticlePage ──
+  // ── Osysharp.KnowledgeBase · KnowledgeArticlePage ──
   /// KnowledgeArticlePage · a control's name for screen readers
   /// placeholders: {page.Article.Section} = page.Article.Section
   accessibleName "More in {page.Article.Section}" => "Mer i {page.Article.Section}";
@@ -100,7 +100,7 @@ translations sv {
   /// placeholders: {page.Article.UpdatedAt.Value} = page.Article.UpdatedAt.Value
   text "Updated {page.Article.UpdatedAt.Value}" => "Uppdaterad {page.Article.UpdatedAt.Value}";
 
-  // ── Osysharp.Knowledge · KnowledgeAskSomebody ──
+  // ── Osysharp.KnowledgeBase · KnowledgeAskSomebody ──
   /// KnowledgeAskSomebody · a control's name for screen readers
   accessibleName "Still need help?" => "Behöver du fortfarande hjälp?";
   /// KnowledgeAskSomebody · text on the page
@@ -110,7 +110,7 @@ translations sv {
   /// beside: "A person on the team reads every question."
   text "Still need help?" => "Behöver du fortfarande hjälp?";
 
-  // ── Osysharp.Knowledge · KnowledgeCategoryCard ──
+  // ── Osysharp.KnowledgeBase · KnowledgeCategoryCard ──
   /// KnowledgeCategoryCard · a control's name for screen readers
   /// beside: "Move up", "200px", "Only the team reads it", "200px"
   accessibleName "Sections" => "Avsnitt";
@@ -135,7 +135,7 @@ translations sv {
   /// placeholders: {s.Articles} = s.Articles
   text "{s.Articles} articles" => "{s.Articles} artiklar";
 
-  // ── Osysharp.Knowledge · KnowledgeDesk ──
+  // ── Osysharp.KnowledgeBase · KnowledgeDesk ──
   /// KnowledgeDesk · a control's name for screen readers
   accessibleName "Articles" => "Artiklar";
   /// KnowledgeDesk · a button's label · at most ~17 characters
@@ -184,16 +184,16 @@ translations sv {
   /// shown through EmptyState.title
   title "No articles yet" => "Inga artiklar än";
 
-  // ── Osysharp.Knowledge · KnowledgeDeskLine ──
+  // ── Osysharp.KnowledgeBase · KnowledgeDeskLine ──
   /// KnowledgeDeskLine · a control's name for screen readers
   accessibleName "Languages" => "Språk";
 
-  // ── Osysharp.Knowledge · KnowledgeDraftFrom ──
+  // ── Osysharp.KnowledgeBase · KnowledgeDraftFrom ──
   /// KnowledgeDraftFrom · an error message
   /// shown through ValidationException
   error "There is already a draft in this language — finish it or throw it away first." => "Det finns redan ett utkast på det här språket — gör klart det eller kasta det först.";
 
-  // ── Osysharp.Knowledge · KnowledgeDraftPane ──
+  // ── Osysharp.KnowledgeBase · KnowledgeDraftPane ──
   /// KnowledgeDraftPane · a control's name for screen readers
   /// beside: "What happens next"
   accessibleName "Article text" => "Artikelns text";
@@ -278,7 +278,7 @@ translations sv {
   /// shown through Alert.title
   title "Sent back by {sentBack.By}" => "Skickad tillbaka av {sentBack.By}";
 
-  // ── Osysharp.Knowledge · KnowledgeFront ──
+  // ── Osysharp.KnowledgeBase · KnowledgeFront ──
   /// KnowledgeFront · a control's name for screen readers
   accessibleName "Recently updated" => "Nyligen uppdaterade";
   /// KnowledgeFront · text on the page
@@ -287,7 +287,7 @@ translations sv {
   /// KnowledgeFront · text on the page
   text "Recently updated" => "Nyligen uppdaterade";
 
-  // ── Osysharp.Knowledge · KnowledgeHistoryPane ──
+  // ── Osysharp.KnowledgeBase · KnowledgeHistoryPane ──
   /// KnowledgeHistoryPane · a control's name for screen readers
   accessibleName "Versions" => "Versioner";
   /// KnowledgeHistoryPane · a control's name for screen readers
@@ -310,7 +310,7 @@ translations sv {
   /// shown through Card.title
   title "History" => "Historik";
 
-  // ── Osysharp.Knowledge · KnowledgeLanguageChip ──
+  // ── Osysharp.KnowledgeBase · KnowledgeLanguageChip ──
   /// KnowledgeLanguageChip · a label (a field, a list item, a menu entry) · at most ~24 characters
   /// placeholders: {ToUpper} = l.Language.ToUpper(…)
   /// shown through Badge.label
@@ -324,13 +324,13 @@ translations sv {
   /// shown through Badge.label
   label "{ToUpper} · Published" => "{ToUpper} · Publicerad";
 
-  // ── Osysharp.Knowledge · KnowledgeLanguageOrSource ──
+  // ── Osysharp.KnowledgeBase · KnowledgeLanguageOrSource ──
   /// KnowledgeLanguageOrSource · an error message
   /// placeholders: {wanted} = wanted (string), {Join} = string.Join(…) (string)
   /// shown through ValidationException
   error "This app is not written in '{wanted}' — it speaks {Join}." => "Appen finns inte på '{wanted}' — den talar {Join}.";
 
-  // ── Osysharp.Knowledge · KnowledgeLivePane ──
+  // ── Osysharp.KnowledgeBase · KnowledgeLivePane ──
   /// KnowledgeLivePane · a button's label · at most ~40 characters
   /// placeholders: {value} = …
   /// shown through Button.label
@@ -345,11 +345,11 @@ translations sv {
   /// placeholders: {live.Number} = live.Number, {live.PublishedAt.Value} = live.PublishedAt.Value, {live.PublishedBy} = live.PublishedBy
   text "Version {live.Number} · published {live.PublishedAt.Value} by {live.PublishedBy}" => "Version {live.Number} · publicerad {live.PublishedAt.Value} av {live.PublishedBy}";
 
-  // ── Osysharp.Knowledge · KnowledgeLoading ──
+  // ── Osysharp.KnowledgeBase · KnowledgeLoading ──
   /// KnowledgeLoading · a control's name for screen readers
   accessibleName "Loading" => "Laddar";
 
-  // ── Osysharp.Knowledge · KnowledgeNoVersionPane ──
+  // ── Osysharp.KnowledgeBase · KnowledgeNoVersionPane ──
   /// KnowledgeNoVersionPane · a button's label · at most ~38 characters
   /// placeholders: {ToUpper} = language.ToUpper(…)
   /// shown through Button.label
@@ -363,7 +363,7 @@ translations sv {
   /// shown through EmptyState.title
   title "Not written in {ToUpper} yet" => "Inte skriven på {ToUpper} än";
 
-  // ── Osysharp.Knowledge · KnowledgeNotHere ──
+  // ── Osysharp.KnowledgeBase · KnowledgeNotHere ──
   /// KnowledgeNotHere · text on the page
   /// shown through EmptyState.body
   text "It may have moved, or it is not one you can read. Search for what you need instead." => "Den kan ha flyttats, eller så är den inte en du kan läsa. Sök efter det du behöver i stället.";
@@ -374,7 +374,7 @@ translations sv {
   /// shown through EmptyState.title
   title "We could not find that category" => "Vi kunde inte hitta den kategorin";
 
-  // ── Osysharp.Knowledge · KnowledgePlacePane ──
+  // ── Osysharp.KnowledgeBase · KnowledgePlacePane ──
   /// KnowledgePlacePane · a button's label · at most ~16 characters
   /// shown through Button.label
   button "Archive it" => "Arkivera den";
@@ -409,7 +409,7 @@ translations sv {
   /// shown through Card.title
   title "Where it is" => "Var den finns";
 
-  // ── Osysharp.Knowledge · KnowledgeQuickSearch ──
+  // ── Osysharp.KnowledgeBase · KnowledgeQuickSearch ──
   /// KnowledgeQuickSearch · a label (a field, a list item, a menu entry) · at most ~34 characters
   /// shown through KnowledgeQuickSearch.label
   label "Search our help articles" => "Sök i våra hjälpartiklar";
@@ -419,7 +419,7 @@ translations sv {
   /// shown through KnowledgeQuickSearch.fallback
   text "Nothing found — write to us and a person answers." => "Inget hittades — skriv till oss så svarar en person.";
 
-  // ── Osysharp.Knowledge · KnowledgeResultsPage ──
+  // ── Osysharp.KnowledgeBase · KnowledgeResultsPage ──
   /// KnowledgeResultsPage · a control's name for screen readers
   accessibleName "Results" => "Resultat";
   /// KnowledgeResultsPage · text on the page
@@ -444,7 +444,7 @@ translations sv {
   /// shown through EmptyState.title
   title "Nothing matched “{page.Results.Query}”" => "Inget matchade ”{page.Results.Query}”";
 
-  // ── Osysharp.Knowledge · KnowledgeReviewQueue ──
+  // ── Osysharp.KnowledgeBase · KnowledgeReviewQueue ──
   /// KnowledgeReviewQueue · a control's name for screen readers
   accessibleName "Versions waiting" => "Versioner som väntar";
   /// KnowledgeReviewQueue · a label (a field, a list item, a menu entry) · at most ~41 characters
@@ -465,7 +465,7 @@ translations sv {
   /// shown through EmptyState.title
   title "Nothing is waiting" => "Inget väntar";
 
-  // ── Osysharp.Knowledge · KnowledgeSearchBox ──
+  // ── Osysharp.KnowledgeBase · KnowledgeSearchBox ──
   /// KnowledgeSearchBox · a control's name for screen readers
   accessibleName "Search the help centre" => "Sök i hjälpcentret";
   /// KnowledgeSearchBox · a label (a field, a list item, a menu entry) · at most ~31 characters
@@ -475,7 +475,7 @@ translations sv {
   /// shown through Field.placeholder
   placeholder "Describe what you are trying to do" => "Beskriv vad du försöker göra";
 
-  // ── Osysharp.Knowledge · KnowledgeSettingsEditor ──
+  // ── Osysharp.KnowledgeBase · KnowledgeSettingsEditor ──
   /// KnowledgeSettingsEditor · a description
   /// shown through SettingsPage.description
   description "Articles are written as drafts and published as numbered versions. With review on, a version is published by somebody other than the person who wrote it." => "Artiklar skrivs som utkast och publiceras som numrerade versioner. Med granskning på publiceras en version av någon annan än den som skrev den.";
@@ -483,7 +483,7 @@ translations sv {
   /// shown through SaveBar.saved
   text "Knowledge base settings saved." => "Inställningarna för kunskapsbasen sparades.";
 
-  // ── Osysharp.Knowledge · KnowledgeSettingsFields ──
+  // ── Osysharp.KnowledgeBase · KnowledgeSettingsFields ──
   /// KnowledgeSettingsFields · a description
   /// shown through SettingsSection.description
   /// beside: "Publishing"
@@ -516,12 +516,12 @@ translations sv {
   /// beside: "Help centre"
   title "Publishing" => "Publicering";
 
-  // ── Osysharp.Knowledge · KnowledgeShelfCard ──
+  // ── Osysharp.KnowledgeBase · KnowledgeShelfCard ──
   /// KnowledgeShelfCard · text on the page
   /// placeholders: {shelf.Count} = shelf.Count
   text "{shelf.Count} articles" => "{shelf.Count} artiklar";
 
-  // ── Osysharp.Knowledge · KnowledgeShelvesDesk ──
+  // ── Osysharp.KnowledgeBase · KnowledgeShelvesDesk ──
   /// KnowledgeShelvesDesk · a control's name for screen readers
   accessibleName "Add a category" => "Lägg till en kategori";
   /// KnowledgeShelvesDesk · a button's label · at most ~23 characters
@@ -554,7 +554,7 @@ translations sv {
   /// shown through EmptyState.title
   title "No categories yet" => "Inga kategorier än";
 
-  // ── Osysharp.Knowledge · KnowledgeStartDialog ──
+  // ── Osysharp.KnowledgeBase · KnowledgeStartDialog ──
   /// KnowledgeStartDialog · a button's label · at most ~19 characters
   /// shown through Button.label
   /// beside: "Cancel"
@@ -588,7 +588,7 @@ translations sv {
   /// shown through Dialog.title
   title "New article" => "Ny artikel";
 
-  // ── Osysharp.Knowledge · KnowledgeSuggestingField ──
+  // ── Osysharp.KnowledgeBase · KnowledgeSuggestingField ──
   /// KnowledgeSuggestingField · a button's label · at most ~28 characters
   /// shown through Button.label
   /// beside: "Open in the help centre"
@@ -599,7 +599,7 @@ translations sv {
   /// KnowledgeSuggestingField · text on the page
   text "Open in the help centre" => "Öppna i hjälpcentret";
 
-  // ── Osysharp.Knowledge · KnowledgeTabLabel ──
+  // ── Osysharp.KnowledgeBase · KnowledgeTabLabel ──
   /// KnowledgeTabLabel · a button's label · at most ~20 characters
   /// placeholders: {code} = code (string)
   /// shown through KnowledgeTabLabel()
@@ -625,130 +625,130 @@ translations sv {
   /// shown through KnowledgeTabLabel()
   button "{code} · original · in review" => "{code} · original · under granskning";
 
-  // ── Osysharp.Knowledge · KnowledgeTrail ──
+  // ── Osysharp.KnowledgeBase · KnowledgeTrail ──
   /// KnowledgeTrail · a control's name for screen readers
   accessibleName "Breadcrumb" => "Brödsmulor";
 
-  // ── Osysharp.Knowledge · NewKnowledgeArticle ──
+  // ── Osysharp.KnowledgeBase · NewKnowledgeArticle ──
   /// NewKnowledgeArticle · an error message
   /// shown through ValidationException
   error "Give the article a title — readers find it by it." => "Ge artikeln en rubrik — läsarna hittar den genom den.";
 
-  // ── Osysharp.Knowledge · OpenKnowledgeDraft ──
+  // ── Osysharp.KnowledgeBase · OpenKnowledgeDraft ──
   /// OpenKnowledgeDraft · an error message
   /// shown through ValidationException
   /// also in KnowledgeDeskStep
   error "That article is gone." => "Artikeln finns inte längre.";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.ArticleSentBack.Sentence ──
-  /// Osysharp.Knowledge.ArticleSentBack.Sentence · text on the page
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.ArticleSentBack.Sentence ──
+  /// Osysharp.KnowledgeBase.ArticleSentBack.Sentence · text on the page
   /// placeholders: {note} = note (string)
   /// shown through Sentence()
   text "Sent back: {note}" => null;
-  /// Osysharp.Knowledge.ArticleSentBack.Sentence · text on the page
+  /// Osysharp.KnowledgeBase.ArticleSentBack.Sentence · text on the page
   /// shown through Sentence()
   text "Your article was sent back with changes to make." => "Din artikel skickades tillbaka med ändringar att göra.";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.ArticleSentForReview.Sentence ──
-  /// Osysharp.Knowledge.ArticleSentForReview.Sentence · text on the page
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.ArticleSentForReview.Sentence ──
+  /// Osysharp.KnowledgeBase.ArticleSentForReview.Sentence · text on the page
   /// shown through Sentence()
   text "An article waits for review." => "En artikel väntar på granskning.";
-  /// Osysharp.Knowledge.ArticleSentForReview.Sentence · text on the page
+  /// Osysharp.KnowledgeBase.ArticleSentForReview.Sentence · text on the page
   /// placeholders: {by} = by (string)
   /// shown through Sentence()
   text "{by} sent an article for review." => "{by} skickade en artikel för granskning.";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.KnowledgeAudience ──
-  /// Osysharp.Knowledge.KnowledgeAudience · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Knowledge.KnowledgeAudience.Everyone
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.KnowledgeAudience ──
+  /// Osysharp.KnowledgeBase.KnowledgeAudience · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeAudience.Everyone
   /// beside: "The team only"
   label "Everyone" => "Alla";
-  /// Osysharp.Knowledge.KnowledgeAudience · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Knowledge.KnowledgeAudience.Team
+  /// Osysharp.KnowledgeBase.KnowledgeAudience · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeAudience.Team
   /// beside: "Everyone"
   label "The team only" => "Bara teamet";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.KnowledgeDeskList ──
-  /// Osysharp.Knowledge.KnowledgeDeskList · a label (a field, a list item, a menu entry) · at most ~9 characters
-  /// shown through Osysharp.Knowledge.KnowledgeDeskList.All
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.KnowledgeDeskList ──
+  /// Osysharp.KnowledgeBase.KnowledgeDeskList · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeDeskList.All
   /// beside: "Drafts", "In review", "Published", "Archived"
   label "All" => "Alla";
-  /// Osysharp.Knowledge.KnowledgeDeskList · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Knowledge.KnowledgeDeskList.Drafts
+  /// Osysharp.KnowledgeBase.KnowledgeDeskList · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeDeskList.Drafts
   /// beside: "All", "In review", "Published", "Archived"
   label "Drafts" => "Utkast";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.KnowledgeStage ──
-  /// Osysharp.Knowledge.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStage.Draft
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.KnowledgeStage ──
+  /// Osysharp.KnowledgeBase.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStage.Draft
   /// beside: "In review", "Published", "Earlier version"
   /// also in KnowledgeDraftPane
   label "Draft" => "Utkast";
-  /// Osysharp.Knowledge.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStage.Superseded
+  /// Osysharp.KnowledgeBase.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStage.Superseded
   /// beside: "Draft", "In review", "Published"
   label "Earlier version" => "Tidigare version";
-  /// Osysharp.Knowledge.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStage.InReview
+  /// Osysharp.KnowledgeBase.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStage.InReview
   /// beside: "Draft", "Published", "Earlier version"
-  /// also in Osysharp.Knowledge.KnowledgeDeskList
+  /// also in Osysharp.KnowledgeBase.KnowledgeDeskList
   /// also in KnowledgeDraftPane
   label "In review" => "Under granskning";
-  /// Osysharp.Knowledge.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStage.Published
+  /// Osysharp.KnowledgeBase.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStage.Published
   /// beside: "Draft", "In review", "Earlier version"
-  /// also in Osysharp.Knowledge.KnowledgeStepKind
-  /// also in Osysharp.Knowledge.KnowledgeDeskList
+  /// also in Osysharp.KnowledgeBase.KnowledgeStepKind
+  /// also in Osysharp.KnowledgeBase.KnowledgeDeskList
   /// also in KnowledgeLivePane
   label "Published" => "Publicerad";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.KnowledgeStepKind ──
-  /// Osysharp.Knowledge.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStepKind.Archive
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.KnowledgeStepKind ──
+  /// Osysharp.KnowledgeBase.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStepKind.Archive
   /// beside: "Sent for review", "Taken back", "Published", "Sent back", "Brought back"
-  /// also in Osysharp.Knowledge.KnowledgeDeskList
+  /// also in Osysharp.KnowledgeBase.KnowledgeDeskList
   /// also in KnowledgeDeskLine
   /// also in KnowledgeArticleDesk
   label "Archived" => "Arkiverad";
-  /// Osysharp.Knowledge.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~18 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStepKind.Restore
+  /// Osysharp.KnowledgeBase.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStepKind.Restore
   /// beside: "Sent for review", "Taken back", "Published", "Sent back", "Archived"
   label "Brought back" => "Återställd";
-  /// Osysharp.Knowledge.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStepKind.SendBack
+  /// Osysharp.KnowledgeBase.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStepKind.SendBack
   /// beside: "Sent for review", "Taken back", "Published", "Archived", "Brought back"
   label "Sent back" => "Skickad tillbaka";
-  /// Osysharp.Knowledge.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStepKind.Submit
+  /// Osysharp.KnowledgeBase.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStepKind.Submit
   /// beside: "Taken back", "Published", "Sent back", "Archived", "Brought back"
   label "Sent for review" => "Skickad för granskning";
-  /// Osysharp.Knowledge.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStepKind.TakeBack
+  /// Osysharp.KnowledgeBase.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStepKind.TakeBack
   /// beside: "Sent for review", "Published", "Sent back", "Archived", "Brought back"
   label "Taken back" => "Tagen tillbaka";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.__Settings_KnowledgeSettings_Section.Sections ──
-  /// Osysharp.Knowledge.__Settings_KnowledgeSettings_Section.Sections · a hint under a field
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.__Settings_KnowledgeSettings_Section.Sections ──
+  /// Osysharp.KnowledgeBase.__Settings_KnowledgeSettings_Section.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "Whether articles are reviewed before they are published, and how the help centre suggests them." => "Om artiklar granskas innan de publiceras, och hur hjälpcentret föreslår dem.";
 
-  // ── Osysharp.Knowledge · PlaceKnowledgeArticle ──
+  // ── Osysharp.KnowledgeBase · PlaceKnowledgeArticle ──
   /// PlaceKnowledgeArticle · an error message
   /// shown through ValidationException
   error "That article or section is gone." => "Artikeln eller avsnittet finns inte längre.";
 
-  // ── Osysharp.Knowledge · PublishKnowledge ──
+  // ── Osysharp.KnowledgeBase · PublishKnowledge ──
   /// PublishKnowledge · a label (a field, a list item, a menu entry) · at most ~13 characters
   /// shown through [Action] PublishKnowledge
   label "Publish" => "Publicera";
 
-  // ── Osysharp.Knowledge · RestoreKnowledgeVersion ──
+  // ── Osysharp.KnowledgeBase · RestoreKnowledgeVersion ──
   /// RestoreKnowledgeVersion · an error message
   /// shown through ValidationException
   /// also in KnowledgeDeskStep
   error "That version is gone." => "Versionen finns inte längre.";
 
-  // ── Osysharp.Knowledge · SaveKnowledgeDraft ──
+  // ── Osysharp.KnowledgeBase · SaveKnowledgeDraft ──
   /// SaveKnowledgeDraft · an error message
   /// shown through ValidationException
   error "Give it a title — readers find it by it." => "Ge den en rubrik — läsarna hittar den genom den.";
@@ -770,17 +770,17 @@ translations sv {
   /// shown through ValidationException
   error "That draft is gone — it was published, sent or thrown away." => "Utkastet finns inte längre — det publicerades, skickades eller kastades.";
 
-  // ── Osysharp.Knowledge · SendKnowledgeBack ──
+  // ── Osysharp.KnowledgeBase · SendKnowledgeBack ──
   /// SendKnowledgeBack · an error message
   /// shown through ValidationException
   error "Say what to change — the writer reads it." => "Säg vad som ska ändras — skribenten läser det.";
 
-  // ── Osysharp.Knowledge · StartKnowledgeArticle ──
+  // ── Osysharp.KnowledgeBase · StartKnowledgeArticle ──
   /// StartKnowledgeArticle · an error message
   /// shown through ValidationException
   error "Choose where it goes — a category's section." => "Välj var den hör hemma — ett avsnitt i en kategori.";
 
-  // ── Osysharp.Knowledge · TakeKnowledgeStep ──
+  // ── Osysharp.KnowledgeBase · TakeKnowledgeStep ──
   /// TakeKnowledgeStep · an error message
   /// shown through ValidationException
   error "A step on this version is still being made — a moment." => "Ett steg på den här versionen pågår fortfarande — ett ögonblick.";

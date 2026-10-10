@@ -4,7 +4,7 @@
 //   Answered, Pending, On hold, Solved, Closed — and keeps what is the desk's own: the status a team names inside each
 //   category, the root cause an incident needs before it is solved, the customer chased while we wait on them, the
 //   week of silence that solves it, the four days that close it. It keeps NO clock. As each fact happens it tells the
-//   inbox (Osysharp.Inbox) — we answered, they wrote, we are waiting on them or on somebody else, it is solved, it is
+//   inbox (Osysharp.WorkQueues) — we answered, they wrote, we are waiting on them or on somebody else, it is solved, it is
 //   closed — and the inbox's own run (`WorkHandling`) keeps the three promises (first reply, next reply, resolution) on
 //   the ticket's policy, in that policy's hours, paused while it waits on the customer.
 //
@@ -13,7 +13,7 @@
 using Osysharp.Identity;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Automations;
 
 /// The ticket arrived in `stage` at `at`: its category follows, and its status becomes the category's default unless the

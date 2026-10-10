@@ -1,5 +1,5 @@
 using Osysharp.Shop;
-using Osysharp.Pages;
+using Osysharp.PageBuilder;
 using Osysharp.Blocks;
 
 // The workshop's desk — bookmark /staff/orders; signed out, it sends you to sign in and back. Sign in, see every order, mark a transfer received, send or hand over what is paid (booking it with the carrier), call a reservation off, refund. A tool, so it

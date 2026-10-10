@@ -3,10 +3,10 @@
 // wide and on a phone, light and dark, and in Arabic — `osy test --pixels` photographs each.
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Notifications;
 using Osysharp.Automations;
-using Osysharp.Composer;
+using Osysharp.ReplyComposer;
 
 /// Ines and Rahul work tickets; Ada keeps the desk (an admin — the team's rules are hers).
 [TestFixture]

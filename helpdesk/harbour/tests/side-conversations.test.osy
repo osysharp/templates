@@ -1,4 +1,4 @@
-// SIDE CONVERSATIONS (H9) — Ines asks somebody else about Olivia's ticket without leaving it: Dev at Orbit Labs (who
+// SIDE CONVERSATIONS — Ines asks somebody else about Olivia's ticket without leaving it: Dev at Orbit Labs (who
 // runs Larkspur's deliveries) by mail, or the team in a thread of its own. It sits on the ticket's timeline as a card that
 // opens into its thread; Dev's answer by mail lands in it — never in the ticket, never as a ticket of its own — and Ines,
 // who holds the ticket, is told. Dev never sees the ticket, and Olivia never sees the side conversation.
@@ -8,7 +8,7 @@
 using Osysharp.Identity;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Mail;
 using Osysharp.Mail.Receiving;
 using Osysharp.Notifications;

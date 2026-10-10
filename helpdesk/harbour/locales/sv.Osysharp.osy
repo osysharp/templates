@@ -32,7 +32,7 @@ translations sv {
   /// Osysharp.ActionParameterKind · a label (a field, a list item, a menu entry) · at most ~10 characters
   /// shown through Osysharp.ActionParameterKind.Date
   /// beside: "Text", "Number", "Decimal", "Yes or no", "Date and time", "Time of day"
-  /// also in Osysharp.Fields.FieldKind
+  /// also in Osysharp.CustomFields.FieldKind
   /// also in Osysharp.Explore.FieldKind
   /// also in Osysharp.Reports.FigureFormat
   label "Date" => "Datum";
@@ -63,7 +63,7 @@ translations sv {
   /// shown through Osysharp.ActionParameterKind.Text
   /// beside: "Number", "Decimal", "Yes or no", "Date", "Date and time", "Time of day"
   /// also in Osysharp.RecordFieldKind
-  /// also in Osysharp.Fields.FieldKind
+  /// also in Osysharp.CustomFields.FieldKind
   /// also in Osysharp.Conversations.AttachmentKind
   label "Text" => "Text";
   /// Osysharp.ActionParameterKind · a label (a field, a list item, a menu entry) · at most ~17 characters
@@ -74,7 +74,7 @@ translations sv {
   /// shown through Osysharp.ActionParameterKind.YesNo
   /// beside: "Text", "Number", "Decimal", "Date", "Date and time", "Time of day"
   /// also in Osysharp.RecordFieldKind
-  /// also in Osysharp.Fields.FieldKind
+  /// also in Osysharp.CustomFields.FieldKind
   /// also in Osysharp.Automations.ConditionKind
   label "Yes or no" => "Ja eller nej";
 

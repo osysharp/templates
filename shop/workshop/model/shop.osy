@@ -3,16 +3,16 @@
 // There is NO signup — a staff account is made by someone who already runs the shop (`osy user add … --role Staff`),
 // never by a stranger with the URL.
 
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Identity;
-using Osysharp.Shop.Vies;
-using Osysharp.Delivery;
+using Osysharp.Shop.VatNumbers;
+using Osysharp.Shipping;
 using Osysharp.Payments.Klarna;
 using Osysharp.Payments;
 using Osysharp.Payments.Stripe;
 using Osysharp.Shop;
 
-// Who signs in — customers and staff — is Osysharp.Accounts', as the shop's own kind of account (`ShopAccounts`).
+// Who signs in — customers and staff — is Osysharp.UserAccounts', as the shop's own kind of account (`ShopAccounts`).
 app.Accounts = ShopAccounts("Rust & Chrome");
 // Staff see who holds which role — the desk's packers and counter staff (Osysharp.Identity's grants are the app's to show).
 partial entity RoleGrant { security { allow read when IsShopStaff; } }

@@ -1,10 +1,10 @@
-// ar (العربية): the words of Helpdesk · Osysharp.Accounts, translated.
+// ar (العربية): the words of Helpdesk · Osysharp.UserAccounts, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations ar {
-  // ── Osysharp.Accounts · AccountAddressChangeMail ──
+  // ── Osysharp.UserAccounts · AccountAddressChangeMail ──
   /// AccountAddressChangeMail · the preview line an inbox shows beside an email's subject
   /// placeholders: {newAddress} = newAddress (string)
   /// shown through EmailLayout.preview
@@ -26,7 +26,7 @@ translations ar {
   /// beside: "If this was not you, change your password now: whoever asked knows it."
   text "Your address is changing" => "عنوانك يتغير";
 
-  // ── Osysharp.Accounts · AccountExistsMail ──
+  // ── Osysharp.UserAccounts · AccountExistsMail ──
   /// AccountExistsMail · a button's label · at most ~13 characters
   /// shown through EmailButton.label
   /// beside: "You already have an account", "If this was not you, ignore this mail — your account has not changed."
@@ -57,12 +57,12 @@ translations ar {
   /// beside: "Sign in", "If this was not you, ignore this mail — your account has not changed."
   text "You already have an account" => "لديك حساب بالفعل";
 
-  // ── Osysharp.Accounts · AccountPage (/account) ──
+  // ── Osysharp.UserAccounts · AccountPage (/account) ──
   /// AccountPage · /account · a title
   /// shown through [Title]
   title "Your account" => "حسابك";
 
-  // ── Osysharp.Accounts · AccountPasswordChangedMail ──
+  // ── Osysharp.UserAccounts · AccountPasswordChangedMail ──
   /// AccountPasswordChangedMail · an email's subject line
   /// placeholders: {AccountsAppName} = AccountsAppName(…) (string)
   mailSubject "Your {AccountsAppName} password was changed" => "تم تغيير كلمة المرور في {AccountsAppName}";
@@ -80,7 +80,7 @@ translations ar {
   /// beside: "If it was not you, choose a new password from the sign-in page at once — the link there comes to this address."
   text "Your password was changed" => "تم تغيير كلمة المرور";
 
-  // ── Osysharp.Accounts · AccountPhoneMail ──
+  // ── Osysharp.UserAccounts · AccountPhoneMail ──
   /// AccountPhoneMail · the preview line an inbox shows beside an email's subject
   /// shown through EmailLayout.preview
   /// also in AccountPasswordChangedMail
@@ -119,7 +119,7 @@ translations ar {
   /// beside: "If this was not you, choose a new password at once: whoever did it knows your password."
   text "The number ending {MaskedPhone} is now on the account {account.Email}." => "أصبح الرقم المنتهي بـ {MaskedPhone} مرتبطًا بالحساب {account.Email}.";
 
-  // ── Osysharp.Accounts · AccountProviderMail ──
+  // ── Osysharp.UserAccounts · AccountProviderMail ──
   /// AccountProviderMail · the preview line an inbox shows beside an email's subject
   /// placeholders: {provider} = provider (string)
   /// shown through EmailLayout.preview
@@ -150,7 +150,7 @@ translations ar {
   /// shown through EmailHeading.text
   text "{provider} is unlinked" => "تم إلغاء ربط {provider}";
 
-  // ── Osysharp.Accounts · AccountRecoveryCodeUsedMail ──
+  // ── Osysharp.UserAccounts · AccountRecoveryCodeUsedMail ──
   /// AccountRecoveryCodeUsedMail · the preview line an inbox shows beside an email's subject
   /// placeholders: {left} = left (int) — {left} is a count: give one text per plural form
   /// shown through EmailLayout.preview
@@ -172,7 +172,7 @@ translations ar {
   /// beside: "A recovery code was used", "If this was not you, choose a new password and ask for new recovery codes from your account page at once."
   text "One of the recovery codes for {account.Email} was just used. Each works once; {left} are left." => { zero: "تم للتو استخدام أحد رموز الاسترداد لـ {account.Email}. كل رمز يعمل مرة واحدة؛ الرموز المتبقية: {left}.", one: "تم للتو استخدام أحد رموز الاسترداد لـ {account.Email}. كل رمز يعمل مرة واحدة؛ تبقّى {left} رمز.", two: "تم للتو استخدام أحد رموز الاسترداد لـ {account.Email}. كل رمز يعمل مرة واحدة؛ تبقّى {left} رمز.", few: "تم للتو استخدام أحد رموز الاسترداد لـ {account.Email}. كل رمز يعمل مرة واحدة؛ تبقّت {left} رموز.", many: "تم للتو استخدام أحد رموز الاسترداد لـ {account.Email}. كل رمز يعمل مرة واحدة؛ تبقّى {left} رمزًا.", other: "تم للتو استخدام أحد رموز الاسترداد لـ {account.Email}. كل رمز يعمل مرة واحدة؛ تبقّى {left} رمز." };
 
-  // ── Osysharp.Accounts · AccountResetMail ──
+  // ── Osysharp.UserAccounts · AccountResetMail ──
   /// AccountResetMail · a button's label · at most ~30 characters
   /// shown through EmailButton.label
   /// beside: "The link works once, for an hour. If you did not ask, ignore this mail: your password has not changed."
@@ -197,7 +197,7 @@ translations ar {
   /// beside: "Choose a new password", "Choose a new password"
   text "The link works once, for an hour. If you did not ask, ignore this mail: your password has not changed." => "يعمل الرابط مرة واحدة، لمدة ساعة. إن لم تطلب ذلك، فتجاهل هذه الرسالة: لم تتغير كلمة المرور.";
 
-  // ── Osysharp.Accounts · AccountScreen ──
+  // ── Osysharp.UserAccounts · AccountScreen ──
   /// AccountScreen · a heading
   /// shown through AccountsFrame.heading
   heading "Your account" => "حسابك";
@@ -205,7 +205,7 @@ translations ar {
   /// shown through AccountsFrame.sub
   text "How you sign in." => "كيف تسجّل الدخول.";
 
-  // ── Osysharp.Accounts · AccountSecondFactorMail ──
+  // ── Osysharp.UserAccounts · AccountSecondFactorMail ──
   /// AccountSecondFactorMail · the preview line an inbox shows beside an email's subject
   /// shown through EmailLayout.preview
   mailPreview "Signing in now asks for a code from your app." => "يطلب تسجيل الدخول الآن رمزًا من تطبيقك.";
@@ -232,7 +232,7 @@ translations ar {
   /// shown through EmailHeading.text
   text "Two-step sign-in is on" => "تسجيل الدخول بخطوتين مفعّل";
 
-  // ── Osysharp.Accounts · AccountSecondFactorResetMail ──
+  // ── Osysharp.UserAccounts · AccountSecondFactorResetMail ──
   /// AccountSecondFactorResetMail · the preview line an inbox shows beside an email's subject
   /// shown through EmailLayout.preview
   mailPreview "Set it up again the next time you sign in." => "أعد إعداده في المرة القادمة التي تسجّل فيها الدخول.";
@@ -257,7 +257,7 @@ translations ar {
   /// beside: "Sign in with your password and set two-step sign-in up again from your account page — or, where it is required of you, the sign-in itself will ask.", "If you did not ask for this, tell the person who runs the app at once, and choose a new password."
   text "Your two-step sign-in was reset" => "تمت إعادة تعيين تسجيل الدخول بخطوتين";
 
-  // ── Osysharp.Accounts · AccountSettings ──
+  // ── Osysharp.UserAccounts · AccountSettings ──
   /// AccountSettings · a button's label · at most ~20 characters
   /// shown through Button.label
   /// beside: "Current password", "New password", "Change password", "New address"
@@ -414,7 +414,7 @@ translations ar {
   /// beside: "Sign in with"
   text "Unlinking asks for your current password. Signed up with a provider and have none? Choose one with a link from the sign-in page's \"Forgot your password?\"." => "يتطلب إلغاء الربط كلمة المرور الحالية. سجّلت عبر مزوّد وليست لديك كلمة مرور؟ اختر واحدة عبر رابط «نسيت كلمة المرور؟» في صفحة تسجيل الدخول.";
 
-  // ── Osysharp.Accounts · AccountStepUpMail ──
+  // ── Osysharp.UserAccounts · AccountStepUpMail ──
   /// AccountStepUpMail · the preview line an inbox shows beside an email's subject
   /// placeholders: {code} = code (string)
   /// shown through EmailLayout.preview
@@ -441,7 +441,7 @@ translations ar {
   /// beside: "Confirm it is you"
   text "The code works for fifteen minutes. If you did not ask, ignore this mail — nothing changes — and consider changing your password." => "الرمز صالح لمدة خمس عشرة دقيقة. إن لم تطلب ذلك، فتجاهل هذه الرسالة، ولن يتغير شيء، وفكّر في تغيير كلمة المرور.";
 
-  // ── Osysharp.Accounts · AccountTextedStepMail ──
+  // ── Osysharp.UserAccounts · AccountTextedStepMail ──
   /// AccountTextedStepMail · the preview line an inbox shows beside an email's subject
   /// shown through EmailLayout.preview
   mailPreview "Signing in now asks for a code texted to your phone." => "يطلب تسجيل الدخول الآن رمزًا يُرسل إلى هاتفك في رسالة نصية.";
@@ -477,7 +477,7 @@ translations ar {
   /// also in AccountSecondFactorMail
   text "Signing in to {AccountsAppName} as {account.Email} now asks only for the password." => "يطلب تسجيل الدخول إلى {AccountsAppName} باسم {account.Email} الآن كلمة المرور فقط.";
 
-  // ── Osysharp.Accounts · AccountVerifyMail ──
+  // ── Osysharp.UserAccounts · AccountVerifyMail ──
   /// AccountVerifyMail · a button's label · at most ~26 characters
   /// shown through EmailButton.label
   /// beside: "The code works for fifteen minutes, the link for three days. If you did not ask, ignore this mail — nothing changes."
@@ -524,16 +524,16 @@ translations ar {
   /// beside: "The code works for fifteen minutes, the link for three days. If you did not ask, ignore this mail — nothing changes."
   text "You asked to sign in to {AccountsAppName} with {address} from now on. Confirm it is yours, and your account moves to it." => "طلبت تسجيل الدخول إلى {AccountsAppName} باستخدام {address} من الآن فصاعدًا. أكّد أنه عنوانك، وسينتقل حسابك إليه.";
 
-  // ── Osysharp.Accounts · AccountsAppName ──
+  // ── Osysharp.UserAccounts · AccountsAppName ──
   /// AccountsAppName · an email's subject line
   /// shown through AccountsAppName()
   mailSubject "your account" => "حسابك";
 
-  // ── Osysharp.Accounts · AccountsQrCode ──
+  // ── Osysharp.UserAccounts · AccountsQrCode ──
   /// AccountsQrCode · a control's name for screen readers
   accessibleName "QR code for your authenticator app" => "رمز QR لتطبيق المصادقة";
 
-  // ── Osysharp.Accounts · AddressCodeStep ──
+  // ── Osysharp.UserAccounts · AddressCodeStep ──
   /// AddressCodeStep · a button's label · at most ~13 characters
   /// shown through Button.label
   /// beside: "Code from the mail"
@@ -555,12 +555,12 @@ translations ar {
   /// AddressCodeStep · text on the page
   text "If a new code was due, it is on its way." => "إن كان موعد رمز جديد قد حان، فهو في طريقه إليك.";
 
-  // ── Osysharp.Accounts · ChangeEmail ──
+  // ── Osysharp.UserAccounts · ChangeEmail ──
   /// ChangeEmail · an error message
   /// shown through ValidationException
   error "Another account already uses that address." => "هذا العنوان مستخدم بالفعل في حساب آخر.";
 
-  // ── Osysharp.Accounts · Claim ──
+  // ── Osysharp.UserAccounts · Claim ──
   /// Claim · an error message
   /// shown through ValidationException
   error "That is not the password this account was made with. Type it again — or, if you did not make this account or do not know its password, choose a new one." => "هذه ليست كلمة المرور التي أُنشئ بها هذا الحساب. اكتبها مجددًا، أو اختر كلمة مرور جديدة إن لم تكن أنت من أنشأ هذا الحساب أو كنت لا تعرف كلمة مروره.";
@@ -569,7 +569,7 @@ translations ar {
   /// also in Prove
   error "That link is for an address this account no longer uses." => "هذا الرابط لعنوان لم يعد هذا الحساب يستخدمه.";
 
-  // ── Osysharp.Accounts · ConfirmPasswordStep ──
+  // ── Osysharp.UserAccounts · ConfirmPasswordStep ──
   /// ConfirmPasswordStep · a button's label · at most ~27 characters
   /// shown through Button.label
   /// beside: "Your password", "I did not make this account, or forgot its password"
@@ -591,7 +591,7 @@ translations ar {
   /// beside: "Your password", "Confirm and sign in", "I did not make this account, or forgot its password"
   text "{address} receives mail, and the account for it was made before that was confirmed. If you made it, type the password you chose." => "يستقبل {address} البريد، وقد أُنشئ الحساب الخاص به قبل تأكيد ذلك. إن كنت أنت من أنشأه، فاكتب كلمة المرور التي اخترتها.";
 
-  // ── Osysharp.Accounts · EnableSecondFactor ──
+  // ── Osysharp.UserAccounts · EnableSecondFactor ──
   /// EnableSecondFactor · an error message
   /// shown through ValidationException
   error "That code does not match — type the newest code your app shows, and check your phone's clock is set automatically." => "هذا الرمز غير مطابق. اكتب أحدث رمز يعرضه تطبيقك، وتأكد من أن ساعة هاتفك مضبوطة تلقائيًا.";
@@ -602,12 +602,12 @@ translations ar {
   /// shown through ValidationException
   error "Two-step sign-in is already on. To move it to another phone, turn it off first — that asks for a code." => "تسجيل الدخول بخطوتين مفعّل بالفعل. لنقله إلى هاتف آخر، أوقفه أولًا، وسيُطلب منك رمز لذلك.";
 
-  // ── Osysharp.Accounts · Enrolling ──
+  // ── Osysharp.UserAccounts · Enrolling ──
   /// Enrolling · an error message
   /// shown through ValidationException
   error "That sign-in has expired — start again from the sign-in page." => "انتهت صلاحية تسجيل الدخول هذا، ابدأ من جديد من صفحة تسجيل الدخول.";
 
-  // ── Osysharp.Accounts · ForgotPasswordForm ──
+  // ── Osysharp.UserAccounts · ForgotPasswordForm ──
   /// ForgotPasswordForm · a button's label · at most ~21 characters
   /// shown through Button.label
   /// beside: "Email"
@@ -621,12 +621,12 @@ translations ar {
   /// shown through Alert.message
   message "If there is an account for {email}, a link to choose a new password is on its way. It works once, for an hour." => "إن كان هناك حساب لـ {email}، فرابط اختيار كلمة مرور جديدة في طريقه إليك. يعمل مرة واحدة، لمدة ساعة.";
 
-  // ── Osysharp.Accounts · ForgotPasswordPage (/forgot-password) ──
+  // ── Osysharp.UserAccounts · ForgotPasswordPage (/forgot-password) ──
   /// ForgotPasswordPage · /forgot-password · a title
   /// shown through [Title]
   title "Forgot your password" => "نسيت كلمة المرور";
 
-  // ── Osysharp.Accounts · ForgotPasswordScreen ──
+  // ── Osysharp.UserAccounts · ForgotPasswordScreen ──
   /// ForgotPasswordScreen · a heading
   /// shown through AccountsFrame.heading
   heading "Forgot your password?" => "نسيت كلمة المرور؟";
@@ -634,7 +634,7 @@ translations ar {
   /// shown through AccountsFrame.sub
   text "We will mail you a link to choose a new one." => "سنرسل إليك رابطًا عبر البريد لاختيار كلمة مرور جديدة.";
 
-  // ── Osysharp.Accounts · LinkProvider ──
+  // ── Osysharp.UserAccounts · LinkProvider ──
   /// LinkProvider · an error message
   /// placeholders: {provider} = provider (string)
   /// shown through ValidationException
@@ -647,96 +647,96 @@ translations ar {
   /// shown through ValidationException
   error "That {provider} account already signs in to another account here." => "حساب {provider} هذا يُستخدم بالفعل لتسجيل الدخول إلى حساب آخر هنا.";
 
-  // ── Osysharp.Accounts · NewRecoveryCodes ──
+  // ── Osysharp.UserAccounts · NewRecoveryCodes ──
   /// NewRecoveryCodes · an error message
   /// shown through ValidationException
   error "Turn two-step sign-in on first." => "فعّل تسجيل الدخول بخطوتين أولًا.";
 
-  // ── Osysharp.Accounts · Osysharp.Accounts.AccountTexts.Code ──
-  /// Osysharp.Accounts.AccountTexts.Code · text on the page
+  // ── Osysharp.UserAccounts · Osysharp.UserAccounts.AccountTexts.Code ──
+  /// Osysharp.UserAccounts.AccountTexts.Code · text on the page
   /// placeholders: {code} = code (string), {app} = app (string)
   /// shown through Code()
   text "{code} confirms this number for {app}. It works for 15 minutes." => "{code} يؤكد هذا الرقم في {app}. صالح لمدة 15 دقيقة.";
-  /// Osysharp.Accounts.AccountTexts.Code · text on the page
+  /// Osysharp.UserAccounts.AccountTexts.Code · text on the page
   /// placeholders: {code} = code (string), {app} = app (string), {app2} = app (string)
   /// shown through Code()
   text "{code} is your code to sign in to {app}. It works for 15 minutes. Nobody from {app2} will ask you for it." => "{code} هو رمزك لتسجيل الدخول إلى {app}. صالح لمدة 15 دقيقة. لن يطلبه منك أي شخص من {app2}.";
-  /// Osysharp.Accounts.AccountTexts.Code · text on the page
+  /// Osysharp.UserAccounts.AccountTexts.Code · text on the page
   /// placeholders: {code} = code (string), {app} = app (string)
   /// shown through Code()
   text "{code} is your sign-in code for {app}. It works for 15 minutes. If you are not signing in, change your password." => "{code} هو رمز تسجيل الدخول إلى {app}. صالح لمدة 15 دقيقة. إن لم تكن تسجّل الدخول، فغيّر كلمة المرور.";
-  /// Osysharp.Accounts.AccountTexts.Code · text on the page
+  /// Osysharp.UserAccounts.AccountTexts.Code · text on the page
   /// placeholders: {code} = code (string), {app} = app (string)
   /// shown through Code()
   text "{code} turns off text-message sign-in codes for {app}. If you did not ask, change your password." => "{code} يوقف رموز تسجيل الدخول عبر الرسائل النصية في {app}. إن لم تطلب ذلك، فغيّر كلمة المرور.";
 
-  // ── Osysharp.Accounts · Osysharp.Accounts.AccountTexts.UsePasswordToSignIn ──
-  /// Osysharp.Accounts.AccountTexts.UsePasswordToSignIn · text on the page
+  // ── Osysharp.UserAccounts · Osysharp.UserAccounts.AccountTexts.UsePasswordToSignIn ──
+  /// Osysharp.UserAccounts.AccountTexts.UsePasswordToSignIn · text on the page
   /// placeholders: {AccountsAppName} = AccountsAppName(…) (string)
   /// shown through UsePasswordToSignIn()
   text "Sign in to {AccountsAppName} with your password — this phone is your second step, so a code alone does not sign you in." => "سجّل الدخول إلى {AccountsAppName} بكلمة المرور، فهذا الهاتف هو خطوتك الثانية، ولا يكفي الرمز وحده لتسجيل دخولك.";
 
-  // ── Osysharp.Accounts · Osysharp.Accounts.StepUpState ──
-  /// Osysharp.Accounts.StepUpState · a label (a field, a list item, a menu entry) · at most ~24 characters
-  /// shown through Osysharp.Accounts.StepUpState.Checked
+  // ── Osysharp.UserAccounts · Osysharp.UserAccounts.StepUpState ──
+  /// Osysharp.UserAccounts.StepUpState · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Osysharp.UserAccounts.StepUpState.Checked
   /// beside: "Sending the code", "Waiting for the code", "Proven", "Not proven"
   label "Checking the code" => "جارٍ التحقق من الرمز";
-  /// Osysharp.Accounts.StepUpState · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Accounts.StepUpState.Lapsed
+  /// Osysharp.UserAccounts.StepUpState · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.UserAccounts.StepUpState.Lapsed
   /// beside: "Sending the code", "Waiting for the code", "Checking the code", "Proven"
   /// also in Osysharp.Conversations.ProofState
   label "Not proven" => "لم يتم التحقق";
-  /// Osysharp.Accounts.StepUpState · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Accounts.StepUpState.Proven
+  /// Osysharp.UserAccounts.StepUpState · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.UserAccounts.StepUpState.Proven
   /// beside: "Sending the code", "Waiting for the code", "Checking the code", "Not proven"
   /// also in Osysharp.Conversations.ProofState
   label "Proven" => "تم التحقق";
-  /// Osysharp.Accounts.StepUpState · a label (a field, a list item, a menu entry) · at most ~23 characters
-  /// shown through Osysharp.Accounts.StepUpState.Sending
+  /// Osysharp.UserAccounts.StepUpState · a label (a field, a list item, a menu entry) · at most ~23 characters
+  /// shown through Osysharp.UserAccounts.StepUpState.Sending
   /// beside: "Waiting for the code", "Checking the code", "Proven", "Not proven"
   label "Sending the code" => "جارٍ إرسال الرمز";
-  /// Osysharp.Accounts.StepUpState · a label (a field, a list item, a menu entry) · at most ~28 characters
-  /// shown through Osysharp.Accounts.StepUpState.Waiting
+  /// Osysharp.UserAccounts.StepUpState · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Osysharp.UserAccounts.StepUpState.Waiting
   /// beside: "Sending the code", "Checking the code", "Proven", "Not proven"
   /// also in Osysharp.Conversations.ProofState
   label "Waiting for the code" => "بانتظار الرمز";
 
-  // ── Osysharp.Accounts · Osysharp.Accounts.User ──
-  /// Osysharp.Accounts.User · a label (a field, a list item, a menu entry) · at most ~27 characters
-  /// shown through Osysharp.Accounts.User.PasswordChangedAt
+  // ── Osysharp.UserAccounts · Osysharp.UserAccounts.User ──
+  /// Osysharp.UserAccounts.User · a label (a field, a list item, a menu entry) · at most ~27 characters
+  /// shown through Osysharp.UserAccounts.User.PasswordChangedAt
   /// beside: "Password hash", "Totp secret", "Totp last step", "Second factor on at", "Phone", "Phone verified at"
   label "Password changed at" => "تاريخ تغيير كلمة المرور";
-  /// Osysharp.Accounts.User · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Accounts.User.PasswordHash
+  /// Osysharp.UserAccounts.User · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.UserAccounts.User.PasswordHash
   /// beside: "Password changed at", "Totp secret", "Totp last step", "Second factor on at", "Phone", "Phone verified at"
   label "Password hash" => "تجزئة كلمة المرور";
-  /// Osysharp.Accounts.User · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Accounts.User.Phone
+  /// Osysharp.UserAccounts.User · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.UserAccounts.User.Phone
   /// beside: "Password hash", "Password changed at", "Totp secret", "Totp last step", "Second factor on at", "Phone verified at"
   /// also in Osysharp.Conversations.ContactPointKind
   label "Phone" => "الهاتف";
-  /// Osysharp.Accounts.User · a label (a field, a list item, a menu entry) · at most ~24 characters
-  /// shown through Osysharp.Accounts.User.PhoneVerifiedAt
+  /// Osysharp.UserAccounts.User · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Osysharp.UserAccounts.User.PhoneVerifiedAt
   /// beside: "Password hash", "Password changed at", "Totp secret", "Totp last step", "Second factor on at", "Phone"
   label "Phone verified at" => "تاريخ التحقق من الهاتف";
-  /// Osysharp.Accounts.User · a label (a field, a list item, a menu entry) · at most ~27 characters
-  /// shown through Osysharp.Accounts.User.SecondFactorOnAt
+  /// Osysharp.UserAccounts.User · a label (a field, a list item, a menu entry) · at most ~27 characters
+  /// shown through Osysharp.UserAccounts.User.SecondFactorOnAt
   /// beside: "Password hash", "Password changed at", "Totp secret", "Totp last step", "Phone", "Phone verified at"
   label "Second factor on at" => "تفعيل التحقق الثنائي في";
-  /// Osysharp.Accounts.User · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.Accounts.User.SmsSecondStep
+  /// Osysharp.UserAccounts.User · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.UserAccounts.User.SmsSecondStep
   /// beside: "Password hash", "Password changed at", "Totp secret", "Totp last step", "Second factor on at", "Phone"
   label "Sms second step" => "الخطوة الثانية بالرسائل";
-  /// Osysharp.Accounts.User · a label (a field, a list item, a menu entry) · at most ~20 characters
-  /// shown through Osysharp.Accounts.User.TotpLastStep
+  /// Osysharp.UserAccounts.User · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.UserAccounts.User.TotpLastStep
   /// beside: "Password hash", "Password changed at", "Totp secret", "Second factor on at", "Phone", "Phone verified at"
   label "Totp last step" => "آخر خطوة TOTP";
-  /// Osysharp.Accounts.User · a label (a field, a list item, a menu entry) · at most ~17 characters
-  /// shown through Osysharp.Accounts.User.TotpSecret
+  /// Osysharp.UserAccounts.User · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.UserAccounts.User.TotpSecret
   /// beside: "Password hash", "Password changed at", "Totp last step", "Second factor on at", "Phone", "Phone verified at"
   label "Totp secret" => "سر TOTP";
 
-  // ── Osysharp.Accounts · PasswordProblem ──
+  // ── Osysharp.UserAccounts · PasswordProblem ──
   /// PasswordProblem · message
   /// placeholders: {min} = min (int) — {min} is a count: give one text per plural form
   /// shown through PasswordProblem()
@@ -748,12 +748,12 @@ translations ar {
   /// shown through PasswordProblem()
   message "Choose a password that is not your address." => "اختر كلمة مرور غير عنوان بريدك.";
 
-  // ── Osysharp.Accounts · Prove ──
+  // ── Osysharp.UserAccounts · Prove ──
   /// Prove · an error message
   /// shown through ValidationException
   error "Another account has taken that address since you asked. Choose another." => "استخدم حساب آخر هذا العنوان منذ أن طلبته. اختر عنوانًا آخر.";
 
-  // ── Osysharp.Accounts · ProvePhone ──
+  // ── Osysharp.UserAccounts · ProvePhone ──
   /// ProvePhone · an error message
   /// shown through ValidationException
   error "Another account already uses that number." => "هذا الرقم مستخدم بالفعل في حساب آخر.";
@@ -768,7 +768,7 @@ translations ar {
   /// shown through ValidationException
   error "{AccountsAppName} does not keep phone numbers." => "لا يحتفظ {AccountsAppName} بأرقام الهواتف.";
 
-  // ── Osysharp.Accounts · ProveStepUp ──
+  // ── Osysharp.UserAccounts · ProveStepUp ──
   /// ProveStepUp · message
   /// shown through ProveStepUp()
   /// also in ProveAddress
@@ -778,7 +778,7 @@ translations ar {
   /// shown through ProveStepUp()
   message "The code is still on its way — give it a moment." => "الرمز في طريقه إليك، انتظر لحظة.";
 
-  // ── Osysharp.Accounts · ProviderSignIn ──
+  // ── Osysharp.UserAccounts · ProviderSignIn ──
   /// ProviderSignIn · a button's label · at most ~27 characters
   /// placeholders: {who.Provider} = who.Provider
   /// shown through Button.label
@@ -811,17 +811,17 @@ translations ar {
   /// shown through problem
   text "That sign-in did not match an account that may sign in here." => "تسجيل الدخول هذا لا يطابق حسابًا مسموحًا له بتسجيل الدخول هنا.";
 
-  // ── Osysharp.Accounts · ProviderSignInPage (/oauth/sign-in) ──
+  // ── Osysharp.UserAccounts · ProviderSignInPage (/oauth/sign-in) ──
   /// ProviderSignInPage · /oauth/sign-in · a title
   /// shown through [Title]
   title "Signing in" => "جارٍ تسجيل الدخول";
 
-  // ── Osysharp.Accounts · ProviderSignInScreen ──
+  // ── Osysharp.UserAccounts · ProviderSignInScreen ──
   /// ProviderSignInScreen · a heading
   /// shown through AccountsFrame.heading
   heading "Signing in" => "جارٍ تسجيل الدخول";
 
-  // ── Osysharp.Accounts · RecoveryCodeList ──
+  // ── Osysharp.UserAccounts · RecoveryCodeList ──
   /// RecoveryCodeList · text on the page
   /// beside: "Your recovery codes"
   text "If you lose your phone, each of these signs you in once. Save them somewhere safe — a password manager, or on paper. This is the only time they are shown." => "إن فقدت هاتفك، فكل رمز من هذه الرموز يتيح لك تسجيل الدخول مرة واحدة. احفظها في مكان آمن، مثل مدير كلمات المرور أو على ورق. هذه هي المرة الوحيدة التي تُعرض فيها.";
@@ -829,22 +829,22 @@ translations ar {
   /// beside: "If you lose your phone, each of these signs you in once. Save them somewhere safe — a password manager, or on paper. This is the only time they are shown."
   text "Your recovery codes" => "رموز الاسترداد الخاصة بك";
 
-  // ── Osysharp.Accounts · RefuseWhenLockedOut ──
+  // ── Osysharp.UserAccounts · RefuseWhenLockedOut ──
   /// RefuseWhenLockedOut · an error message
   /// shown through ValidationException
   error "Too many wrong codes — wait fifteen minutes, then try again." => "رموز خاطئة كثيرة جدًا. انتظر خمس عشرة دقيقة، ثم حاول مجددًا.";
 
-  // ── Osysharp.Accounts · RequireCode ──
+  // ── Osysharp.UserAccounts · RequireCode ──
   /// RequireCode · an error message
   /// shown through ValidationException
   error "That code is not right — type the newest code your app shows, or a recovery code." => "هذا الرمز غير صحيح. اكتب أحدث رمز يعرضه تطبيقك، أو رمز استرداد.";
 
-  // ── Osysharp.Accounts · ResetPassword ──
+  // ── Osysharp.UserAccounts · ResetPassword ──
   /// ResetPassword · an error message
   /// shown through ValidationException
   error "That link has expired or was already used — ask for a new one." => "انتهت صلاحية هذا الرابط أو سبق استخدامه. اطلب رابطًا جديدًا.";
 
-  // ── Osysharp.Accounts · ResetPasswordForm ──
+  // ── Osysharp.UserAccounts · ResetPasswordForm ──
   /// ResetPasswordForm · a button's label · at most ~23 characters
   /// shown through Button.label
   /// beside: "New password", "The same again", "Ask for a new link"
@@ -879,22 +879,22 @@ translations ar {
   /// also in ConfirmPasswordStep
   text "The two passwords are not the same." => "كلمتا المرور غير متطابقتين.";
 
-  // ── Osysharp.Accounts · ResetPasswordPage (/reset-password/{token}) ──
+  // ── Osysharp.UserAccounts · ResetPasswordPage (/reset-password/{token}) ──
   /// ResetPasswordPage · /reset-password/{token} · a title
   /// shown through [Title]
   title "Choose a new password" => "اختر كلمة مرور جديدة";
 
-  // ── Osysharp.Accounts · ResetPasswordScreen ──
+  // ── Osysharp.UserAccounts · ResetPasswordScreen ──
   /// ResetPasswordScreen · a heading
   /// shown through AccountsFrame.heading
   heading "Choose a new password" => "اختر كلمة مرور جديدة";
 
-  // ── Osysharp.Accounts · SecondFactorCodeStep ──
+  // ── Osysharp.UserAccounts · SecondFactorCodeStep ──
   /// SecondFactorCodeStep · a link · at most ~17 characters
   /// shown through TextLink.label
   link "Start again" => "البدء من جديد";
 
-  // ── Osysharp.Accounts · SecondFactorEnrolment ──
+  // ── Osysharp.UserAccounts · SecondFactorEnrolment ──
   /// SecondFactorEnrolment · a button's label · at most ~40 characters
   /// shown through Button.label
   /// beside: "Two-step sign-in is on."
@@ -921,7 +921,7 @@ translations ar {
   /// beside: "0.04em"
   text "Or type this key into the app:" => "أو اكتب هذا المفتاح في التطبيق:";
 
-  // ── Osysharp.Accounts · SetSmsSecondStep ──
+  // ── Osysharp.UserAccounts · SetSmsSecondStep ──
   /// SetSmsSecondStep · an error message
   /// shown through ValidationException
   error "Add and confirm a phone number first." => "أضف رقم هاتف وأكّده أولًا.";
@@ -933,7 +933,7 @@ translations ar {
   /// shown through ValidationException
   error "{AccountsAppName} does not offer text-message sign-in codes." => "لا يوفّر {AccountsAppName} رموز تسجيل الدخول عبر الرسائل النصية.";
 
-  // ── Osysharp.Accounts · SignInForm ──
+  // ── Osysharp.UserAccounts · SignInForm ──
   /// SignInForm · a button's label · at most ~21 characters
   /// shown through Button.label
   button "Back to sign in" => "العودة لتسجيل الدخول";
@@ -1031,28 +1031,28 @@ translations ar {
   /// SignInForm · text on the page
   text "or" => "أو";
 
-  // ── Osysharp.Accounts · SignInPage (/login) ──
+  // ── Osysharp.UserAccounts · SignInPage (/login) ──
   /// SignInPage · /login · a title
   /// shown through [Title]
   title "Sign in" => "تسجيل الدخول";
 
-  // ── Osysharp.Accounts · SignInScreen ──
+  // ── Osysharp.UserAccounts · SignInScreen ──
   /// SignInScreen · a heading
   /// shown through AccountsFrame.heading
   heading "Sign in" => "تسجيل الدخول";
 
-  // ── Osysharp.Accounts · SignInWithCode ──
+  // ── Osysharp.UserAccounts · SignInWithCode ──
   /// SignInWithCode · an error message
   /// shown through ValidationException
   error "That sign-in has expired — start again with your password." => "انتهت صلاحية تسجيل الدخول هذا، ابدأ من جديد بكلمة المرور.";
 
-  // ── Osysharp.Accounts · SignInWithPhone ──
+  // ── Osysharp.UserAccounts · SignInWithPhone ──
   /// SignInWithPhone · an error message
   /// placeholders: {AccountsAppName} = AccountsAppName(…) (string)
   /// shown through ValidationException
   error "{AccountsAppName} does not sign people in by text message." => "لا يتيح {AccountsAppName} تسجيل الدخول عبر الرسائل النصية.";
 
-  // ── Osysharp.Accounts · SignInWithProvider ──
+  // ── Osysharp.UserAccounts · SignInWithProvider ──
   /// SignInWithProvider · an error message
   /// shown through ValidationException
   error "That sign-in could not be verified, or the provider has not confirmed your address — start again from the sign-in page." => "تعذّر التحقق من تسجيل الدخول هذا، أو أن المزوّد لم يؤكد عنوانك. ابدأ من جديد من صفحة تسجيل الدخول.";
@@ -1061,13 +1061,13 @@ translations ar {
   /// shown through ValidationException
   error "There is an account for {address}, but it has not confirmed its address yet. We have sent a link to confirm it — then sign in with {provider} again, or sign in with your password." => "يوجد حساب لـ {address}، لكنه لم يؤكد عنوانه بعد. أرسلنا رابطًا لتأكيده، ثم سجّل الدخول باستخدام {provider} مجددًا، أو سجّل الدخول بكلمة المرور.";
 
-  // ── Osysharp.Accounts · SignInWithTextedCode ──
+  // ── Osysharp.UserAccounts · SignInWithTextedCode ──
   /// SignInWithTextedCode · an error message
   /// placeholders: {AccountsAppName} = AccountsAppName(…) (string)
   /// shown through ValidationException
   error "{AccountsAppName} asks for an authenticator app on your account — a texted code is not enough. Sign in again to set one up." => "يطلب {AccountsAppName} تطبيق مصادقة لحسابك، ولا يكفي رمز مُرسل في رسالة نصية. سجّل الدخول مجددًا لإعداده.";
 
-  // ── Osysharp.Accounts · SignUp ──
+  // ── Osysharp.UserAccounts · SignUp ──
   /// SignUp · an error message
   /// shown through ValidationException
   /// also in ChangeEmail
@@ -1078,7 +1078,7 @@ translations ar {
   /// shown through ValidationException
   error "{AccountsAppName} is not open for sign-up — ask the person who runs it for an account." => "التسجيل غير متاح في {AccountsAppName}. اطلب حسابًا من المسؤول عنه.";
 
-  // ── Osysharp.Accounts · SignUpForm ──
+  // ── Osysharp.UserAccounts · SignUpForm ──
   /// SignUpForm · a button's label · at most ~20 characters
   /// shown through Button.label
   /// beside: "Your name", "Email", "Password", "I already have an account"
@@ -1113,23 +1113,23 @@ translations ar {
   /// also in InvitationAnswer
   placeholder "How colleagues see you" => "كيف يراك زملاؤك";
 
-  // ── Osysharp.Accounts · SignUpPage (/sign-up) ──
+  // ── Osysharp.UserAccounts · SignUpPage (/sign-up) ──
   /// SignUpPage · /sign-up · a title
   /// shown through [Title]
   title "Create an account" => "إنشاء حساب";
 
-  // ── Osysharp.Accounts · SignUpScreen ──
+  // ── Osysharp.UserAccounts · SignUpScreen ──
   /// SignUpScreen · a heading
   /// shown through AccountsFrame.heading
   heading "Create an account" => "إنشاء حساب";
 
-  // ── Osysharp.Accounts · SignUpWithProvider ──
+  // ── Osysharp.UserAccounts · SignUpWithProvider ──
   /// SignUpWithProvider · an error message
   /// shown through ValidationException
   /// also in SignUp
   error "The app's AccountKinds.New made an account for another address — it must use the one it was given." => "أنشأ AccountKinds.New في التطبيق حسابًا لعنوان آخر، ويجب أن يستخدم العنوان الذي أُعطي له.";
 
-  // ── Osysharp.Accounts · StartStepUp ──
+  // ── Osysharp.UserAccounts · StartStepUp ──
   /// StartStepUp · an error message
   /// shown through ValidationException
   /// also in SetMyPresence
@@ -1137,28 +1137,28 @@ translations ar {
   /// also in AskAboutMe
   error "Sign in first." => "سجّل الدخول أولًا.";
 
-  // ── Osysharp.Accounts · UnlinkProvider ──
+  // ── Osysharp.UserAccounts · UnlinkProvider ──
   /// UnlinkProvider · an error message
   /// placeholders: {provider} = provider (string)
   /// shown through ValidationException
   error "{provider} does not sign in to this account." => "{provider} غير مرتبط بتسجيل الدخول إلى هذا الحساب.";
 
-  // ── Osysharp.Accounts · Verified ──
+  // ── Osysharp.UserAccounts · Verified ──
   /// Verified · an error message
   /// shown through ValidationException
   error "That is not your current password." => "هذه ليست كلمة مرورك الحالية.";
 
-  // ── Osysharp.Accounts · VerifyEmail ──
+  // ── Osysharp.UserAccounts · VerifyEmail ──
   /// VerifyEmail · an error message
   /// shown through ValidationException
   error "That link has expired or was already used — sign in to have a new one sent." => "انتهت صلاحية هذا الرابط أو سبق استخدامه. سجّل الدخول ليُرسل إليك رابط جديد.";
 
-  // ── Osysharp.Accounts · VerifyEmailPage (/verify-email/{token}) ──
+  // ── Osysharp.UserAccounts · VerifyEmailPage (/verify-email/{token}) ──
   /// VerifyEmailPage · /verify-email/{token} · a title
   /// shown through [Title]
   title "Confirm your address" => "أكّد عنوانك";
 
-  // ── Osysharp.Accounts · VerifyEmailResult ──
+  // ── Osysharp.UserAccounts · VerifyEmailResult ──
   /// VerifyEmailResult · a link · at most ~14 characters
   /// shown through TextLink.label
   link "Continue" => "متابعة";
@@ -1170,12 +1170,12 @@ translations ar {
   /// VerifyEmailResult · text on the page
   text "Confirming…" => "جارٍ التأكيد…";
 
-  // ── Osysharp.Accounts · VerifyEmailScreen ──
+  // ── Osysharp.UserAccounts · VerifyEmailScreen ──
   /// VerifyEmailScreen · a heading
   /// shown through AccountsFrame.heading
   heading "Confirm your address" => "أكّد عنوانك";
 
-  // ── Osysharp.Accounts · WrongCode ──
+  // ── Osysharp.UserAccounts · WrongCode ──
   /// WrongCode · message
   /// shown through WrongCode()
   message "That code is not right, or it has expired — check the newest message, or ask for a new code." => "هذا الرمز غير صحيح أو انتهت صلاحيته. تحقق من أحدث رسالة، أو اطلب رمزًا جديدًا.";

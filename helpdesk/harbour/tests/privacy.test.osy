@@ -2,11 +2,11 @@
 // and who reads it), and what the desk keeps beside a conversation (a reply draft, a form's answers) going with it. Mira manages privacy; the Office desk is in team.test.osy.
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Composer;
+using Osysharp.ReplyComposer;
 using Osysharp.Privacy;
 using Osysharp.Privacy.Conversations;
-using Osysharp.Inbox;
-using Osysharp.Fields;
+using Osysharp.WorkQueues;
+using Osysharp.CustomFields;
 
 Guid Customer(string email, string name, string subject, string text) {
   var id = Guid.Empty;
@@ -238,7 +238,7 @@ void the_desks_own_notes_and_form_answers_are_in_her_plan_by_name_and_go_with_he
     Assert.Null(Ticket.Single(x => x.Id == id).RootCause);
     Assert.Equal("Erased conversation", Ticket.Single(x => x.Id == id).Title);
     // ⭐ Her answer on the ticket is blanked like every personal field the ticket holds — the value is INHERITED from
-    // Osysharp.Fields, and an inherited personal field is erased exactly as a declared one is. The row stays: the
+    // Osysharp.CustomFields, and an inherited personal field is erased exactly as a declared one is. The row stays: the
     // ticket's record that the field was answered, never what the answer was.
     Assert.Equal("", TicketFieldValue.Single(v => v.Ticket.Id == id && v.Field.Id == field.Id).Value);
     Assert.Equal("", TicketFieldValue.Single(v => v.Ticket.Id == id && v.Field.Id == account.Id).Value);

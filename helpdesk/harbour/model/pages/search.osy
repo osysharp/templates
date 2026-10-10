@@ -1,7 +1,7 @@
 // SEARCH — the desk's search box (/search, ⌘K's "Search…"), and "Seen before" beside a ticket: tickets found by what
 // their conversations are about in any language, how the team solved ones like them, and the help centre's articles.
-using Osysharp.Inbox;
-using Osysharp.Knowledge;
+using Osysharp.WorkQueues;
+using Osysharp.KnowledgeBase;
 
 /// Search tickets, past answers and articles — by meaning, whatever language a customer wrote in.
 [Route("/search")]

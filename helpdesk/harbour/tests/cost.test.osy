@@ -1,5 +1,6 @@
-// WHAT A TICKET COSTS — the statements one more ticket sends to the database, held as budgets. Every statement here is
-// paid on every ticket a desk opens. A change that makes a ticket dearer turns these red, with both numbers in the message.
+// WHAT A TICKET COSTS — the statements, round trips, requests and server calls one more ticket costs, held as
+// budgets. Every statement here is paid on every ticket a desk opens, so a change that makes a ticket dearer turns
+// these red, with both numbers in the message.
 //
 // ⚑ ONE MORE, NOT THE FIRST: each test opens one ticket before its mark — the first pays what only the first pays (a
 //   counter row, a first run of each workflow). A test settles at once the background work a deployed app queues, so
@@ -10,7 +11,7 @@
 using Osysharp.Identity;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 
 [Test(Desk)]
 void one_more_ticket_opened_at_the_desk_stays_within_its_budget() {
@@ -20,9 +21,14 @@ void one_more_ticket_opened_at_the_desk_stays_within_its_budget() {
     OpenTicket("next@cost.test", "Next Caller", "Export stuck at 99%", "Since this morning.");
     Log.Information("Desk ticket: " + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips, "
       + Cost.RequestsSince(mark) + " requests, " + Cost.ServerCallsSince(mark) + " server calls");
-    // ⚑ HELD AT THE MEASURED VALUE, not with a margin: one more statement here is a regression.
+    // What one ticket costs: the hourly clock is started when the app loads (an `[OnStart]` hook in Automations), so no
+    // delivery asks whether it is running; an event no handler cares about is not written; app settings are worked
+    // out once and kept; and a unit of work sends a read once while nothing it read has changed. This ticket matches
+    // no routing rule, so TicketArrived is the one event it writes.
+    // ⚑ HELD AT THE MEASURED VALUE, not with a margin: each of those is worth about one statement a ticket, and a 5%
+    //   margin would let one back in unseen.
     Assert.AtMost(50, Cost.StatementsSince(mark));
-    // The budget is this step's measured cost, with the margin the assertion states.
+    // …in 38–39 round trips to the database. 5%.
     Assert.AtMost(41, Cost.RoundTripsSince(mark));
   }
 }
@@ -44,18 +50,18 @@ void opening_a_ticket_from_the_inbox_stays_within_its_budget() {
   Assert.Visible("Every card is declined.");
   Log.Information("Inbox open: " + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips, "
     + Cost.RequestsSince(mark) + " requests, " + Cost.ServerCallsSince(mark) + " server calls");
-  // The budget is this step's measured cost, with the margin the assertion states.
+  // Opening a ticket asks every part of it in ONE call (`OpenTicketView`), which reads the caller and the translator's
+  // key once. 140 measured: 5%.
   Assert.AtMost(147, Cost.StatementsSince(mark));
-  // The budget is this step's measured cost, with the margin the assertion states.
+  // …and what the reader waits for: 6 requests, 1 of them a server call. One request of margin; the call held exactly.
   Assert.AtMost(7, Cost.RequestsSince(mark));
   Assert.AtMost(1, Cost.ServerCallsSince(mark));
 }
 
 /// Moving to another ticket inside the desk costs no more than opening the first one did. Every part of a ticket that
 /// needs the server — the thread's event lines and read mark, the inbox's trail and words, the draft, the customer's
-/// record, the legal hold — is handed its piece of ONE call (`OpenTicketView`); before that each part asked on its own,
-/// fourteen calls a move, each refetching the page's reads after it. "Seen before" looks when asked: it searches by
-/// meaning, which the desk pays for, so a move never spends on it.
+/// record, the legal hold — is handed its piece of ONE call (`OpenTicketView`), so a move is one call rather than one
+/// a part. "Seen before" looks when asked: it searches by meaning, which the desk pays for, so a move never spends on it.
 [Test(Desk)]
 void moving_to_a_second_ticket_costs_no_more_than_opening_the_first() {
   // Two tickets the desk routes alike — one queue, one shape — so the second open is compared with its like: a title
@@ -76,7 +82,8 @@ void moving_to_a_second_ticket_costs_no_more_than_opening_the_first() {
   Assert.Visible("Every card is declined.");
   var second = Cost.StatementsSince(again);
   var firstRequests = Cost.RequestsSince(mark) - Cost.RequestsSince(again);
-  // The budget is this step's measured cost, with the margin the assertion states.
+  // The move is ONE server call (`OpenTicketView`), and it asks no more of the network than the first open did.
+  // A page's reads started in one event-loop turn go as one batch, so a move is 6 requests — held at that.
   Assert.Equal(1, Cost.ServerCallsSince(again));
   Assert.AtMost(firstRequests, Cost.RequestsSince(again));
   Assert.AtMost(6, Cost.RequestsSince(again));
@@ -89,7 +96,9 @@ void moving_to_a_second_ticket_costs_no_more_than_opening_the_first() {
   var returned = Cost.StatementsSince(back);
   Log.Information("Moving: first " + first + " statements, second " + second + ", back " + returned + "; requests first "
     + firstRequests + ", second " + Cost.RequestsSince(again) + ", server calls " + Cost.ServerCallsSince(again));
-  // The budget is this step's measured cost, with the margin the assertion states.
+  // Measured: first 103, second 102, back 1. Both moves include marking an unread ticket read — a real write, and the
+  // page's reads of it refetching. A 5% margin on the second, and never more than the first; one statement of margin
+  // on going back.
   Assert.AtMost(107, second);
   Assert.AtMost(first, second);
   Assert.AtMost(2, returned);
@@ -102,13 +111,14 @@ void one_more_ticket_through_the_web_form_stays_within_its_budget() {
   SubmitRequest("Card payments failing", "Every card is declined.", "Next Visitor", "next@cost.test");
   Log.Information("Web form ticket: " + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips, "
     + Cost.RequestsSince(mark) + " requests, " + Cost.ServerCallsSince(mark) + " server calls");
-  // The budget is this step's measured cost, with the margin the assertion states.
+  // "Card payments failing" is one the desk's "Money questions" rule routes, so its placement IS news on the timeline
+  // and its ItemRouted event is written — only a ticket no rule touches saves that statement. 80 measured: 5%.
   Assert.AtMost(84, Cost.StatementsSince(mark));
-  // The budget is this step's measured cost, with the margin the assertion states.
+  // …in 65–66 round trips to the database. 5%.
   Assert.AtMost(70, Cost.RoundTripsSince(mark));
 }
 
-// ── what a page asks of the server ──────────────────────────────────────────────────────────────────────
+// ── what a page asks of the server ──────────────────────────────────────────────────────────────────────────────────
 //
 // Requests are what a reader WAITS for: on a phone every one is a network round trip, wherever the database is. So each
 // page action here holds its requests and its server calls beside its statements.
@@ -131,7 +141,9 @@ void a_ticket_opened_at_the_desk_from_its_page_stays_within_its_request_budget()
   Assert.Visible("Since this morning.");
   Log.Information("Desk page ticket: " + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips, "
     + Cost.RequestsSince(mark) + " requests, " + Cost.ServerCallsSince(mark) + " server calls");
-  // The budget is this step's measured cost, with the margin the assertion states.
+  // The click and the ticket's page it lands on: 13–14 requests, 2 server calls, 217 statements, 119–120 round trips.
+  // This ticket matches no routing rule, so its placement writes no event. One request of margin, the calls held
+  // exactly, and the statements held where they stand.
   Assert.AtMost(15, Cost.RequestsSince(mark));
   Assert.AtMost(2, Cost.ServerCallsSince(mark));
   Assert.AtMost(228, Cost.StatementsSince(mark));
@@ -157,14 +169,15 @@ void a_ticket_through_the_web_form_page_stays_within_its_request_budget() {
   Assert.Visible("We have your request");
   Log.Information("Web-form page ticket: " + Cost.StatementsSince(mark) + " statements, " + Cost.RoundTripsSince(mark) + " round trips, "
     + Cost.RequestsSince(mark) + " requests, " + Cost.ServerCallsSince(mark) + " server calls");
-  // The budget is this step's measured cost, with the margin the assertion states.
+  // 1 request, which is 1 server call — a request cannot be sent in fewer than one, so those are held exactly — and
+  // 119 statements in 72–73 round trips, the ticket's three events delivered together in one transaction. 5%.
   Assert.AtMost(1, Cost.RequestsSince(mark));
   Assert.AtMost(1, Cost.ServerCallsSince(mark));
   Assert.AtMost(125, Cost.StatementsSince(mark));
 }
 
 /// The ONE call a ticket's parts open with (`OpenTicketView`) — its statements, for a ticket after the first. Who is
-/// reading is taken from the request by id rather than read as a row by each part that asks, and the translator asks
+/// reading is taken from the request by id rather than read as a row by each part that asks, the translator asks
 /// for its key once, and a unit of work sends a read once. The budget is the measured value.
 [Test(Desk)]
 void the_call_a_ticket_opens_with_stays_within_its_budget() {

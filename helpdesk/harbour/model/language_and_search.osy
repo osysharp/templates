@@ -12,7 +12,7 @@
 //   `osyrin app secret set HarbourModel …` / `… HarbourEmbedding …`.
 using Osysharp.Conversations;
 using Osysharp.Memory;
-using Osysharp.Knowledge;
+using Osysharp.KnowledgeBase;
 using Osysharp.Models.Anthropic;
 
 // The model that translates — the desk's default model, on the desk's own key.

@@ -1,13 +1,13 @@
 // THE DESK'S WEBHOOKS — what happens to a ticket, told to other systems (Osysharp.Webhooks): an admin subscribes an
 // endpoint on Settings › Webhooks to some of the desk's events — the same ones its automations run on (events.osy), by
 // their own names: ticket-arrived · ticket-changed · customer-wrote-again · ticket-status-changed — and the inbox's,
-// inbox.holder-changed · inbox.promise-at-risk · inbox.promise-breached and the rest — and each is sent there as a
+// work-queues.holder-changed · work-queues.promise-at-risk · work-queues.promise-breached and the rest — and each is sent there as a
 // signed document: the ticket as the API answers it (`TicketData`, model/api.osy).
 //
 // ⚑ A WEBHOOK IS SENT ONLY WHAT ITS ADMIN MAY READ — a ticket in a restricted queue they are not in is never sent.
 // ⚑ AN ENDPOINT THAT KEEPS FAILING IS PAUSED, and the desk's admins are told in their bell.
 using Osysharp.Identity;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Webhooks;
 using Osysharp.Notifications;
 

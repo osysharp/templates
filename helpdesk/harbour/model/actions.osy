@@ -12,10 +12,10 @@
 //   workflow moves) the app's rule cannot, and its run says so. A team copy of the rule does it, as its saver.
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
-using Osysharp.Composer;
+using Osysharp.WorkQueues;
+using Osysharp.ReplyComposer;
 using Osysharp.Notifications;
-using Osysharp.Fields;
+using Osysharp.CustomFields;
 
 /// Move it to a status — inside its category a relabel; across categories the ticket's workflow moves it, as the status
 /// menu does.

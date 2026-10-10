@@ -10,7 +10,7 @@
 //   SECURITY-INVARIANT a-side-conversation-never-shows-its-parent; tests/side-conversations.test.osy).
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Notifications;
 
 /// Start a side conversation on a ticket — to `address` (somebody outside, mailed) or, with no address, a thread inside

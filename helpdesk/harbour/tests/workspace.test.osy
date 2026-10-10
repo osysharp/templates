@@ -2,12 +2,12 @@
 // ticket with its timeline and composer, two people on one ticket, and many tickets at once. `osy test --pixels`
 // photographs each (`Ui.Shot`) .
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
 using Osysharp.Mail.Receiving;
-using Osysharp.Inbox;
-using Osysharp.Fields;
+using Osysharp.WorkQueues;
+using Osysharp.CustomFields;
 
 /// Ines runs the desk (an admin, an agent); the seed adds the rest of the team and the customers.
 [TestFixture]
@@ -42,8 +42,8 @@ void CatchUp() {
 }
 
 // ── the desk at real volume — built ONCE per run, and every test below gets its own copy of it ─────────────────────
-// Seeding 500 tickets through the desk's own model is ~145k statements and minutes of work; it used to happen in the
-// body of each of the three tests that wanted it. A fixture is built once and cloned for every test that names it, and
+// Seeding 500 tickets through the desk's own model is ~145k statements and minutes of work, so it is done once rather
+// than in the body of each of the three tests that want it. A fixture is built once and cloned for every test that names it, and
 // a fixture may build on another (`[TestFixture(FilledDesk)]`) — so the desk is seeded once and caught up once.
 
 /// A month of a support team's work — 500 tickets, seeded as Ines — on a working Tuesday morning, pinned: the seed
@@ -227,7 +227,7 @@ void a_reply_and_a_note_land_on_the_one_timeline_and_the_note_is_marked() {
   Ui.Visit("/v/open/t/" + number);
   Assert.Visible("Since this morning every card payment");
   // A TICKET READS TOP-DOWN: with one message, the reply box follows it — level with the customer
-  // panel's details, not pinned to the foot of the pane under an empty band. (The Composer kit's well — its bar and a
+  // panel's details, not pinned to the foot of the pane under an empty band. (The ReplyComposer kit's well — its bar and a
   // five-line box — puts Send a line below "Follow"; it still sits above the panel's last control, mid-screen.)
   Assert.Above("Send", "Start a privacy request…");   // the panel's privacy button (renamed from "Erase their data…")
   Ui.Fill("Reply to Hanna Lindqvist", "We can see the declines too — looking at the acquirer now.");

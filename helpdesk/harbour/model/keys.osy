@@ -1,4 +1,4 @@
-using Osysharp.Composer;
+using Osysharp.ReplyComposer;
 
 // THE DESK'S KEYS — every key the desk binds itself, in one place.
 //
@@ -8,7 +8,7 @@ using Osysharp.Composer;
 //   spells a binding for the reader's platform (⌘ on a Mac, Ctrl elsewhere).
 //
 // ⚑ THE LIST'S KEYS ARE THE INBOX'S — J/K move, X selects, Enter opens, T takes, A hands on, M moves, P sets the
-//   priority, E escalates, U releases, and "G then M/U/A" go to a view (Osysharp.Inbox). The composer's (Osysharp.Composer)
+//   priority, E escalates, U releases, and "G then M/U/A" go to a view (Osysharp.WorkQueues). The composer's (Osysharp.ReplyComposer)
 //   are bound here, through `DeskComposerKeys`: R replies, N writes a note, Shift+M opens the macros, ⌘B/⌘I format.
 //   The desk adds its own:
 

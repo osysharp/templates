@@ -19,7 +19,7 @@ The Privacy kit, `Osysharp.Privacy`, handles the requests people make about thei
 
 ## How people ask
 
-- **A signed-in person** asks on `/privacy`. They confirm it is them with a one-time code sent to the address on their account. This comes with the companion kit `Osysharp.Privacy.Accounts`.
+- **A signed-in person** asks on `/privacy`. They confirm it is them with a one-time code sent to the address on their account. This comes with the companion kit `Osysharp.Privacy.UserAccounts`.
 - **A person with no account** asks on `/privacy/ask` and proves their address with a code mailed there. This comes with `Osysharp.Privacy.Conversations`.
 - **Your team** can file a request for someone, and records how they checked who it is.
 
@@ -56,7 +56,7 @@ policy CollaboratesOnRecords => IsAdmin;
 
 ## Getting the kit
 
-The Privacy kit is not yet published as a package, so `osy lock` cannot fetch it today and says so. `osy search` lists it, with its `use` line, once it is released. Marking your personal fields with `[Classification(Personal.…)]` works today and is what the kit builds on.
+Add `use Osysharp.Privacy@0;` to your app's manifest and run `osy lock` to pin it. `osy search privacy` lists it and its companion kits, each with its `use` line. Marking your personal fields with `[Classification(Personal.…)]` is what the kit builds on, and it works on its own too.
 
 ## Related
 

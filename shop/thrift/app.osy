@@ -11,9 +11,9 @@ app SecondRound {
   // The shop reads its mail key; how it is paid and delivered is `app.Shop`, in model/shop.osy.
   use Osysharp.Shop@1 { egress "api.resend.com"; secret "ResendApiKey"; }
   use Osysharp.Identity@0;
-  use Osysharp.Accounts@1;
+  use Osysharp.UserAccounts@1;
   use Osysharp.Payments@0;
-  use Osysharp.Delivery@0;
+  use Osysharp.Shipping@0;
   use Osysharp.Seo@0;
   // Discount codes: an add-on the shop finds by itself; staff make codes on /staff/codes.
   use Osysharp.Shop.Discounts@0;
@@ -25,7 +25,7 @@ app SecondRound {
   // The page desk (/staff/pages): the versions of the site, the look each wears, the menu, the strip across the top,
   // the footer and the front page — arranged by staff, previewed first. Osysharp.Blocks keeps what they arrange.
   use Osysharp.Blocks;
-  use Osysharp.Pages@0;
+  use Osysharp.PageBuilder@0;
   // The block types every look draws — the general site's and (inside the shop kit) the shop's.
   use Osysharp.Site.Looks@0;
   // THE LOOKS. Each is a kit: its frame, its pages, its theme and fonts, its design of every block type. None carries

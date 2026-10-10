@@ -1,4 +1,4 @@
-// THE AUDIT LOG — who changed the desk, in one place for its admins: every change to somebody's access (the People kit's
+// THE AUDIT LOG — who changed the desk, in one place for its admins: every change to somebody's access (the UserManagement kit's
 // `AccessChange`, made by a manager with a reason) and every change to the desk's settings (the platform's own change
 // trail, `EntityAuditRecord`, with each field's old and new value). Both are already recorded where they happen; this is
 // the place an admin reads them together — "who moved our first-reply promise to eight hours, and when?".
@@ -14,14 +14,14 @@
 //   account's rows and every role grant as a values diff; dropping the admin half hands it to the whole team. Guarded by
 //   tests/audit.test.osy (the_trail_opens_to_admins_and_for_the_settings_alone).
 using Osysharp.Identity;
-using Osysharp.Accounts;
-using Osysharp.People;
+using Osysharp.UserAccounts;
+using Osysharp.UserManagement;
 using Osysharp.Observability;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
-using Osysharp.Composer;
-using Osysharp.Fields;
+using Osysharp.Organizations.ServicePlans;
+using Osysharp.ReplyComposer;
+using Osysharp.CustomFields;
 
 app.Audit = new AuditConfig {
   EntityAuditRecord = new AuditSurface {
@@ -29,17 +29,17 @@ app.Audit = new AuditConfig {
     // name, a kit's by its package's (`SettingsArea` below words each; keep the two lists the same).
     Read = user => Osysharp.Identity.RoleGrant.Any(g => g.Member == user && g.Role == AppRole.Admin)
       && (EntityType == "TicketStatus" || EntityType == "TicketField" || EntityType == "TicketForm"
-          || EntityType == "Osysharp.Fields.FormField" || EntityType == "CustomerField" || EntityType == "CompanyField"
-          || EntityType == "Osysharp.Inbox.Queue" || EntityType == "Osysharp.Inbox.QueueMember"
-          || EntityType == "Osysharp.Inbox.RoutingRule" || EntityType == "Osysharp.Inbox.RoutingSkill"
-          || EntityType == "Osysharp.Inbox.HeldSkill" || EntityType == "Osysharp.Inbox.InboxView"
-          || EntityType == "Osysharp.Inbox.SlaPolicy" || EntityType == "Osysharp.Inbox.SlaTarget"
-          || EntityType == "Osysharp.Inbox.SlaEscalation"
+          || EntityType == "Osysharp.CustomFields.FormField" || EntityType == "CustomerField" || EntityType == "CompanyField"
+          || EntityType == "Osysharp.WorkQueues.Queue" || EntityType == "Osysharp.WorkQueues.QueueMember"
+          || EntityType == "Osysharp.WorkQueues.RoutingRule" || EntityType == "Osysharp.WorkQueues.RoutingSkill"
+          || EntityType == "Osysharp.WorkQueues.HeldSkill" || EntityType == "Osysharp.WorkQueues.InboxView"
+          || EntityType == "Osysharp.WorkQueues.SlaPolicy" || EntityType == "Osysharp.WorkQueues.SlaTarget"
+          || EntityType == "Osysharp.WorkQueues.SlaEscalation"
           || EntityType == "Osysharp.ServiceHours.ServiceHours" || EntityType == "Osysharp.ServiceHours.ServiceWindow"
           || EntityType == "Osysharp.ServiceHours.ServiceException"
-          || EntityType == "Osysharp.Organizations.Accounts.OrganizationTier" || EntityType == "Osysharp.Organizations.Accounts.Entitlement"
-          || EntityType == "Osysharp.Composer.SavedReply" || EntityType == "Osysharp.Composer.Macro"
-          || EntityType == "Osysharp.Composer.MacroStep" || EntityType == "Osysharp.Mail.Receiving.MailboxWatch"
+          || EntityType == "Osysharp.Organizations.ServicePlans.OrganizationTier" || EntityType == "Osysharp.Organizations.ServicePlans.Entitlement"
+          || EntityType == "Osysharp.ReplyComposer.SavedReply" || EntityType == "Osysharp.ReplyComposer.Macro"
+          || EntityType == "Osysharp.ReplyComposer.MacroStep" || EntityType == "Osysharp.Mail.Receiving.MailboxWatch"
           || EntityType == "Osysharp.Privacy.RetentionSetting" || EntityType == "Osysharp.Privacy.PrivacyController"),
   },
   // A sign-in secret never lands in the trail at all — not a password's hash, not an authenticator's sealed key.
@@ -106,7 +106,7 @@ public List<AuditLine> AuditLog(AuditArea area, DateTime since, string who) {
       var by = c.By.DisplayName != "" ? c.By.DisplayName : c.By.Email;
       var refused = c.State == AccessChangeState.Refused;
       lines.Add(new AuditLine {
-        At = c.At, Area = AuditArea.Access, What = Osysharp.People.Describe(c) + " — " + whom, By = by, Reason = c.Reason,
+        At = c.At, Area = AuditArea.Access, What = Osysharp.UserManagement.Describe(c) + " — " + whom, By = by, Reason = c.Reason,
         Detail = refused ? "Refused: " + (c.Refusal ?? "") : "", Refused = refused,
       });
     }
@@ -171,7 +171,7 @@ string Spaced(string field) {
   return words.Substring(0, 1) + words.Substring(1).ToLower();
 }
 
-/// A type as the trail names it, without its package — "Osysharp.Inbox.Queue" → "Queue".
+/// A type as the trail names it, without its package — "Osysharp.WorkQueues.Queue" → "Queue".
 string BareType(string type) {
   return type.Contains(".") ? type.Substring(type.LastIndexOf(".") + 1) : type;
 }

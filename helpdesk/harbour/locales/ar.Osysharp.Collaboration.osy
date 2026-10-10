@@ -1,10 +1,10 @@
-// ar (العربية): the words of Helpdesk · Osysharp.Collaboration, translated.
+// ar (العربية): the words of Helpdesk · Osysharp.Presence, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations ar {
-  // ── Osysharp.Collaboration · Ago ──
+  // ── Osysharp.Presence · Ago ──
   /// Ago · text on the page
   /// shown through Ago()
   text "a minute ago" => "قبل دقيقة";
@@ -24,11 +24,11 @@ translations ar {
   /// shown through Ago()
   text "{value} minutes ago" => { zero: "قبل {value} دقيقة", one: "قبل {value} دقيقة", two: "قبل {value} دقيقة", few: "قبل {value} دقائق", many: "قبل {value} دقيقةً", other: "قبل {value} دقيقة" };
 
-  // ── Osysharp.Collaboration · RecordSeats ──
+  // ── Osysharp.Presence · RecordSeats ──
   /// RecordSeats · a control's name for screen readers
   accessibleName "Who else is here" => "من الموجود هنا أيضًا";
 
-  // ── Osysharp.Collaboration · WhoIsHere ──
+  // ── Osysharp.Presence · WhoIsHere ──
   /// WhoIsHere · text on the page
   /// placeholders: {DisplayName} = ….DisplayName (string), {DisplayName2} = ….DisplayName (string)
   /// shown through WhoIsHere()

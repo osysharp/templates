@@ -1,4 +1,4 @@
-// THE WORKSPACE FRAME — the inbox's shell (Osysharp.Inbox's `InboxShell`, on the Switchboard floor) holding the desk's
+// THE WORKSPACE FRAME — the inbox's shell (Osysharp.WorkQueues's `InboxShell`, on the Switchboard floor) holding the desk's
 // panes: the views, queues and saved views with their live counts in the rail, the inbox's dense list, and the open
 // ticket(s) as tabs beside it.
 //
@@ -10,10 +10,10 @@
 //   "at-risk", a queue "q-<id>", a saved view "v-<id>"); the desk adds who each ticket is for (a customer usually has
 //   no account, so the kit cannot name them), its own bulk change (a status), and the ⌘K menu.
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Privacy;
 using Osysharp.Notifications;
 

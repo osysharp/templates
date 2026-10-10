@@ -1,6 +1,6 @@
 // THE SETTINGS AREA, FIELDS — what the desk asks about a ticket and the forms that ask it, and what it keeps about a
-// customer and a company (their model is config.osy; what they do is fields.osy). The sections are Osysharp.Fields';
-// this page puts them in the desk's words. Saved replies and macros are the Composer kit's pages (model/composer.osy);
+// customer and a company (their model is config.osy; what they do is fields.osy). The sections are Osysharp.CustomFields';
+// this page puts them in the desk's words. Saved replies and macros are the ReplyComposer kit's pages (model/composer.osy);
 // routing rules and shared views are the inbox's pages (settings.osy).
 //
 // ⚑ NOTHING HERE DELETES AN ANSWER. A field is RETIRED, never deleted: it stops being asked and edited, and every record
@@ -8,8 +8,8 @@
 //   kept until Save.
 using Osysharp.Identity;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
-using Osysharp.Fields;
+using Osysharp.Organizations.ServicePlans;
+using Osysharp.CustomFields;
 
 [Route("/settings/fields")] [Layout(SettingsFrame)] [Authorize(IsAdmin)] [Render(CSR)] [Title("Fields and forms")]
 component FieldSettings() {

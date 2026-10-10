@@ -8,7 +8,7 @@ translations sv {
   /// Osysharp.ServiceHours.ServiceException · a label (a field, a list item, a menu entry) · at most ~10 characters
   /// shown through Osysharp.ServiceHours.ServiceException.From
   /// beside: "Service hours", "To", "Is closed", "Reason"
-  /// also in Osysharp.Inbox.Assignment
+  /// also in Osysharp.WorkQueues.Assignment
   /// also in FilterEditor
   label "From" => "Från";
   /// Osysharp.ServiceHours.ServiceException · a label (a field, a list item, a menu entry) · at most ~15 characters
@@ -18,12 +18,12 @@ translations sv {
   /// Osysharp.ServiceHours.ServiceException · a label (a field, a list item, a menu entry) · at most ~12 characters
   /// shown through Osysharp.ServiceHours.ServiceException.Reason
   /// beside: "Service hours", "From", "To", "Is closed"
-  /// also in Osysharp.Inbox.Assignment
+  /// also in Osysharp.WorkQueues.Assignment
   label "Reason" => "Anledning";
   /// Osysharp.ServiceHours.ServiceException · a label (a field, a list item, a menu entry) · at most ~8 characters
   /// shown through Osysharp.ServiceHours.ServiceException.To
   /// beside: "Service hours", "From", "Is closed", "Reason"
-  /// also in Osysharp.Inbox.Assignment
+  /// also in Osysharp.WorkQueues.Assignment
   /// also in SlaPolicySettings
   /// also in FilterEditor
   label "To" => "Till";

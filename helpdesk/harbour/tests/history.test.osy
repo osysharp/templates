@@ -4,7 +4,7 @@
 using Osysharp.Identity;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 
 /// A refund question with a history: a rule sends it to Billing and tags it, Ines hands it to Rahul, raises its priority
 /// and answers it, waiting on the refund; Lena escalates it to Engineering, where Rahul does not work, so nobody holds it.

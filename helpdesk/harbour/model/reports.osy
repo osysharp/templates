@@ -1,6 +1,6 @@
 // REPORTS — the overview a lead opens every morning, and a builder for every other question.
 //
-// Two sources, both in the desk's words (Osysharp.Inbox.Reports): TICKETS, counted by when they arrived — how many,
+// Two sources, both in the desk's words (Osysharp.WorkQueues.Reports): TICKETS, counted by when they arrived — how many,
 // how many solved, how soon the first reply came and how long solving took (calendar time: what the customer waited),
 // what stands open now, and how customers rated it — and PROMISES, the service levels kept on them, in business hours.
 // Both group by the same words (Agent, Queue, Channel, Company, Tier, Priority), so the overview puts a figure from each
@@ -10,12 +10,12 @@
 // The report clock (Settings › Reports) says which time zone a day and a week are counted in, and the day a week
 // starts. A saved report keeps the question, never the numbers; a lead may share one with the whole team.
 using Osysharp.Identity;
-using Osysharp.Inbox;
-using Osysharp.Inbox.Reports;
+using Osysharp.WorkQueues;
+using Osysharp.WorkQueues.Reports;
 using Osysharp.Reports;
 using Osysharp.Explore;
-using Osysharp.Feedback;
-using Osysharp.Fields;
+using Osysharp.SatisfactionSurveys;
+using Osysharp.CustomFields;
 
 // The whole team reads how the desk is doing; leads and admins share reports and set the report clock.
 policy ReadsReports => IsAgent;

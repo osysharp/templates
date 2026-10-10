@@ -1,23 +1,23 @@
-// sv (Svenska): the words of Helpdesk · Osysharp.Privacy.Feedback, translated.
+// sv (Svenska): the words of Helpdesk · Osysharp.Privacy.SatisfactionSurveys, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations sv {
-  // ── Osysharp.Privacy.Feedback · FieldAnswerLines ──
+  // ── Osysharp.Privacy.SatisfactionSurveys · FieldAnswerLines ──
   /// FieldAnswerLines · text on the page
-  /// also in Osysharp.Privacy.Feedback.FeedbackPersonalData.Export
+  /// also in Osysharp.Privacy.SatisfactionSurveys.FeedbackPersonalData.Export
   text "Not answered" => "Inte besvarat";
 
-  // ── Osysharp.Privacy.Feedback · Osysharp.Privacy.Feedback.FeedbackPersonalData.Categories ──
-  /// Osysharp.Privacy.Feedback.FeedbackPersonalData.Categories · text on the page
+  // ── Osysharp.Privacy.SatisfactionSurveys · Osysharp.Privacy.SatisfactionSurveys.FeedbackPersonalData.Categories ──
+  /// Osysharp.Privacy.SatisfactionSurveys.FeedbackPersonalData.Categories · text on the page
   text "Learning how well we served you, and putting right what did not go well" => "Att lära oss hur väl vi hjälpte dig, och rätta till det som inte gick bra";
-  /// Osysharp.Privacy.Feedback.FeedbackPersonalData.Categories · text on the page
+  /// Osysharp.Privacy.SatisfactionSurveys.FeedbackPersonalData.Categories · text on the page
   text "What you told us when we asked how it went" => "Vad du svarade när vi frågade hur det gick";
 
-  // ── Osysharp.Privacy.Feedback · Osysharp.Privacy.Feedback.FeedbackPersonalData.Export ──
-  /// Osysharp.Privacy.Feedback.FeedbackPersonalData.Export · text on the page
+  // ── Osysharp.Privacy.SatisfactionSurveys · Osysharp.Privacy.SatisfactionSurveys.FeedbackPersonalData.Export ──
+  /// Osysharp.Privacy.SatisfactionSurveys.FeedbackPersonalData.Export · text on the page
   text "Bad" => "Dåligt";
-  /// Osysharp.Privacy.Feedback.FeedbackPersonalData.Export · text on the page
+  /// Osysharp.Privacy.SatisfactionSurveys.FeedbackPersonalData.Export · text on the page
   text "Good" => "Bra";
 }

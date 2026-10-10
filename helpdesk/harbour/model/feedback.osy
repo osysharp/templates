@@ -1,4 +1,4 @@
-// "HOW DID WE DO?" — every solved ticket asks its customer, through Osysharp.Feedback: one good-or-bad answer and a
+// "HOW DID WE DO?" — every solved ticket asks its customer, through Osysharp.SatisfactionSurveys: one good-or-bad answer and a
 // comment if they want, from the solve mail with no account, or on the ticket in the portal.
 //
 // ⚑ THE SOLVE MAIL IS A REAL NOTICE. When a ticket is solved — by the team, with its problem, or after a week of silence
@@ -12,9 +12,9 @@ using Osysharp.Identity;
 using Osysharp.Mail;
 using Osysharp.EmailTemplates;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
-using Osysharp.Feedback;
-using Osysharp.Fields;
+using Osysharp.WorkQueues;
+using Osysharp.SatisfactionSurveys;
+using Osysharp.CustomFields;
 
 /// The team reads what customers said; admins decide whether and when they are asked (Settings › Feedback).
 policy ReadsFeedback => IsAgent;

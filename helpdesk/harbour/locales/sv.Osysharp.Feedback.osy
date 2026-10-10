@@ -1,15 +1,15 @@
-// sv (Svenska): the words of Helpdesk · Osysharp.Feedback, translated.
+// sv (Svenska): the words of Helpdesk · Osysharp.SatisfactionSurveys, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations sv {
-  // ── Osysharp.Feedback · AnswerMyFeedback ──
+  // ── Osysharp.SatisfactionSurveys · AnswerMyFeedback ──
   /// AnswerMyFeedback · an error message
   /// shown through ValidationException
   error "That is not a question we asked you." => "Det är ingen fråga vi har ställt till dig.";
 
-  // ── Osysharp.Feedback · AskAbout ──
+  // ── Osysharp.SatisfactionSurveys · AskAbout ──
   /// AskAbout · an error message
   /// shown through ValidationException
   error "Whom should we ask? Give their account, or the address to mail the question to." => "Vem ska vi fråga? Ange kontot, eller adressen frågan ska mejlas till.";
@@ -18,12 +18,12 @@ translations sv {
   /// shown through ValidationException
   error "“{address}” is not an address a question can be mailed to." => "”{address}” är ingen adress som en fråga kan mejlas till.";
 
-  // ── Osysharp.Feedback · FeedbackAppName ──
+  // ── Osysharp.SatisfactionSurveys · FeedbackAppName ──
   /// FeedbackAppName · an image's description for screen readers
   /// shown through FeedbackAppName()
   alt "us" => "oss";
 
-  // ── Osysharp.Feedback · FeedbackCard ──
+  // ── Osysharp.SatisfactionSurveys · FeedbackCard ──
   /// FeedbackCard · a control's name for screen readers
   accessibleName "How did we do?" => "Hur gick det?";
   /// FeedbackCard · a button's label · at most ~9 characters
@@ -85,7 +85,7 @@ translations sv {
   /// FeedbackCard · text on the page
   text "Your answer can no longer be changed." => "Ditt svar kan inte längre ändras.";
 
-  // ── Osysharp.Feedback · FeedbackMailQuestion ──
+  // ── Osysharp.SatisfactionSurveys · FeedbackMailQuestion ──
   /// FeedbackMailQuestion · a link or button in an email · at most ~9 characters
   /// beside: "Good"
   mailLink "Bad" => "Dåligt";
@@ -99,7 +99,7 @@ translations sv {
   /// beside: "How did we do?", "Good"
   mailText "One click is your answer. You can add a comment on the page it opens, and change your mind for a while after." => "Ett klick är ditt svar. Du kan lägga till en kommentar på sidan som öppnas och ändra dig en tid efteråt.";
 
-  // ── Osysharp.Feedback · FeedbackQuestionMail ──
+  // ── Osysharp.SatisfactionSurveys · FeedbackQuestionMail ──
   /// FeedbackQuestionMail · the preview line an inbox shows beside an email's subject
   /// shown through EmailLayout.preview
   mailPreview "One click tells us — good or bad." => "Ett klick räcker: bra eller dåligt.";
@@ -112,10 +112,10 @@ translations sv {
   /// FeedbackQuestionMail · text on the page
   /// shown through EmailHeading.text
   /// also in FeedbackCard
-  /// also in Osysharp.Privacy.Feedback.FeedbackPersonalData.Export
+  /// also in Osysharp.Privacy.SatisfactionSurveys.FeedbackPersonalData.Export
   text "How did we do?" => "Hur gick det?";
 
-  // ── Osysharp.Feedback · FeedbackResults ──
+  // ── Osysharp.SatisfactionSurveys · FeedbackResults ──
   /// FeedbackResults · a control's name for screen readers
   accessibleName "Comments" => "Kommentarer";
   /// FeedbackResults · a control's name for screen readers
@@ -150,7 +150,7 @@ translations sv {
   /// beside: "Said good", "Week by week"
   title "What people wrote" => "Vad folk skrev";
 
-  // ── Osysharp.Feedback · FeedbackSettingsEditor ──
+  // ── Osysharp.SatisfactionSurveys · FeedbackSettingsEditor ──
   /// FeedbackSettingsEditor · a description
   /// shown through SettingsPage.description
   description "When a piece of work is done, the person it was for is asked one question — how did we do? — with good or bad and room for a comment. They answer from the mail, with no account, or signed in." => "När ett arbete är klart får den det gjordes för en enda fråga, hur gick det, med bra eller dåligt och plats för en kommentar. De svarar från mejlet, utan konto, eller inloggade.";
@@ -158,7 +158,7 @@ translations sv {
   /// shown through SaveBar.saved
   text "Feedback settings saved." => "Inställningarna för återkoppling är sparade.";
 
-  // ── Osysharp.Feedback · FeedbackSettingsFields ──
+  // ── Osysharp.SatisfactionSurveys · FeedbackSettingsFields ──
   /// FeedbackSettingsFields · a description
   /// shown through SettingsSection.description
   /// beside: "Asking"
@@ -207,7 +207,7 @@ translations sv {
   /// beside: "Answers"
   title "Asking" => "Fråga";
 
-  // ── Osysharp.Feedback · FeedbackWeeks ──
+  // ── Osysharp.SatisfactionSurveys · FeedbackWeeks ──
   /// FeedbackWeeks · a control's name for screen readers
   /// beside: "now"
   accessibleName "Good each week" => "Bra varje vecka";
@@ -215,7 +215,7 @@ translations sv {
   /// placeholders: {w.Starts} = w.Starts, {w.Good} = w.Good, {w.Bad} = w.Bad
   accessibleName "Week of {w.Starts}: {w.Good} good, {w.Bad} bad" => "Veckan från {w.Starts}: {w.Good} bra, {w.Bad} dåliga";
 
-  // ── Osysharp.Feedback · GiveFeedbackReply ──
+  // ── Osysharp.SatisfactionSurveys · GiveFeedbackReply ──
   /// GiveFeedbackReply · an error message
   /// shown through ValidationException
   error "Keep your comment under 2,000 characters." => "Håll kommentaren under 2 000 tecken.";
@@ -230,54 +230,54 @@ translations sv {
   /// shown through ValidationException
   error "Your answer can no longer be changed. Thank you for it." => "Ditt svar kan inte längre ändras. Tack för det.";
 
-  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackChange ──
-  /// Osysharp.Feedback.FeedbackChange · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Feedback.FeedbackChange.Changed
+  // ── Osysharp.SatisfactionSurveys · Osysharp.SatisfactionSurveys.FeedbackChange ──
+  /// Osysharp.SatisfactionSurveys.FeedbackChange · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.SatisfactionSurveys.FeedbackChange.Changed
   /// beside: "Answered"
   label "Changed" => "Ändrat";
 
-  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackMailState ──
-  /// Osysharp.Feedback.FeedbackMailState · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Feedback.FeedbackMailState.NotMailed
+  // ── Osysharp.SatisfactionSurveys · Osysharp.SatisfactionSurveys.FeedbackMailState ──
+  /// Osysharp.SatisfactionSurveys.FeedbackMailState · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.SatisfactionSurveys.FeedbackMailState.NotMailed
   /// beside: "Waiting to be mailed", "Mailed"
   label "Not mailed" => "Inte mejlad";
-  /// Osysharp.Feedback.FeedbackMailState · a label (a field, a list item, a menu entry) · at most ~28 characters
-  /// shown through Osysharp.Feedback.FeedbackMailState.Waiting
+  /// Osysharp.SatisfactionSurveys.FeedbackMailState · a label (a field, a list item, a menu entry) · at most ~28 characters
+  /// shown through Osysharp.SatisfactionSurveys.FeedbackMailState.Waiting
   /// beside: "Mailed", "Not mailed"
   label "Waiting to be mailed" => "Väntar på att mejlas";
 
-  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackRating ──
-  /// Osysharp.Feedback.FeedbackRating · a label (a field, a list item, a menu entry) · at most ~9 characters
-  /// shown through Osysharp.Feedback.FeedbackRating.Bad
+  // ── Osysharp.SatisfactionSurveys · Osysharp.SatisfactionSurveys.FeedbackRating ──
+  /// Osysharp.SatisfactionSurveys.FeedbackRating · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.SatisfactionSurveys.FeedbackRating.Bad
   /// beside: "Good"
   /// also in FeedbackCard
   /// also in FeedbackResults
   label "Bad" => "Dåligt";
-  /// Osysharp.Feedback.FeedbackRating · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Feedback.FeedbackRating.Good
+  /// Osysharp.SatisfactionSurveys.FeedbackRating · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.SatisfactionSurveys.FeedbackRating.Good
   /// beside: "Bad"
   /// also in FeedbackCard
   /// also in FeedbackResults
   label "Good" => "Bra";
 
-  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackReplyState ──
-  /// Osysharp.Feedback.FeedbackReplyState · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Feedback.FeedbackReplyState.Applied
+  // ── Osysharp.SatisfactionSurveys · Osysharp.SatisfactionSurveys.FeedbackReplyState ──
+  /// Osysharp.SatisfactionSurveys.FeedbackReplyState · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.SatisfactionSurveys.FeedbackReplyState.Applied
   /// beside: "Waiting", "Refused"
   label "Applied" => "Tillämpad";
 
-  // ── Osysharp.Feedback · Osysharp.Feedback.FeedbackStage ──
-  /// Osysharp.Feedback.FeedbackStage · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.Feedback.FeedbackStage.Withdrawn
+  // ── Osysharp.SatisfactionSurveys · Osysharp.SatisfactionSurveys.FeedbackStage ──
+  /// Osysharp.SatisfactionSurveys.FeedbackStage · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.SatisfactionSurveys.FeedbackStage.Withdrawn
   /// beside: "Open", "Answered", "Settled", "Closed"
   label "No longer asked" => "Frågas inte längre";
-  /// Osysharp.Feedback.FeedbackStage · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Feedback.FeedbackStage.Settled
+  /// Osysharp.SatisfactionSurveys.FeedbackStage · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.SatisfactionSurveys.FeedbackStage.Settled
   /// beside: "Open", "Answered", "Closed", "No longer asked"
   label "Settled" => "Avgjord";
 
-  // ── Osysharp.Feedback · Osysharp.Feedback.__Settings_FeedbackSettings_Section.Sections ──
-  /// Osysharp.Feedback.__Settings_FeedbackSettings_Section.Sections · a hint under a field
+  // ── Osysharp.SatisfactionSurveys · Osysharp.SatisfactionSurveys.__Settings_FeedbackSettings_Section.Sections ──
+  /// Osysharp.SatisfactionSurveys.__Settings_FeedbackSettings_Section.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "Whether people are asked how it went, when, and how long answers are kept." => "Om folk tillfrågas hur det gick, när, och hur länge svaren sparas.";
 }

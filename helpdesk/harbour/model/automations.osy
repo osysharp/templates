@@ -13,9 +13,9 @@
 //   tickets they hold.
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Automations;
-using Osysharp.Fields;
+using Osysharp.CustomFields;
 
 /// Who works with automations: every agent (and keeps rules of their own). Who keeps the team's: admins.
 policy RunsAutomations => IsAgent;
@@ -112,7 +112,7 @@ public class HoursSinceCustomer : AutomationCondition {
     return null;
   }
 }
-/// One of the desk's own fields (H1) — its answer on the ticket, in the field's own kind.
+/// One of the desk's own fields — its answer on the ticket, in the field's own kind.
 public class FieldAnswered : AutomationCondition {
   public Guid Field;
   public override List<ActionChoice> Choices() {

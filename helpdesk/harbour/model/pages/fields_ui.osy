@@ -1,9 +1,9 @@
 // FIELDS ON SCREEN — a ticket's type and fields as the team reads and edits them, a customer's and their company's in the
 // ticket's customer panel, and what a customer told us as they read it back. The question controls, the in-place editor
-// (`FieldRow`, `RecordFields`) and the rules are Osysharp.Fields'; these put them where the desk needs them.
+// (`FieldRow`, `RecordFields`) and the rules are Osysharp.CustomFields'; these put them where the desk needs them.
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Fields;
+using Osysharp.CustomFields;
 
 // ── on the ticket ────────────────────────────────────────────────────────────────────────────────────────────────────
 

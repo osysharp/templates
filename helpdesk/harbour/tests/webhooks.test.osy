@@ -1,16 +1,16 @@
-// THE DESK'S WEBHOOKS (H12) — Ines, who runs the desk, subscribes the company's order system to what happens to tickets:
+// THE DESK'S WEBHOOKS — Ines, who runs the desk, subscribes the company's order system to what happens to tickets:
 // each event is the desk's own (events.osy — the same ones its automations run on), sent as the ticket the API answers
 // (`TicketData`), signed. An endpoint that keeps failing is paused, and the desk's admins are told in their bell.
 // `osy test --pixels` photographs Settings › Webhooks.
 //
 // The bells (Ines an agent and admin, Rahul, Lena; Olivia at Larkspur) are notifications.test.osy's.
 using Osysharp.Identity;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Webhooks;
 using Osysharp.Notifications;
 using Osysharp.Http;
-using Osysharp.Fields;
-using Osysharp.Knowledge;
+using Osysharp.CustomFields;
+using Osysharp.KnowledgeBase;
 
 /// One request the order system received, as the stub saw it.
 entity HookReceived {
@@ -45,7 +45,7 @@ void TwoSubscriptionsAndARetry() {
   TestClock.Set(new DateTime(2030, 5, 6, 9, 0, 0));
   Http.Post.Stub((url, body, headers) => OrderSystem(url, body, headers, 200));
   OrderSync();
-  runas (Ines) { AddWebhook("Status page", "https://status.example.test/incidents", ["inbox.promise-at-risk"]); }
+  runas (Ines) { AddWebhook("Status page", "https://status.example.test/incidents", ["work-queues.promise-at-risk"]); }
   OliviasTicket("Order 4471 never arrived");
   Background.Settle();
   Http.Post.Stub((url, body, headers) => OrderSystem(url, body, headers, 503));
@@ -83,7 +83,7 @@ void a_new_ticket_and_its_status_change_are_sent_signed_as_the_api_answers_them(
 [runas(Ines)]
 void the_desks_events_are_its_automation_triggers_by_name() {
   var offered = WebhookEventChoices();
-  foreach (var name in ["ticket-arrived", "ticket-changed", "customer-wrote-again", "ticket-status-changed", "inbox.promise-at-risk", "inbox.holder-changed"]) {
+  foreach (var name in ["ticket-arrived", "ticket-changed", "customer-wrote-again", "ticket-status-changed", "work-queues.promise-at-risk", "work-queues.holder-changed"]) {
     Assert.Contains(name, offered.Select(c => c.Name).ToList());
   }
   Assert.Equal("A ticket arrives", offered.Single(c => c.Name == "ticket-arrived").Label);
@@ -142,14 +142,14 @@ void settings_webhooks_shows_each_endpoint_and_its_delivery_log() {
   Ui.Shot("webhooks settings phone");
 }
 
-/// The docs site is told when an article is published — an event of the Knowledge kit's that no line of the desk names
+/// The docs site is told when an article is published — an event of the KnowledgeBase kit's that no line of the desk names
 /// or reacted to before. Ines subscribes to it by its own name; with no document for an article version, it is sent as
 /// its type and id, which the docs site reads back through the API.
 [Test(Bells)]
 void the_docs_site_is_told_when_an_article_is_published() {
   Http.Post.Stub((url, body, headers) => OrderSystem(url, body, headers, 200));
   runas (Ines) {
-    AddWebhook("Docs site", "https://docs.example.test/hooks/harbour", ["knowledge.article-published"]);
+    AddWebhook("Docs site", "https://docs.example.test/hooks/harbour", ["knowledge-base.article-published"]);
     var shelf = new KnowledgeCategory { Name = "Billing", Slug = "billing", Position = 1 };
     new KnowledgeSection { Category = shelf, Name = "Invoices", Slug = "invoices", Position = 1 };
     UnitOfWork.Commit();
@@ -167,6 +167,6 @@ void the_docs_site_is_told_when_an_article_is_published() {
   runas (Lena) { PublishKnowledge(KnowledgeRevision.Single(r => r.Id == version)); }
   Background.Settle();
   var sent = HookReceived.Single();
-  Assert.Contains("\"type\":\"knowledge.article-published\"", sent.Body);
+  Assert.Contains("\"type\":\"knowledge-base.article-published\"", sent.Body);
   Assert.Contains(version.ToString(), sent.Body);
 }

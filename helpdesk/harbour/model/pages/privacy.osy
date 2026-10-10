@@ -2,7 +2,7 @@
 // (the deadline, how the person was checked, the plan line by line, approve, extend, what they are told). Only the
 // admins who manage privacy see one at all: the Inbox lists a request to the people who may read it.
 using Osysharp.Identity;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Privacy;
 using Osysharp.Privacy.Conversations;
 

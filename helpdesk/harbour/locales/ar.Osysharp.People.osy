@@ -1,10 +1,10 @@
-// ar (العربية): the words of Helpdesk · Osysharp.People, translated.
+// ar (العربية): the words of Helpdesk · Osysharp.UserManagement, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations ar {
-  // ── Osysharp.People · AccessTrail ──
+  // ── Osysharp.UserManagement · AccessTrail ──
   /// AccessTrail · text on the page
   /// placeholders: {value} = … (string), {whom} = whom (string)
   /// shown through AccessEvent.What
@@ -14,14 +14,14 @@ translations ar {
   /// shown through AccessEvent.What
   text "{Describe}, owned by {whom}" => "{Describe}، ويملكه {whom}";
 
-  // ── Osysharp.People · AccessTrailList ──
+  // ── Osysharp.UserManagement · AccessTrailList ──
   /// AccessTrailList · a control's name for screen readers
   accessibleName "Access changes" => "تغييرات الصلاحيات";
   /// AccessTrailList · text on the page
   /// shown through EmptyState.body
   text "Every change to somebody's access is listed here, with who made it and why." => "يُدرج هنا كل تغيير في صلاحيات أي شخص، مع من أجراه ولماذا.";
 
-  // ── Osysharp.People · AddIntegration ──
+  // ── Osysharp.UserManagement · AddIntegration ──
   /// AddIntegration · an error message
   /// shown through ValidationException
   error "Keep the name under 100 characters — it is what every record it makes is filed under." => "اجعل الاسم أقل من 100 حرف — فهو الاسم الذي يُسجَّل تحته كل ما يفعله.";
@@ -29,7 +29,7 @@ translations ar {
   /// shown through ValidationException
   error "Name the integration — what it is, as you will recognise it in the list: “Zapier”." => "سمِّ التكامل — ما هو، كما ستتعرّف عليه في القائمة: «Zapier».";
 
-  // ── Osysharp.People · Ago ──
+  // ── Osysharp.UserManagement · Ago ──
   /// Ago · text on the page
   /// placeholders: {d} = d (int) — {d} is a count: give one text per plural form
   /// shown through Ago()
@@ -43,7 +43,7 @@ translations ar {
   /// shown through Ago()
   text "{value} min ago" => { zero: "قبل {value} دقيقة", one: "قبل دقيقة", two: "قبل دقيقتين", few: "قبل {value} دقائق", many: "قبل {value} دقيقة", other: "قبل {value} دقيقة" };
 
-  // ── Osysharp.People · ApiKeyLines ──
+  // ── Osysharp.UserManagement · ApiKeyLines ──
   /// ApiKeyLines · text on the page
   /// placeholders: {NameOf} = NameOf(…) (string)
   /// shown through ApiKeyLine.RevokedWords
@@ -64,7 +64,7 @@ translations ar {
   /// shown through ApiKeyLine.RevokedWords
   text "Revoked {k.RevokedAt}{value}" => "أُلغي {k.RevokedAt}{value}";
 
-  // ── Osysharp.People · ApiKeyManager ──
+  // ── Osysharp.UserManagement · ApiKeyManager ──
   /// ApiKeyManager · a control's name for screen readers
   accessibleName "API key" => "مفتاح API";
   /// ApiKeyManager · a control's name for screen readers
@@ -292,12 +292,12 @@ translations ar {
   /// shown through Card.title
   title "The key for {keyFor}" => "المفتاح الخاص بـ {keyFor}";
 
-  // ── Osysharp.People · ApiKeyRow ──
+  // ── Osysharp.UserManagement · ApiKeyRow ──
   /// ApiKeyRow · text on the page
   /// placeholders: {line.Holder} = line.Holder
   text "Acts as {line.Holder}" => "يتصرف باسم {line.Holder}";
 
-  // ── Osysharp.People · Describe ──
+  // ── Osysharp.UserManagement · Describe ──
   /// Describe · text on the page
   /// placeholders: {value} = … (string), {role} = role (string)
   /// shown through Describe()
@@ -339,7 +339,7 @@ translations ar {
   /// shown through Describe()
   text "Revoked {role} at {org}" => "سُحب دور {role} في {org}";
 
-  // ── Osysharp.People · IntegrationRow ──
+  // ── Osysharp.UserManagement · IntegrationRow ──
   /// IntegrationRow · a button's label · at most ~14 characters
   /// shown through Button.label
   /// beside: "Switch off"
@@ -359,7 +359,7 @@ translations ar {
   /// placeholders: {line.Owner} = line.Owner
   text "Owned by {line.Owner}" => "يملكه {line.Owner}";
 
-  // ── Osysharp.People · IssueApiKey ──
+  // ── Osysharp.UserManagement · IssueApiKey ──
   /// IssueApiKey · an error message
   /// shown through ValidationException
   error "Say what the key is for — it is how you will recognise it in the list." => "اكتب الغرض من المفتاح، فبه ستعرفه في القائمة.";
@@ -370,84 +370,84 @@ translations ar {
   /// shown through ValidationException
   error "This account is deactivated — reactivate it before issuing it a key." => "هذا الحساب معطّل. أعد تفعيله قبل أن تصدر له مفتاحًا.";
 
-  // ── Osysharp.People · Osysharp.People.AccessChangeKind ──
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~20 characters
-  /// shown through Osysharp.People.AccessChangeKind.ApiKeyIssued
+  // ── Osysharp.UserManagement · Osysharp.UserManagement.AccessChangeKind ──
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.ApiKeyIssued
   /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
   label "API key issued" => "صدر مفتاح API";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.People.AccessChangeKind.ApiKeyRevoked
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.ApiKeyRevoked
   /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
   label "API key revoked" => "أُلغي مفتاح API";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~34 characters
-  /// shown through Osysharp.People.AccessChangeKind.JoinedOrganization
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~34 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.JoinedOrganization
   /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
   label "Added to an organisation" => "أُضيف إلى مؤسسة";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~17 characters
-  /// shown through Osysharp.People.AccessChangeKind.Deactivated
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.Deactivated
   /// beside: "Role granted", "Role revoked", "Reactivated", "Two-step sign-in reset", "Signed out everywhere", "Added to an organisation"
   /// also in PersonListRow
   /// also in PersonPanel
   label "Deactivated" => "تم التعطيل";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~24 characters
-  /// shown through Osysharp.People.AccessChangeKind.IntegrationAdded
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~24 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.IntegrationAdded
   /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
   label "Integration added" => "أُضيف تكامل";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~31 characters
-  /// shown through Osysharp.People.AccessChangeKind.IntegrationReassigned
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~31 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.IntegrationReassigned
   /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
   label "Integration reassigned" => "نُقل التكامل";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~35 characters
-  /// shown through Osysharp.People.AccessChangeKind.OrganizationRoleGranted
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.OrganizationRoleGranted
   /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
   label "Organisation role granted" => "مُنح دورًا في مؤسسة";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~35 characters
-  /// shown through Osysharp.People.AccessChangeKind.OrganizationRoleRevoked
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~35 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.OrganizationRoleRevoked
   /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
   label "Organisation role revoked" => "سُحب دور في مؤسسة";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~17 characters
-  /// shown through Osysharp.People.AccessChangeKind.Reactivated
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.Reactivated
   /// beside: "Role granted", "Role revoked", "Deactivated", "Two-step sign-in reset", "Signed out everywhere", "Added to an organisation"
   label "Reactivated" => "أُعيد التفعيل";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~40 characters
-  /// shown through Osysharp.People.AccessChangeKind.LeftOrganization
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~40 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.LeftOrganization
   /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere"
   label "Removed from an organisation" => "أُزيل من مؤسسة";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~18 characters
-  /// shown through Osysharp.People.AccessChangeKind.RoleGranted
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.RoleGranted
   /// beside: "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere", "Added to an organisation"
   label "Role granted" => "مُنح دورًا";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~18 characters
-  /// shown through Osysharp.People.AccessChangeKind.RoleRevoked
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.RoleRevoked
   /// beside: "Role granted", "Deactivated", "Reactivated", "Two-step sign-in reset", "Signed out everywhere", "Added to an organisation"
   label "Role revoked" => "سُحب دور";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~30 characters
-  /// shown through Osysharp.People.AccessChangeKind.SignedOutEverywhere
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~30 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.SignedOutEverywhere
   /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Two-step sign-in reset", "Added to an organisation"
   label "Signed out everywhere" => "سُجّل خروجه من كل مكان";
-  /// Osysharp.People.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~31 characters
-  /// shown through Osysharp.People.AccessChangeKind.SecondFactorReset
+  /// Osysharp.UserManagement.AccessChangeKind · a label (a field, a list item, a menu entry) · at most ~31 characters
+  /// shown through Osysharp.UserManagement.AccessChangeKind.SecondFactorReset
   /// beside: "Role granted", "Role revoked", "Deactivated", "Reactivated", "Signed out everywhere", "Added to an organisation"
   label "Two-step sign-in reset" => "أُعيد تعيين الدخول بخطوتين";
 
-  // ── Osysharp.People · Osysharp.People.PeopleSettingsSections.Sections ──
-  /// Osysharp.People.PeopleSettingsSections.Sections · a hint under a field
+  // ── Osysharp.UserManagement · Osysharp.UserManagement.PeopleSettingsSections.Sections ──
+  /// Osysharp.UserManagement.PeopleSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "Every change to somebody's access, who made it and why." => "كل تغيير في صلاحيات أي شخص، ومن أجراه ولماذا.";
-  /// Osysharp.People.PeopleSettingsSections.Sections · a hint under a field
+  /// Osysharp.UserManagement.PeopleSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "Keys that let a program call the app's API as somebody on the team." => "مفاتيح تتيح لبرنامج استدعاء واجهة API للتطبيق باسم أحد أعضاء الفريق.";
-  /// Osysharp.People.PeopleSettingsSections.Sections · a hint under a field
+  /// Osysharp.UserManagement.PeopleSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "Who is in the app, their roles, two-step sign-in, invitations." => "من في التطبيق، وأدوارهم، وتسجيل الدخول بخطوتين، والدعوات.";
-  /// Osysharp.People.PeopleSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// Osysharp.UserManagement.PeopleSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~14 characters
   /// shown through SettingsLink.Label
   label "API keys" => "مفاتيح API";
-  /// Osysharp.People.PeopleSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// Osysharp.UserManagement.PeopleSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~20 characters
   /// shown through SettingsLink.Label
   label "Access changes" => "تغييرات الصلاحيات";
 
-  // ── Osysharp.People · PeopleManager ──
+  // ── Osysharp.UserManagement · PeopleManager ──
   /// PeopleManager · a control's name for screen readers
   /// beside: "Search people"
   accessibleName "Everyone" => "الجميع";
@@ -507,11 +507,11 @@ translations ar {
   /// shown through EmptyState.title
   title "Nobody matches" => "لا أحد يطابق";
 
-  // ── Osysharp.People · PersonDetailOf ──
+  // ── Osysharp.UserManagement · PersonDetailOf ──
   /// PersonDetailOf · a label (a field, a list item, a menu entry) · at most ~12 characters
   /// shown through HeldRole.Label
   /// also in Osysharp.Conversations.Participant
-  /// also in Osysharp.Inbox.QueueMember
+  /// also in Osysharp.WorkQueues.QueueMember
   label "Member" => "عضو";
   /// PersonDetailOf · text on the page
   /// placeholders: {RoleLabel} = RoleLabel(…) (string)
@@ -522,7 +522,7 @@ translations ar {
   /// shown through AccessEvent.What
   text "Joined by an invitation to {InvitedInto}{value}" => "انضم بدعوة إلى {InvitedInto}{value}";
 
-  // ── Osysharp.People · PersonListRow ──
+  // ── Osysharp.UserManagement · PersonListRow ──
   /// PersonListRow · a label (a field, a list item, a menu entry) · at most ~17 characters
   /// shown through Badge.label
   /// also in PersonPanel
@@ -534,7 +534,7 @@ translations ar {
   /// PersonListRow · text on the page
   text "On" => "مفعّل";
 
-  // ── Osysharp.People · PersonPanel ──
+  // ── Osysharp.UserManagement · PersonPanel ──
   /// PersonPanel · a control's name for screen readers
   accessibleName "Give a role" => "منح دور";
   /// PersonPanel · a control's name for screen readers
@@ -675,7 +675,7 @@ translations ar {
   /// shown through Dialog.title
   title "Sign {d.Name} out everywhere?" => "تسجيل خروج {d.Name} من كل مكان؟";
 
-  // ── Osysharp.People · SignedInWhen ──
+  // ── Osysharp.UserManagement · SignedInWhen ──
   /// SignedInWhen · text on the page
   /// shown through SignedInWhen()
   text "Never" => "أبدًا";

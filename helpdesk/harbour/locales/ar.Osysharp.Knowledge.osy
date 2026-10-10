@@ -1,16 +1,16 @@
-// ar (العربية): the words of Helpdesk · Osysharp.Knowledge, translated.
+// ar (العربية): the words of Helpdesk · Osysharp.KnowledgeBase, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations ar {
-  // ── Osysharp.Knowledge · AddKnowledgeCategory ──
+  // ── Osysharp.KnowledgeBase · AddKnowledgeCategory ──
   /// AddKnowledgeCategory · an error message
   /// shown through ValidationException
   /// also in EditKnowledgeCategory
   error "Give the category a name." => "أعطِ الفئة اسمًا.";
 
-  // ── Osysharp.Knowledge · AddKnowledgeSection ──
+  // ── Osysharp.KnowledgeBase · AddKnowledgeSection ──
   /// AddKnowledgeSection · an error message
   /// shown through ValidationException
   /// also in EditKnowledgeSection
@@ -20,38 +20,38 @@ translations ar {
   /// also in EditKnowledgeCategory
   error "That category is gone." => "لم تعد هذه الفئة موجودة.";
 
-  // ── Osysharp.Knowledge · DeleteKnowledgeCategory ──
+  // ── Osysharp.KnowledgeBase · DeleteKnowledgeCategory ──
   /// DeleteKnowledgeCategory · an error message
   /// shown through ValidationException
   error "Delete or move its sections first." => "احذف أقسامها أو انقلها أولًا.";
 
-  // ── Osysharp.Knowledge · DeleteKnowledgeSection ──
+  // ── Osysharp.KnowledgeBase · DeleteKnowledgeSection ──
   /// DeleteKnowledgeSection · an error message
   /// shown through ValidationException
   error "Move its articles to another section first — a section with articles is not deleted." => "انقل مقالاته إلى قسم آخر أولًا — لا يُحذف قسم فيه مقالات.";
 
-  // ── Osysharp.Knowledge · DiscardKnowledgeDraft ──
+  // ── Osysharp.KnowledgeBase · DiscardKnowledgeDraft ──
   /// DiscardKnowledgeDraft · an error message
   /// shown through ValidationException
   error "Only a draft that was never sent for review can be thrown away." => "لا يمكن حذف إلا مسودة لم تُرسل للمراجعة قط.";
 
-  // ── Osysharp.Knowledge · DiscardKnowledgeVersion ──
+  // ── Osysharp.KnowledgeBase · DiscardKnowledgeVersion ──
   /// DiscardKnowledgeVersion · an error message
   /// shown through ValidationException
   error "That draft is gone." => "لم تعد هذه المسودة موجودة.";
 
-  // ── Osysharp.Knowledge · EditKnowledgeSection ──
+  // ── Osysharp.KnowledgeBase · EditKnowledgeSection ──
   /// EditKnowledgeSection · an error message
   /// shown through ValidationException
   error "That section is gone." => "لم يعد هذا القسم موجودًا.";
 
-  // ── Osysharp.Knowledge · HelpCentreCategoryPage (/help-centre/c/{slug}) ──
+  // ── Osysharp.KnowledgeBase · HelpCentreCategoryPage (/help-centre/c/{slug}) ──
   /// HelpCentreCategoryPage · /help-centre/c/{slug} · a title
   /// shown through head { Title }
   /// also in HelpCentreArticlePage /help-centre/a/{slug}
   title "Not found" => "غير موجود";
 
-  // ── Osysharp.Knowledge · HelpCentrePage (/help-centre) ──
+  // ── Osysharp.KnowledgeBase · HelpCentrePage (/help-centre) ──
   /// HelpCentrePage · /help-centre · a description
   /// shown through head { Description }
   description "Answers, guides and how-tos — search, or start with a category." => "إجابات وأدلة وطرق عمل — ابحث، أو ابدأ بفئة.";
@@ -62,7 +62,7 @@ translations ar {
   /// also in KnowledgeSettingsFields
   title "Help centre" => "مركز المساعدة";
 
-  // ── Osysharp.Knowledge · KnowledgeArticleBody ──
+  // ── Osysharp.KnowledgeBase · KnowledgeArticleBody ──
   /// KnowledgeArticleBody · message
   /// shown through Alert.message
   message "Only the team reads this article — customers never see it, here or in a search." => "لا يقرأ هذا المقال إلا الفريق — لا يراه العملاء أبدًا، لا هنا ولا في البحث.";
@@ -70,7 +70,7 @@ translations ar {
   /// shown through Alert.message
   message "This article is not in your language yet — here it is in the language it was written in." => "هذا المقال غير متوفر بلغتك بعد — إليك هو باللغة التي كُتب بها.";
 
-  // ── Osysharp.Knowledge · KnowledgeArticleDesk ──
+  // ── Osysharp.KnowledgeBase · KnowledgeArticleDesk ──
   /// KnowledgeArticleDesk · a link · at most ~37 characters
   /// shown through TextLink.label
   /// beside: "This article is not here"
@@ -89,7 +89,7 @@ translations ar {
   /// beside: "Back to the knowledge base"
   title "This article is not here" => "هذا المقال غير موجود هنا";
 
-  // ── Osysharp.Knowledge · KnowledgeArticlePage ──
+  // ── Osysharp.KnowledgeBase · KnowledgeArticlePage ──
   /// KnowledgeArticlePage · a control's name for screen readers
   /// placeholders: {page.Article.Section} = page.Article.Section
   accessibleName "More in {page.Article.Section}" => "المزيد في {page.Article.Section}";
@@ -100,7 +100,7 @@ translations ar {
   /// placeholders: {page.Article.UpdatedAt.Value} = page.Article.UpdatedAt.Value
   text "Updated {page.Article.UpdatedAt.Value}" => "حُدّث في {page.Article.UpdatedAt.Value}";
 
-  // ── Osysharp.Knowledge · KnowledgeAskSomebody ──
+  // ── Osysharp.KnowledgeBase · KnowledgeAskSomebody ──
   /// KnowledgeAskSomebody · a control's name for screen readers
   accessibleName "Still need help?" => "ما زلت بحاجة إلى مساعدة؟";
   /// KnowledgeAskSomebody · text on the page
@@ -110,7 +110,7 @@ translations ar {
   /// beside: "A person on the team reads every question."
   text "Still need help?" => "ما زلت بحاجة إلى مساعدة؟";
 
-  // ── Osysharp.Knowledge · KnowledgeCategoryCard ──
+  // ── Osysharp.KnowledgeBase · KnowledgeCategoryCard ──
   /// KnowledgeCategoryCard · a control's name for screen readers
   /// beside: "Move up", "200px", "Only the team reads it", "200px"
   accessibleName "Sections" => "الأقسام";
@@ -135,7 +135,7 @@ translations ar {
   /// placeholders: {s.Articles} = s.Articles
   text "{s.Articles} articles" => "{s.Articles} مقالات";
 
-  // ── Osysharp.Knowledge · KnowledgeDesk ──
+  // ── Osysharp.KnowledgeBase · KnowledgeDesk ──
   /// KnowledgeDesk · a control's name for screen readers
   accessibleName "Articles" => "المقالات";
   /// KnowledgeDesk · a button's label · at most ~17 characters
@@ -184,16 +184,16 @@ translations ar {
   /// shown through EmptyState.title
   title "No articles yet" => "لا توجد مقالات بعد";
 
-  // ── Osysharp.Knowledge · KnowledgeDeskLine ──
+  // ── Osysharp.KnowledgeBase · KnowledgeDeskLine ──
   /// KnowledgeDeskLine · a control's name for screen readers
   accessibleName "Languages" => "اللغات";
 
-  // ── Osysharp.Knowledge · KnowledgeDraftFrom ──
+  // ── Osysharp.KnowledgeBase · KnowledgeDraftFrom ──
   /// KnowledgeDraftFrom · an error message
   /// shown through ValidationException
   error "There is already a draft in this language — finish it or throw it away first." => "توجد مسودة بهذه اللغة بالفعل — أكملها أو احذفها أولًا.";
 
-  // ── Osysharp.Knowledge · KnowledgeDraftPane ──
+  // ── Osysharp.KnowledgeBase · KnowledgeDraftPane ──
   /// KnowledgeDraftPane · a control's name for screen readers
   /// beside: "What happens next"
   accessibleName "Article text" => "نص المقالة";
@@ -278,7 +278,7 @@ translations ar {
   /// shown through Alert.title
   title "Sent back by {sentBack.By}" => "أعاده {sentBack.By}";
 
-  // ── Osysharp.Knowledge · KnowledgeFront ──
+  // ── Osysharp.KnowledgeBase · KnowledgeFront ──
   /// KnowledgeFront · a control's name for screen readers
   accessibleName "Recently updated" => "حُدّثت مؤخرًا";
   /// KnowledgeFront · text on the page
@@ -287,7 +287,7 @@ translations ar {
   /// KnowledgeFront · text on the page
   text "Recently updated" => "حُدّثت مؤخرًا";
 
-  // ── Osysharp.Knowledge · KnowledgeHistoryPane ──
+  // ── Osysharp.KnowledgeBase · KnowledgeHistoryPane ──
   /// KnowledgeHistoryPane · a control's name for screen readers
   accessibleName "Versions" => "النسخ";
   /// KnowledgeHistoryPane · a control's name for screen readers
@@ -310,7 +310,7 @@ translations ar {
   /// shown through Card.title
   title "History" => "السجل";
 
-  // ── Osysharp.Knowledge · KnowledgeLanguageChip ──
+  // ── Osysharp.KnowledgeBase · KnowledgeLanguageChip ──
   /// KnowledgeLanguageChip · a label (a field, a list item, a menu entry) · at most ~24 characters
   /// placeholders: {ToUpper} = l.Language.ToUpper(…)
   /// shown through Badge.label
@@ -324,13 +324,13 @@ translations ar {
   /// shown through Badge.label
   label "{ToUpper} · Published" => "{ToUpper} · منشور";
 
-  // ── Osysharp.Knowledge · KnowledgeLanguageOrSource ──
+  // ── Osysharp.KnowledgeBase · KnowledgeLanguageOrSource ──
   /// KnowledgeLanguageOrSource · an error message
   /// placeholders: {wanted} = wanted (string), {Join} = string.Join(…) (string)
   /// shown through ValidationException
   error "This app is not written in '{wanted}' — it speaks {Join}." => "هذا التطبيق غير مكتوب بلغة '{wanted}' — فهو يتحدث {Join}.";
 
-  // ── Osysharp.Knowledge · KnowledgeLivePane ──
+  // ── Osysharp.KnowledgeBase · KnowledgeLivePane ──
   /// KnowledgeLivePane · a button's label · at most ~40 characters
   /// placeholders: {value} = …
   /// shown through Button.label
@@ -345,11 +345,11 @@ translations ar {
   /// placeholders: {live.Number} = live.Number, {live.PublishedAt.Value} = live.PublishedAt.Value, {live.PublishedBy} = live.PublishedBy
   text "Version {live.Number} · published {live.PublishedAt.Value} by {live.PublishedBy}" => "النسخة {live.Number} · نُشرت {live.PublishedAt.Value} بواسطة {live.PublishedBy}";
 
-  // ── Osysharp.Knowledge · KnowledgeLoading ──
+  // ── Osysharp.KnowledgeBase · KnowledgeLoading ──
   /// KnowledgeLoading · a control's name for screen readers
   accessibleName "Loading" => "جارٍ التحميل";
 
-  // ── Osysharp.Knowledge · KnowledgeNoVersionPane ──
+  // ── Osysharp.KnowledgeBase · KnowledgeNoVersionPane ──
   /// KnowledgeNoVersionPane · a button's label · at most ~38 characters
   /// placeholders: {ToUpper} = language.ToUpper(…)
   /// shown through Button.label
@@ -363,7 +363,7 @@ translations ar {
   /// shown through EmptyState.title
   title "Not written in {ToUpper} yet" => "لم يُكتب بلغة {ToUpper} بعد";
 
-  // ── Osysharp.Knowledge · KnowledgeNotHere ──
+  // ── Osysharp.KnowledgeBase · KnowledgeNotHere ──
   /// KnowledgeNotHere · text on the page
   /// shown through EmptyState.body
   text "It may have moved, or it is not one you can read. Search for what you need instead." => "ربما نُقل، أو أنه ليس مما يمكنك قراءته. ابحث عمّا تحتاجه بدلًا من ذلك.";
@@ -374,7 +374,7 @@ translations ar {
   /// shown through EmptyState.title
   title "We could not find that category" => "لم نتمكن من العثور على هذه الفئة";
 
-  // ── Osysharp.Knowledge · KnowledgePlacePane ──
+  // ── Osysharp.KnowledgeBase · KnowledgePlacePane ──
   /// KnowledgePlacePane · a button's label · at most ~16 characters
   /// shown through Button.label
   button "Archive it" => "أرشفه";
@@ -409,7 +409,7 @@ translations ar {
   /// shown through Card.title
   title "Where it is" => "مكانه";
 
-  // ── Osysharp.Knowledge · KnowledgeQuickSearch ──
+  // ── Osysharp.KnowledgeBase · KnowledgeQuickSearch ──
   /// KnowledgeQuickSearch · a label (a field, a list item, a menu entry) · at most ~34 characters
   /// shown through KnowledgeQuickSearch.label
   label "Search our help articles" => "ابحث في مقالات المساعدة";
@@ -419,7 +419,7 @@ translations ar {
   /// shown through KnowledgeQuickSearch.fallback
   text "Nothing found — write to us and a person answers." => "لم يُعثر على شيء — اكتب لنا وسيرد عليك شخص.";
 
-  // ── Osysharp.Knowledge · KnowledgeResultsPage ──
+  // ── Osysharp.KnowledgeBase · KnowledgeResultsPage ──
   /// KnowledgeResultsPage · a control's name for screen readers
   accessibleName "Results" => "النتائج";
   /// KnowledgeResultsPage · text on the page
@@ -444,7 +444,7 @@ translations ar {
   /// shown through EmptyState.title
   title "Nothing matched “{page.Results.Query}”" => "لا شيء يطابق «{page.Results.Query}»";
 
-  // ── Osysharp.Knowledge · KnowledgeReviewQueue ──
+  // ── Osysharp.KnowledgeBase · KnowledgeReviewQueue ──
   /// KnowledgeReviewQueue · a control's name for screen readers
   accessibleName "Versions waiting" => "النسخ المنتظرة";
   /// KnowledgeReviewQueue · a label (a field, a list item, a menu entry) · at most ~41 characters
@@ -465,7 +465,7 @@ translations ar {
   /// shown through EmptyState.title
   title "Nothing is waiting" => "لا شيء بانتظار";
 
-  // ── Osysharp.Knowledge · KnowledgeSearchBox ──
+  // ── Osysharp.KnowledgeBase · KnowledgeSearchBox ──
   /// KnowledgeSearchBox · a control's name for screen readers
   accessibleName "Search the help centre" => "ابحث في مركز المساعدة";
   /// KnowledgeSearchBox · a label (a field, a list item, a menu entry) · at most ~31 characters
@@ -475,7 +475,7 @@ translations ar {
   /// shown through Field.placeholder
   placeholder "Describe what you are trying to do" => "صف ما تحاول فعله";
 
-  // ── Osysharp.Knowledge · KnowledgeSettingsEditor ──
+  // ── Osysharp.KnowledgeBase · KnowledgeSettingsEditor ──
   /// KnowledgeSettingsEditor · a description
   /// shown through SettingsPage.description
   description "Articles are written as drafts and published as numbered versions. With review on, a version is published by somebody other than the person who wrote it." => "تُكتب المقالات كمسودات وتُنشر كنسخ مرقّمة. عند تشغيل المراجعة، ينشر النسخة شخص غير الذي كتبها.";
@@ -483,7 +483,7 @@ translations ar {
   /// shown through SaveBar.saved
   text "Knowledge base settings saved." => "حُفظت إعدادات قاعدة المعرفة.";
 
-  // ── Osysharp.Knowledge · KnowledgeSettingsFields ──
+  // ── Osysharp.KnowledgeBase · KnowledgeSettingsFields ──
   /// KnowledgeSettingsFields · a description
   /// shown through SettingsSection.description
   /// beside: "Publishing"
@@ -516,12 +516,12 @@ translations ar {
   /// beside: "Help centre"
   title "Publishing" => "النشر";
 
-  // ── Osysharp.Knowledge · KnowledgeShelfCard ──
+  // ── Osysharp.KnowledgeBase · KnowledgeShelfCard ──
   /// KnowledgeShelfCard · text on the page
   /// placeholders: {shelf.Count} = shelf.Count
   text "{shelf.Count} articles" => "{shelf.Count} مقالات";
 
-  // ── Osysharp.Knowledge · KnowledgeShelvesDesk ──
+  // ── Osysharp.KnowledgeBase · KnowledgeShelvesDesk ──
   /// KnowledgeShelvesDesk · a control's name for screen readers
   accessibleName "Add a category" => "أضف فئة";
   /// KnowledgeShelvesDesk · a button's label · at most ~23 characters
@@ -554,7 +554,7 @@ translations ar {
   /// shown through EmptyState.title
   title "No categories yet" => "لا توجد فئات بعد";
 
-  // ── Osysharp.Knowledge · KnowledgeStartDialog ──
+  // ── Osysharp.KnowledgeBase · KnowledgeStartDialog ──
   /// KnowledgeStartDialog · a button's label · at most ~19 characters
   /// shown through Button.label
   /// beside: "Cancel"
@@ -588,7 +588,7 @@ translations ar {
   /// shown through Dialog.title
   title "New article" => "مقال جديد";
 
-  // ── Osysharp.Knowledge · KnowledgeSuggestingField ──
+  // ── Osysharp.KnowledgeBase · KnowledgeSuggestingField ──
   /// KnowledgeSuggestingField · a button's label · at most ~28 characters
   /// shown through Button.label
   /// beside: "Open in the help centre"
@@ -599,7 +599,7 @@ translations ar {
   /// KnowledgeSuggestingField · text on the page
   text "Open in the help centre" => "افتح في مركز المساعدة";
 
-  // ── Osysharp.Knowledge · KnowledgeTabLabel ──
+  // ── Osysharp.KnowledgeBase · KnowledgeTabLabel ──
   /// KnowledgeTabLabel · a button's label · at most ~20 characters
   /// placeholders: {code} = code (string)
   /// shown through KnowledgeTabLabel()
@@ -625,130 +625,130 @@ translations ar {
   /// shown through KnowledgeTabLabel()
   button "{code} · original · in review" => "{code} · الأصل · قيد المراجعة";
 
-  // ── Osysharp.Knowledge · KnowledgeTrail ──
+  // ── Osysharp.KnowledgeBase · KnowledgeTrail ──
   /// KnowledgeTrail · a control's name for screen readers
   accessibleName "Breadcrumb" => "مسار التنقل";
 
-  // ── Osysharp.Knowledge · NewKnowledgeArticle ──
+  // ── Osysharp.KnowledgeBase · NewKnowledgeArticle ──
   /// NewKnowledgeArticle · an error message
   /// shown through ValidationException
   error "Give the article a title — readers find it by it." => "أعطِ المقال عنوانًا — يجده القراء من خلاله.";
 
-  // ── Osysharp.Knowledge · OpenKnowledgeDraft ──
+  // ── Osysharp.KnowledgeBase · OpenKnowledgeDraft ──
   /// OpenKnowledgeDraft · an error message
   /// shown through ValidationException
   /// also in KnowledgeDeskStep
   error "That article is gone." => "لم يعد هذا المقال موجودًا.";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.ArticleSentBack.Sentence ──
-  /// Osysharp.Knowledge.ArticleSentBack.Sentence · text on the page
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.ArticleSentBack.Sentence ──
+  /// Osysharp.KnowledgeBase.ArticleSentBack.Sentence · text on the page
   /// placeholders: {note} = note (string)
   /// shown through Sentence()
   text "Sent back: {note}" => null;
-  /// Osysharp.Knowledge.ArticleSentBack.Sentence · text on the page
+  /// Osysharp.KnowledgeBase.ArticleSentBack.Sentence · text on the page
   /// shown through Sentence()
   text "Your article was sent back with changes to make." => "أُعيد مقالك مع تغييرات مطلوبة.";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.ArticleSentForReview.Sentence ──
-  /// Osysharp.Knowledge.ArticleSentForReview.Sentence · text on the page
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.ArticleSentForReview.Sentence ──
+  /// Osysharp.KnowledgeBase.ArticleSentForReview.Sentence · text on the page
   /// shown through Sentence()
   text "An article waits for review." => "مقال ينتظر المراجعة.";
-  /// Osysharp.Knowledge.ArticleSentForReview.Sentence · text on the page
+  /// Osysharp.KnowledgeBase.ArticleSentForReview.Sentence · text on the page
   /// placeholders: {by} = by (string)
   /// shown through Sentence()
   text "{by} sent an article for review." => "أرسل {by} مقالًا للمراجعة.";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.KnowledgeAudience ──
-  /// Osysharp.Knowledge.KnowledgeAudience · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Knowledge.KnowledgeAudience.Everyone
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.KnowledgeAudience ──
+  /// Osysharp.KnowledgeBase.KnowledgeAudience · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeAudience.Everyone
   /// beside: "The team only"
   label "Everyone" => "الجميع";
-  /// Osysharp.Knowledge.KnowledgeAudience · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Knowledge.KnowledgeAudience.Team
+  /// Osysharp.KnowledgeBase.KnowledgeAudience · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeAudience.Team
   /// beside: "Everyone"
   label "The team only" => "الفريق فقط";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.KnowledgeDeskList ──
-  /// Osysharp.Knowledge.KnowledgeDeskList · a label (a field, a list item, a menu entry) · at most ~9 characters
-  /// shown through Osysharp.Knowledge.KnowledgeDeskList.All
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.KnowledgeDeskList ──
+  /// Osysharp.KnowledgeBase.KnowledgeDeskList · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeDeskList.All
   /// beside: "Drafts", "In review", "Published", "Archived"
   label "All" => "الكل";
-  /// Osysharp.Knowledge.KnowledgeDeskList · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Knowledge.KnowledgeDeskList.Drafts
+  /// Osysharp.KnowledgeBase.KnowledgeDeskList · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeDeskList.Drafts
   /// beside: "All", "In review", "Published", "Archived"
   label "Drafts" => "المسودات";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.KnowledgeStage ──
-  /// Osysharp.Knowledge.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStage.Draft
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.KnowledgeStage ──
+  /// Osysharp.KnowledgeBase.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStage.Draft
   /// beside: "In review", "Published", "Earlier version"
   /// also in KnowledgeDraftPane
   label "Draft" => "مسودة";
-  /// Osysharp.Knowledge.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStage.Superseded
+  /// Osysharp.KnowledgeBase.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStage.Superseded
   /// beside: "Draft", "In review", "Published"
   label "Earlier version" => "نسخة سابقة";
-  /// Osysharp.Knowledge.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStage.InReview
+  /// Osysharp.KnowledgeBase.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStage.InReview
   /// beside: "Draft", "Published", "Earlier version"
-  /// also in Osysharp.Knowledge.KnowledgeDeskList
+  /// also in Osysharp.KnowledgeBase.KnowledgeDeskList
   /// also in KnowledgeDraftPane
   label "In review" => "قيد المراجعة";
-  /// Osysharp.Knowledge.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStage.Published
+  /// Osysharp.KnowledgeBase.KnowledgeStage · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStage.Published
   /// beside: "Draft", "In review", "Earlier version"
-  /// also in Osysharp.Knowledge.KnowledgeStepKind
-  /// also in Osysharp.Knowledge.KnowledgeDeskList
+  /// also in Osysharp.KnowledgeBase.KnowledgeStepKind
+  /// also in Osysharp.KnowledgeBase.KnowledgeDeskList
   /// also in KnowledgeLivePane
   label "Published" => "منشور";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.KnowledgeStepKind ──
-  /// Osysharp.Knowledge.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStepKind.Archive
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.KnowledgeStepKind ──
+  /// Osysharp.KnowledgeBase.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStepKind.Archive
   /// beside: "Sent for review", "Taken back", "Published", "Sent back", "Brought back"
-  /// also in Osysharp.Knowledge.KnowledgeDeskList
+  /// also in Osysharp.KnowledgeBase.KnowledgeDeskList
   /// also in KnowledgeDeskLine
   /// also in KnowledgeArticleDesk
   label "Archived" => "مؤرشف";
-  /// Osysharp.Knowledge.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~18 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStepKind.Restore
+  /// Osysharp.KnowledgeBase.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStepKind.Restore
   /// beside: "Sent for review", "Taken back", "Published", "Sent back", "Archived"
   label "Brought back" => "أُعيد نشره";
-  /// Osysharp.Knowledge.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStepKind.SendBack
+  /// Osysharp.KnowledgeBase.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStepKind.SendBack
   /// beside: "Sent for review", "Taken back", "Published", "Archived", "Brought back"
   label "Sent back" => "أُعيد";
-  /// Osysharp.Knowledge.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~21 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStepKind.Submit
+  /// Osysharp.KnowledgeBase.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~21 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStepKind.Submit
   /// beside: "Taken back", "Published", "Sent back", "Archived", "Brought back"
   label "Sent for review" => "أُرسل للمراجعة";
-  /// Osysharp.Knowledge.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Knowledge.KnowledgeStepKind.TakeBack
+  /// Osysharp.KnowledgeBase.KnowledgeStepKind · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.KnowledgeBase.KnowledgeStepKind.TakeBack
   /// beside: "Sent for review", "Published", "Sent back", "Archived", "Brought back"
   label "Taken back" => "استُرجع";
 
-  // ── Osysharp.Knowledge · Osysharp.Knowledge.__Settings_KnowledgeSettings_Section.Sections ──
-  /// Osysharp.Knowledge.__Settings_KnowledgeSettings_Section.Sections · a hint under a field
+  // ── Osysharp.KnowledgeBase · Osysharp.KnowledgeBase.__Settings_KnowledgeSettings_Section.Sections ──
+  /// Osysharp.KnowledgeBase.__Settings_KnowledgeSettings_Section.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "Whether articles are reviewed before they are published, and how the help centre suggests them." => "ما إذا كانت المقالات تُراجع قبل نشرها، وكيف يقترحها مركز المساعدة.";
 
-  // ── Osysharp.Knowledge · PlaceKnowledgeArticle ──
+  // ── Osysharp.KnowledgeBase · PlaceKnowledgeArticle ──
   /// PlaceKnowledgeArticle · an error message
   /// shown through ValidationException
   error "That article or section is gone." => "لم يعد هذا المقال أو القسم موجودًا.";
 
-  // ── Osysharp.Knowledge · PublishKnowledge ──
+  // ── Osysharp.KnowledgeBase · PublishKnowledge ──
   /// PublishKnowledge · a label (a field, a list item, a menu entry) · at most ~13 characters
   /// shown through [Action] PublishKnowledge
   label "Publish" => "نشر";
 
-  // ── Osysharp.Knowledge · RestoreKnowledgeVersion ──
+  // ── Osysharp.KnowledgeBase · RestoreKnowledgeVersion ──
   /// RestoreKnowledgeVersion · an error message
   /// shown through ValidationException
   /// also in KnowledgeDeskStep
   error "That version is gone." => "لم تعد هذه النسخة موجودة.";
 
-  // ── Osysharp.Knowledge · SaveKnowledgeDraft ──
+  // ── Osysharp.KnowledgeBase · SaveKnowledgeDraft ──
   /// SaveKnowledgeDraft · an error message
   /// shown through ValidationException
   error "Give it a title — readers find it by it." => "أعطه عنوانًا — يجده القراء من خلاله.";
@@ -770,17 +770,17 @@ translations ar {
   /// shown through ValidationException
   error "That draft is gone — it was published, sent or thrown away." => "لم تعد هذه المسودة موجودة — فقد نُشرت أو أُرسلت أو حُذفت.";
 
-  // ── Osysharp.Knowledge · SendKnowledgeBack ──
+  // ── Osysharp.KnowledgeBase · SendKnowledgeBack ──
   /// SendKnowledgeBack · an error message
   /// shown through ValidationException
   error "Say what to change — the writer reads it." => "قل ما يجب تغييره — سيقرأه الكاتب.";
 
-  // ── Osysharp.Knowledge · StartKnowledgeArticle ──
+  // ── Osysharp.KnowledgeBase · StartKnowledgeArticle ──
   /// StartKnowledgeArticle · an error message
   /// shown through ValidationException
   error "Choose where it goes — a category's section." => "اختر مكانه — قسم ضمن فئة.";
 
-  // ── Osysharp.Knowledge · TakeKnowledgeStep ──
+  // ── Osysharp.KnowledgeBase · TakeKnowledgeStep ──
   /// TakeKnowledgeStep · an error message
   /// shown through ValidationException
   error "A step on this version is still being made — a moment." => "ما زالت خطوة على هذه النسخة قيد التنفيذ — لحظة من فضلك.";

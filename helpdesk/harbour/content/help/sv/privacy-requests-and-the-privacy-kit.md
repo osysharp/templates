@@ -15,7 +15,7 @@ Privacy-kitet, `Osysharp.Privacy`, hanterar de förfrågningar som människor g�
 
 ## Så frågar man
 
-- **En inloggad person** frågar på `/privacy`. De bekräftar att det är de med en engångskod som skickas till adressen på kontot. Det kommer med följekitet `Osysharp.Privacy.Accounts`.
+- **En inloggad person** frågar på `/privacy`. De bekräftar att det är de med en engångskod som skickas till adressen på kontot. Det kommer med följekitet `Osysharp.Privacy.UserAccounts`.
 - **En person utan konto** frågar på `/privacy/ask` och bevisar sin adress med en kod som mejlas dit. Det kommer med `Osysharp.Privacy.Conversations`.
 - **Ditt team** kan registrera en förfrågan åt någon och anteckna hur de kontrollerade vem det är.
 
@@ -52,7 +52,7 @@ policy CollaboratesOnRecords => IsAdmin;
 
 ## Att få tag på kitet
 
-Privacy-kitet är ännu inte publicerat som paket, så `osy lock` kan inte hämta det i dag och säger det. `osy search` listar det, med sin `use`-rad, när det har släppts. Att märka personfälten med `[Classification(Personal.…)]` fungerar redan i dag och är det som kitet bygger på.
+Lägg till `use Osysharp.Privacy@0;` i appens manifest och kör `osy lock` för att låsa versionen. `osy search privacy` listar kitet och dess följekit, vart och ett med sin `use`-rad. Att märka personfälten med `[Classification(Personal.…)]` är det som kitet bygger på, och det fungerar också på egen hand.
 
 ## Relaterat
 

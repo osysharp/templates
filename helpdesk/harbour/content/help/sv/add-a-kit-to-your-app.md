@@ -14,7 +14,7 @@ Ett kit är ett paket med Osy# som lägger till en funktion i din app: PDF:er, f
    app MyTasks {
      model "model/**/*.osy";
      use Osysharp.Ui;
-     use Osysharp.Pdf@1;
+     use Osysharp.PdfViewer@1;
    }
    ```
 
@@ -30,25 +30,25 @@ Ett kit är ett paket med Osy# som lägger till en funktion i din app: PDF:er, f
 
    ```
    ✓ Wrote osyrin.lock (2 pins)
-     Osysharp.Pdf  1.0.0  github:osysharp/pdf@v1.0.0
+     Osysharp.PdfViewer  1.0.0  github:osysharp/pdf@v1.0.0
      Osysharp.Ui  2.15.2  prewarmed:osysharp/ui
    ```
 
 3. Checka in `osyrin.lock` tillsammans med källkoden, så att varje bygge använder samma versioner.
 
-4. Lägg till `using Osysharp.Pdf;` överst i en modellfil som använder kitets typer.
+4. Lägg till `using Osysharp.PdfViewer;` överst i en modellfil som använder kitets typer.
 
 ## Vilka kit du kan lägga till
 
 - **Kit som plattformen har med sig** behöver ingen nedladdning. `osy kits` listar dem; i dag finns bland andra `Osysharp.Ui`, `Osysharp.Workflow`, `Osysharp.Storage`, `Osysharp.Scheduling`, `Osysharp.Http`, `Osysharp.Memory` och `Osysharp.Markdown`.
-- **Publicerade kit** hämtas av `osy lock`. `osy search` listar dem, var och en med den `use`-rad du klistrar in, till exempel `use Osysharp.Pdf@1;` eller `use Osysharp.Barcode@1;`.
+- **Publicerade kit** hämtas av `osy lock`. `osy search` listar dem, var och en med den `use`-rad du klistrar in, till exempel `use Osysharp.PdfViewer@1;` eller `use Osysharp.BarcodeScanner@1;`.
 
 Fler kit publiceras som paket. Ett kit som ännu inte har släppts kan inte hämtas: `osy lock` säger det med namn och skriver ingenting, så att din befintliga låsfil förblir som den var.
 
 ## Lär dig ett kit
 
 ```
-osy kits Osysharp.Pdf
+osy kits Osysharp.PdfViewer
 ```
 
 Det skriver ut vad kitet är till för och de kontrakt det deklarerar som andra kit kan implementera. Ett kit i din egen arbetsyta visar också sin minsta exempelapp och namnen på sina tester. För UI-kitet listar `osy kit` varje kontroll med sin signatur, och `osy kit Card` skriver ut källkoden för en kontroll.

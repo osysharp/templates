@@ -1,11 +1,11 @@
-// THE TICKET API (H12) — another system works tickets over `/api/rest/v1/desk` with a teammate's API key, and IS that
+// THE TICKET API — another system works tickets over `/api/rest/v1/desk` with a teammate's API key, and IS that
 // teammate: it opens a ticket, replies, sets a status and a priority, tags it, lists what it may read — each the desk's
 // own verb, its line on the timeline signed by them. It cannot read, over the API, a ticket they could not open in the
 // desk: Rahul is not in the restricted Legal queue, so a ticket there is not there for his key either.
 //
 // The bells (Ines, Rahul, Lena; the Legal queue only Lena works; Olivia at Larkspur) are notifications.test.osy's.
 using Osysharp.Identity;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Conversations;
 
 /// GET /statuses answers its list in the `result` envelope.

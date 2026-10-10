@@ -2,12 +2,12 @@
 // back one change, a section a person may not open is not offered to them, and a shared view lands in the rail.
 // `osy test --pixels` photographs each (Ui.Shot).
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
-using Osysharp.People;
-using Osysharp.Inbox;
-using Osysharp.Fields;
+using Osysharp.Organizations.ServicePlans;
+using Osysharp.UserManagement;
+using Osysharp.WorkQueues;
+using Osysharp.CustomFields;
 using Osysharp.Conversations;
 
 [Test(Office)]
@@ -271,7 +271,7 @@ void a_shared_view_lands_in_the_rail_and_lists_what_it_asks_for() {
   Ui.Shot("shared-view");
 }
 
-/// Routing is the inbox's page (Osysharp.Inbox's `RoutingRuleSettings`) with the desk's own action on it: a rule that
+/// Routing is the inbox's page (Osysharp.WorkQueues's `RoutingRuleSettings`) with the desk's own action on it: a rule that
 /// tags what it matches says so in the desk's words ("tag:customs").
 [Test(Office)]
 void routing_rules_are_written_on_their_settings_page() {

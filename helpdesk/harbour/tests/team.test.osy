@@ -2,15 +2,15 @@
 // a customer with a PROVEN address lands in their company, a routing rule decides where a new ticket goes, and a
 // company's tier decides what it is promised.
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
+using Osysharp.Organizations.ServicePlans;
 using Osysharp.Invitations;
-using Osysharp.People;
+using Osysharp.UserManagement;
 using Osysharp.Mail;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 
 /// Mira runs the desk (an admin and an agent); Theo works it; Larkspur (Standard, shares tickets) and Atlas (Enterprise)
 /// are customers — Petra has a Larkspur portal account and a ticket.

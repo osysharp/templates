@@ -1,4 +1,4 @@
-// TICKETS AND EACH OTHER (H2) — the desk copies somebody in and takes them off; a second question in one thread is split
+// TICKETS AND EACH OTHER — the desk copies somebody in and takes them off; a second question in one thread is split
 // into a ticket of its own, for the same customer, its message moved there and both tickets saying so; tickets are
 // linked by the desk's kinds (related, duplicate, caused by, incident of a problem), shown on both; and solving a
 // problem solves its open incidents, each customer told. `osy test --pixels` photographs the link panel, the split
@@ -8,7 +8,7 @@
 using Osysharp.Identity;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 
 /// What `t`'s timeline says, as one string per line — the reader's language.
 List<string> LinesOf(Ticket t) {

@@ -1,4 +1,4 @@
-// THE HELP CENTRE AND THE KNOWLEDGE BASE — Osysharp.Knowledge: articles the team writes in markdown, reviewed before a
+// THE HELP CENTRE AND THE KNOWLEDGE BASE — Osysharp.KnowledgeBase: articles the team writes in markdown, reviewed before a
 // customer reads them, in English, Swedish and Arabic; the public help centre at /help-centre that a stuck customer
 // reads first; suggestions under the help form's subject as they type; and a search of the articles inside the chat.
 //
@@ -9,8 +9,8 @@
 // ⚑ A TEAM ARTICLE NEVER REACHES A CUSTOMER — the kit's rule, whatever a page asks for: not on the help centre, not in
 //   its search, not in a suggestion, not in the chat.
 using Osysharp.Identity;
-using Osysharp.Knowledge;
-using Osysharp.Inbox;
+using Osysharp.KnowledgeBase;
+using Osysharp.WorkQueues;
 using Osysharp.Notifications;
 
 policy ReadsTeamKnowledge => IsAgent;

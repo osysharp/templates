@@ -461,7 +461,7 @@ translations ar {
   /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~15 characters
   /// shown through Osysharp.Conversations.Conversation.Reference
   /// beside: "Subject", "Started at", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint"
-  /// also in Osysharp.Inbox.WorkItem
+  /// also in Osysharp.WorkQueues.WorkItem
   label "Reference" => "المرجع";
   /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~19 characters
   /// shown through Osysharp.Conversations.Conversation.ReplyChannel
@@ -486,7 +486,7 @@ translations ar {
   /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~16 characters
   /// shown through Osysharp.Conversations.Conversation.StartedAt
   /// beside: "Subject", "Last entry at", "Last customer entry at", "Reply channel", "Reply endpoint", "Started by visit"
-  /// also in Osysharp.Inbox.SlaClock
+  /// also in Osysharp.WorkQueues.SlaClock
   label "Started at" => "تاريخ البدء";
   /// Osysharp.Conversations.Conversation · a label (a field, a list item, a menu entry) · at most ~23 characters
   /// shown through Osysharp.Conversations.Conversation.StartedByVisit
@@ -620,7 +620,7 @@ translations ar {
   /// Osysharp.Conversations.ConversationEntry · a label (a field, a list item, a menu entry) · at most ~8 characters
   /// shown through Osysharp.Conversations.ConversationEntry.At
   /// beside: "Conversation", "Sequence", "Visibility", "By party", "By member", "By agent"
-  /// also in Osysharp.Inbox.Assignment
+  /// also in Osysharp.WorkQueues.Assignment
   label "At" => "الوقت";
   /// Osysharp.Conversations.ConversationEntry · a label (a field, a list item, a menu entry) · at most ~14 characters
   /// shown through Osysharp.Conversations.ConversationEntry.ByAgent
@@ -726,7 +726,7 @@ translations ar {
   /// Osysharp.Conversations.FollowUpState · a label (a field, a list item, a menu entry) · at most ~12 characters
   /// shown through Osysharp.Conversations.FollowUpState.Sent
   /// beside: "None", "Waiting"
-  /// also in Osysharp.Feedback.FeedbackMailState
+  /// also in Osysharp.SatisfactionSurveys.FeedbackMailState
   label "Mailed" => "أُرسل بالبريد";
 
   // ── Osysharp.Conversations · Osysharp.Conversations.IConversationChannel.NotReadyReason ──
@@ -901,7 +901,7 @@ translations ar {
   // ── Osysharp.Conversations · PartyCardOf ──
   /// PartyCardOf · a label (a field, a list item, a menu entry) · at most ~13 characters
   /// shown through PartyCardPoint.Standing
-  /// also in Osysharp.Inbox.AssignReason
+  /// also in Osysharp.WorkQueues.AssignReason
   label "Claimed" => "مُدّعى";
   /// PartyCardOf · a label (a field, a list item, a menu entry) · at most ~42 characters
   /// shown through PartyCardPoint.Standing

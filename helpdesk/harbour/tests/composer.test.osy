@@ -1,10 +1,10 @@
-// THE COMPOSER ON A TICKET (Osysharp.Composer) — what the desk told it, driven as an agent drives it: a saved reply
+// THE COMPOSER ON A TICKET (Osysharp.ReplyComposer) — what the desk told it, driven as an agent drives it: a saved reply
 // greets the customer by name and goes out under the agent's signature; a macro's steps are the desk's own verbs and
 // run with the send; the keys are on the `?` sheet; a draft survives a reload. `osy test --pixels` photographs each.
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Composer;
-using Osysharp.Inbox;
+using Osysharp.ReplyComposer;
+using Osysharp.WorkQueues;
 
 // Rahul KAPOOR — the workspace's teammate (workspace.test.osy), not the desk's Rahul (rahul@, desk.test.osy). Each person
 // is declared once across the tests; this is his one declaration.
@@ -141,7 +141,7 @@ void a_reply_half_written_on_a_ticket_is_there_after_a_reload() {
   Ui.SignInAs(Ines);
   Ui.Visit("/v/open/t/" + number);
   Ui.Fill("Reply to Hanna Lindqvist", "Checking with billing — back within the hour.");
-  Ui.AwaitChange(Osysharp.Composer.ComposerDraft);
+  Ui.AwaitChange(Osysharp.ReplyComposer.ComposerDraft);
   Ui.Visit("/v/open/t/" + number);
   Assert.Value("Reply to Hanna Lindqvist", "Checking with billing — back within the hour.");
   Assert.Visible("Draft saved", within: "Composer");

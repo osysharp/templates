@@ -1,13 +1,13 @@
 // THE TEAM AND ITS ROLES — who works the desk, and who may do what.
 //
-// Everybody signs in through Osysharp.Accounts: agents, leads, admins and the customers who use the portal. The roles
+// Everybody signs in through Osysharp.UserAccounts: agents, leads, admins and the customers who use the portal. The roles
 // are the desk's own; the kits ask the desk who its staff are (`IsConversationStaff`) and the desk answers here.
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
+using Osysharp.Organizations.ServicePlans;
 using Osysharp.Invitations;
-using Osysharp.People;
+using Osysharp.UserManagement;
 
 /// The desk's roles. `Authenticator` is the sign-in flow's own; the rest are people.
 [Role] enum AppRole {
@@ -39,7 +39,7 @@ string RoleWord(bool admin, bool lead) => admin ? "Admin" : (lead ? "Lead" : "Ag
 /// receiver's account.
 policy IsConversationStaff => RoleGrant.Any(g => g.Member == user
   && (g.Role == AppRole.Agent || g.Role == AppRole.Lead || g.Role == AppRole.Admin || g.Role == AppRole.Integration));
-// Who sits on a conversation (and any record) with the desk — the Collaboration kit's question.
+// Who sits on a conversation (and any record) with the desk — the Presence kit's question.
 policy CollaboratesOnRecords => IsConversationStaff;
 
 // The kits' questions, answered by the desk: admins look after the team (roles, accounts, a lost phone) and invite
@@ -48,7 +48,7 @@ policy ManagesPeople => IsAdmin;
 policy MayInvite => IsAdmin;
 policy ManagesOrganizations => IsAgent;
 
-// The user manager READS who holds which role. Every CHANGE goes through it (Osysharp.People), recorded with who made
+// The user manager READS who holds which role. Every CHANGE goes through it (Osysharp.UserManagement), recorded with who made
 // it and why — so the desk grants nothing more on RoleGrant: a second, unrecorded way to change access is the thing
 // the user manager exists to remove.
 partial entity RoleGrant { security { allow read when ManagesPeople; } }
@@ -82,16 +82,16 @@ public class TheTeam : PeopleDirectory {
 // A teammate is invited — and is an `Agent` whatever their address, because the invitation says so.
 app.Invitations = new InvitationsSetup { Accounts = new DeskInvitations() };
 
-/// An agent: an account (Osysharp.Accounts' `User`) with a place on the desk. The kit keeps the address, the password and
+/// An agent: an account (Osysharp.UserAccounts' `User`) with a place on the desk. The kit keeps the address, the password and
 /// every rule about them; the desk adds the signature. Whether they are on shift, away, who covers for them and which
-/// languages they answer in are the inbox's (`Availability`, `Absence`, `HeldSkill` — Osysharp.Inbox), which routing
+/// languages they answer in are the inbox's (`Availability`, `Absence`, `HeldSkill` — Osysharp.WorkQueues), which routing
 /// reads.
 entity Agent : User {
   /// Under every reply they send by mail.
   [MaxLength(300)] string? Signature;
 
   // Everyone signed in sees the team (a customer sees who answered them); an agent edits their own signature, an admin
-  // anybody's. Accounts are made by the sign-in flow alone (Osysharp.Accounts' floor) — a teammate signs up.
+  // anybody's. Accounts are made by the sign-in flow alone (Osysharp.UserAccounts' floor) — a teammate signs up.
   security {
     allow read when IsAuthenticated || IsAuthenticator;
     allow create when IsAuthenticator;

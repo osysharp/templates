@@ -710,12 +710,12 @@ translations ar {
   /// shown through NoSelfService()
   message "the people who run it" => "القائمين عليه";
 
-  // ── Osysharp.Privacy · Osysharp.Inbox.Handling ──
-  /// Osysharp.Inbox.Handling · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.Handling.Answered
+  // ── Osysharp.Privacy · Osysharp.WorkQueues.Handling ──
+  /// Osysharp.WorkQueues.Handling · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.Handling.Answered
   /// beside: "New", "Owed a response", "Waiting on the requester", "Waiting on others", "Paused", "Done"
-  /// also in Osysharp.Feedback.FeedbackChange
-  /// also in Osysharp.Feedback.FeedbackStage
+  /// also in Osysharp.SatisfactionSurveys.FeedbackChange
+  /// also in Osysharp.SatisfactionSurveys.FeedbackStage
   /// also in FeedbackResults
   label "Answered" => "تم الرد";
 

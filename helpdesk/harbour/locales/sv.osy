@@ -1210,7 +1210,7 @@ translations sv {
   /// shown through EmptyState.body
   text "Requests you send from the help page, or by mail to {support}, appear here." => "Förfrågningar som du skickar från hjälpsidan, eller via e-post till {support}, visas här.";
   /// MyRequestsPage · /my · text on the page
-  /// placeholders: {r.Requester} = r.Requester (string), {Ago} = Osysharp.Inbox.Ago(…) (string)
+  /// placeholders: {r.Requester} = r.Requester (string), {Ago} = Osysharp.WorkQueues.Ago(…) (string)
   text "{r.Requester} · updated {Ago} ago" => "{r.Requester} · uppdaterad för {Ago} sedan";
   /// MyRequestsPage · /my · a title
   /// shown through EmptyState.title
@@ -1289,7 +1289,7 @@ translations sv {
   /// shown through Osysharp.ActionParameterKind.Number
   /// beside: "Text", "Decimal", "Yes or no", "Date", "Date and time", "Time of day"
   /// also in Osysharp.RecordFieldKind
-  /// also in Osysharp.Fields.FieldKind
+  /// also in Osysharp.CustomFields.FieldKind
   /// also in Osysharp.Automations.ConditionKind
   label "Number" => "Tal";
 
@@ -1345,9 +1345,9 @@ translations sv {
   /// Osysharp.Conversations.Party · a label (a field, a list item, a menu entry) · at most ~14 characters
   /// shown through Osysharp.Conversations.Party.Language
   /// beside: "Display name", "Account", "Created by visit", "Merged into", "Erased at", "Points"
-  /// also in Osysharp.Inbox.WorkItem
-  /// also in Osysharp.Inbox.RoutingRule
-  /// also in Osysharp.Inbox.SkillKind
+  /// also in Osysharp.WorkQueues.WorkItem
+  /// also in Osysharp.WorkQueues.RoutingRule
+  /// also in Osysharp.WorkQueues.SkillKind
   label "Language" => "Språk";
   /// Osysharp.Conversations.Party · a label (a field, a list item, a menu entry) · at most ~17 characters
   /// shown through Osysharp.Conversations.Party.MergedInto
@@ -1355,153 +1355,153 @@ translations sv {
   /// also in Ticket
   label "Merged into" => "Sammanslagen med";
 
-  // ── Osysharp.Feedback.FeedbackAnswered.Sentence ──
-  /// Osysharp.Feedback.FeedbackAnswered.Sentence · text on the page
+  // ── Osysharp.SatisfactionSurveys.FeedbackAnswered.Sentence ──
+  /// Osysharp.SatisfactionSurveys.FeedbackAnswered.Sentence · text on the page
   /// placeholders: {who} = who (string)
   /// shown through Sentence()
   /// also in DeskCopy.EventSentence
   text "{who} said it did not go well." => "{who} svarade att det inte gick bra.";
-  /// Osysharp.Feedback.FeedbackAnswered.Sentence · text on the page
+  /// Osysharp.SatisfactionSurveys.FeedbackAnswered.Sentence · text on the page
   /// placeholders: {who} = who (string)
   /// shown through Sentence()
   /// also in DeskCopy.EventSentence
   text "{who} said it went well." => "{who} svarade att det gick bra.";
 
-  // ── Osysharp.Feedback.FeedbackStage ──
-  /// Osysharp.Feedback.FeedbackStage · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Feedback.FeedbackStage.Open
+  // ── Osysharp.SatisfactionSurveys.FeedbackStage ──
+  /// Osysharp.SatisfactionSurveys.FeedbackStage · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.SatisfactionSurveys.FeedbackStage.Open
   /// beside: "Answered", "Settled", "Closed", "No longer asked"
   /// also in WorkSourceOf
   /// also in StatusCategory
   /// also in Stage
   label "Open" => "Öppen";
 
-  // ── Osysharp.Feedback.__Settings_FeedbackSettings_Section.Sections ──
-  /// Osysharp.Feedback.__Settings_FeedbackSettings_Section.Sections · a label (a field, a list item, a menu entry) · at most ~14 characters
+  // ── Osysharp.SatisfactionSurveys.__Settings_FeedbackSettings_Section.Sections ──
+  /// Osysharp.SatisfactionSurveys.__Settings_FeedbackSettings_Section.Sections · a label (a field, a list item, a menu entry) · at most ~14 characters
   /// shown through SettingsLink.Label
   /// also in DeskNav
   label "Feedback" => "Återkoppling";
 
-  // ── Osysharp.Fields.CustomField ──
-  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Fields.CustomField.Active
+  // ── Osysharp.CustomFields.CustomField ──
+  /// Osysharp.CustomFields.CustomField · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.CustomFields.CustomField.Active
   /// beside: "Name", "Kind", "Options", "Hint", "Public", "Required"
-  /// also in Osysharp.Fields.FieldForm
+  /// also in Osysharp.CustomFields.FieldForm
   /// also in PersonPanel
-  /// also in Osysharp.Inbox.Queue
+  /// also in Osysharp.WorkQueues.Queue
   label "Active" => "Aktiv";
-  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Fields.CustomField.Position
+  /// Osysharp.CustomFields.CustomField · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.CustomFields.CustomField.Position
   /// beside: "Name", "Kind", "Options", "Hint", "Public", "Required"
-  /// also in Osysharp.Fields.FieldForm
-  /// also in Osysharp.Inbox.Queue
-  /// also in Osysharp.Inbox.RoutingRule
+  /// also in Osysharp.CustomFields.FieldForm
+  /// also in Osysharp.WorkQueues.Queue
+  /// also in Osysharp.WorkQueues.RoutingRule
   label "Position" => "Position";
 
-  // ── Osysharp.Fields.FieldForm ──
-  /// Osysharp.Fields.FieldForm · a label (a field, a list item, a menu entry) · at most ~17 characters
-  /// shown through Osysharp.Fields.FieldForm.Description
+  // ── Osysharp.CustomFields.FieldForm ──
+  /// Osysharp.CustomFields.FieldForm · a label (a field, a list item, a menu entry) · at most ~17 characters
+  /// shown through Osysharp.CustomFields.FieldForm.Description
   /// beside: "Name", "Key", "Is default", "Position", "Active"
-  /// also in Osysharp.Organizations.Accounts.OrganizationTier
-  /// also in Osysharp.Inbox.Queue
+  /// also in Osysharp.Organizations.ServicePlans.OrganizationTier
+  /// also in Osysharp.WorkQueues.Queue
   /// also in TicketStatus
   label "Description" => "Beskrivning";
-  /// Osysharp.Fields.FieldForm · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Fields.FieldForm.IsDefault
+  /// Osysharp.CustomFields.FieldForm · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.CustomFields.FieldForm.IsDefault
   /// beside: "Name", "Description", "Key", "Position", "Active"
-  /// also in Osysharp.Organizations.Accounts.OrganizationTier
+  /// also in Osysharp.Organizations.ServicePlans.OrganizationTier
   /// also in TicketStatus
   label "Is default" => "Standard";
 
-  // ── Osysharp.Inbox.AssignReason ──
-  /// Osysharp.Inbox.AssignReason · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Inbox.AssignReason.AccountOwner
+  // ── Osysharp.WorkQueues.AssignReason ──
+  /// Osysharp.WorkQueues.AssignReason · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.WorkQueues.AssignReason.AccountOwner
   /// beside: "Arrived", "Claimed", "Released", "Handed on", "Moved", "Round robin"
   /// also in CompaniesPage /companies
   label "Account owner" => "Kontoansvarig";
 
-  // ── Osysharp.Inbox.Handling ──
-  /// Osysharp.Inbox.Handling · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Inbox.Handling.Closed
+  // ── Osysharp.WorkQueues.Handling ──
+  /// Osysharp.WorkQueues.Handling · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.WorkQueues.Handling.Closed
   /// beside: "New", "Owed a response", "Answered", "Waiting on the requester", "Waiting on others", "Paused"
-  /// also in Osysharp.Feedback.FeedbackStage
+  /// also in Osysharp.SatisfactionSurveys.FeedbackStage
   /// also in CustomerStatus
   /// also in StatusCategory
   label "Closed" => "Stängd";
-  /// Osysharp.Inbox.Handling · a label (a field, a list item, a menu entry) · at most ~9 characters
-  /// shown through Osysharp.Inbox.Handling.New
+  /// Osysharp.WorkQueues.Handling · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.WorkQueues.Handling.New
   /// beside: "Owed a response", "Answered", "Waiting on the requester", "Waiting on others", "Paused", "Done"
   /// also in StatusCategory
   /// also in Stage
   label "New" => "Ny";
 
-  // ── Osysharp.Inbox.InboxWords.Metric ──
-  /// Osysharp.Inbox.InboxWords.Metric · text on the page
+  // ── Osysharp.WorkQueues.InboxWords.Metric ──
+  /// Osysharp.WorkQueues.InboxWords.Metric · text on the page
   /// shown through Metric()
   /// also in DeskWords.Metric
   text "resolution" => "lösning";
 
-  // ── Osysharp.Inbox.RoutingRule ──
-  /// Osysharp.Inbox.RoutingRule · a label (a field, a list item, a menu entry) · at most ~15 characters
-  /// shown through Osysharp.Inbox.RoutingRule.AssignTo
+  // ── Osysharp.WorkQueues.RoutingRule ──
+  /// Osysharp.WorkQueues.RoutingRule · a label (a field, a list item, a menu entry) · at most ~15 characters
+  /// shown through Osysharp.WorkQueues.RoutingRule.AssignTo
   /// beside: "Name", "Position", "Active", "Continue after", "Channel", "Title contains"
   /// also in AssignTicket
   label "Assign to" => "Tilldela till";
-  /// Osysharp.Inbox.RoutingRule · a label (a field, a list item, a menu entry) · at most ~18 characters
-  /// shown through Osysharp.Inbox.RoutingRule.SetPriority
+  /// Osysharp.WorkQueues.RoutingRule · a label (a field, a list item, a menu entry) · at most ~18 characters
+  /// shown through Osysharp.WorkQueues.RoutingRule.SetPriority
   /// beside: "Name", "Position", "Active", "Continue after", "Channel", "Title contains"
   /// also in SetTicketPriority
   /// also in TicketView
   label "Set priority" => "Ändra prioritet";
 
-  // ── Osysharp.Inbox.SlaAction ──
-  /// Osysharp.Inbox.SlaAction · a label (a field, a list item, a menu entry) · at most ~20 characters
-  /// shown through Osysharp.Inbox.SlaAction.TellLeads
+  // ── Osysharp.WorkQueues.SlaAction ──
+  /// Osysharp.WorkQueues.SlaAction · a label (a field, a list item, a menu entry) · at most ~20 characters
+  /// shown through Osysharp.WorkQueues.SlaAction.TellLeads
   /// beside: "Tell the holder", "Raise the priority", "Escalate", "Move to a queue"
   /// also in TellLeads
   label "Tell the leads" => "Meddela teamledarna";
 
-  // ── Osysharp.Inbox.SlaMetric ──
-  /// Osysharp.Inbox.SlaMetric · a label (a field, a list item, a menu entry) · at most ~16 characters
-  /// shown through Osysharp.Inbox.SlaMetric.Resolution
+  // ── Osysharp.WorkQueues.SlaMetric ──
+  /// Osysharp.WorkQueues.SlaMetric · a label (a field, a list item, a menu entry) · at most ~16 characters
+  /// shown through Osysharp.WorkQueues.SlaMetric.Resolution
   /// beside: "First response", "Next response"
   /// also in SlaPolicySettings
   /// also in Ticket
   label "Resolution" => "Lösning";
 
-  // ── Osysharp.Inbox.WaitFor ──
-  /// Osysharp.Inbox.WaitFor · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Inbox.WaitFor.Pause
+  // ── Osysharp.WorkQueues.WaitFor ──
+  /// Osysharp.WorkQueues.WaitFor · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.WorkQueues.WaitFor.Pause
   /// beside: "The requester", "Somebody else"
   /// also in StatusCategory
   /// also in Stage
   label "On hold" => "Vilande";
 
-  // ── Osysharp.Inbox.WorkItem ──
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Inbox.WorkItem.Priority
+  // ── Osysharp.WorkQueues.WorkItem ──
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Priority
   /// beside: "Title", "Reference", "Queue", "Assignee", "Offered to", "Handling"
-  /// also in Osysharp.Inbox.SlaPolicy
+  /// also in Osysharp.WorkQueues.SlaPolicy
   /// also in WorkItemHead
-  /// also in Osysharp.Inbox.WorkSort
+  /// also in Osysharp.WorkQueues.WorkSort
   label "Priority" => "Prioritet";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Inbox.WorkItem.Queue
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Queue
   /// beside: "Title", "Reference", "Assignee", "Offered to", "Priority", "Handling"
-  /// also in Osysharp.Inbox.QueueMember
-  /// also in Osysharp.Inbox.SlaPolicy
+  /// also in Osysharp.WorkQueues.QueueMember
+  /// also in Osysharp.WorkQueues.SlaPolicy
   /// also in WorkItemHead
   label "Queue" => "Kö";
-  /// Osysharp.Inbox.WorkItem · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Inbox.WorkItem.Title
+  /// Osysharp.WorkQueues.WorkItem · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.WorkQueues.WorkItem.Title
   /// beside: "Reference", "Queue", "Assignee", "Offered to", "Priority", "Handling"
   /// also in SavedReplySettings
   /// also in MacroSettings
   /// also in KnowledgeStartDialog
   label "Title" => "Rubrik";
 
-  // ── Osysharp.Knowledge.__Settings_KnowledgeSettings_Section.Sections ──
-  /// Osysharp.Knowledge.__Settings_KnowledgeSettings_Section.Sections · a label (a field, a list item, a menu entry) · at most ~20 characters
+  // ── Osysharp.KnowledgeBase.__Settings_KnowledgeSettings_Section.Sections ──
+  /// Osysharp.KnowledgeBase.__Settings_KnowledgeSettings_Section.Sections · a label (a field, a list item, a menu entry) · at most ~20 characters
   /// shown through SettingsLink.Label
   /// also in DeskNav
   label "Knowledge base" => "Kunskapsbas";
@@ -1521,11 +1521,11 @@ translations sv {
   /// also in CustomerStatus
   label "Received" => "Mottagen";
 
-  // ── Osysharp.Organizations.Accounts.CustomerAccount ──
-  /// Osysharp.Organizations.Accounts.CustomerAccount · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Organizations.Accounts.CustomerAccount.Tier
-  /// also in Osysharp.Inbox.RoutingRule
-  /// also in Osysharp.Inbox.SlaPolicy
+  // ── Osysharp.Organizations.ServicePlans.CustomerAccount ──
+  /// Osysharp.Organizations.ServicePlans.CustomerAccount · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.Organizations.ServicePlans.CustomerAccount.Tier
+  /// also in Osysharp.WorkQueues.RoutingRule
+  /// also in Osysharp.WorkQueues.SlaPolicy
   /// also in SlaPolicySettings
   label "Tier" => "Nivå";
 
@@ -1536,12 +1536,12 @@ translations sv {
   /// also in CompaniesPage /companies
   label "Mail domain" => "E-postdomän";
 
-  // ── Osysharp.People.PeopleSettingsSections.Sections ──
-  /// Osysharp.People.PeopleSettingsSections.Sections · a heading
+  // ── Osysharp.UserManagement.PeopleSettingsSections.Sections ──
+  /// Osysharp.UserManagement.PeopleSettingsSections.Sections · a heading
   /// shown through SettingsLink.Group
   /// also in DeskSettingsSections.Sections
   heading "Team" => "Team";
-  /// Osysharp.People.PeopleSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// Osysharp.UserManagement.PeopleSettingsSections.Sections · a label (a field, a list item, a menu entry) · at most ~12 characters
   /// shown through SettingsLink.Label
   /// also in Company
   /// also in CompaniesPage /companies
@@ -1576,8 +1576,8 @@ translations sv {
   /// Osysharp.ServiceHours.ServiceHours · a label (a field, a list item, a menu entry) · at most ~10 characters
   /// shown through Osysharp.ServiceHours.ServiceHours.Name
   /// beside: "Zone", "Windows", "Exceptions"
-  /// also in Osysharp.Fields.CustomField
-  /// also in Osysharp.Fields.FieldForm
+  /// also in Osysharp.CustomFields.CustomField
+  /// also in Osysharp.CustomFields.FieldForm
   /// also in FieldListSection
   label "Name" => "Namn";
 
@@ -2616,8 +2616,8 @@ translations sv {
   /// shown through RoleChoice.Label
   label "Lead" => "Teamledare";
 
-  // ── __AppSettingValue_Osysharp_Knowledge_KnowledgeSetup ──
-  /// __AppSettingValue_Osysharp_Knowledge_KnowledgeSetup · a control's name for screen readers
+  // ── __AppSettingValue_Osysharp_KnowledgeBase_KnowledgeSetup ──
+  /// __AppSettingValue_Osysharp_KnowledgeBase_KnowledgeSetup · a control's name for screen readers
   /// shown through KnowledgeSetup.ContactLabel
   accessibleName "Ask the team" => "Fråga teamet";
 

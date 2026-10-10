@@ -2,7 +2,7 @@
 //
 // A ticket IS a conversation: the customer's messages, the team's replies and internal notes, and everything that
 // happened live on ONE timeline (Osysharp.Conversations), whichever way the customer wrote — the portal, the web form,
-// or mail (Osysharp.Conversations.Mail, which arrives by itself with Conversations and Mail.Receiving). A ticket is an item in the team's INBOX (Osysharp.Inbox) — its queue, who has
+// or mail (Osysharp.Conversations.Mail, which arrives by itself with Conversations and Mail.Receiving). A ticket is an item in the team's INBOX (Osysharp.WorkQueues) — its queue, who has
 // it, its priority and the SLA promises kept on it are the inbox's — and the desk adds what a ticket is: a number, a
 // status within a fixed category, a type, tags, followers, a merge.
 app Helpdesk {
@@ -12,16 +12,16 @@ app Helpdesk {
   use Osysharp.ServiceHours;
   // Sign-in, two-step sign-in for leads and admins, and the accounts the team and the customers sign in with.
   use Osysharp.Identity@0;
-  use Osysharp.Accounts@1;
+  use Osysharp.UserAccounts@1;
   // The fields the desk keeps on a ticket, a customer and a company, and the forms that ask a ticket's — an admin's to
   // define on Settings › Fields and forms (model/config.osy, model/fields.osy).
-  use Osysharp.Fields@0;
+  use Osysharp.CustomFields@0;
   // Customer companies and their mail domains (Organizations), their tiers, entitlements, account teams and VIPs (its
   // Accounts add-on), teammates by invitation, and the user manager.
   use Osysharp.Organizations@0;
-  use Osysharp.Organizations.Accounts@0;
+  use Osysharp.Organizations.ServicePlans@0;
   use Osysharp.Invitations@0;
-  use Osysharp.People@0;
+  use Osysharp.UserManagement@0;
   use Osysharp.Mail@0;
   // support@ is a WATCHED mailbox: mail arriving there becomes tickets (model/mail.osy).
   use Osysharp.Mail.Receiving@0;
@@ -35,25 +35,25 @@ app Helpdesk {
   // The one timeline per ticket. Email as a channel on it (Osysharp.Conversations.Mail) arrives by itself: the desk
   // uses Conversations and Mail.Receiving, which it completes — `osy lock` says so.
   use Osysharp.Conversations@0;
-  use Osysharp.Collaboration@0;
+  use Osysharp.Presence@0;
   // Queues, who has what, SLA policies and their clocks, routing, and the screens the team works from.
-  use Osysharp.Inbox@0;
+  use Osysharp.WorkQueues@0;
   // Waiting states drawn as thinking orbs.
-  use Osysharp.Orbs@0;
+  use Osysharp.LoadingOrbs@0;
   // Where a reply is written: saved replies, macros, markdown, drafts that survive a reload, files, the signature.
-  use Osysharp.Composer@0;
+  use Osysharp.ReplyComposer@0;
   // Rules the desk, the team and each agent write: when a ticket arrives, changes, the customer writes, its status
   // moves or a promise is at risk — or every hour — and it is so, do the desk's own actions (model/automations.osy).
   use Osysharp.Automations@0;
   // The bell and the mail of what was not read: offers, promises at risk, a customer writing again, a colleague's
   // @mention (model/notifications.osy). The people the inbox names — an offer, work handed to a cover, a promise on
-  // what they hold — are told in it by Osysharp.Inbox.Notifications, which arrives by itself with Inbox and Notifications.
+  // what they hold — are told in it by Osysharp.WorkQueues.Notifications, which arrives by itself with Inbox and Notifications.
   use Osysharp.Notifications@1;
   // "How did we do?" — asked of every solved ticket's customer, from the solve mail or the portal (model/feedback.osy).
-  use Osysharp.Feedback@0;
+  use Osysharp.SatisfactionSurveys@0;
   // The help centre and its knowledge base: articles in markdown, reviewed before a customer reads them, in every
   // language the desk speaks; suggestions under the help form; a search inside the chat (model/knowledge.osy).
-  use Osysharp.Knowledge@0;
+  use Osysharp.KnowledgeBase@0;
   use Osysharp.MarkdownEditor@1;
   use Osysharp.Seo@0;
   // Other systems told when something happens to a ticket — an admin subscribes an endpoint on Settings › Webhooks; its
@@ -70,7 +70,7 @@ app Helpdesk {
   use Osysharp.Observability;
   // Reports: the overview a lead opens every morning — volume, first reply, time to solve, promises kept and
   // satisfaction, by agent, queue, channel, company and tier — and a builder for every other question, over the
-  // tickets and their promises (Osysharp.Inbox.Reports, which arrives by itself with Inbox and Reports), computed in the
+  // tickets and their promises (Osysharp.WorkQueues.Reports, which arrives by itself with Inbox and Reports), computed in the
   // database as the reader may read it (model/reports.osy).
   use Osysharp.Explore;
   use Osysharp.Reports@0;
@@ -78,7 +78,7 @@ app Helpdesk {
   use Osysharp.Csv@0;
   // The desk's one clock — the time zone its days start in, picked on Settings › Time and date. Reports count their
   // days and weeks on it, and the daily digest goes out in the team's morning by it (model/clock.osy).
-  use Osysharp.Clock@0;
+  use Osysharp.TimeZone@0;
   // Every customer message in English for the desk and every reply in the customer's language, by the desk's own model
   // and key; tickets, past answers and articles found by meaning (model/language_and_search.osy).
   // (Translating a conversation is Osysharp.Conversations.MachineTranslation, which arrives by itself.)

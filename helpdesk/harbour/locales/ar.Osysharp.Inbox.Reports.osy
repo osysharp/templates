@@ -1,10 +1,10 @@
-// ar (العربية): the words of Helpdesk · Osysharp.Inbox.Reports, translated.
+// ar (العربية): the words of Helpdesk · Osysharp.WorkQueues.Reports, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations ar {
-  // ── Osysharp.Inbox.Reports · PromiseSourceOf ──
+  // ── Osysharp.WorkQueues.Reports · PromiseSourceOf ──
   /// PromiseSourceOf · a hint under a field
   /// shown through ReportMeasure.Hint
   hint "Half of the first replies came sooner than this, counted in the item's business hours." => "جاء نصف الردود الأولى أسرع من هذا، محسوبًا بساعات عمل العنصر.";
@@ -49,13 +49,13 @@ translations ar {
   /// shown through ReportSource.Title
   title "Promises" => "الوعود";
 
-  // ── Osysharp.Inbox.Reports · SlaPolicySettings ──
+  // ── Osysharp.WorkQueues.Reports · SlaPolicySettings ──
   /// SlaPolicySettings · a label (a field, a list item, a menu entry) · at most ~13 characters
   /// shown through Dropdown.label
   /// also in PromiseSourceOf
   label "Promise" => "الوعد";
 
-  // ── Osysharp.Inbox.Reports · WorkSourceOf ──
+  // ── Osysharp.WorkQueues.Reports · WorkSourceOf ──
   /// WorkSourceOf · a hint under a field
   /// placeholders: {words.Nouns} = words.Nouns (string)
   /// shown through ReportMeasure.Hint

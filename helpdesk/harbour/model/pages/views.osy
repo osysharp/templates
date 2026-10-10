@@ -3,7 +3,7 @@
 // that work it — never a blank pane. A desk with no tickets yet, and a teammate who is in no queue yet, each get a
 // sentence saying what is going on and what to do.
 using Osysharp.Identity;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 
 [Route("/v/{view}")]
 [Layout(DeskFrame)]

@@ -4,13 +4,8 @@
 //   desk and then raised into `Osysharp.Ui` itself (Mona Sans + Martian Mono, the neutral green-cyan surfaces, ONE line
 //   cyan accent meaning "live, and yours", amber for time running out, red for breached, slate-violet for waiting on
 //   somebody else). So the desk re-themes nothing the kit already says; it adds only what is its own — the widths of
-//   its three panes.
+//   its three panes. Its reports follow the theme with no line here: the chart kit's first series IS the accent.
 theme Helpdesk {
-  Colors {
-    /// A report's first series is the desk's one accent (the chart kit's own first hue is a blue the desk has nowhere
-    /// else), so a chart reads as part of the page.
-    Series1 = Colors.Primary;
-  }
   Length {
     /// The views column on a wide screen.
     ViewsW = "232px";

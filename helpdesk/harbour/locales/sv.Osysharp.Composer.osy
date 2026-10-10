@@ -1,10 +1,10 @@
-// sv (Svenska): the words of Helpdesk · Osysharp.Composer, translated.
+// sv (Svenska): the words of Helpdesk · Osysharp.ReplyComposer, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations sv {
-  // ── Osysharp.Composer · ActionsFor ──
+  // ── Osysharp.ReplyComposer · ActionsFor ──
   /// ActionsFor · a label (a field, a list item, a menu entry) · at most ~8 characters
   /// shown through ActionChoice.Label
   label "No" => "Nej";
@@ -12,13 +12,13 @@ translations sv {
   /// shown through ActionChoice.Label
   label "Yes" => "Ja";
 
-  // ── Osysharp.Composer · ApplyMacro ──
+  // ── Osysharp.ReplyComposer · ApplyMacro ──
   /// ApplyMacro · an error message
   /// shown through ValidationException
   /// also in SaveMacro
   error "That macro is gone — somebody removed it." => "Makrot finns inte längre. Någon har tagit bort det.";
 
-  // ── Osysharp.Composer · Composer ──
+  // ── Osysharp.ReplyComposer · Composer ──
   /// Composer · a control's name for screen readers
   accessibleName "Composer" => "Skrivruta";
   /// Composer · a control's name for screen readers
@@ -146,37 +146,37 @@ translations sv {
   /// Composer · text on the page
   text "When you send:" => "När du skickar:";
 
-  // ── Osysharp.Composer · ComposerMacroSettings (/settings/macros) ──
+  // ── Osysharp.ReplyComposer · ComposerMacroSettings (/settings/macros) ──
   /// ComposerMacroSettings · /settings/macros · a title
   /// shown through [Title]
   /// also in MacroSettings
   title "Macros" => "Makron";
 
-  // ── Osysharp.Composer · ComposerRepliesSettings (/settings/replies) ──
+  // ── Osysharp.ReplyComposer · ComposerRepliesSettings (/settings/replies) ──
   /// ComposerRepliesSettings · /settings/replies · a title
   /// shown through [Title]
   /// also in SavedReplySettings
   title "Saved replies" => "Sparade svar";
 
-  // ── Osysharp.Composer · InsertSavedReply ──
+  // ── Osysharp.ReplyComposer · InsertSavedReply ──
   /// InsertSavedReply · an error message
   /// shown through ValidationException
   /// also in SaveSavedReply
   error "That saved reply is gone — somebody removed it." => "Det sparade svaret finns inte längre. Någon har tagit bort det.";
 
-  // ── Osysharp.Composer · KeepPrivately ──
+  // ── Osysharp.ReplyComposer · KeepPrivately ──
   /// KeepPrivately · an error message
   /// placeholders: {name} = name (string), {SizeOf} = SizeOf(…) (string), {SizeOf2} = SizeOf(…) (string)
   /// shown through ValidationException
   error "{name} is {SizeOf}, and a file may be at most {SizeOf2}. Send a smaller one — a cropped screenshot, or the part of the log that matters." => "{name} är {SizeOf}, och en fil får vara högst {SizeOf2}. Skicka en mindre, till exempel en beskuren skärmbild eller den del av loggen som spelar roll.";
 
-  // ── Osysharp.Composer · Linked ──
+  // ── Osysharp.ReplyComposer · Linked ──
   /// Linked · text on the page
   /// placeholders: {picked} = picked (string)
   /// shown through TextEdit.Text
   text "[link]({picked})" => "[länk]({picked})";
 
-  // ── Osysharp.Composer · MacroPicker ──
+  // ── Osysharp.ReplyComposer · MacroPicker ──
   /// MacroPicker · a control's name for screen readers
   /// beside: "Search macros"
   accessibleName "Macros list" => "Makrolista";
@@ -185,7 +185,7 @@ translations sv {
   accessibleName "Search macros" => "Sök makron";
   /// MacroPicker · a label (a field, a list item, a menu entry) · at most ~12 characters
   /// shown through ComposerPopover.label
-  /// also in Osysharp.Composer.ComposerSettingsSections.Sections
+  /// also in Osysharp.ReplyComposer.ComposerSettingsSections.Sections
   label "Macros" => "Makron";
   /// MacroPicker · placeholder text inside an empty field · at most ~20 characters
   /// beside: "320px"
@@ -206,7 +206,7 @@ translations sv {
   /// also in MacroSettings
   title "No macros yet" => "Inga makron än";
 
-  // ── Osysharp.Composer · MacroSettings ──
+  // ── Osysharp.ReplyComposer · MacroSettings ──
   /// MacroSettings · a control's name for screen readers
   /// beside: "Add a macro"
   accessibleName "Macros" => "Makron";
@@ -255,7 +255,7 @@ translations sv {
   /// shown through Dialog.title
   title "New macro" => "Nytt makro";
 
-  // ── Osysharp.Composer · MentionMenu ──
+  // ── Osysharp.ReplyComposer · MentionMenu ──
   /// MentionMenu · a control's name for screen readers
   accessibleName "Mention someone" => "Nämn någon";
   /// MentionMenu · a control's name for screen readers
@@ -265,40 +265,40 @@ translations sv {
   /// beside: "People to mention"
   text "Mention someone — they are told, and the note is theirs to read" => "Nämn någon. De får veta det och kan läsa anteckningen.";
 
-  // ── Osysharp.Composer · Osysharp.Composer.ComposerSettingsSections.Sections ──
-  /// Osysharp.Composer.ComposerSettingsSections.Sections · a heading
+  // ── Osysharp.ReplyComposer · Osysharp.ReplyComposer.ComposerSettingsSections.Sections ──
+  /// Osysharp.ReplyComposer.ComposerSettingsSections.Sections · a heading
   /// shown through SettingsLink.Group
   heading "Replies" => "Svar";
-  /// Osysharp.Composer.ComposerSettingsSections.Sections · a hint under a field
+  /// Osysharp.ReplyComposer.ComposerSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "A reply and the things that go with it, applied in one move." => "Ett svar och det som hör till det, tillämpat i ett enda steg.";
-  /// Osysharp.Composer.ComposerSettingsSections.Sections · a hint under a field
+  /// Osysharp.ReplyComposer.ComposerSettingsSections.Sections · a hint under a field
   /// shown through SettingsLink.Hint
   hint "Replies written once and sent often, with placeholders filled from the record." => "Svar som skrivs en gång och skickas ofta, med platshållare som fylls från posten.";
 
-  // ── Osysharp.Composer · Osysharp.Composer.ComposerTarget.Send ──
-  /// Osysharp.Composer.ComposerTarget.Send · an error message
+  // ── Osysharp.ReplyComposer · Osysharp.ReplyComposer.ComposerTarget.Send ──
+  /// Osysharp.ReplyComposer.ComposerTarget.Send · an error message
   /// shown through ValidationException
   error "Nothing is set up to send this — the app names a target for it in app.Composer." => "Inget är konfigurerat för att skicka det här. Appen anger ett mål för det i app.Composer.";
 
-  // ── Osysharp.Composer · Osysharp.Composer.Macro ──
-  /// Osysharp.Composer.Macro · validation
-  /// shown through Osysharp.Composer.Macro.Title [Required]
+  // ── Osysharp.ReplyComposer · Osysharp.ReplyComposer.Macro ──
+  /// Osysharp.ReplyComposer.Macro · validation
+  /// shown through Osysharp.ReplyComposer.Macro.Title [Required]
   validation "Name the macro — it is what you search for." => "Namnge makrot. Det är det du söker efter.";
 
-  // ── Osysharp.Composer · Osysharp.Composer.SavedReply ──
-  /// Osysharp.Composer.SavedReply · validation
-  /// shown through Osysharp.Composer.SavedReply.Title [Required]
+  // ── Osysharp.ReplyComposer · Osysharp.ReplyComposer.SavedReply ──
+  /// Osysharp.ReplyComposer.SavedReply · validation
+  /// shown through Osysharp.ReplyComposer.SavedReply.Title [Required]
   validation "Name the reply — it is what you search for." => "Namnge svaret. Det är det du söker efter.";
-  /// Osysharp.Composer.SavedReply · validation
-  /// shown through Osysharp.Composer.SavedReply.Body [Required]
+  /// Osysharp.ReplyComposer.SavedReply · validation
+  /// shown through Osysharp.ReplyComposer.SavedReply.Body [Required]
   validation "Write the reply." => "Skriv svaret.";
 
-  // ── Osysharp.Composer · PickerEmpty ──
+  // ── Osysharp.ReplyComposer · PickerEmpty ──
   /// PickerEmpty · text on the page
   text "Open settings" => "Öppna inställningar";
 
-  // ── Osysharp.Composer · PrepareDraft ──
+  // ── Osysharp.ReplyComposer · PrepareDraft ──
   /// PrepareDraft · an error message
   /// placeholders: {DraftKeeps} = DraftKeeps (int) — {DraftKeeps} is a count: give one text per plural form
   /// shown through ValidationException
@@ -310,7 +310,7 @@ translations sv {
   /// shown through ValidationException
   error "Say who prepared it — the writer is told." => "Ange vem som förberedde det. Skribenten får veta det.";
 
-  // ── Osysharp.Composer · ReplyBodyEditor ──
+  // ── Osysharp.ReplyComposer · ReplyBodyEditor ──
   /// ReplyBodyEditor · a button's label · at most ~28 characters
   /// shown through Button.label
   button "Insert a placeholder" => "Infoga en platshållare";
@@ -320,19 +320,19 @@ translations sv {
   /// ReplyBodyEditor · text on the page
   text "Markdown: **bold**, _italic_, - lists, [words](https://…)." => "Markdown: **fet**, _kursiv_, - listor, [ord](https://…).";
 
-  // ── Osysharp.Composer · RunSteps ──
+  // ── Osysharp.ReplyComposer · RunSteps ──
   /// RunSteps · an error message
   /// placeholders: {s.Label} = s.Label (string), {result.Problem} = result.Problem (string)
   /// shown through ValidationException
   error "\"{s.Label}\" was not done: {result.Problem}" => "”{s.Label}” utfördes inte: {result.Problem}";
 
-  // ── Osysharp.Composer · SaveDraft ──
+  // ── Osysharp.ReplyComposer · SaveDraft ──
   /// SaveDraft · an error message
   /// placeholders: {text.Length} = text.Length (int), {DraftKeeps} = DraftKeeps (int) — {text.Length} is a count: give one text per plural form
   /// shown through ValidationException
   error "This draft is {text.Length} characters — more than can be kept ({DraftKeeps}). Shorten it." => { one: "Utkastet är ett tecken långt, mer än som kan sparas ({DraftKeeps}). Korta det.", other: "Utkastet är {text.Length} tecken långt, mer än som kan sparas ({DraftKeeps}). Korta det." };
 
-  // ── Osysharp.Composer · SaveMacro ──
+  // ── Osysharp.ReplyComposer · SaveMacro ──
   /// SaveMacro · an error message
   /// placeholders: {s.Action} = s.Action (string)
   /// shown through ValidationException
@@ -348,7 +348,7 @@ translations sv {
   /// shown through ValidationException
   error "Name the macro — it is what you search for." => "Namnge makrot. Det är det du söker efter.";
 
-  // ── Osysharp.Composer · SaveSavedReply ──
+  // ── Osysharp.ReplyComposer · SaveSavedReply ──
   /// SaveSavedReply · an error message
   /// shown through ValidationException
   error "Name the reply — it is what you search for." => "Namnge svaret. Det är det du söker efter.";
@@ -356,7 +356,7 @@ translations sv {
   /// shown through ValidationException
   error "Write the reply." => "Skriv svaret.";
 
-  // ── Osysharp.Composer · SavedReplyPicker ──
+  // ── Osysharp.ReplyComposer · SavedReplyPicker ──
   /// SavedReplyPicker · a control's name for screen readers
   /// beside: "Search saved replies"
   /// also in SavedReplySettings
@@ -366,7 +366,7 @@ translations sv {
   accessibleName "Search saved replies" => "Sök sparade svar";
   /// SavedReplyPicker · a label (a field, a list item, a menu entry) · at most ~19 characters
   /// shown through ComposerPopover.label
-  /// also in Osysharp.Composer.ComposerSettingsSections.Sections
+  /// also in Osysharp.ReplyComposer.ComposerSettingsSections.Sections
   label "Saved replies" => "Sparade svar";
   /// SavedReplyPicker · placeholder text inside an empty field · at most ~30 characters
   /// beside: "320px"
@@ -388,7 +388,7 @@ translations sv {
   /// also in MacroPicker
   title "Nothing matches “{query}”" => "Inget matchar ”{query}”";
 
-  // ── Osysharp.Composer · SavedReplySettings ──
+  // ── Osysharp.ReplyComposer · SavedReplySettings ──
   /// SavedReplySettings · a button's label · at most ~17 characters
   /// shown through Button.label
   button "Add a reply" => "Lägg till svar";
@@ -441,7 +441,7 @@ translations sv {
   /// shown through Dialog.title
   title "New saved reply" => "Nytt sparat svar";
 
-  // ── Osysharp.Composer · SendFromComposer ──
+  // ── Osysharp.ReplyComposer · SendFromComposer ──
   /// SendFromComposer · an error message
   /// placeholders: {Join} = string.Join(…) (string)
   /// shown through ValidationException
@@ -469,12 +469,12 @@ translations sv {
   /// shown through Said
   text "Sent." => "Skickat.";
 
-  // ── Osysharp.Composer · TakePreparedDraft ──
+  // ── Osysharp.ReplyComposer · TakePreparedDraft ──
   /// TakePreparedDraft · an error message
   /// shown through ValidationException
   error "That prepared draft is gone — somebody else took it." => "Det förberedda utkastet finns inte längre. Någon annan tog det.";
 
-  // ── Osysharp.Composer · TargetFor ──
+  // ── Osysharp.ReplyComposer · TargetFor ──
   /// TargetFor · an error message
   /// placeholders: {kind} = kind (string), {Join} = string.Join(…) (string)
   /// shown through ValidationException

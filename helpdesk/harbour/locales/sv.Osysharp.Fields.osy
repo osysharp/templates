@@ -1,10 +1,10 @@
-// sv (Svenska): the words of Helpdesk · Osysharp.Fields, translated.
+// sv (Svenska): the words of Helpdesk · Osysharp.CustomFields, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations sv {
-  // ── Osysharp.Fields · AnswerProblem ──
+  // ── Osysharp.CustomFields · AnswerProblem ──
   /// AnswerProblem · an error message
   /// placeholders: {f.Name} = f.Name (string), {Join} = string.Join(…) (string)
   /// shown through AnswerProblem()
@@ -26,7 +26,7 @@ translations sv {
   /// shown through AnswerProblem()
   error "{f.Name} takes a number, like 42 or 3.5." => "{f.Name} tar ett tal, till exempel 42 eller 3,5.";
 
-  // ── Osysharp.Fields · Checked ──
+  // ── Osysharp.CustomFields · Checked ──
   /// Checked · an error message
   /// placeholders: {form.Name} = form.Name (string)
   /// shown through ValidationException
@@ -35,7 +35,7 @@ translations sv {
   /// shown through ValidationException
   error "This form asks nothing more. Reload the page and send it again." => "Det här formuläret frågar inget mer. Ladda om sidan och skicka igen.";
 
-  // ── Osysharp.Fields · CheckedChange ──
+  // ── Osysharp.CustomFields · CheckedChange ──
   /// CheckedChange · an error message
   /// shown through ValidationException
   error "Someone" => "Någon";
@@ -51,11 +51,11 @@ translations sv {
   /// shown through ValidationException
   error "{value} changed {f.Name} to {value2} just now. Have another look." => "{value} ändrade {f.Name} till {value2} nyss. Titta en gång till.";
 
-  // ── Osysharp.Fields · Choices ──
+  // ── Osysharp.CustomFields · Choices ──
   /// Choices · text on the page
   text "Optional" => "Valfritt";
 
-  // ── Osysharp.Fields · ConditionEditor ──
+  // ── Osysharp.CustomFields · ConditionEditor ──
   /// ConditionEditor · a control's name for screen readers
   /// placeholders: {x.Field.Name} = x.Field.Name
   accessibleName "Condition of {x.Field.Name}" => "Villkor för {x.Field.Name}";
@@ -74,7 +74,7 @@ translations sv {
   /// ConditionEditor · text on the page
   text "Only a question above it on this form can show it. Move it below the question that should." => "Bara en fråga ovanför i det här formuläret kan visa det. Flytta det under den fråga som ska visa det.";
 
-  // ── Osysharp.Fields · ConditionLine ──
+  // ── Osysharp.CustomFields · ConditionLine ──
   /// ConditionLine · text on the page
   /// shown through ConditionLine()
   text "Always asked" => "Frågas alltid";
@@ -83,7 +83,7 @@ translations sv {
   /// shown through ConditionLine()
   text "Shown when {x.ShowWhen.Name} is {value}" => "Visas när {x.ShowWhen.Name} är {value}";
 
-  // ── Osysharp.Fields · ConditionProblem ──
+  // ── Osysharp.CustomFields · ConditionProblem ──
   /// ConditionProblem · text on the page
   /// placeholders: {x.ShowWhen.Name} = x.ShowWhen.Name (string)
   /// shown through ConditionProblem()
@@ -105,14 +105,14 @@ translations sv {
   /// shown through ConditionProblem()
   text "Never shown: “{x.ShowValue}” is not an answer {x.ShowWhen.Name} takes." => "Visas aldrig: ”{x.ShowValue}” är inte ett svar som {x.ShowWhen.Name} tar.";
 
-  // ── Osysharp.Fields · FieldAnswerLines ──
+  // ── Osysharp.CustomFields · FieldAnswerLines ──
   /// FieldAnswerLines · a label (a field, a list item, a menu entry) · at most ~13 characters
   /// shown through Badge.label
   /// also in FieldListSection
   /// also in FormSection
   label "Retired" => "Pensionerat";
 
-  // ── Osysharp.Fields · FieldListSection ──
+  // ── Osysharp.CustomFields · FieldListSection ──
   /// FieldListSection · a button's label · at most ~17 characters
   /// shown through Button.label
   /// also in ReportBuilder
@@ -208,7 +208,7 @@ translations sv {
   /// shown through Dialog.title
   title "A new field" => "Ett nytt fält";
 
-  // ── Osysharp.Fields · FieldNameProblem ──
+  // ── Osysharp.CustomFields · FieldNameProblem ──
   /// FieldNameProblem · an error message
   /// shown through FieldNameProblem()
   error "Another field already has that name." => "Ett annat fält har redan det namnet.";
@@ -216,7 +216,7 @@ translations sv {
   /// shown through FieldNameProblem()
   error "Name the field." => "Ge fältet ett namn.";
 
-  // ── Osysharp.Fields · FieldRow ──
+  // ── Osysharp.CustomFields · FieldRow ──
   /// FieldRow · a control's name for screen readers
   /// placeholders: {f.Name} = f.Name
   accessibleName "Edit {f.Name}" => "Redigera {f.Name}";
@@ -229,7 +229,7 @@ translations sv {
   /// beside: "Cancel"
   button "Save {f.Name}" => "Spara {f.Name}";
 
-  // ── Osysharp.Fields · FormSection ──
+  // ── Osysharp.CustomFields · FormSection ──
   /// FormSection · a control's name for screen readers
   /// placeholders: {form.Name} = form.Name
   /// beside: "180px", "What it is for"
@@ -303,7 +303,7 @@ translations sv {
   /// placeholders: {form.Key} = form.Key
   text "Rules name it “{form.Key}”." => "Regler kallar det ”{form.Key}”.";
 
-  // ── Osysharp.Fields · KindLine ──
+  // ── Osysharp.CustomFields · KindLine ──
   /// KindLine · text on the page
   /// placeholders: {kind} = kind (string)
   /// shown through KindLine()
@@ -317,82 +317,82 @@ translations sv {
   /// shown through KindLine()
   text "{kind} · the team's" => "{kind} · teamets";
 
-  // ── Osysharp.Fields · Osysharp.Fields.CustomField ──
-  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Fields.CustomField.Hint
+  // ── Osysharp.CustomFields · Osysharp.CustomFields.CustomField ──
+  /// Osysharp.CustomFields.CustomField · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.CustomFields.CustomField.Hint
   /// beside: "Name", "Kind", "Options", "Public", "Required", "Position"
   /// also in FieldListSection
   label "Hint" => "Tips";
-  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~10 characters
-  /// shown through Osysharp.Fields.CustomField.Kind
+  /// Osysharp.CustomFields.CustomField · a label (a field, a list item, a menu entry) · at most ~10 characters
+  /// shown through Osysharp.CustomFields.CustomField.Kind
   /// beside: "Name", "Options", "Hint", "Public", "Required", "Position"
   /// also in FieldListSection
   /// also in Osysharp.Conversations.ContactPoint
-  /// also in Osysharp.Inbox.WorkItem
+  /// also in Osysharp.WorkQueues.WorkItem
   label "Kind" => "Typ";
-  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~13 characters
-  /// shown through Osysharp.Fields.CustomField.Options
+  /// Osysharp.CustomFields.CustomField · a label (a field, a list item, a menu entry) · at most ~13 characters
+  /// shown through Osysharp.CustomFields.CustomField.Options
   /// beside: "Name", "Kind", "Hint", "Public", "Required", "Position"
   label "Options" => "Alternativ";
-  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~12 characters
-  /// shown through Osysharp.Fields.CustomField.Public
+  /// Osysharp.CustomFields.CustomField · a label (a field, a list item, a menu entry) · at most ~12 characters
+  /// shown through Osysharp.CustomFields.CustomField.Public
   /// beside: "Name", "Kind", "Options", "Hint", "Required", "Position"
   label "Public" => "Offentlig";
-  /// Osysharp.Fields.CustomField · a label (a field, a list item, a menu entry) · at most ~14 characters
-  /// shown through Osysharp.Fields.CustomField.Required
+  /// Osysharp.CustomFields.CustomField · a label (a field, a list item, a menu entry) · at most ~14 characters
+  /// shown through Osysharp.CustomFields.CustomField.Required
   /// beside: "Name", "Kind", "Options", "Hint", "Public", "Position"
   /// also in RoutingRuleSettings
   label "Required" => "Krävs";
-  /// Osysharp.Fields.CustomField · validation
-  /// shown through Osysharp.Fields.CustomField.Name [Required]
+  /// Osysharp.CustomFields.CustomField · validation
+  /// shown through Osysharp.CustomFields.CustomField.Name [Required]
   validation "Name the field." => "Namnge fältet.";
 
-  // ── Osysharp.Fields · Osysharp.Fields.FieldForm ──
-  /// Osysharp.Fields.FieldForm · a label (a field, a list item, a menu entry) · at most ~9 characters
-  /// shown through Osysharp.Fields.FieldForm.Key
+  // ── Osysharp.CustomFields · Osysharp.CustomFields.FieldForm ──
+  /// Osysharp.CustomFields.FieldForm · a label (a field, a list item, a menu entry) · at most ~9 characters
+  /// shown through Osysharp.CustomFields.FieldForm.Key
   /// beside: "Name", "Description", "Is default", "Position", "Active"
   /// also in FormSection
   label "Key" => "Nyckel";
-  /// Osysharp.Fields.FieldForm · validation
-  /// shown through Osysharp.Fields.FieldForm.Key [Unique]
+  /// Osysharp.CustomFields.FieldForm · validation
+  /// shown through Osysharp.CustomFields.FieldForm.Key [Unique]
   validation "Another form already has that key." => "Ett annat formulär har redan den nyckeln.";
-  /// Osysharp.Fields.FieldForm · validation
-  /// shown through Osysharp.Fields.FieldForm.Key [Required]
+  /// Osysharp.CustomFields.FieldForm · validation
+  /// shown through Osysharp.CustomFields.FieldForm.Key [Required]
   validation "Give the form a key." => "Ge formuläret en nyckel.";
-  /// Osysharp.Fields.FieldForm · validation
-  /// shown through Osysharp.Fields.FieldForm.Name [Required]
+  /// Osysharp.CustomFields.FieldForm · validation
+  /// shown through Osysharp.CustomFields.FieldForm.Name [Required]
   validation "Name the form." => "Namnge formuläret.";
 
-  // ── Osysharp.Fields · Osysharp.Fields.FieldKind ──
-  /// Osysharp.Fields.FieldKind · a label (a field, a list item, a menu entry) · at most ~19 characters
-  /// shown through Osysharp.Fields.FieldKind.Choice
+  // ── Osysharp.CustomFields · Osysharp.CustomFields.FieldKind ──
+  /// Osysharp.CustomFields.FieldKind · a label (a field, a list item, a menu entry) · at most ~19 characters
+  /// shown through Osysharp.CustomFields.FieldKind.Choice
   /// beside: "Text", "Number", "Yes or no", "Date"
   label "One of a list" => "Ett ur en lista";
 
-  // ── Osysharp.Fields · Osysharp.Fields.FieldValue ──
-  /// Osysharp.Fields.FieldValue · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Fields.FieldValue.Field
+  // ── Osysharp.CustomFields · Osysharp.CustomFields.FieldValue ──
+  /// Osysharp.CustomFields.FieldValue · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.CustomFields.FieldValue.Field
   /// beside: "Value"
   label "Field" => "Fält";
-  /// Osysharp.Fields.FieldValue · a label (a field, a list item, a menu entry) · at most ~11 characters
-  /// shown through Osysharp.Fields.FieldValue.Value
+  /// Osysharp.CustomFields.FieldValue · a label (a field, a list item, a menu entry) · at most ~11 characters
+  /// shown through Osysharp.CustomFields.FieldValue.Value
   /// beside: "Field"
   /// also in Osysharp.Conversations.ContactPoint
   /// also in AutomationRules
   /// also in HavingEditor
   label "Value" => "Värde";
 
-  // ── Osysharp.Fields · Osysharp.Fields.FieldsInReports.Pivots ──
-  /// Osysharp.Fields.FieldsInReports.Pivots · text on the page
+  // ── Osysharp.CustomFields · Osysharp.CustomFields.FieldsInReports.Pivots ──
+  /// Osysharp.CustomFields.FieldsInReports.Pivots · text on the page
   /// also in AutomationRules
   /// also in ParamInput
   text "No" => "Nej";
-  /// Osysharp.Fields.FieldsInReports.Pivots · text on the page
+  /// Osysharp.CustomFields.FieldsInReports.Pivots · text on the page
   /// also in AutomationRules
   /// also in ParamInput
   text "Yes" => "Ja";
 
-  // ── Osysharp.Fields · Question ──
+  // ── Osysharp.CustomFields · Question ──
   /// Question · placeholder text inside an empty field · at most ~14 characters
   /// shown through Field.placeholder
   placeholder "A number" => "Ett tal";
@@ -406,7 +406,7 @@ translations sv {
   /// shown through Dropdown.placeholder
   placeholder "Optional — choose one" => "Valfritt, välj ett";
 
-  // ── Osysharp.Fields · RecordFields ──
+  // ── Osysharp.CustomFields · RecordFields ──
   /// RecordFields · text on the page
   /// placeholders: {whereMade} = whereMade
   text "No fields yet — they are added on {whereMade}." => "Inga fält än. De läggs till under {whereMade}.";
@@ -417,7 +417,7 @@ translations sv {
   /// also in FieldListSection
   title "Fields" => "Fält";
 
-  // ── Osysharp.Fields · SetField ──
+  // ── Osysharp.CustomFields · SetField ──
   /// SetField · an error message
   /// shown through ValidationException
   error "That field is gone. Reload the page." => "Det fältet finns inte längre. Ladda om sidan.";
@@ -426,7 +426,7 @@ translations sv {
   /// shown through ValidationException
   error "{field.Name} is on no kind of record this app keeps answers for — it needs an IFieldRecords class." => "{field.Name} hör inte till någon typ av post som appen sparar svar för. Den behöver en IFieldRecords-klass.";
 
-  // ── Osysharp.Fields · ShownAnswer ──
+  // ── Osysharp.CustomFields · ShownAnswer ──
   /// ShownAnswer · a control's name for screen readers
   /// shown through ShownAnswer()
   /// also in CellText
@@ -436,12 +436,12 @@ translations sv {
   /// also in CellText
   accessibleName "Yes" => "Ja";
 
-  // ── Osysharp.Fields · SlotProblem ──
+  // ── Osysharp.CustomFields · SlotProblem ──
   /// SlotProblem · an error message
   /// shown through SlotProblem()
   error "Needs an answer." => "Behöver ett svar.";
 
-  // ── Osysharp.Fields · UseLine ──
+  // ── Osysharp.CustomFields · UseLine ──
   /// UseLine · text on the page
   /// placeholders: {n} = n (int), {value} = … (string) — {n} is a count: give one text per plural form
   /// shown through UseLine()

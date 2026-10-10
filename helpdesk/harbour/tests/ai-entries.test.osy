@@ -3,7 +3,7 @@
 // portal. Photographed by `osy test --pixels`, wide and on a phone, light and dark (Arabic in tests/languages/).
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 
 /// Olivia's ticket, answered with an AI's help: Ines sends its draft edited, the AI answers a second question itself, and
 /// a second draft waits. Answers the ticket's number.

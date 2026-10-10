@@ -12,9 +12,9 @@
 // them, and only the kit's own code writes the timeline past its floor.
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Automations;
-using Osysharp.Fields;
+using Osysharp.CustomFields;
 
 /// Why the desk's privacy rules closed a ticket, or what now keeps it. ⚠ Appended, never inserted.
 public enum PrivacyLine {
@@ -102,7 +102,7 @@ string PrivacyWords(PrivacyLine why, DateTime? until) {
 public class DeskCopy : ConversationCopy {
   public override string EventSentence(ConversationEvent happened) {
     var k = happened.Kind;
-    if (k.StartsWith("inbox.") && happened.Facts != null) {
+    if (k.StartsWith("work-queues.") && happened.Facts != null) {
       var told = Events.Read(happened.Facts!);
       return told != null ? told!.Sentence() : base.EventSentence(happened);
     }

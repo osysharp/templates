@@ -1,10 +1,10 @@
 // REPORTS — the overview a lead opens every morning and the builder behind it, on Harbour's own tickets and promises.
-// The figures' DEFINITIONS are proven against hand-worked answers in Osysharp.Inbox.Reports' own tests; these prove the
+// The figures' DEFINITIONS are proven against hand-worked answers in Osysharp.WorkQueues.Reports' own tests; these prove the
 // desk's half: satisfaction arrives on the ticket from the customer's answer, the overview joins tickets and promises
 // in one breakdown, a customer opens no report — and what each screen looks like, filled and empty.
 using Osysharp.Identity;
-using Osysharp.Inbox;
-using Osysharp.Feedback;
+using Osysharp.WorkQueues;
+using Osysharp.SatisfactionSurveys;
 using Osysharp.Explore;
 using Osysharp.Reports;
 
@@ -82,10 +82,10 @@ void the_desks_own_fields_are_report_columns_grouped_filtered_and_measured() {
   var a = SolvedForOlivia("Export to CSV drops the last row");
   SolvedForOlivia("Logo upload fails");
   runas (Ada) {
-    var plan = new CustomerField { Name = "Their plan", Kind = Osysharp.Fields.FieldKind.Choice, Options = "Starter\nTeam\nEnterprise", Position = 0 };
-    var seats = new CustomerField { Name = "Seats", Kind = Osysharp.Fields.FieldKind.Number, Position = 1 };
+    var plan = new CustomerField { Name = "Their plan", Kind = Osysharp.CustomFields.FieldKind.Choice, Options = "Starter\nTeam\nEnterprise", Position = 0 };
+    var seats = new CustomerField { Name = "Seats", Kind = Osysharp.CustomFields.FieldKind.Number, Position = 1 };
     var industry = new CompanyField { Name = "Industry", Position = 0 };
-    var renews = new CompanyField { Name = "Renews on", Kind = Osysharp.Fields.FieldKind.Date, Position = 1 };
+    var renews = new CompanyField { Name = "Renews on", Kind = Osysharp.CustomFields.FieldKind.Date, Position = 1 };
     var version = new TicketField { Name = "Platform version", Position = 0 };
     UnitOfWork.Commit();
     var t = Ticket.Single(x => x.Id == a);
@@ -228,7 +228,7 @@ void the_builder_on_a_month_of_work() {
 /// name — on a desk that already holds its month of tickets.
 void PlansOnEveryCustomer() {
   runas (Ines) {
-    var plan = new CustomerField { Name = "Their plan", Kind = Osysharp.Fields.FieldKind.Choice, Options = "Starter\nTeam\nEnterprise",
+    var plan = new CustomerField { Name = "Their plan", Kind = Osysharp.CustomFields.FieldKind.Choice, Options = "Starter\nTeam\nEnterprise",
                                    Position = 0 };
     UnitOfWork.Commit();
     string[] plans = ["Starter", "Team", "Enterprise", "Team"];

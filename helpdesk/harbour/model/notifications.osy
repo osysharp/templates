@@ -3,7 +3,7 @@
 //
 // The desk tells a teammate:
 //   · what the inbox says they should know — a ticket offered or handed to them, a promise on theirs at risk or missed,
-//     and, to a queue's leads, a ticket nobody picked up (Osysharp.Inbox.Notifications tells them all; the leads are
+//     and, to a queue's leads, a ticket nobody picked up (Osysharp.WorkQueues.Notifications tells them all; the leads are
 //     whoever `LeadsInbox` says, inbox.osy — nothing here);
 //   · that the customer wrote again, on a ticket they hold or follow;
 //   · that a colleague named them in a note (composer.osy), which seats them on the ticket;
@@ -18,7 +18,7 @@
 //   ticket when the bell is read — so an erased customer's name is in no notification.
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Notifications;
 
 /// Everybody on the desk has a bell, and their own notification preferences.

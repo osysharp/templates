@@ -6,15 +6,15 @@
 //   (inbox.osy).
 //   The timeline says what was true at the time; the ticket says what is true now.
 //
-// ⚑ WHO HAS A TICKET IS THE INBOX'S (Osysharp.Inbox): take, hand on, release, move and escalate are the kit's verbs and
+// ⚑ WHO HAS A TICKET IS THE INBOX'S (Osysharp.WorkQueues): take, hand on, release, move and escalate are the kit's verbs and
 //   its screens, and a change somebody else already made is refused with the sentence that names them. What stays
 //   here is what a ticket IS to a desk — its status, its type, its labels, its followers, a merge.
 using Osysharp.Identity;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Automations;
-using Osysharp.Fields;
+using Osysharp.CustomFields;
 
 // ── raising a ticket ──────────────────────────────────────────────────────────────────────────────────────────────
 

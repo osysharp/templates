@@ -1,4 +1,4 @@
-// THE DESK'S COMPOSER — what writing on a ticket means, told once to the Composer kit (Osysharp.Composer): a reply or
+// THE DESK'S COMPOSER — what writing on a ticket means, told once to the ReplyComposer kit (Osysharp.ReplyComposer): a reply or
 // a note is the desk's `ReplyToTicket` (which refuses a reply over a colleague's that landed meanwhile, and answers a
 // ticket nobody holds by taking it); "send and set…" is a status; a saved reply's placeholders are the ticket's
 // customer, company and number and the writer's own name; a macro's steps are the desk's own actions (actions.osy) — status, priority,
@@ -8,9 +8,9 @@
 //   a reload, markdown and its bar, files, the signature line. `Agent.Signature` goes under every reply an agent sends.
 using Osysharp.Identity;
 using Osysharp.Conversations;
-using Osysharp.Collaboration;
-using Osysharp.Inbox;
-using Osysharp.Composer;
+using Osysharp.Presence;
+using Osysharp.WorkQueues;
+using Osysharp.ReplyComposer;
 using Osysharp.Storage;
 
 /// Who writes with the composer: anybody who works tickets. Who keeps the TEAM's replies and macros: admins.

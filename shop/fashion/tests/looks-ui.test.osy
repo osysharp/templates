@@ -2,7 +2,7 @@
 // phone's width and a wide screen's into osy-shots/ — the front, a shelf, a piece, the bag and the checkout — so the five
 // designs are compared over the same pieces (the Window fixture: the store's whole catalogue).
 
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Shop;
 using Osysharp.Blocks;
 

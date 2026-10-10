@@ -1,7 +1,7 @@
 // THE TICKET — what the desk adds on top of a conversation and an inbox item: a number, where it stands, what kind of
 // request it is, its labels and followers.
 //
-// ⚑ A TICKET IS AN INBOX ITEM (`Ticket : WorkItem`, Osysharp.Inbox). Its subject is the item's `Title`, how urgent it is
+// ⚑ A TICKET IS AN INBOX ITEM (`Ticket : WorkItem`, Osysharp.WorkQueues). Its subject is the item's `Title`, how urgent it is
 //   the item's `Priority`, who has it the item's `Assignee`, its queue, its SLA promise and its clocks are the kit's —
 //   kept by the kit's own run (`WorkHandling`), told the four facts by the desk's lifecycle (workflow.osy). What is
 //   left here is what a ticket IS to a desk and nothing else.
@@ -14,10 +14,10 @@
 //     names its own work without touching what the platform guarantees.
 using Osysharp.Identity;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
+using Osysharp.Organizations.ServicePlans;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 
 /// The six fixed categories every status belongs to. ⚠ Appended, never inserted: an enum is stored by position.
 enum StatusCategory {
@@ -130,7 +130,7 @@ entity Ticket : WorkItem {
   /// What the customer last said about how it went — kept here by Feedback's `Answered` (feedback.osy) so a report
   /// counts satisfaction by agent, queue or company in the same statement as everything else about the ticket. None:
   /// not asked, or not answered.
-  Osysharp.Feedback.FeedbackRating? Rating;
+  Osysharp.SatisfactionSurveys.FeedbackRating? Rating;
   /// Reminders sent while waiting on the customer, and on whoever it is on hold for.
   int ChasesSent;
   int HoldChasesSent;

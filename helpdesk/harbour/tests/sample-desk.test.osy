@@ -1,4 +1,4 @@
-// A DESK AT REAL VOLUME — a month of a support team's work, for the tests, the screenshots and the memory harness.
+// A DESK AT REAL VOLUME — a month of a support team's work, for the tests, the screenshots and measuring the desk.
 //
 // ⛔ IT LIVES UNDER `tests/`, AND THAT IS THE GATE. Harbour is Osyrin's own support desk: real people's questions and
 //   bug reports. Code under `tests/` is compiled only into a test run's throwaway branch, never into what `osy compile`
@@ -28,15 +28,15 @@
 //   business hours are walked as business hours), so most clocks have plenty left, a few are in their last quarter
 //   and a handful are past. A first screen of red is a desk in crisis, not a desk.
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
+using Osysharp.Organizations.ServicePlans;
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Workflow;
 using Osysharp.Conversations;
 using Osysharp.ServiceHours;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Privacy;
-using Osysharp.Fields;
+using Osysharp.CustomFields;
 
 /// A small, deterministic generator — the same seed gives the same desk.
 public class Dice {
@@ -593,7 +593,7 @@ public class Promised {
 List<Promised> Promises() {
   var targets = SlaTarget.Include(t => t.Policy).ToList();
   var all = new List<Promised>();
-  foreach (var x in Osysharp.Inbox.SlaPolicy.Where(x => x.Active).Include(x => x.Tier).Include(x => x.Hours).ToList()) {
+  foreach (var x in Osysharp.WorkQueues.SlaPolicy.Where(x => x.Active).Include(x => x.Tier).Include(x => x.Hours).ToList()) {
     var mine = targets.Where(t => t.Policy.Id == x.Id).ToList();
     all.Add(new Promised { Priority = x.Priority, Tier = x.Tier == null ? null : x.Tier.Id, ServiceHours = x.Hours,
       FirstReplyWithin = mine.Where(t => t.Metric == SlaMetric.FirstResponse).Select(t => t.Within).FirstOrDefault(),
@@ -726,7 +726,7 @@ void MoveSeeded(Ticket t, Stage stage, List<TicketStatus> statuses, Dice dice, H
   UnitOfWork.Commit();
 }
 
-// ── the desk's fields (H1) ──────────────────────────────────────────────────────────────────────────────────────────
+// ── the desk's fields ───────────────────────────────────────────────────────────────────────────────────────────────
 
 /// What the sample desk asks, and on which form.
 public class SeedAsking {

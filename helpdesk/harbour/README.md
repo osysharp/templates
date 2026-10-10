@@ -11,7 +11,7 @@ A fresh desk is empty, and a desk with a month of work in it is what you want to
 `osy compile` deploys. To use it, hold the one test that builds it:
 
 ```console
-osy test --test 'tests/hold.test.osy::Floor::a_filled_desk_to_click_through' --hold
+osy test --test 'tests/hold.test.osy::CaughtUpDesk::a_filled_desk_to_click_through' --hold
 ```
 
 It seeds the desk (several minutes), then keeps that test's copy of the app serving on your machine and opens it in
@@ -23,7 +23,7 @@ delay. It reads the variable when it starts, so stop it first:
 
 ```console
 osy stop
-OSY_SIMULATED_LATENCY_MS=40 osy test --test 'tests/hold.test.osy::Floor::a_filled_desk_to_click_through' --hold
+OSY_SIMULATED_LATENCY_MS=40 osy test --test 'tests/hold.test.osy::CaughtUpDesk::a_filled_desk_to_click_through' --hold
 ```
 
 The line under `⏸ HELD` says which delay the serving platform is actually applying. All of it is described in

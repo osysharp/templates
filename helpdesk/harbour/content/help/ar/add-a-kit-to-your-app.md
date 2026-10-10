@@ -14,7 +14,7 @@ version: 1
    app MyTasks {
      model "model/**/*.osy";
      use Osysharp.Ui;
-     use Osysharp.Pdf@1;
+     use Osysharp.PdfViewer@1;
    }
    ```
 
@@ -30,25 +30,25 @@ version: 1
 
    ```
    ✓ Wrote osyrin.lock (2 pins)
-     Osysharp.Pdf  1.0.0  github:osysharp/pdf@v1.0.0
+     Osysharp.PdfViewer  1.0.0  github:osysharp/pdf@v1.0.0
      Osysharp.Ui  2.15.2  prewarmed:osysharp/ui
    ```
 
 3. احفظ `osyrin.lock` في المستودع مع شيفرتك، حتى يستخدم كل بناء الإصدارات نفسها.
 
-4. أضف `using Osysharp.Pdf;` في أعلى كل ملف نموذج يستخدم أنواع الحزمة.
+4. أضف `using Osysharp.PdfViewer;` في أعلى كل ملف نموذج يستخدم أنواع الحزمة.
 
 ## الحزم التي يمكنك إضافتها
 
 - **الحزم التي تحملها المنصة** لا تحتاج إلى تنزيل. يعرضها `osy kits`؛ ومنها اليوم `Osysharp.Ui` و`Osysharp.Workflow` و`Osysharp.Storage` و`Osysharp.Scheduling` و`Osysharp.Http` و`Osysharp.Memory` و`Osysharp.Markdown`.
-- **الحزم المنشورة** يجلبها `osy lock`. ويعرضها `osy search` مع سطر `use` الذي تلصقه، مثل `use Osysharp.Pdf@1;` أو `use Osysharp.Barcode@1;`.
+- **الحزم المنشورة** يجلبها `osy lock`. ويعرضها `osy search` مع سطر `use` الذي تلصقه، مثل `use Osysharp.PdfViewer@1;` أو `use Osysharp.BarcodeScanner@1;`.
 
 تُنشر حزم أخرى تباعًا. والحزمة التي لم يصدر لها إصدار بعد لا يمكن جلبها: يذكر `osy lock` ذلك باسمها ولا يكتب شيئًا، فيبقى ملف التثبيت الحالي كما هو.
 
 ## تعرّف على حزمة
 
 ```
-osy kits Osysharp.Pdf
+osy kits Osysharp.PdfViewer
 ```
 
 يطبع هذا الأمر الغرض من الحزمة، وأي عقد تصرّح به لتنفذه حزم أخرى. والحزمة الموجودة في مساحة عملك تعرض أيضًا أصغر تطبيق مثال لها وأسماء اختباراتها. ولحزمة الواجهة، يعرض `osy kit` كل عنصر مع توقيعه، ويطبع `osy kit Card` شيفرة عنصر واحد.

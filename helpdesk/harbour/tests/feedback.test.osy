@@ -4,12 +4,12 @@
 // `osy test --pixels` photographs the portal, the link page and the desk's results, in English and Arabic.
 using Osysharp.Identity;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
-using Osysharp.Accounts;
+using Osysharp.Organizations.ServicePlans;
+using Osysharp.UserAccounts;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 using Osysharp.Notifications;
-using Osysharp.Feedback;
+using Osysharp.SatisfactionSurveys;
 
 /// The desk, and Ada — an agent and the admin who reads what the desk sent.
 [TestFixture]

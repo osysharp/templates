@@ -2,13 +2,13 @@
 // their own requests (and their company's, when it shares them). It is the same conversation the desk works: the
 // customer sees every reply and none of the notes, because the kit's rules decide that, not this page.
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Conversations;
 using Osysharp.Storage;
 using Osysharp.Privacy;
-using Osysharp.Feedback;
-using Osysharp.Knowledge;
-using Osysharp.Fields;
+using Osysharp.SatisfactionSurveys;
+using Osysharp.KnowledgeBase;
+using Osysharp.CustomFields;
 
 /// What a customer reads for where their request stands — in their words, not the team's statuses.
 string CustomerStatus(StatusCategory c) {
@@ -254,7 +254,7 @@ component RequestForm(bool signedIn, List<TicketForm> forms, List<FieldSpec> ask
             }
           }
         }
-        // Articles that might answer it appear under the subject as the customer types (Osysharp.Knowledge).
+        // Articles that might answer it appear under the subject as the customer types (Osysharp.KnowledgeBase).
         KnowledgeSuggestingField("Subject", value: subject, placeholder: "One line saying what is wrong");
         TextAreaField("What happened", value: text, rows: 6,
                       placeholder: "What you were doing, what you expected, and what happened instead.");
@@ -332,7 +332,7 @@ component MyRequestsPage() {
                   Stack(gap: 0, grow: 1, minW: "0") {
                     Text(r.Subject, fontWeight: FontWeight.Medium, whiteSpace: WhiteSpace.Nowrap, overflow: Overflow.Hidden,
                          textOverflow: TextOverflow.Ellipsis);
-                    Text(r.Requester + " · updated " + Osysharp.Inbox.Ago(r.UpdatedAt, now) + " ago", fontSize: FontSize.Caption, color: Colors.TextMuted);
+                    Text(r.Requester + " · updated " + Osysharp.WorkQueues.Ago(r.UpdatedAt, now) + " ago", fontSize: FontSize.Caption, color: Colors.TextMuted);
                   }
                   Badge(CustomerStatus(r.Category), tone: CustomerTone(r.Category));
                 }

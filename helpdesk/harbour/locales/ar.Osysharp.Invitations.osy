@@ -199,7 +199,7 @@ translations ar {
   /// Osysharp.Invitations.InvitationStatus · a label (a field, a list item, a menu entry) · at most ~14 characters
   /// shown through Osysharp.Invitations.InvitationStatus.Accepted
   /// beside: "Waiting", "Revoked", "Expired"
-  /// also in Osysharp.Inbox.OfferState
+  /// also in Osysharp.WorkQueues.OfferState
   label "Accepted" => "مقبولة";
   /// Osysharp.Invitations.InvitationStatus · a label (a field, a list item, a menu entry) · at most ~13 characters
   /// shown through Osysharp.Invitations.InvitationStatus.Expired

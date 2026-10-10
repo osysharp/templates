@@ -1,17 +1,17 @@
 // THE TICKET'S LIFECYCLE, AND THE PROMISES THE INBOX KEEPS ON IT — first reply, next reply, resolution, on the
 // company's calendar.
 //
-// The clocks are the inbox's (Osysharp.Inbox proves them in general: business hours and holidays, pausing, retargeting,
+// The clocks are the inbox's (Osysharp.WorkQueues proves them in general: business hours and holidays, pausing, retargeting,
 // imported history, follow-the-sun). What is proven HERE is the desk on them: that its lifecycle tells the inbox each
 // fact as it happens, so a person at the desk sees the promise kept, paused and missed exactly when they should. Every
 // test drives the ticket through the desk's own verbs (`OpenTicket`, `ReplyToTicket`, `SetStatus`, `CustomerReply`).
 // The desk (Ines and Rahul, agents; Lena, a lead; Olivia at Larkspur, a customer) is in desk.test.osy.
 using Osysharp.Identity;
-using Osysharp.Accounts;
+using Osysharp.UserAccounts;
 using Osysharp.Workflow;
 using Osysharp.ServiceHours;
 using Osysharp.Conversations;
-using Osysharp.Inbox;
+using Osysharp.WorkQueues;
 
 /// Was `metric` missed on `t` — its clock recorded as breached?
 bool Missed(Ticket t, SlaMetric metric) => SlaClock.Any(c => c.Item.Id == t.Id && c.Metric == metric && c.BreachedAt != null);
@@ -61,7 +61,7 @@ void the_desk_keeps_its_promises_through_the_inbox() {
   Assert.True(Missed(t, SlaMetric.FirstResponse));
   Assert.Equal(StatusCategory.New, t.Category);            // recorded, not fatal — the customer still needs an answer
   // …dated when it HAPPENED (30 minutes in, 22:30), not when the desk next looked (22:45).
-  var missed = ConversationEvent.Where(e => e.Conversation == t.Conversation && e.Kind == "inbox.promise-breached").ToList();
+  var missed = ConversationEvent.Where(e => e.Conversation == t.Conversation && e.Kind == "work-queues.promise-breached").ToList();
   Assert.Equal(1, missed.Count);
   Assert.Equal("First reply time was missed.", EventWords(missed[0]));
   Assert.Equal(new DateTime(2026, 6, 6, 22, 30, 0), missed[0].At);

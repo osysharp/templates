@@ -1,10 +1,10 @@
-// sv (Svenska): the words of Helpdesk · Osysharp.Collaboration, translated.
+// sv (Svenska): the words of Helpdesk · Osysharp.Presence, translated.
 // Written and kept in step with the source by `osy translate`: a new text arrives as `=> null`, a text
 // whose source changed keeps its old translation in a `was` clause. The words are yours to edit.
 // Source language: en.
 
 translations sv {
-  // ── Osysharp.Collaboration · Ago ──
+  // ── Osysharp.Presence · Ago ──
   /// Ago · text on the page
   /// shown through Ago()
   text "a minute ago" => "för en minut sedan";
@@ -24,11 +24,11 @@ translations sv {
   /// shown through Ago()
   text "{value} minutes ago" => { one: "för en minut sedan", other: "för {value} minuter sedan" };
 
-  // ── Osysharp.Collaboration · RecordSeats ──
+  // ── Osysharp.Presence · RecordSeats ──
   /// RecordSeats · a control's name for screen readers
   accessibleName "Who else is here" => "Vilka mer som är här";
 
-  // ── Osysharp.Collaboration · WhoIsHere ──
+  // ── Osysharp.Presence · WhoIsHere ──
   /// WhoIsHere · text on the page
   /// placeholders: {DisplayName} = ….DisplayName (string), {DisplayName2} = ….DisplayName (string)
   /// shown through WhoIsHere()

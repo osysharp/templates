@@ -1,14 +1,14 @@
 // THE DESK'S CONFIGURATION — the rows an admin owns: statuses inside the six categories, and the starting inbox — its
-// queues, the SLA policies by priority and tier (Osysharp.Inbox), and the business hours their clocks run in.
+// queues, the SLA policies by priority and tier (Osysharp.WorkQueues), and the business hours their clocks run in.
 // `SetUpDesk` writes a sensible starting set once; after that they are an admin's to change, on the settings pages.
 using Osysharp.Identity;
 using Osysharp.Organizations;
-using Osysharp.Organizations.Accounts;
+using Osysharp.Organizations.ServicePlans;
 using Osysharp.Workflow;
 using Osysharp.ServiceHours;
-using Osysharp.Inbox;
-using Osysharp.Accounts;
-using Osysharp.People;
+using Osysharp.WorkQueues;
+using Osysharp.UserAccounts;
+using Osysharp.UserManagement;
 
 /// The desk's starting configuration, once. Answers false when it was already set up.
 public bool SetUpDesk() {

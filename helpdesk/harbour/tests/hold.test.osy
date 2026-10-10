@@ -10,7 +10,7 @@
 //   osy stop && OSY_SIMULATED_LATENCY_MS=40 osy test --test 'tests/hold.test.osy::CaughtUpDesk::a_filled_desk_to_click_through' --hold
 //
 // ⚑ STILL UNDER `tests/`, like the seed it calls: this desk exists only in a test's throwaway branch, never in what
-//   `osy compile` deploys (HarbourShipsNoSampleDataTests).
+//   `osy compile` deploys.
 //
 // ⚑ The desk is built ONCE per run (it is a fixture) and this test holds its own copy — so holding it costs a clone,
 //   not a seed, when the run has built the desk already. Its clock is the fixture's: 10:00 on a Tuesday, pinned.
